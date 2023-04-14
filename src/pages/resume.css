@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DynaPuff&family=Signika+Negative:wght@300;400;500&display=swap');
 
 .container {
-  @apply min-w-full;
+  @apply w-full;
 }
 
 .profile-picture-container {
