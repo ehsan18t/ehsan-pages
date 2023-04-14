@@ -81,7 +81,7 @@ h2 {
 }
 
 .skills ul {
-  @apply flex flex-wrap flex-row text-justify;
+  @apply flex flex-wrap justify-between flex-row text-justify;
 }
 
 .skills li {
