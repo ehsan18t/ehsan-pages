@@ -16,7 +16,7 @@
 
 .left-side,
 .right-side {
-  @apply flex flex-col gap-5 mt-6 pl-5 w-full text-justify;
+  @apply flex flex-col gap-5 mt-6 px-5 w-full text-justify;
 }
 
 .left-side {
