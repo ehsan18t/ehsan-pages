@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff&family=Signika+Negative:wght@300;400;500&display=swap');
+
+.container {
+  @apply flex min-w-full;
+}
+
+.side {
+  @apply w-2/5 px-5 bg-white;
+}
+
+.side-top {
+  @apply ring-8 ring-red-200 object-bottom object-cover flex flex-col items-center justify-end bg-red-400 rounded-b-full;
+}
+
+.side-bottom {
+  @apply justify-center mt-6;
+}
+
+.side-bottom a {
+  @apply text-gray-600;
+}
+
+.profile-picture {
+  @apply rounded-b-full;
+}
+
+.main,
+.side-bottom {
+  @apply w-full p-4 flex flex-col gap-5;
+}
+
+.contact a {
+  @apply flex gap-2 font-semibold text-gray-600;
+}
+
+.svg-icon {
+  @apply mb-2 w-8 h-8;
+}
+
+.profile {
+  @apply flex flex-col gap-3;
+}
+
+.profile h1 {
+  font-family: 'Signika Negative', sans-serif;
+  @apply text-6xl font-bold;
+}
+
+.profile h2 {
+  font-family: 'Signika Negative', sans-serif;
+  @apply text-3xl font-medium;
+}
+
+.profile p {
+  @apply text-base text-justify font-semibold text-gray-700;
+}
+
+h2 {
+  font-family: 'DynaPuff', cursive;
+  @apply text-2xl font-bold text-red-500/80;
+}
+
+.skills ul {
+  @apply flex flex-wrap flex-row text-justify;
+}
+
+.skills li {
+  @apply text-lg text-gray-700 list-disc mx-3;
+}
