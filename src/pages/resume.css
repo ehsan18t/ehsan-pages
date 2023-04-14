@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=DynaPuff&family=Signika+Negative:wght@300;400;500&display=swap');
 
 .container {
-  @apply flex min-w-full;
+  @apply flex flex-col md:flex-row lg:flex-row min-w-full;
 }
 
 .side {
-  @apply w-2/5 px-5 bg-white;
+  @apply w-full lg:w-2/5 md:w-2/5 px-5 bg-white;
 }
 
 .side-top {
@@ -57,7 +57,7 @@
 
 h2 {
   font-family: 'DynaPuff', cursive;
-  @apply text-2xl font-bold text-red-500/80;
+  @apply text-2xl font-bold text-red-500/80 uppercase;
 }
 
 .skills ul {

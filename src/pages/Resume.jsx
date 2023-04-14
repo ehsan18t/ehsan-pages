@@ -9,8 +9,23 @@ const Resume = () => {
   return (
     <div className="container">
       <div className="side">
-        <div className="side-top">
-          <img className="profile-picture" src="me.png" alt="profile picture" />
+        <div className="top-header">
+          <div className="side-top">
+            <img
+              className="profile-picture"
+              src="me.png"
+              alt="profile picture"
+            />
+          </div>
+
+          <div className="profile">
+            <h1>Ehsan Khan</h1>
+            <h2>Software Developer</h2>
+            <p>
+              A passionate developer, competitive programer, quick learner.
+              Typical introvert. Love to code and learn new things.
+            </p>
+          </div>
         </div>
         <div className="side-bottom">
           <div className="contact">
@@ -40,14 +55,6 @@ const Resume = () => {
         </div>
       </div>
       <div className="main">
-        <div className="profile">
-          <h1>Ehsan Khan</h1>
-          <h2>Software Developer</h2>
-          <p>
-            A passionate developer, competitive programer, quick learner.
-            Typical introvert. Love to code and learn new things.
-          </p>
-        </div>
         <div className="skills">
           <h2>Skills</h2>
           <ul>
