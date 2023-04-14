@@ -4,8 +4,11 @@ import Linkedin from '../components/icons/Linkedin'
 import Email from '../components/icons/Email'
 import Github from '../components/icons/Github'
 import Telephone from '../components/icons/Telephone'
+import useDocumentTitle from '../assets/js/useDocumentTitle'
 
 const Resume = () => {
+  useDocumentTitle("Ehsan Khan's Profile")
+
   return (
     <div className="container">
       <div className="top-header">
