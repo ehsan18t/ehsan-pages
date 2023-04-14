@@ -6,6 +6,8 @@ import Github from '../components/icons/Github'
 import Telephone from '../components/icons/Telephone'
 import useDocumentTitle from '../assets/js/useDocumentTitle'
 import Info from '../data'
+import ProfilePicture from '../components/cards/ProfilePicture'
+import Profile from '../components/cards/Profile'
 
 const Resume = () => {
   useDocumentTitle(Info.profile.name + "'s Profile")
@@ -13,19 +15,8 @@ const Resume = () => {
   return (
     <div className="container">
       <div className="top-header">
-        <div className="profile-picture-container">
-          <img className="profile-picture" src="me.png" alt="profile picture" />
-        </div>
-
-        <div className="profile">
-          <h1>{Info.profile.name}</h1>
-          <h2>{Info.profile.title}</h2>
-          <p>{Info.profile.about} </p>
-          <div className="hr">
-            <br />
-            <br />
-          </div>
-        </div>
+        <ProfilePicture picture={Info.profile.picture} />
+        <Profile info={Info.profile} />
       </div>
       <div className="bottom">
         <div className="left-side">
