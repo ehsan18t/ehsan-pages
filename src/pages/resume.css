@@ -5,20 +5,34 @@
 }
 
 .profile-picture-container {
-  @apply ring-8 ring-red-200 object-bottom object-cover flex flex-col items-center justify-end bg-red-400 rounded-b-full;
-  @apply md:w-2/5 lg:w-2/5;
+  @apply w-3/5 ring-8 ring-red-200 object-bottom object-cover flex flex-col items-center justify-end bg-red-400 rounded-b-full;
+  @apply md:w-2/5 lg:w-1/4 lg:h-64;
 }
 
 .top-header {
-  @apply flex flex-col w-full bg-white px-5;
-  @apply md:flex-row lg:flex-row gap-5;
+  @apply flex items-center flex-col w-full bg-white px-5;
+  @apply md:flex-row md:items-start lg:flex-row lg:items-start gap-5;
 }
 
-.side-bottom {
-  @apply justify-center mt-6;
+.left-side,
+.right-side {
+  @apply flex flex-col gap-5 mt-6 ml-5 w-full;
 }
 
-.side-bottom a {
+.left-side {
+  @apply md:w-2/5 lg:w-2/5;
+}
+
+.bottom {
+  @apply flex flex-col;
+  @apply md:flex-row lg:flex-row;
+}
+
+.bottom {
+  @apply justify-center;
+}
+
+.bottom a {
   @apply text-gray-600;
 }
 
@@ -40,7 +54,11 @@
 }
 
 .profile {
-  @apply flex flex-col gap-3 md:m-7 lg:m-9;
+  @apply w-full flex flex-col gap-3 md:m-7 lg:m-9 justify-center;
+}
+
+.hr {
+  @apply border-b-2 border-gray-700 hidden lg:block;
 }
 
 .profile h1 {
