@@ -1,9 +1,10 @@
 const Info = {
   profile: {
     name: 'Ehsan Khan',
-    title: 'Web Developer',
+    title: 'Software Developer',
     about:
       'A passionate developer, competitive programer and quick learner. Typical introvert. Love to code and learn new things.',
+    picture: 'me.png',
   },
   contact: {
     email: 'ehsan18t@gmail.com',
@@ -22,7 +23,7 @@ const Info = {
     'HTML',
     'CSS',
     'JavaScript',
-    'Tailwind CSS',
+    'TailwindCSS',
     'React',
     'Svelte',
     'C/C++',
@@ -63,3 +64,5 @@ const Info = {
     },
   ],
 }
+
+export default Info
