@@ -16,7 +16,7 @@
 
 .left-side,
 .right-side {
-  @apply flex flex-col gap-5 mt-6 ml-5 w-full;
+  @apply flex flex-col gap-5 mt-6 pl-5 w-full text-justify;
 }
 
 .left-side {
@@ -54,7 +54,7 @@
 }
 
 .profile {
-  @apply w-full flex flex-col gap-3 md:m-7 lg:m-9 justify-center;
+  @apply w-full flex flex-col gap-3 md:p-7 lg:p-9 justify-center;
 }
 
 .hr {
