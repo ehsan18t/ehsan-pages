@@ -8,53 +8,45 @@ import Telephone from '../components/icons/Telephone'
 const Resume = () => {
   return (
     <div className="container">
-      <div className="side">
-        <div className="top-header">
-          <div className="side-top">
-            <img
-              className="profile-picture"
-              src="me.png"
-              alt="profile picture"
-            />
-          </div>
-
-          <div className="profile">
-            <h1>Ehsan Khan</h1>
-            <h2>Software Developer</h2>
-            <p>
-              A passionate developer, competitive programer, quick learner.
-              Typical introvert. Love to code and learn new things.
-            </p>
-          </div>
+      <div className="top-header">
+        <div className="profile-picture-container">
+          <img className="profile-picture" src="me.png" alt="profile picture" />
         </div>
-        <div className="side-bottom">
-          <div className="contact">
-            <h2>Contact</h2>
-            <a href="mailto:ehsan18t@gmail.com">
-              <Email className="svg-icon" /> ehsan18t@gmail.com
-            </a>
-            <a href="tel:01700000000">
-              <Telephone className="svg-icon" /> +8801641723411
-            </a>
-            <a href="https://github.com/ehsan18t">
-              <Github className="svg-icon" /> @ehsan18t
-            </a>
-            <a href="https://www.linkedin.com/in/ehsan18t/">
-              <Linkedin className="svg-icon" /> @ehsan18t
-            </a>
-          </div>
 
-          <div className="education">
-            <h2>Education</h2>
-            <div className="school">
-              <h3>United International University</h3>
-              <h4>Computer Science Engineering</h4>
-              <p>2020-Present</p>
-            </div>
-          </div>
+        <div className="profile">
+          <h1>Ehsan Khan</h1>
+          <h2>Software Developer</h2>
+          <p>
+            A passionate developer, competitive programer, quick learner.
+            Typical introvert. Love to code and learn new things.
+          </p>
         </div>
       </div>
-      <div className="main">
+      <div className="bottom">
+        <div className="contact">
+          <h2>Contact</h2>
+          <a href="mailto:ehsan18t@gmail.com">
+            <Email className="svg-icon" /> ehsan18t@gmail.com
+          </a>
+          <a href="tel:01700000000">
+            <Telephone className="svg-icon" /> +8801641723411
+          </a>
+          <a href="https://github.com/ehsan18t">
+            <Github className="svg-icon" /> @ehsan18t
+          </a>
+          <a href="https://www.linkedin.com/in/ehsan18t/">
+            <Linkedin className="svg-icon" /> @ehsan18t
+          </a>
+        </div>
+
+        <div className="education">
+          <h2>Education</h2>
+          <div className="school">
+            <h3>United International University</h3>
+            <h4>Computer Science Engineering</h4>
+            <p>2020-Present</p>
+          </div>
+        </div>
         <div className="skills">
           <h2>Skills</h2>
           <ul>

@@ -1,15 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=DynaPuff&family=Signika+Negative:wght@300;400;500&display=swap');
 
 .container {
-  @apply flex flex-col md:flex-row lg:flex-row min-w-full;
+  @apply min-w-full;
 }
 
-.side {
-  @apply w-full lg:w-2/5 md:w-2/5 px-5 bg-white;
-}
-
-.side-top {
+.profile-picture-container {
   @apply ring-8 ring-red-200 object-bottom object-cover flex flex-col items-center justify-end bg-red-400 rounded-b-full;
+  @apply md:w-2/5 lg:w-2/5;
+}
+
+.top-header {
+  @apply flex flex-col w-full bg-white px-5;
+  @apply md:flex-row lg:flex-row gap-5;
 }
 
 .side-bottom {
@@ -38,17 +40,17 @@
 }
 
 .profile {
-  @apply flex flex-col gap-3;
+  @apply flex flex-col gap-3 md:m-7 lg:m-9;
 }
 
 .profile h1 {
   font-family: 'Signika Negative', sans-serif;
-  @apply text-6xl font-bold;
+  @apply text-6xl font-bold flex justify-center md:justify-start lg:justify-start;
 }
 
 .profile h2 {
   font-family: 'Signika Negative', sans-serif;
-  @apply text-3xl font-medium;
+  @apply text-3xl font-medium flex justify-center md:justify-start lg:justify-start;
 }
 
 .profile p {
