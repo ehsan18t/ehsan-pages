@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=DynaPuff&family=Signika+Negative:wght@300;400;500&display=swap');
 
 .container {
+  @apply min-w-full;
+}
+
+.container {
   @apply w-full;
 }
 
