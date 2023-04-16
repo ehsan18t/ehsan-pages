@@ -16,7 +16,7 @@ const Info = {
     {
       institute: 'United International University',
       degree: 'B.Sc. in Computer Science and Engineering',
-      year: '2020 - Present',
+      duration: '2020 - Present',
     },
   ],
   skills: [
