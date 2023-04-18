@@ -39,6 +39,7 @@ const Info = {
     'Bash',
     'Batch',
     'Markdown',
+    'Figma',
     'Jira',
     'Scrum',
   ],
