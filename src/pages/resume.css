@@ -4,14 +4,6 @@
   @apply min-w-full;
 }
 
-.container {
-  @apply w-full;
-}
-
-.container {
-  @apply w-full;
-}
-
 .top-header {
   @apply flex items-center flex-col w-full bg-white px-5;
   @apply md:flex-row md:items-start lg:flex-row lg:items-start gap-5;
@@ -31,17 +23,8 @@
   @apply md:flex-row lg:flex-row;
 }
 
-.bottom {
-  @apply justify-center;
-}
-
 .bottom a {
   @apply text-gray-600;
-}
-
-.main,
-.side-bottom {
-  @apply w-full p-4 flex flex-col gap-5;
 }
 
 .hr {
