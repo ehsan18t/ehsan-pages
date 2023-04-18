@@ -9,6 +9,7 @@ import Education from '../components/cards/education/Education'
 import Skills from '../components/cards/skills/Skills'
 import Projects from '../components/cards/projects/Projects'
 import Experience from '../components/cards/experience/Experience'
+import Achievements from '../components/cards/achievements/Achievements'
 
 const Resume = () => {
   useDocumentTitle(Info.profile.name + "'s Profile")
@@ -23,6 +24,7 @@ const Resume = () => {
         <div className="left-side">
           <Contact contact={Info.contact} />
           <Education education={Info.education} />
+          <Achievements achievements={Info.achievements} />
         </div>
         <div className="right-side">
           <Skills skills={Info.skills} />
