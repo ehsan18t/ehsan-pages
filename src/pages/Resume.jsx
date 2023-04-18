@@ -6,6 +6,9 @@ import ProfilePicture from '../components/cards/ProfilePicture'
 import Profile from '../components/cards/Profile'
 import Contact from '../components/cards/Contact'
 import Education from '../components/cards/Education'
+import Skills from '../components/cards/Skills'
+import Projects from '../components/cards/Projects'
+import Experience from '../components/cards/Experience'
 
 const Resume = () => {
   useDocumentTitle(Info.profile.name + "'s Profile")
@@ -22,34 +25,9 @@ const Resume = () => {
           <Education education={Info.education} />
         </div>
         <div className="right-side">
-          <div className="skills">
-            <h2>Skills</h2>
-            <ul>
-              {Info.skills.map((skill) => (
-                <li>{skill}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="projects">
-            <h2>Projects</h2>
-            {Info.projects.map((project) => (
-              <div className="project">
-                <h3>{project.name}</h3>
-                <p>{project.description}</p>
-                <a href={project.link}>View on GitHub</a>
-              </div>
-            ))}
-          </div>
-          <div className="experience">
-            <h2>Experience</h2>
-            {Info.experience.map((exp) => (
-              <div className="job">
-                <h3>{exp.position}</h3>
-                <h4>{exp.company}</h4>
-                <p>{exp.duration}</p>
-              </div>
-            ))}
-          </div>
+          <Skills skills={Info.skills} />
+          <Projects projects={Info.projects} />
+          <Experience experience={Info.experience} />
         </div>
       </div>
     </div>
