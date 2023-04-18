@@ -19,6 +19,22 @@ const Info = {
       duration: '2020 - Present',
     },
   ],
+  achievements: [
+    {
+      title: 'UIU Project Show Fall 2021 Champion',
+      description:
+        'It\'s a project competition where we have to make a project in a team of 3-4 members. We made a project named "Course Assistant" which is a web application to manage everything related course/education of a student. We won the competition by beating 20+ teams. Additionally got proposal from our instructor to open a startup with it.',
+      year: '2021',
+      link: 'https://github.com/ehsan18t/course-assistant',
+    },
+    {
+      title: 'CCNA: Introduction to Networks',
+      description:
+        'Completed CISCO Certified Network Associate: Introduction to Networks with 90% score.',
+      year: '2023',
+      link: 'https://www.credly.com/badges/1e4aea44-5d2e-4244-9295-1fdcd949ddbd/public_url',
+    },
+  ],
   skills: [
     'HTML',
     'CSS',
