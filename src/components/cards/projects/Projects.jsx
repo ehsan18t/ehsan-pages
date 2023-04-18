@@ -1,4 +1,5 @@
 import React from 'react'
+import './projects.css'
 
 const Projects = (Info) => {
   return (
@@ -6,9 +7,18 @@ const Projects = (Info) => {
       <h2>Projects</h2>
       {Info.projects.map((project) => (
         <div className="project">
-          <h3>{project.name}</h3>
-          <p>{project.description}</p>
-          <a href={project.link}>View on GitHub</a>
+          <div>
+            <h3>{project.name}</h3>
+            <p>{project.description}</p>
+          </div>
+          <div className="project-bottom">
+            <ul>
+              {project.techs.map((tech) => (
+                <li>{tech}</li>
+              ))}
+            </ul>
+            <a href={project.link}>View on GitHub</a>
+          </div>
         </div>
       ))}
     </div>

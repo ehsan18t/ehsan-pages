@@ -61,7 +61,7 @@ const Info = {
       link: 'https://github.com/ehsan18t/Win10-Ultimate-System-Tweaks',
       description:
         'A script/tool to make windows 10 better by adding useful features & tools, disabling useless services, turning off logging and sending data to third-party and removing garbage.',
-      tech: ['Batch', 'Powershell', 'VBS', 'Registry'],
+      techs: ['Batch', 'Powershell', 'VBS', 'Registry'],
     },
   ],
 }
