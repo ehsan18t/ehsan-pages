@@ -1,13 +1,10 @@
 import React from 'react'
 import './resume.css'
-import Linkedin from '../components/icons/Linkedin'
-import Email from '../components/icons/Email'
-import Github from '../components/icons/Github'
-import Telephone from '../components/icons/Telephone'
 import useDocumentTitle from '../assets/js/useDocumentTitle'
 import Info from '../data'
 import ProfilePicture from '../components/cards/ProfilePicture'
 import Profile from '../components/cards/Profile'
+import Contact from '../components/cards/Contact'
 
 const Resume = () => {
   useDocumentTitle(Info.profile.name + "'s Profile")
@@ -20,22 +17,7 @@ const Resume = () => {
       </div>
       <div className="bottom">
         <div className="left-side">
-          <div className="contact">
-            <h2>Contact</h2>
-            <a href={'mailto:' + Info.contact.email}>
-              <Email className="svg-icon" /> {Info.contact.email}
-            </a>
-            <a href={'tel:' + Info.contact.phone}>
-              <Telephone className="svg-icon" /> {Info.contact.phone}
-            </a>
-            <a href={'https://github.com/' + Info.contact.github}>
-              <Github className="svg-icon" /> @{Info.contact.github}
-            </a>
-            <a href={'https://www.linkedin.com/in/' + Info.contact.linkedin}>
-              <Linkedin className="svg-icon" /> @{Info.contact.linkedin}
-            </a>
-          </div>
-
+          <Contact contact={Info.contact} />
           <div className="education">
             <h2>Education</h2>
             {Info.education.map((edu) => (
