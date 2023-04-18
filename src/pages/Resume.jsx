@@ -5,6 +5,7 @@ import Info from '../data'
 import ProfilePicture from '../components/cards/ProfilePicture'
 import Profile from '../components/cards/Profile'
 import Contact from '../components/cards/Contact'
+import Education from '../components/cards/Education'
 
 const Resume = () => {
   useDocumentTitle(Info.profile.name + "'s Profile")
@@ -18,16 +19,7 @@ const Resume = () => {
       <div className="bottom">
         <div className="left-side">
           <Contact contact={Info.contact} />
-          <div className="education">
-            <h2>Education</h2>
-            {Info.education.map((edu) => (
-              <div className="institute">
-                <h3>{edu.institute}</h3>
-                <h4>{edu.degree}</h4>
-                <p>{edu.duration}</p>
-              </div>
-            ))}
-          </div>
+          <Education education={Info.education} />
         </div>
         <div className="right-side">
           <div className="skills">
