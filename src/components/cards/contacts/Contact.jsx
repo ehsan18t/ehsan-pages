@@ -1,8 +1,9 @@
 import React from 'react'
-import Linkedin from '../icons/Linkedin'
-import Email from '../icons/Email'
-import Github from '../icons/Github'
-import Telephone from '../icons/Telephone'
+import './contacts.css'
+import Linkedin from '../../icons/Linkedin'
+import Email from '../../icons/Email'
+import Github from '../../icons/Github'
+import Telephone from '../../icons/Telephone'
 
 const Contact = (Info) => {
   return (

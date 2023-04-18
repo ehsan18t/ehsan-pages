@@ -8,11 +8,6 @@
   @apply w-full;
 }
 
-.profile-picture-container {
-  @apply w-3/5 ring-8 ring-red-200 object-bottom object-cover flex flex-col items-center justify-end bg-red-400 rounded-b-full;
-  @apply md:w-2/5 lg:w-1/4 lg:h-64;
-}
-
 .top-header {
   @apply flex items-center flex-col w-full bg-white px-5;
   @apply md:flex-row md:items-start lg:flex-row lg:items-start gap-5;
@@ -40,54 +35,16 @@
   @apply text-gray-600;
 }
 
-.profile-picture {
-  @apply rounded-b-full;
-}
-
 .main,
 .side-bottom {
   @apply w-full p-4 flex flex-col gap-5;
-}
-
-.contact a {
-  @apply flex gap-2 font-semibold text-gray-600;
-}
-
-.svg-icon {
-  @apply mb-2 w-8 h-8;
-}
-
-.profile {
-  @apply w-full flex flex-col gap-3 md:p-7 lg:p-9 justify-center;
 }
 
 .hr {
   @apply border-b-2 border-gray-700 hidden lg:block;
 }
 
-.profile h1 {
-  font-family: 'Signika Negative', sans-serif;
-  @apply text-6xl font-bold flex justify-center md:justify-start lg:justify-start;
-}
-
-.profile h2 {
-  font-family: 'Signika Negative', sans-serif;
-  @apply text-3xl font-medium flex justify-center md:justify-start lg:justify-start;
-}
-
-.profile p {
-  @apply text-base text-justify font-semibold text-gray-700;
-}
-
 h2 {
   font-family: 'DynaPuff', cursive;
   @apply text-2xl font-bold text-red-500/80 uppercase;
-}
-
-.skills ul {
-  @apply flex flex-wrap justify-between flex-row text-justify;
-}
-
-.skills li {
-  @apply text-lg text-gray-700 list-disc mx-3;
 }
