@@ -1,5 +1,5 @@
 .experience {
-  @apply flex flex-col gap-2;
+  @apply flex flex-col gap-2 py-3;
 }
 
 .job {
