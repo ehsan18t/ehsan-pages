@@ -33,7 +33,7 @@ const Info = {
       link: 'https://www.credly.com/badges/1e4aea44-5d2e-4244-9295-1fdcd949ddbd/public_url',
     },
   ],
-  skills: ['HTML', 'CSS', 'JavaScript', 'TailwindCSS', 'React', 'Svelte', 'C/C++', 'Java', 'Python', 'Django', 'SQL', 'PHP', 'C#', 'Git', 'GitHub', 'Vim', 'Bash', 'Batch', 'Markdown', 'Figma', 'Jira', 'Scrum', 'Googling'],
+  skills: ['HTML', 'CSS', 'JavaScript', 'TailwindCSS', 'React', 'Svelte', 'C/C++', 'Java', 'Python', 'Django', 'SQL', 'PHP', 'C#', 'Git', 'GitHub', 'Github Action', 'Vim', 'Bash', 'Batch', 'Markdown', 'Figma', 'Jira', 'Scrum', 'Googling'],
   experience: [
     {
       company: 'MagicX Mod',
