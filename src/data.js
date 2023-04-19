@@ -85,7 +85,15 @@ const Info = {
       link: 'https://github.com/ehsan18t/CourseAssistant',
       description:
         'An allrounder helper for undergraduate student which solves real-life problems. It helps to manage course, assignments, exams, attendance, grades, etc. It also has a built-in timetable generator, attendance tracker, grade calculator, etc. Initially created with php, recently recreated with django.',
-      techs: ['HTML', 'CSS', 'TailwindCSS', 'JavaScript', 'PHP', 'Django'],
+      techs: [
+        'HTML',
+        'CSS',
+        'TailwindCSS',
+        'JavaScript',
+        'PHP',
+        'Django',
+        'SQL',
+      ],
     },
     {
       name: 'Win10 Ultimate System Tweaks',
