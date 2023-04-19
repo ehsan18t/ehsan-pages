@@ -17,7 +17,9 @@ const Projects = (Info) => {
                 <li>{tech}</li>
               ))}
             </ul>
-            <a href={project.link}>View on GitHub</a>
+            <a target="_blank" href={project.link}>
+              View on GitHub
+            </a>
           </div>
         </div>
       ))}

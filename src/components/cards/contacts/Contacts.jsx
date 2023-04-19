@@ -9,16 +9,16 @@ const Contact = (Info) => {
   return (
     <div className="contact">
       <h2>Contact</h2>
-      <a href={'mailto:' + Info.contact.email}>
+      <a target="_blank" href={'mailto:' + Info.contact.email}>
         <Email className="svg-icon" /> {Info.contact.email}
       </a>
-      <a href={'tel:' + Info.contact.phone}>
+      <a target="_blank" href={'tel:' + Info.contact.phone}>
         <Telephone className="svg-icon" /> {Info.contact.phone}
       </a>
-      <a href={'https://github.com/' + Info.contact.github}>
+      <a target="_blank" href={'https://github.com/' + Info.contact.github}>
         <Github className="svg-icon" /> @{Info.contact.github}
       </a>
-      <a href={'https://www.linkedin.com/in/' + Info.contact.linkedin}>
+      <a target="_blank" href={'https://www.linkedin.com/in/' + Info.contact.linkedin}>
         <Linkedin className="svg-icon" /> @{Info.contact.linkedin}
       </a>
     </div>

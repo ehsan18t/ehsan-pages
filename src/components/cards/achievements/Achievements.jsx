@@ -13,7 +13,9 @@ const Achievements = (Info) => {
           </div>
           <div className="achievement-bottom">
             <h4>{achievement.year}</h4>
-            <a href={achievement.link}>Link</a>
+            <a target="_blank" href={achievement.link}>
+              Link
+            </a>
           </div>
         </div>
       ))}
