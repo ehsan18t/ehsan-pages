@@ -74,16 +74,10 @@ const Info = {
       techs: ['Batch', 'Powershell', 'VBS', 'Registry'],
     },
     {
-      name: 'Currency Converter',
-      link: 'https://github.com/ehsan18t/Currency-Converter',
-      description: 'An advanced realtime Currency Converter with minimal size and command-line interface. Written in Pure C.',
-      techs: ['C', 'C++'],
-    },
-    {
-      name: 'Duplicate Line Finder',
-      link: 'https://github.com/ehsan18t/duplicate-line-finder',
-      description: 'A small java based tool to find duplicate lines in text files.',
-      techs: ['Java', 'JavaFX', 'Maven'],
+      name: 'See More',
+      link: 'https://github.com/ehsan18t',
+      description: 'See more projects on my github profile.',
+      techs: ['github'],
     },
   ],
 }
