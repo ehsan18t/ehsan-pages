@@ -2,8 +2,7 @@ const Info = {
   profile: {
     name: 'Ehsan Khan',
     title: 'Software Developer',
-    about:
-      'A passionate developer, competitive programer and quick learner. Typical introvert. Love to code and learn new things.',
+    about: 'A passionate developer, competitive programer and quick learner. Typical introvert. Love to code and learn new things.',
     picture: 'me.png',
   },
   contact: {
@@ -29,37 +28,12 @@ const Info = {
     },
     {
       title: 'CCNA: Introduction to Networks',
-      description:
-        'Completed CISCO Certified Network Associate: Introduction to Networks with 90% score.',
+      description: 'Completed CISCO Certified Network Associate: Introduction to Networks with 90% score.',
       year: '2023',
       link: 'https://www.credly.com/badges/1e4aea44-5d2e-4244-9295-1fdcd949ddbd/public_url',
     },
   ],
-  skills: [
-    'HTML',
-    'CSS',
-    'JavaScript',
-    'TailwindCSS',
-    'React',
-    'Svelte',
-    'C/C++',
-    'Java',
-    'Python',
-    'Django',
-    'SQL',
-    'PHP',
-    'C#',
-    'Git',
-    'GitHub',
-    'Vim',
-    'Bash',
-    'Batch',
-    'Markdown',
-    'Figma',
-    'Jira',
-    'Scrum',
-    'Googling',
-  ],
+  skills: ['HTML', 'CSS', 'JavaScript', 'TailwindCSS', 'React', 'Svelte', 'C/C++', 'Java', 'Python', 'Django', 'SQL', 'PHP', 'C#', 'Git', 'GitHub', 'Vim', 'Bash', 'Batch', 'Markdown', 'Figma', 'Jira', 'Scrum', 'Googling'],
   experience: [
     {
       company: 'MagicX Mod',
@@ -85,42 +59,30 @@ const Info = {
       link: 'https://github.com/ehsan18t/CourseAssistant',
       description:
         'An allrounder helper for undergraduate student which solves real-life problems. It helps to manage course, assignments, exams, attendance, grades, etc. It also has a built-in timetable generator, attendance tracker, grade calculator, etc. Initially created with php, recently recreated with django.',
-      techs: [
-        'HTML',
-        'CSS',
-        'TailwindCSS',
-        'JavaScript',
-        'PHP',
-        'Django',
-        'SQL',
-      ],
+      techs: ['HTML', 'CSS', 'TailwindCSS', 'JavaScript', 'PHP', 'Django', 'SQL'],
     },
     {
       name: 'Win10 Ultimate System Tweaks',
       link: 'https://github.com/ehsan18t/Win10-Ultimate-System-Tweaks',
-      description:
-        'A script/tool to make windows 10 better by adding useful features & tools, disabling useless services, turning off logging and sending data to third-party and removing garbage.',
+      description: 'A script/tool to make windows 10 better by adding useful features & tools, disabling useless services, turning off logging and sending data to third-party and removing garbage.',
       techs: ['Batch', 'Powershell', 'VBS', 'Registry'],
     },
     {
       name: 'MagicX Toolbox',
       link: 'https://github.com/ehsan18t/MagicX-Toolbox',
-      description:
-        'A script based ultimate tool to control almost everything in windows.',
+      description: 'A script based ultimate tool to control almost everything in windows.',
       techs: ['Batch', 'Powershell', 'VBS', 'Registry'],
     },
     {
       name: 'Currency Converter',
       link: 'https://github.com/ehsan18t/Currency-Converter',
-      description:
-        'An advanced realtime Currency Converter with minimal size and command-line interface. Written in Pure C.',
+      description: 'An advanced realtime Currency Converter with minimal size and command-line interface. Written in Pure C.',
       techs: ['C', 'C++'],
     },
     {
       name: 'Duplicate Line Finder',
       link: 'https://github.com/ehsan18t/duplicate-line-finder',
-      description:
-        'A small java based tool to find duplicate lines in text files.',
+      description: 'A small java based tool to find duplicate lines in text files.',
       techs: ['Java', 'JavaFX', 'Maven'],
     },
   ],
