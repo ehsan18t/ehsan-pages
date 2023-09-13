@@ -19,8 +19,8 @@ const StarsComp = (props: any) => {
       <Points ref={ref} positions={sphere} stride={3} frustumCulled {...props}>
         <PointMaterial
           transparent
-          color="#000000"
-          size={0.002}
+          color="hsl(var(--primary))"
+          size={0.004}
           sizeAttenuation={true}
           depthWrite={false}
         />

@@ -14,6 +14,12 @@ dependencies:
   '@react-three/fiber':
     specifier: ^8.14.1
     version: 8.14.1(react-dom@18.2.0)(react@18.2.0)(three@0.156.1)
+  '@types/three':
+    specifier: ^0.156.0
+    version: 0.156.0
+  TagCloud:
+    specifier: ^2.3.2
+    version: 2.3.2
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -38,9 +44,6 @@ dependencies:
   react-icons:
     specifier: ^4.11.0
     version: 4.11.0(react@18.2.0)
-  react-tilt:
-    specifier: ^1.0.2
-    version: 1.0.2(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
   tailwind-merge:
     specifier: ^1.14.0
     version: 1.14.0
@@ -736,6 +739,7 @@ packages:
     resolution: {integrity: sha512-GRaAEriuT4zp9N4p1i8BDBYmEyfo+xQ3yHjJU4eiK5NDa1RmUZG+unZABUTK4/Ox/M+GaHwb6Ow8rUITrtjszA==}
     dependencies:
       '@types/react': 18.2.21
+    dev: true
 
   /@types/react-reconciler@0.26.7:
     resolution: {integrity: sha512-mBDYl8x+oyPX/VBb3E638N0B7xG+SPk/EAMcVPeexqus/5aTpTphQi0curhhshOqRrc9t6OPoJfEUkbymse/lQ==}
@@ -934,6 +938,10 @@ packages:
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: true
+
+  /TagCloud@2.3.2:
+    resolution: {integrity: sha512-WMnfCyRCjAejqTBHR3EVcA02nCOhoD1HEEU+KHS7m9Oj/t4IcOKTjklyOadTibeGRA4poK/rxwuO4g61qZvObA==}
+    dev: false
 
   /acorn-jsx@5.3.2(acorn@8.10.0):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -1992,20 +2000,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.21.0
-    dev: false
-
-  /react-tilt@1.0.2(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-21tUUsmuw5id/6NDtKqwYTG4taVnw+BoUwIG6YsgPC9GI6cx4BnBuSqgriQYAYcv3bdGNzecaBL+rvQRAm28bg==}
-    peerDependencies:
-      '@types/react': ^18.0.29
-      '@types/react-dom': ^18.0.11
-      react: ^18.2.0
-      react-dom: ^18.2.0
-    dependencies:
-      '@types/react': 18.2.21
-      '@types/react-dom': 18.2.7
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /react-use-measure@2.1.1(react-dom@18.2.0)(react@18.2.0):
