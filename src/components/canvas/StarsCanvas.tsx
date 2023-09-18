@@ -20,7 +20,7 @@ const StarsComp = (props: any) => {
         <PointMaterial
           transparent
           color="hsl(var(--primary))"
-          size={0.004}
+          size={0.001}
           sizeAttenuation={true}
           depthWrite={false}
         />
