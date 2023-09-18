@@ -32,9 +32,6 @@ dependencies:
   lucide-react:
     specifier: ^0.276.0
     version: 0.276.0(react@18.2.0)
-  maath:
-    specifier: ^0.7.0
-    version: 0.7.0(@types/three@0.156.0)(three@0.156.1)
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -1690,16 +1687,6 @@ packages:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
-    dev: false
-
-  /maath@0.7.0(@types/three@0.156.0)(three@0.156.1):
-    resolution: {integrity: sha512-JQ1JZrQLDgJ59snCk2AcSb/jdGwNgGQXlLcfZChN8lmpMR7g3bpMM3ugcqGfU1ROwjVvX5CvcVJHc8TkxljG8Q==}
-    peerDependencies:
-      '@types/three': '>=0.144.0'
-      three: '>=0.144.0'
-    dependencies:
-      '@types/three': 0.156.0
-      three: 0.156.1
     dev: false
 
   /maath@0.9.0(@types/three@0.156.0)(three@0.156.1):

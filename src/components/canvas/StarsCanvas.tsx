@@ -1,15 +1,24 @@
 import { useState, useRef, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Preload } from "@react-three/drei";
-import { inSphere } from "maath/random";
+
+const generateRandomStarPositions = (count: number) => {
+  const positions = [];
+  for (let i = 0; i < count; i++) {
+    const x = (Math.random() - 0.5) * 4;
+    const y = (Math.random() - 0.5) * 4;
+    const z = (Math.random() - 0.5) * 4;
+    positions.push(x, y, z);
+  }
+  return new Float32Array(positions);
+};
 
 const StarsComp = (props: any) => {
-  const ref = useRef<any>(null);
-  const [sphere] = useState(() =>
-    inSphere(new Float32Array(5000), { radius: 1.2 })
-  );
+  const ref = useRef<any>();
+  const [sphere] = useState(() => generateRandomStarPositions(5000));
 
   useFrame((state, delta) => {
+    if (!ref.current) return;
     ref.current.rotation.x -= delta / 10.0;
     ref.current.rotation.y -= delta / 15.0;
   });
