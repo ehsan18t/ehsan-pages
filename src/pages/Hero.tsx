@@ -10,10 +10,11 @@ const Hero = () => {
     "w-10 h-10 p-2 ring-2 rounded-full ring-primary cursor-pointer hover:ring-4 hover:text-primary transition duration-300 ease-in-out";
   return (
     <div className="w-full h-full">
-      <div className="flex justify-between items-center px-10">
-        <div className="flex flex-col justify-between">
+      <div className="h-full flex justify-between items-center px-10">
+        <div className="h-full flex flex-col justify-between">
           <Introduction />
-          <div className="px-24 flex gap-4 justify-center md:justify-start">
+          <div className="flex-grow"></div>
+          <div className="p-24 flex gap-4 justify-center md:justify-start">
             <AiFillGithub className={socialIconClass} />
             <BiLogoTelegram className={socialIconClass} />
             <BsDiscord className={socialIconClass} />
