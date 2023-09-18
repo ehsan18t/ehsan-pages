@@ -12,7 +12,7 @@ const Hero = () => {
           <div className="flex-grow"></div>
           <Social />
         </div>
-        <TextSphere />
+        <TextSphere className="hidden md:block" />
       </div>
       <StarsCanvas />
     </div>
