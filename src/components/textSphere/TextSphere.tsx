@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import TagCloud from "TagCloud";
+import TagCloud, { TagCloudOptions } from "TagCloud";
 import "./TextSphere.css";
 
 const TextSphere = ({ className }: { className?: string }) => {
@@ -269,7 +269,7 @@ const TextSphere = ({ className }: { className?: string }) => {
         "getattr",
       ];
 
-      const options = {
+      const options: TagCloudOptions = {
         radius: 300,
         maxSpeed: "normal",
         initSpeed: "slow",
