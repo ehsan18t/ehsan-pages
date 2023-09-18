@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 import TagCloud, { TagCloudOptions } from "TagCloud";
 import "./TextSphere.css";
