@@ -4,7 +4,7 @@ import { Points, PointMaterial, Preload } from "@react-three/drei";
 import { inSphere } from "maath/random";
 
 const StarsComp = (props: any) => {
-  const ref = useRef();
+  const ref = useRef<any>(null);
   const [sphere] = useState(() =>
     inSphere(new Float32Array(5000), { radius: 1.2 })
   );
