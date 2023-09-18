@@ -1,4 +1,4 @@
-import Me from "@/components/Me";
+import Me from "@/components/Introduction";
 import { StarsCanvas } from "@/components/canvas/StarsCanvas";
 import TextSphere from "@/components/textSphere/TextSphere";
 import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
