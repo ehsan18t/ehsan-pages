@@ -1,11 +1,11 @@
-import Me from "@/components/Introduction";
+import Introduction from "@/components/Introduction";
 import { StarsCanvas } from "@/components/canvas/StarsCanvas";
 import TextSphere from "@/components/textSphere/TextSphere";
 import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
 import { BiLogoTelegram } from "react-icons/bi";
 import { BsDiscord } from "react-icons/bs";
 
-const App = () => {
+const Hero = () => {
   const socialIconClass =
     "w-10 h-10 p-2 ring-2 rounded-full ring-primary cursor-pointer hover:ring-4 hover:text-primary transition duration-300 ease-in-out";
   return (
@@ -25,4 +25,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Hero;

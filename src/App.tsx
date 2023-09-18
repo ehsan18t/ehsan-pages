@@ -1,9 +1,9 @@
-import Introductions from "@/pages/Hero";
+import Hero from "@/pages/Hero";
 
 const App = () => {
   return (
     <div className="w-screen h-screen">
-      <Introductions />
+      <Hero />
     </div>
   );
 };

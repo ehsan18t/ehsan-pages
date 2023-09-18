@@ -1,6 +1,6 @@
 import React from "react";
 
-const Me = () => {
+const Introduction = () => {
   return (
     <div className="w-full h-full flex items-center justify-start md:pl-16">
       <div>
@@ -15,4 +15,4 @@ const Me = () => {
   );
 };
 
-export default Me;
+export default Introduction;
