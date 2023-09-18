@@ -1,8 +1,8 @@
-import React from "react";
-
-const Introduction = () => {
+const Introduction = ({ className }: { className?: string }) => {
   return (
-    <div className="w-full h-full flex items-center justify-start md:pl-16">
+    <div
+      className={`w-full h-full flex items-center justify-start md:pl-16 ${className}`}
+    >
       <div>
         <div className="text-3xl font-semibold">Hi, I am</div>
         <div className="text-6xl font-bold text-primary">Ehsan Khan</div>
