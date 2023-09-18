@@ -11,7 +11,7 @@ const Social = () => {
   };
 
   return (
-    <div className="p-24 flex gap-4 justify-center md:justify-start">
+    <div className="p-4 md:p-24 flex gap-4 justify-center md:justify-start">
       <AiFillGithub
         onClick={() => handleSocialClick("https://github.com/ehsan18t")}
         className={socialIconClass}

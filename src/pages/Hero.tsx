@@ -6,7 +6,7 @@ import Social from "@/components/Social";
 const Hero = () => {
   return (
     <div className="w-full h-full">
-      <div className="h-full flex justify-between items-center px-10">
+      <div className="h-full flex justify-between items-center px-4 md:px-10">
         <div className="h-full flex flex-col justify-between">
           <Introduction />
           <div className="flex-grow"></div>
