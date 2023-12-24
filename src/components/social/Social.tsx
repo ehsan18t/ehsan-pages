@@ -1,5 +1,5 @@
-import { cn } from '@/utils/cn';
 import React from 'react';
+import { cn } from '@/utils/cn';
 
 type SocialProps = {
   Icon: any;
@@ -11,7 +11,7 @@ type SocialProps = {
 
 const Social = ({ Icon, link, text, className, others }: SocialProps) => {
   const cls = [
-    'w-10 h-10 text-white p-2 rounded-full ring-2 ring-cyan-700',
+    'w-10 h-10 bg-transparent text-white rounded-full p-2 ring-2 ring-cyan-700',
     'hover:text-cyan-200 hover:ring-4',
     'transition duration-300 ease-in-out',
   ];
