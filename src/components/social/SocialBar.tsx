@@ -10,9 +10,9 @@ const SocialBar = () => {
     <div className="flex gap-3">
       <Social Icon={AiFillGithub} link="https://github.com/ehsan18t" />
       <Social Icon={AiFillLinkedin} link="https://linkedin.com/in/ehsan18t" />
-      <Social Icon={BiLogoGmail} link="https://t.me/ehsan18t" />
-      <Social Icon={BiLogoTelegram} link="https://discord.com/users/xcarl3t" />
-      <Social Icon={BsDiscord} link="mailto:ehsan18t@gmail.com" />
+      <Social Icon={BiLogoGmail} link="mailto:ehsan18t@gmail.com" />
+      <Social Icon={BiLogoTelegram} link="https://t.me/ehsan18t" />
+      <Social Icon={BsDiscord} link="https://discord.com/users/xcarl3t" />
     </div>
   );
 };
