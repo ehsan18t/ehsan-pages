@@ -6,6 +6,9 @@ const nextConfig = {
         name: 'color-scheme',
         content: 'dark',
       },
+      {
+        name: 'darkreader-lock',
+      },
     ],
   },
 };
