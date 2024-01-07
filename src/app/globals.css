@@ -9,3 +9,7 @@ body,
   width: 100%;
   @apply min-h-[100dvh] min-w-full;
 }
+
+section {
+  @apply h-[100dvh] w-full;
+}
