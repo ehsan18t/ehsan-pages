@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Ehsan's Storybook",
   description:
     'A passionate developer, competitive programmer and quick learner. Love to code and learn new things.',
-  other: { name: 'darkreader-lock' },
+  other: { 'darkreader-lock': 'dark', 'color-scheme': 'dark' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
