@@ -6,8 +6,8 @@ const Introduction = () => {
       <div className="w-full p-1 text-xl text-justify pt-5">
         A passionate software developer, competitive programer and quick learner. Love to
         code and learn new things. I mostly work with Django, React, NextJS, TailWindCSS,
-        JavaScript, TypeScript, MySQL Git and Vercel. Additionally, I have experience with
-        C++, C, Java, PostgreSQL, MongoDB, Docker, Linux, and many more. Currently, I am
+        JavaScript, TypeScript, MySQL and Git. Additionally, I have experience with C++,
+        C, Java, PostgreSQL, MongoDB, Docker, Linux, and many more. Currently, I am
         actively working on a NLP based project with Django, NextJS, TypeScript, and
         MySQL.
       </div>
