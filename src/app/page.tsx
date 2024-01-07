@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Hero, Skills, Experiences } from '@/components';
-import ReactPageScroller from 'react-page-scroller';
+import ReactPageScroller from '@campusrush/react-page-scroller';
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
