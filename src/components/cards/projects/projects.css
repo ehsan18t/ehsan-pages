@@ -3,7 +3,7 @@
 }
 
 .project {
-  @apply flex flex-col gap-3 bg-slate-200 ring-1 ring-slate-500 p-3 rounded-lg shadow-md;
+  @apply flex flex-col gap-3 bg-slate-50 ring-1 ring-slate-200 p-3 rounded-lg shadow;
 }
 
 .project h3 {
@@ -23,9 +23,9 @@
 }
 
 .project-bottom li {
-  @apply text-sm text-gray-600 bg-emerald-200 ring-1 ring-emerald-400 p-1 rounded-md;
+  @apply text-sm text-gray-600 bg-emerald-100 ring-1 ring-emerald-300 p-1 rounded-md;
 }
 
 .project-bottom a {
-  @apply bg-blue-200 ring-1 ring-blue-600 p-1 rounded-md;
+  @apply bg-blue-100 ring-1 ring-blue-300 p-1 rounded-md;
 }
