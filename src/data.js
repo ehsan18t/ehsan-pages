@@ -7,7 +7,7 @@ const Info = {
   },
   contact: {
     email: 'ehsan18t@gmail.com',
-    phone: '+8801641723411',
+    // phone: '+8801641723411',
     github: 'ehsan18t',
     linkedin: 'ehsan18t',
   },

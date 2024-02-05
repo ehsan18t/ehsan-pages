@@ -3,7 +3,7 @@
 }
 
 .job {
-  @apply bg-blue-200 ring-1 ring-blue-500 p-3 rounded-lg shadow-md;
+  @apply bg-slate-50 ring-1 ring-blue-100 p-3 rounded-lg shadow;
 }
 
 .job h3 {
