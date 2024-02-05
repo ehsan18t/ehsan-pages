@@ -12,9 +12,12 @@ const Contact = (Info) => {
       <a target="_blank" href={'mailto:' + Info.contact.email}>
         <Email className="svg-icon" /> {Info.contact.email}
       </a>
-      <a target="_blank" href={'tel:' + Info.contact.phone}>
-        <Telephone className="svg-icon" /> {Info.contact.phone}
       </a>
+      {Info.contact.phone && (
+        <a target="_blank" href={'tel:' + Info.contact.phone}>
+          <Telephone className="svg-icon" /> {Info.contact.phone}
+        </a>
+      )}
       <a target="_blank" href={'https://github.com/' + Info.contact.github}>
         <Github className="svg-icon" /> @{Info.contact.github}
       </a>
