@@ -1,17 +1,17 @@
 import React from 'react'
-import './contacts.css'
-import Linkedin from '../../icons/Linkedin'
-import Email from '../../icons/Email'
-import Github from '../../icons/Github'
 import Telephone from '../../icons/Telephone'
+import './contacts.css'
+
+import { CiLinkedin, CiMail } from 'react-icons/ci'
+import { VscGithub } from 'react-icons/vsc'
 
 const Contact = (Info) => {
   return (
     <div className="contact">
       <h2>Contact</h2>
       <a target="_blank" href={'mailto:' + Info.contact.email}>
-        <Email className="svg-icon" /> {Info.contact.email}
-      </a>
+        <CiMail className="svg-icon" />
+        {Info.contact.email}
       </a>
       {Info.contact.phone && (
         <a target="_blank" href={'tel:' + Info.contact.phone}>
@@ -19,10 +19,10 @@ const Contact = (Info) => {
         </a>
       )}
       <a target="_blank" href={'https://github.com/' + Info.contact.github}>
-        <Github className="svg-icon" /> @{Info.contact.github}
+        <VscGithub className="svg-icon" /> @{Info.contact.github}
       </a>
       <a target="_blank" href={'https://www.linkedin.com/in/' + Info.contact.linkedin}>
-        <Linkedin className="svg-icon" /> @{Info.contact.linkedin}
+        <CiLinkedin className="svg-icon" /> @{Info.contact.linkedin}
       </a>
     </div>
   )
