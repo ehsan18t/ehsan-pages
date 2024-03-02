@@ -15,9 +15,9 @@ const Introduction = () => {
       </div>
       <div className="w-full p-1 sm:text-xl text-justify pt-5">
         <MotionP
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
         >
           A passionate software developer, competitive programer and quick learner. Love
           to code and learn new things. I mostly work with Django, React, NextJS,
