@@ -14,6 +14,9 @@ const config: Config = {
         background: "rgba(var(--background))",
         foreground: "rgba(var(--foreground))",
       },
+      fontFamily: {
+        JetBrainsMono: "var(--font-jettbrainsMono)",
+      },
     },
   },
   plugins: [],

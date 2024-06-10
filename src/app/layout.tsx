@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const jettbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
+  variable: "--font-jettbrainsMono",
+});
 
 export const metadata: Metadata = {
   title: "Ehsan's Storybook",
@@ -18,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} main-container`}>{children}</body>
+      <body className={`${jettbrainsMono.variable} main-container`}>
+        {children}
+      </body>
     </html>
   );
 }

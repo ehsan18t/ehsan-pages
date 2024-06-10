@@ -6,14 +6,14 @@
   :root {
     /* https://colorhunt.co/palette/00676940a5789dde8be6ff94 */
     /* https://colorhunt.co/palette/d8efd395d2b355ad9bf1f8e8 */
-    --background: 17, 24, 39; /* #111827 */
+    --background: 17, 24, 39; /* #111827 = bg-gray-900 */
     --foreground: 241, 248, 232; /* #F1F8E8 */
     --primary: 64, 165, 120; /* #40A578 */
     --secondary: 230, 255, 148; /* #E6FF94 */
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground font-JetBrainsMono antialiased;
 
     margin: 0;
     padding: 0;
