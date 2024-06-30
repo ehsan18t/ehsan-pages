@@ -1,3 +1,4 @@
+import Info from "@/data";
 import { MotionH1, MotionP } from "@/motion";
 
 const Introduction = () => {
@@ -11,7 +12,7 @@ const Introduction = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            Ehsan Khan
+            {Info.name}
           </MotionH1>
         </div>
         <div className="p-1 text-justify pt-5">
@@ -20,13 +21,7 @@ const Introduction = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            A passionate software developer, competitive programer and quick
-            learner. Love to code and learn new things. I mostly work with
-            Django, React, NextJS, TailWindCSS, JavaScript, TypeScript, MySQL
-            and Git. Additionally, I have experience with C++, C, Java,
-            PostgreSQL, MongoDB, Docker, Linux, and many more. Currently, I am
-            actively working on a NLP based project with Django, NextJS,
-            TypeScript, and MySQL.
+            {Info.description}
           </MotionP>
         </div>
       </div>

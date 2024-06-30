@@ -1,12 +1,13 @@
-import { AiFillGithub, AiFillLinkedin } from 'react-icons/ai';
-import { BiLogoGmail, BiLogoTelegram } from 'react-icons/bi';
-import { BsDiscord } from 'react-icons/bs';
+import Info from "@/data";
+import { MotionDiv } from "@/motion";
+import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
+import { BiLogoGmail, BiLogoTelegram } from "react-icons/bi";
+import { BsDiscord } from "react-icons/bs";
 
-import { MotionDiv } from '@/motion';
-
-import Social from './Social';
+import Social from "./Social";
 
 const SocialBar = () => {
+  const socials = Info.socials;
   return (
     <MotionDiv
       className="flex gap-3"
@@ -14,11 +15,20 @@ const SocialBar = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Social Icon={AiFillGithub} link="https://github.com/ehsan18t" />
-      <Social Icon={AiFillLinkedin} link="https://linkedin.com/in/ehsan18t" />
-      <Social Icon={BiLogoGmail} link="mailto:ehsan18t@gmail.com" />
-      <Social Icon={BiLogoTelegram} link="https://t.me/ehsan18t" />
-      <Social Icon={BsDiscord} link="https://discord.com/users/xcarl3t" />
+      <Social
+        Icon={AiFillGithub}
+        link={`https://github.com/${socials.github}`}
+      />
+      <Social
+        Icon={AiFillLinkedin}
+        link={`https://linkedin.com/in/${socials.linkedin}`}
+      />
+      <Social Icon={BiLogoGmail} link={`mailto:${socials.gmail}`} />
+      <Social Icon={BiLogoTelegram} link={`https://t.me/${socials.telegram}`} />
+      <Social
+        Icon={BsDiscord}
+        link={`https://discord.com/users/${socials.discord}`}
+      />
     </MotionDiv>
   );
 };
