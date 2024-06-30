@@ -9,6 +9,7 @@ const info = {
     telegram: "ehsan18t",
     discord: "xcarl3t",
   },
+  image: "/me.png",
   resume:
     "https://drive.google.com/file/d/1bQqz9Zj6X1zq6iQnQ6bWQqJ5P9D4Jw1t/view?usp=sharing",
 };

@@ -1,5 +1,5 @@
-'use client';
-import { motion } from 'framer-motion';
+"use client";
+import { motion } from "framer-motion";
 
 export const MotionDiv = motion.div;
 export const MotionSpan = motion.span;
@@ -14,3 +14,5 @@ export const MotionA = motion.a;
 export const MotionLi = motion.li;
 export const MotionOl = motion.ol;
 export const MotionUl = motion.ul;
+export const MotionSVG = motion.svg;
+export const MotionCircle = motion.circle;
