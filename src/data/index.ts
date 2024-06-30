@@ -1,7 +1,7 @@
 const info = {
   name: "Ehsan Khan",
   title: "Software Developer, Competitive Programmer",
-  description: `A passionate software developer, competitive programer and quick learner. Love to code and learn new things. I mostly work with Django, React, NextJS, TailWindCSS, JavaScript, TypeScript, MySQL and Git. Additionally, I have experience with C++, C, Java, PostgreSQL, MongoDB, Docker, Linux, and many more. Currently, I am actively working on a NLP based project with Django, NextJS, TypeScript, and MySQL.`,
+  description: `A passionate software developer, competitive programer and quick learner. Love to code and learn new things. I excel at Django, React, NextJS, TailWindCSS, TypeScript, MySQL.`,
   socials: {
     github: "ehsan18t",
     linkedin: "ehsan18t",
