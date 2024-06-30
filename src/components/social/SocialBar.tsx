@@ -10,8 +10,10 @@ import Social from "./Social";
 const SocialBar = () => {
   const socials = Info.socials;
   return (
-    <div className="flex flex-col gap-6 items-center justify-center">
-      <Button className="w-56">Download CV</Button>
+    <div className="flex flex-col gap-8 items-center justify-center">
+      <Button className="w-56 bg-background text-secondary rounded-full ring-2 ring-primary hover:bg-primary hover:text-foreground">
+        Download CV
+      </Button>
       <MotionDiv
         className="flex gap-3 justify-center"
         initial={{ opacity: 0, y: 40 }}
