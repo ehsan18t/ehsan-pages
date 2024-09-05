@@ -11,7 +11,7 @@ const info = {
   },
   image: "/me.png",
   resume:
-    "https://drive.google.com/file/d/1bQqz9Zj6X1zq6iQnQ6bWQqJ5P9D4Jw1t/view?usp=sharing",
+    "https://www.overleaf.com/read/jfjsjggqjwnf",
 };
 
 export default info;
