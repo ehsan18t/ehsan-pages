@@ -1,0 +1,63 @@
+---
+type ButtonProps = {
+  onClick?: (event: MouseEvent) => void;
+  class?: string;
+  others?: Record<string, any>;
+};
+
+const { onClick, class: className, ...others } = Astro.props as ButtonProps;
+---
+
+<button
+  id="button"
+  class={`transition overflow-hidden duration-300 ease-in-out text-foreground bg-secondary px-4 py-2 rounded-md shadow-md cursor-pointer ${className}`}
+  {...others}
+>
+  <slot />
+</button>
+
+<script define:vars={{ onClick }} is:inline>
+  // Wait until the DOM is fully loaded to add the event listeners
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("button");
+
+    if (!btn) {
+      return;
+    }
+
+    const createRipple = (event) => {
+      const button = event.currentTarget;
+
+      // Create a span element for the ripple effect
+      const circle = document.createElement("span");
+      circle.classList.add("ripple");
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
+
+      // Set ripple size and position based on the click coordinates
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+      circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+
+      // Remove existing ripple effect if present
+      const ripple = button.getElementsByClassName("ripple")[0];
+      if (ripple) {
+        ripple.remove();
+      }
+
+      // Append the new ripple effect to the button
+      button.appendChild(circle);
+    };
+
+    // This function handles button click event and triggers ripple creation
+    const handleClick = (event) => {
+      createRipple(event);
+
+      if (typeof onClick === "function") {
+        onClick(event);
+      }
+    };
+
+      btn.addEventListener("click", handleClick);
+  });
+</script>

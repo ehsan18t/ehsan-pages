@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* https://colorhunt.co/palette/00676940a5789dde8be6ff94 */
+    /* https://colorhunt.co/palette/d8efd395d2b355ad9bf1f8e8 */
+    --background: 2, 21, 38; /* #021526 */
+    --foreground: 225, 230, 237; /* #E0E6ED */
+    --primary: 15, 163, 177; /* #c1c161 */
+    --secondary: 255, 111, 97; /* #E6FF94 */
+    /* background: conic-gradient(from 0deg, #ff6f61, #de6161, #c1c161, #6a82fb);
+    background: conic-gradient(from 0deg, #00c6ff, #0072ff, #00c6ff);
+    background: conic-gradient(from 0deg, #f3e9f8, #d0e1f9, #c3e3d7, #e3d7e3);
+    background: conic-gradient(from 0deg, #3a1c71, #d76d77, #ffaf7b);
+    background: conic-gradient(from 0deg, #ff7e5f, #feb47b, #ff7e5f);
+
+    Foreground (Text) Color:
+    #E0E6ED #AAB7C4 
+ */
+    --a: #E0E6ED;
+    --b: #AAB7C4;
+    
+    --c: #0FA3B1;
+    --d: #3A86FF;
+    
+    --e: #FF6F61;
+    --f: #3DDC97;
+  }
+
+  body {
+    @apply bg-background text-foreground font-JetBrainsMono antialiased;
+
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+}
+
+.main-container {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+}
+
+/* Classes for Button */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 600ms linear;
+  background-color: rgba(var(--background), 0.5);
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
