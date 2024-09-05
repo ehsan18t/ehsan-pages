@@ -16,7 +16,7 @@ export default {
         },
       },
       fontFamily: {
-        JetBrainsMono: "var(--font-jettbrainsMono)",
+        JetBrainsMono: "var(--font-JetBrainsMono)",
       },
     },
   },
