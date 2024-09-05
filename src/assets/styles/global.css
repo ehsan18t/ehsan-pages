@@ -42,7 +42,7 @@
   body {
     @apply bg-background text-foreground;
 
-    font-family: var(--font-JetBrainsMono);
+    font-family: var(--font-main);
     line-height: 1.6; /* Improve readability */
     text-rendering: optimizeLegibility; /* Better rendering on most browsers */
     -webkit-font-smoothing: antialiased; /* Smoother font rendering */
