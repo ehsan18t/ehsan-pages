@@ -1,0 +1,37 @@
+---
+import info from '@/data';
+import { Icon } from 'astro-icon/components';
+import Button from "./Button.astro";
+const iconClass = 'p-1 hover:ring-4 hover:text-white rounded-full ring-2 transition ease-in-out duration-200';
+const { socials } = info;
+
+type SocialKeys = keyof typeof socials;
+
+const size = 40;
+const colors: Record<SocialKeys, string> = {
+    gmail: "text-rose-400 ring-rose-400 hover:ring-rose-400 hover:bg-rose-600",
+    telegram: "text-sky-400 ring-sky-400 hover:ring-sky-400 hover:bg-sky-600",
+    discord: "text-indigo-400 ring-indigo-400 hover:ring-indigo-400 hover:bg-indigo-600",
+    linkedin: "text-blue-400 ring-blue-400 hover:ring-blue-400 hover:bg-blue-600",
+    github: "text-gray-400 ring-gray-400 hover:ring-gray-400 hover:bg-gray-700",
+};
+---
+
+<div class="w-full flex flex-col gap-6 justify-center items-center">
+    <Button class="font-bold hover:bg-primary/80">
+        Download CV
+    </Button>
+    <div class="flex gap-3">
+        {
+            Object.keys(socials).map((key) => {
+                const url:string = socials[key as SocialKeys];
+                return (
+                    <a target="_blank" href={url}>
+                        <Icon name={`socials/${key}`} size={size} title={key.toLocaleUpperCase()}
+                              class={`${iconClass} ${colors[key as SocialKeys]}`} />
+                    </a>
+                );
+            })
+        }
+    </div>
+</div>
