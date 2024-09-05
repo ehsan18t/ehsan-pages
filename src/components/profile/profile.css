@@ -1,0 +1,35 @@
+.profile-picture-container {
+  @apply flex justify-center items-center p-5;
+}
+
+.border-wrapper {
+  @apply relative flex justify-center items-center;
+  @apply h-40 w-40 md:h-52 md:w-52 lg:h-64 lg:w-64;
+}
+
+.gradient-border {
+  @apply absolute top-0 left-0 w-full h-full rounded-full p-5 z-10;
+  background: conic-gradient(
+    from 0deg,
+    #1b1b1b,
+    #3a1c71,
+    #d76d77,
+    #ff6f61,
+    #ffaf7b
+  );
+  animation: rotate-gradient 5s linear infinite;
+}
+
+.profile-picture {
+  @apply rounded-full z-20 object-cover bg-background;
+  @apply h-[155px] w-[155px] md:h-[203px] md:w-[203px] lg:h-[250px] lg:w-[250px];
+}
+
+@keyframes rotate-gradient {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

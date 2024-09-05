@@ -1,0 +1,14 @@
+---
+import image from '@/assets/images/me.png';
+import { Image } from 'astro:assets';
+import './profile.css';
+
+const altText = "Ehsan Khan";
+---
+
+<div class="profile-picture-container">
+    <div class="border-wrapper">
+      <div class="gradient-border"></div>
+      <Image src={image} alt={altText} class="profile-picture" />
+    </div>
+  </div>
