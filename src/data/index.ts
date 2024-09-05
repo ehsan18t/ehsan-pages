@@ -1,6 +1,6 @@
 const info = {
   name: "Ehsan Khan",
-  title: "Software Developer, Competitive Programmer",
+  title: "Software Developer",
   description: `A passionate software developer, competitive programmer and quick learner. Love to code and learn new things. I excel at Django, React, NextJS, TailWindCSS, TypeScript, MySQL.`,
   socials: {
     github: "https://github.com/ehsan18t",

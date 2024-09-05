@@ -11,7 +11,7 @@
   @apply absolute top-0 left-0 w-full h-full rounded-full p-5 z-10;
   background: conic-gradient(
     from 0deg,
-    #1b1b1b,
+    rgb(var(--background)),
     #3a1c71,
     #d76d77,
     #ff6f61,
