@@ -7,8 +7,10 @@
     /* https://colorhunt.co/palette/00676940a5789dde8be6ff94 */
     /* https://colorhunt.co/palette/d8efd395d2b355ad9bf1f8e8 */
     --background: 2, 21, 38; /* #021526 */
-    --foreground: 225, 230, 237; /* #E0E6ED */
-    --primary: 15, 163, 177; /* #c1c161 */
+    --foreground: 224, 230, 237; /* #E0E6ED */
+    --foreground-muted: 170, 183, 196; /* #AAB7C4 */
+    --primary: 29, 78, 216; /* #c1c161 */
+    --primary-muted: 40, 100, 232;
     --secondary: 255, 111, 97; /* #E6FF94 */
     /* background: conic-gradient(from 0deg, #ff6f61, #de6161, #c1c161, #6a82fb);
     background: conic-gradient(from 0deg, #00c6ff, #0072ff, #00c6ff);
@@ -19,6 +21,8 @@
     Foreground (Text) Color:
     #E0E6ED #AAB7C4 
  */
+    --aa: #1d4ed8;
+    --aaa: #2864e8;
     --a: #E0E6ED;
     --b: #AAB7C4;
     

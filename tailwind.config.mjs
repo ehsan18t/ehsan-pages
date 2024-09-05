@@ -4,10 +4,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "rgba(var(--primary))",
+        primary: {
+          DEFAULT: "rgba(var(--primary))",
+          muted: "rgba(var(--primary-muted))",
+        },
         secondary: "rgba(var(--secondary))",
         background: "rgba(var(--background))",
-        foreground: "rgba(var(--foreground))",
+        foreground: {
+          DEFAULT: "rgba(var(--foreground))",
+          muted: "rgba(var(--foreground-muted))",
+        },
       },
       fontFamily: {
         JetBrainsMono: "var(--font-jettbrainsMono)",
