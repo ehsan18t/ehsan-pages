@@ -1,0 +1,46 @@
+---
+import './button.css'
+
+export interface Props {
+  id: string;
+  class?: string;
+  link?: string;
+}
+
+const {id, class: className, link}: Props = Astro.props
+---
+
+<button id={id} class={`ripple-button ${className}`}>
+  <slot>Click Me</slot>
+</button>
+
+<script is:inline define:vars={{id, link}}>
+  // Script to add the ripple effect to the button
+  document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById(id);
+
+    button?.addEventListener('click', (event) => {
+      const circle = document.createElement('span');
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
+
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+      circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+      circle.classList.add('ripple');
+
+      // Remove existing ripple if present
+      const ripple = button.getElementsByClassName('ripple')[0];
+      if (ripple) {
+        ripple.remove();
+      }
+
+      // Append the new ripple effect
+      button.appendChild(circle);
+      
+      if(link)
+       window.open(link, '_blank').focus();
+    });
+  });
+</script>
+

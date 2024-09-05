@@ -1,0 +1,39 @@
+/* Styling for the button */
+.ripple-button {
+    position: relative;
+    overflow: hidden;
+    background-color: #1d4ed8; /* Blue background */
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ripple-button:hover {
+    background-color: #2563eb; /* Lighter blue on hover */
+}
+
+.ripple-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.4); /* Focus ring */
+}
+
+/* Styling for the ripple effect */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 600ms linear;
+    background: rgba(255, 255, 255, 0.6);
+    pointer-events: none; /* Avoid interfering with button clicks */
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
