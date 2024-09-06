@@ -10,22 +10,7 @@ import Star from "./Star.astro";
     <!-- Grain Effect -->
     <div class="absolute inset-0 -z-10 opacity-5" style="background-image: url('/grain.jpg');"></div>
     <!-- Rings -->
-<!-- Ring-1: Inner Ring with Smaller Stars -->
- <!-- 
-    orb - rot - size - opac
-    430 - -14 - 2 - 20
-    440 - 79 - 1.25 - 20
-    
-    530 - 178 - 2.5 - 20
-    590 - 98 - 2
-    550 - 20 - 3
-
-    710 - 144 - 3.5 - 20
-    720 - 85 - 0.75 - 20
-
-    800 - -72 - 7
-
- -->
+    <!-- Ring-1: Inner Ring with Smaller Stars -->
     <HeroOrbit size={18} duration={30} rotation={-14}>
         <Star size={2} duration={28} opacity={20} />
     </HeroOrbit>
@@ -50,35 +35,35 @@ import Star from "./Star.astro";
         <Star size={1.5} duration={18} />
     </HeroOrbit>
 
-  <!-- Ring-3: Intermediate Ring with Medium Stars -->
-  <HeroOrbit size={38} duration={46} rotation={144}>
-    <Star size={3.5} duration={22} opacity={20} />
-  </HeroOrbit>
-  <HeroOrbit size={38} duration={42} rotation={85} starOnly>
-    <Star size={0.75} duration={20} opacity={20} />
-  </HeroOrbit>
-  <HeroOrbit size={38} duration={40} starOnly>
-    <Star size={2.3} duration={20} opacity={70} />
-  </HeroOrbit>
-  <HeroOrbit size={38} duration={37} rotation={200} starOnly>
-    <Star size={2.7} duration={20} opacity={75} />
-  </HeroOrbit>
-  <HeroOrbit size={38} duration={35} rotation={270} starOnly>
-    <Star size={2.9} duration={18} />
-  </HeroOrbit>
-  
-  <!-- Ring-4: Larger Ring with Varied Star Sizes -->
-  <HeroOrbit size={50} duration={80} rotation={-72}>
-    <Star size={7} duration={25} />
-  </HeroOrbit>
+    <!-- Ring-3: Intermediate Ring with Medium Stars -->
+    <HeroOrbit size={38} duration={46} rotation={144}>
+      <Star size={3.5} duration={22} opacity={20} />
+    </HeroOrbit>
+    <HeroOrbit size={38} duration={42} rotation={85} starOnly>
+      <Star size={0.75} duration={20} opacity={20} />
+    </HeroOrbit>
+    <HeroOrbit size={38} duration={40} starOnly>
+      <Star size={2.3} duration={20} opacity={70} />
+    </HeroOrbit>
+    <HeroOrbit size={38} duration={37} rotation={200} starOnly>
+      <Star size={2.7} duration={20} opacity={75} />
+    </HeroOrbit>
+    <HeroOrbit size={38} duration={35} rotation={270} starOnly>
+      <Star size={2.9} duration={18} />
+    </HeroOrbit>
+    
+    <!-- Ring-4: Larger Ring with Varied Star Sizes -->
+    <HeroOrbit size={50} duration={80} rotation={-72}>
+      <Star size={7} duration={25} />
+    </HeroOrbit>
 
-  <!-- Final Larger Orbits for Background Depth -->
-  <HeroOrbit size={62} opacity={60}></HeroOrbit>
-  <HeroOrbit size={74} opacity={50}></HeroOrbit>
-  <HeroOrbit size={86} opacity={40}></HeroOrbit>
-  <HeroOrbit size={98} opacity={30}></HeroOrbit>
-  <HeroOrbit size={110} opacity={20}></HeroOrbit>
-  
+    <!-- Final Larger Orbits for Background Depth -->
+    <HeroOrbit size={62} opacity={60}></HeroOrbit>
+    <HeroOrbit size={74} opacity={50}></HeroOrbit>
+    <HeroOrbit size={86} opacity={40}></HeroOrbit>
+    <HeroOrbit size={98} opacity={30}></HeroOrbit>
+    <HeroOrbit size={110} opacity={20}></HeroOrbit>
+    
     <!-- Content -->
     <div class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3">
         <div>

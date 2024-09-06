@@ -15,9 +15,6 @@ export default {
           muted: "rgba(var(--foreground-muted))",
         },
       },
-      fontFamily: {
-        JetBrainsMono: "var(--font-JetBrainsMono)",
-      },
     },
   },
   plugins: [],
