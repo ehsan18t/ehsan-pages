@@ -17,21 +17,23 @@ const colors: Record<SocialKeys, string> = {
 };
 ---
 
-<div class="appear flex flex-col gap-10 justify-center items-center">
-    <Button id="btn-cv-dnld" link={info.resume} class="w-full font-bold hover:bg-primary/80">
-        Download CV
-    </Button>
-    <div class="flex gap-3">
-        {
-            Object.keys(socials).map((key) => {
-                const url:string = socials[key as SocialKeys];
-                return (
-                    <a target="_blank" href={url}>
-                        <Icon name={`socials/${key}`} size={size} title={key.toLocaleUpperCase()}
-                              class={`${iconClass} ${colors[key as SocialKeys]}`} />
-                    </a>
-                );
-            })
-        }
+<div class="appear py-10 flex items-center justify-center md:justify-start">
+    <div class="w-min flex flex-col gap-5">
+        <Button id="btn-cv-dnld" link={info.resume} class="w-full font-bold hover:bg-primary/80">
+            Download CV
+        </Button>
+        <div class="flex gap-3">
+            {
+                Object.keys(socials).map((key) => {
+                    const url:string = socials[key as SocialKeys];
+                    return (
+                        <a target="_blank" href={url}>
+                            <Icon name={`socials/${key}`} size={size} title={key.toLocaleUpperCase()}
+                                  class={`${iconClass} ${colors[key as SocialKeys]}`} />
+                        </a>
+                    );
+                })
+            }
+        </div>
     </div>
 </div>
