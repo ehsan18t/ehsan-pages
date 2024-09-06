@@ -5,9 +5,10 @@ export interface HeroOrbitProps {
   rotation?: number;
   opacity?: number;
   starOnly?: boolean;
+  class?: string;
 }
 
-const { size, duration = 10, rotation = 0, opacity = 100, starOnly = false} = Astro.props as HeroOrbitProps;
+const { size, duration = 10, rotation = 0, opacity = 100, starOnly = false, class: className} = Astro.props as HeroOrbitProps;
 ---
 {
     !starOnly && (
@@ -16,7 +17,7 @@ const { size, duration = 10, rotation = 0, opacity = 100, starOnly = false} = As
 }
 
 {Astro.slots.has('default') && (
-    <div class="absolute" style={`animation: custom-spin ${duration}s linear infinite; width: ${size}rem; height: ${size}rem; transform: rotate(${rotation}deg); --initial-rotation: ${rotation}deg;`}>
+    <div class="absolute -translate-x-1/2 -translate-y-1/2" style={`animation: custom-spin ${duration}s linear infinite; width: ${size}rem; height: ${size}rem; transform: rotate(${rotation}deg); --initial-rotation: ${rotation}deg;`}>
         <slot />
     </div>
 )}

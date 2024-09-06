@@ -96,13 +96,9 @@
 }
 @keyframes custom-spin {
   from {
-    transform: rotate(
-      var(--initial-rotation, 0deg)
-    ); /* Start at the current rotation */
+    transform: rotate(var(--initial-rotation, 0deg));
   }
   to {
-    transform: rotate(
-      calc(var(--initial-rotation, 0deg) + 360deg)
-    ); /* Add 360deg rotation */
+    transform: rotate(calc(var(--initial-rotation, 0deg) + 360deg));
   }
 }

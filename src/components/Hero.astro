@@ -6,19 +6,73 @@ import SocialBar from "./SocialBar.astro";
 import Star from "./Star.astro";
 ---
 
-<section class="min-h-screen flex flex-col items-center md:justify-center py-12 md:py-0 relative z-0">
+<section class="min-h-screen flex flex-col items-center justify-center py-12 md:py-0 relative z-0">
     <!-- Grain Effect -->
     <div class="absolute inset-0 -z-10 opacity-5" style="background-image: url('/grain.jpg');"></div>
     <!-- Rings -->
-    <HeroOrbit size={24}></HeroOrbit>
-    <HeroOrbit size={36}></HeroOrbit>
-    <HeroOrbit size={48} duration={30}>
-        <Star size={10} duration={10} />
+     <!-- Ring-1 -->
+    <HeroOrbit size={24} duration={25}>
+        <Star size={2} duration={25} opacity={60} />
     </HeroOrbit>
-    <HeroOrbit size={48} rotation={40} duration={30} starOnly>
-        <Star size={12} duration={15} />
+    <HeroOrbit size={24} duration={25} rotation={40} starOnly>
+        <Star size={2.5} duration={20} opacity={80} />
     </HeroOrbit>
-    <HeroOrbit size={60}></HeroOrbit>
+    <HeroOrbit size={24} duration={25} rotation={150} starOnly>
+        <Star size={2.9} duration={20} opacity={80} />
+    </HeroOrbit>
+    <HeroOrbit size={24} duration={25} rotation={250} starOnly>
+        <Star size={3.3} duration={20} />
+    </HeroOrbit>
+
+    <!-- Ring-2 -->
+    <HeroOrbit size={36} duration={30}>
+        <Star size={1.5} duration={25} />
+    </HeroOrbit>
+    <HeroOrbit size={36} duration={30} rotation={80} starOnly>
+        <Star size={2} duration={20} opacity={80} />
+    </HeroOrbit>
+    <HeroOrbit size={36} duration={30} rotation={200} starOnly>
+        <Star size={2.2} duration={20} opacity={80} />
+    </HeroOrbit>
+    <HeroOrbit size={36} duration={30} rotation={300} starOnly>
+        <Star size={2.5} duration={20} />
+    </HeroOrbit>
+    <HeroOrbit size={36} duration={30} rotation={280} starOnly>
+        <Star size={2.2} duration={15} />
+    </HeroOrbit>
+    <HeroOrbit size={36} duration={30} rotation={335} starOnly>
+        <Star size={2.2} duration={15} />
+    </HeroOrbit>
+
+
+    <!-- Ring-3 -->
+    <HeroOrbit size={48} duration={35}>
+        <Star size={4.5} duration={15} opacity={40} />
+    </HeroOrbit>
+    <HeroOrbit size={48} duration={30} rotation={70} starOnly>
+        <Star size={4} duration={40} />
+    </HeroOrbit>
+    <HeroOrbit size={48} duration={30} rotation={130} starOnly>
+        <Star size={2} duration={15} opacity={60} />
+    </HeroOrbit>
+    <HeroOrbit size={48} duration={30} rotation={190} starOnly>
+        <Star size={2.2} duration={30} opacity={60}  />
+    </HeroOrbit>
+    <HeroOrbit size={48} duration={30} rotation={270} starOnly>
+        <Star size={2.2} duration={15} />
+    </HeroOrbit>
+    <HeroOrbit size={48} duration={30} rotation={350} starOnly>
+        <Star size={2.2} duration={25} opacity={80} />
+    </HeroOrbit>
+
+    <!-- Ring-4 -->
+    <HeroOrbit size={60}  duration={40}>
+        <Star size={1.8} duration={15} />
+    </HeroOrbit>
+    <HeroOrbit size={60}  duration={40} rotation={125} starOnly>
+        <Star size={2} duration={20} />
+    </HeroOrbit>
+    
     <HeroOrbit size={72} opacity={70}></HeroOrbit>
     <HeroOrbit size={84} opacity={60}></HeroOrbit>
     <HeroOrbit size={96} opacity={50}></HeroOrbit>
