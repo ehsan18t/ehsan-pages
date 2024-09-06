@@ -16,7 +16,7 @@ const { size, duration = 10, rotation = 0, opacity = 100, starOnly = false} = As
 }
 
 {Astro.slots.has('default') && (
-    <div class="absolute animate-spin" style={`animation-duration: ${duration}s; width: ${size}rem; height: ${size}rem; transform: rotate(${rotation}deg);`}>
+    <div class="absolute" style={`animation: custom-spin ${duration}s linear infinite; width: ${size}rem; height: ${size}rem; transform: rotate(${rotation}deg); --initial-rotation: ${rotation}deg;`}>
         <slot />
     </div>
 )}

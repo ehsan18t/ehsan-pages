@@ -94,3 +94,15 @@
     transform: translateY(0);
   }
 }
+@keyframes custom-spin {
+  from {
+    transform: rotate(
+      var(--initial-rotation, 0deg)
+    ); /* Start at the current rotation */
+  }
+  to {
+    transform: rotate(
+      calc(var(--initial-rotation, 0deg) + 360deg)
+    ); /* Add 360deg rotation */
+  }
+}
