@@ -9,8 +9,10 @@ import Star from "./Star.astro";
 ---
 
 <section class="relative z-0 min-h-dvh overflow-hidden flex flex-col items-center justify-center">
+  <!-- Fade out bottom -->
+  <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
     <!-- Grain Effect -->
-    <div class="absolute inset-0 -z-10 opacity-5" style={`background-image: url(${grain.src});`}></div>
+    <div class="absolute inset-0 -z-30 opacity-5" style={`background-image: url(${grain.src});`}></div>
     <!-- Rings -->
     <!-- Ring-1: Inner Ring with Smaller Stars -->
     <HeroOrbit size={18} duration={30} rotation={-14}>
@@ -65,7 +67,7 @@ import Star from "./Star.astro";
     <HeroOrbit size={86} opacity={40}></HeroOrbit>
     <HeroOrbit size={98} opacity={30}></HeroOrbit>
     <HeroOrbit size={110} opacity={20}></HeroOrbit>
-    
+  </div>
     <!-- Content -->
     <div class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3">
         <div>
