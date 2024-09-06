@@ -1,14 +1,16 @@
 ---
 import info from "@/data";
+import grain from "../assets/images/grain.jpg";
 import HeroOrbit from "./HeroOrbit.astro";
 import Profile from "./profile/Profile.astro";
 import SocialBar from "./SocialBar.astro";
 import Star from "./Star.astro";
+
 ---
 
 <section class="min-h-screen overflow-hidden flex flex-col items-center justify-center py-12 md:py-0 relative z-0">
     <!-- Grain Effect -->
-    <div class="absolute inset-0 -z-10 opacity-5" style="background-image: url('/grain.jpg');"></div>
+    <div class="absolute inset-0 -z-10 opacity-5" style={`background-image: url(${grain.src});`}></div>
     <!-- Rings -->
     <!-- Ring-1: Inner Ring with Smaller Stars -->
     <HeroOrbit size={18} duration={30} rotation={-14}>
