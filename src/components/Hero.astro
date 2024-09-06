@@ -1,10 +1,32 @@
 ---
 import info from "@/data";
+import HeroOrbit from "./HeroOrbit.astro";
 import Profile from "./profile/Profile.astro";
 import SocialBar from "./SocialBar.astro";
+import Star from "./Star.astro";
 ---
 
-<section class="min-h-screen flex flex-col items-center md:justify-center py-12 md:py-0">
+<section class="min-h-screen flex flex-col items-center md:justify-center py-12 md:py-0 relative z-0">
+    <!-- Grain Effect -->
+    <div class="absolute inset-0 -z-10 opacity-5" style="background-image: url('/grain.jpg');"></div>
+    <!-- Rings -->
+    <HeroOrbit size={24}></HeroOrbit>
+    <HeroOrbit size={36}></HeroOrbit>
+    <HeroOrbit size={48} duration={30}>
+        <Star size={10} duration={10} />
+    </HeroOrbit>
+    <HeroOrbit size={48} rotation={40} duration={30} starOnly>
+        <Star size={12} duration={15} />
+    </HeroOrbit>
+    <HeroOrbit size={60}></HeroOrbit>
+    <HeroOrbit size={72} opacity={70}></HeroOrbit>
+    <HeroOrbit size={84} opacity={60}></HeroOrbit>
+    <HeroOrbit size={96} opacity={50}></HeroOrbit>
+    <HeroOrbit size={108} opacity={40}></HeroOrbit>
+    <HeroOrbit size={120} opacity={30}></HeroOrbit>
+    <HeroOrbit size={132} opacity={25}></HeroOrbit>
+
+    <!-- Content -->
     <div class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3">
         <div>
             <Profile />

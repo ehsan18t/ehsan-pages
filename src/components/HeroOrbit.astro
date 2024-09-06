@@ -1,0 +1,22 @@
+---
+export interface HeroOrbitProps {
+  size: number;
+  duration?: number;
+  rotation?: number;
+  opacity?: number;
+  starOnly?: boolean;
+}
+
+const { size, duration = 10, rotation = 0, opacity = 100, starOnly = false} = Astro.props as HeroOrbitProps;
+---
+{
+    !starOnly && (
+        <div class="hero-ring" style={`width: ${size}rem; height: ${size}rem; opacity: ${opacity}%;`}></div>
+    )
+}
+
+{Astro.slots.has('default') && (
+    <div class="absolute animate-spin" style={`animation-duration: ${duration}s; width: ${size}rem; height: ${size}rem; transform: rotate(${rotation}deg);`}>
+        <slot />
+    </div>
+)}
