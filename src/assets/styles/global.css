@@ -12,12 +12,14 @@
     --background: 2, 21, 38; /* #021526 */
     --foreground: 224, 230, 237; /* #E0E6ED */
     --foreground-muted: 170, 183, 196; /* #AAB7C4 */
-    --primary: 29, 78, 216; /* #1d4ed8 */
-    --primary-muted: 40, 100, 232; /* #2864e8 */
+    --primary: 61, 136, 68; /* #3d8844 */
+    --primary-muted: 96, 153, 102; /* #609966 */
     --secondary: 255, 111, 97; /* #ff6f61 */
 
     --scroll-bg: rgb(var(--background));
-    --scroll-main: #609966;
+    --scroll-main: rgb(var(--primary));
+
+    --test: #3d8844;
 
     --aaa: #1d4ed8;
     --aa: #2864e8;
@@ -32,7 +34,7 @@
   }
 
   body {
-    @apply bg-background text-foreground min-h-dvh min-w-full;
+    @apply bg-background text-foreground min-h-screen min-w-full;
 
     scroll-behavior: smooth;
 
