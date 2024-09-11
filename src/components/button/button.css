@@ -1,0 +1,20 @@
+/* Styling for the button */
+.ripple-button {
+    @apply relative overflow-hidden font-bold py-3.5 px-5 rounded-lg leading-tight transition duration-300 ease-in-out cursor-pointer border-0;
+    @apply bg-primary text-foreground hover:bg-primary-muted;
+}
+
+/* Styling for the ripple effect */
+.ripple {
+    @apply absolute pointer-events-none rounded-full;
+    transform: scale(0);
+    animation: ripple 600ms linear;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}

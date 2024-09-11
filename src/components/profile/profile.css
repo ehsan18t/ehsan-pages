@@ -1,0 +1,43 @@
+.profile-picture-container {
+  --sm-pp-size: 13rem; /* 208px */
+  --md-pp-size: 16rem; /* 256px */
+  --lg-pp-size: 19rem; /* 304px */
+
+  --sm-pp-b-size: 0.313rem; /* 5px */
+  --md-pp-b-size: 0.4rem; /* 6px */
+  --lg-pp-b-size: 0.438rem; /* 7px */
+
+  @apply flex justify-center items-center p-5;
+}
+
+.border-wrapper {
+  @apply relative flex justify-center items-center;
+  @apply h-[var(--sm-pp-size)] w-[var(--sm-pp-size)] md:h-[var(--md-pp-size)] md:w-[var(--md-pp-size)] lg:h-[var(--lg-pp-size)] lg:w-[var(--lg-pp-size)];
+}
+
+.gradient-border {
+  @apply absolute top-0 left-0 w-full h-full rounded-full p-5 z-10;
+  background: conic-gradient(
+    from 0deg,
+    rgb(var(--background)),
+    #3a1c71,
+    #d76d77,
+    #ff6f61,
+    #ffaf7b
+  );
+  animation: rotate-gradient 5s linear infinite;
+}
+
+.profile-picture {
+  @apply rounded-full z-20 object-cover bg-background;
+  @apply h-[calc(var(--sm-pp-size)-var(--sm-pp-b-size))] w-[calc(var(--sm-pp-size)-var(--sm-pp-b-size))] md:h-[calc(var(--md-pp-size)-var(--md-pp-b-size))] md:w-[calc(var(--md-pp-size)-var(--md-pp-b-size))] lg:h-[calc(var(--lg-pp-size)-var(--lg-pp-b-size))] lg:w-[calc(var(--lg-pp-size)-var(--lg-pp-b-size))];
+}
+
+@keyframes rotate-gradient {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,125 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-main: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+
+    --background: 2, 21, 38; /* #021526 */
+    --foreground: 224, 230, 237; /* #E0E6ED */
+    --foreground-muted: 170, 183, 196; /* #AAB7C4 */
+    --primary: 61, 136, 68; /* #3d8844 */
+    --primary-muted: 96, 153, 102; /* #609966 */
+    --secondary: 255, 111, 97; /* #ff6f61 */
+
+    --scroll-bg: rgb(var(--background));
+    --scroll-main: rgb(var(--primary));
+
+    --test: #3d8844;
+
+    --aaa: #1d4ed8;
+    --aa: #2864e8;
+    --a: #e0e6ed;
+    --b: #aab7c4;
+
+    --c: #0fa3b1;
+    --d: #3a86ff;
+
+    --e: #ff6f61;
+    --f: #3ddc97;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-screen min-w-full;
+
+    scroll-behavior: smooth;
+
+    font-family: var(--font-main);
+    line-height: 1.6; /* Improve readability */
+    text-rendering: optimizeLegibility; /* Better rendering on most browsers */
+    -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+    -moz-osx-font-smoothing: grayscale; /* Better rendering on macOS */
+  }
+
+  /* Custom Scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-main) var(--scroll-bg);
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 15px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--scroll-bg);
+    border-radius: 5px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-main);
+    border-radius: 14px;
+    border: 3px solid var(--scroll-bg);
+  }
+
+  .safe-inset-0 {
+    top: 0;
+    top: env(safe-area-inset-top);
+    bottom: 0;
+    bottom: env(safe-area-inset-bottom);
+    left: 0;
+    left: env(safe-area-inset-right);
+    right: 0;
+    right: env(safe-area-inset-right);
+  }
+
+  .hero-ring {
+    @apply absolute safe-inset-0 border-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full;
+    @apply border-emerald-300/5 shadow-[0_0_80px_inset] shadow-emerald-300/5;
+  }
+}
+
+.main-container {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+}
+
+.fade-in {
+  animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.appear {
+  opacity: 0;
+  transform: translateY(100px);
+  animation: fadeInUp 0.5s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes custom-spin {
+  from {
+    transform: rotate(var(--initial-rotation, 0deg));
+  }
+  to {
+    transform: rotate(calc(var(--initial-rotation, 0deg) + 360deg));
+  }
+}
