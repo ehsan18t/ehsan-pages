@@ -5,12 +5,39 @@ import HeroOrbit from "./HeroOrbit.astro";
 import Profile from "./profile/Profile.astro";
 import SocialBar from "./SocialBar.astro";
 import Star from "./Star.astro";
-
 ---
-<script src="@/utils/fixedSize.ts" />
 
 <section id="hero" class="safe-inset-0 relative z-0 overflow-hidden flex flex-col items-center justify-center">
-  <script>setFixedSize("hero")</script>
+  <script is:inline type="module">
+    const mdBreakpoint = 768;
+
+    function setFixedSize(id) {
+      // Find the section element and cast it to HTMLElement
+      const section = document.getElementById(id);
+
+      // Check if the current device width is smaller than `md`
+      if (window.innerWidth < mdBreakpoint) {
+        // Create a temporary element to measure 100dvh
+        const tempDiv = document.createElement("div");
+        tempDiv.style.height = "100dvh"; // Set the height to 100dvh
+        tempDiv.style.position = "absolute"; // Prevent it from affecting layout
+        tempDiv.style.visibility = "hidden"; // Hide it visually
+        document.body.appendChild(tempDiv); // Append it to the body to measure
+
+        // Get the computed height in pixels
+        const initialHeight = tempDiv.offsetHeight;
+
+        section.style.height = `${initialHeight}px`;
+
+        // Clean up the temporary element
+        document.body.removeChild(tempDiv);
+      } else {
+        section.classList.add("h-screen");
+      }
+    }
+
+    setFixedSize("hero")
+  </script>
   <!-- Fade out bottom -->
   <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
     <!-- Grain Effect -->
