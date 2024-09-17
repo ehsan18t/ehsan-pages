@@ -10,7 +10,8 @@ const info = {
     discord: "https://discord.com/users/xcarl3t",
   },
   image: "/me.png",
-  resume: "https://www.overleaf.com/read/jfjsjggqjwnf",
+  resume: "/CV.pdf",
+  // resume: "https://www.overleaf.com/read/jfjsjggqjwnf",
 };
 
 export default info;
