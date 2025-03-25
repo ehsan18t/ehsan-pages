@@ -1,4 +1,4 @@
-@reference "../../assets/styles/global.css";
+@reference "@/assets/styles/global.css";
 
 .profile-picture-container {
   --sm-pp-size: 13rem; /* 208px */

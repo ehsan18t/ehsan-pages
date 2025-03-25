@@ -1,4 +1,4 @@
-@reference "../../assets/styles/global.css";
+@reference "@/assets/styles/global.css";
 
 /* Styling for the button */
 .ripple-button {
