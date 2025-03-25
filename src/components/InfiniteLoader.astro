@@ -1,0 +1,255 @@
+---
+---
+
+<div id="hero-loader" class="loader-container">
+  <div class="loader-content">
+    <!-- Logo with E and K -->
+    <div class="logo-container">
+      <svg width="150" height="150" viewBox="0 0 150 150" class="logo-svg">
+        <!-- Background circle -->
+        <circle cx="75" cy="75" r="70" class="logo-circle" fill="none" stroke="#FFD700" stroke-width="2" />
+        
+        <!-- E Letter - Centered -->
+        <path class="letter letter-e" 
+              d="M55,50 L85,50 L85,65 L70,65 L70,75 L80,75 L80,90 L70,90 L70,100 L85,100 L85,115 L55,115 Z" 
+              fill="none" stroke="#FFD700" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        
+        <!-- K Letter - Centered -->
+        <path class="letter letter-k" 
+              d="M90,50 L105,50 L105,75 L120,50 L137,50 L115,80 L137,115 L120,115 L105,90 L105,115 L90,115 Z" 
+              fill="none" stroke="#FFD700" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+    
+    <!-- Name -->
+    <div class="name-container">
+      <div class="name">
+        <span class="name-char">E</span>
+        <span class="name-char">H</span>
+        <span class="name-char">S</span>
+        <span class="name-char">A</span>
+        <span class="name-char">N</span>
+        <span class="name-char"> </span>
+        <span class="name-char"> </span>
+        <span class="name-char">K</span>
+        <span class="name-char">H</span>
+        <span class="name-char">A</span>
+        <span class="name-char">N</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Background particles -->
+  <div class="particles">
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+    <div class="particle p5"></div>
+    <div class="particle p6"></div>
+  </div>
+</div>
+
+<style>
+  .loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0f0f13;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: hidden;
+  }
+  
+  .loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    z-index: 2;
+  }
+  
+  /* Logo styles and animations */
+  .logo-container {
+    position: relative;
+  }
+  
+  .logo-svg {
+    transform-origin: center;
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.3));
+    animation: logoReveal 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+  
+  .logo-circle {
+    stroke-dasharray: 440;
+    stroke-dashoffset: 440;
+    animation: drawCircle 1s ease-out forwards;
+  }
+  
+  .letter {
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: drawLetter 1s ease-out forwards;
+  }
+  
+  .letter-e {
+    animation-delay: 0.2s;
+  }
+  
+  .letter-k {
+    animation-delay: 0.3s;
+  }
+  
+  /* Name styles and animations */
+  .name-container {
+    height: 2.5rem;
+    overflow: hidden;
+  }
+  
+  .name {
+    display: flex;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #FFD700;
+    letter-spacing: 0.1rem;
+    filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.3));
+  }
+  
+  .name-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: revealChar 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+  
+  .name-char:nth-child(1) { animation-delay: 0.6s; }
+  .name-char:nth-child(2) { animation-delay: 0.65s; }
+  .name-char:nth-child(3) { animation-delay: 0.7s; }
+  .name-char:nth-child(4) { animation-delay: 0.75s; }
+  .name-char:nth-child(5) { animation-delay: 0.8s; }
+  .name-char:nth-child(6) { animation-delay: 0.85s; }
+  .name-char:nth-child(7) { animation-delay: 0.9s; }
+  .name-char:nth-child(8) { animation-delay: 0.95s; }
+  .name-char:nth-child(9) { animation-delay: 1s; }
+  .name-char:nth-child(10) { animation-delay: 1.05s; }
+  .name-char:nth-child(11) { animation-delay: 1.1s; }
+  
+  /* Particle animations */
+  .particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .particle {
+    position: absolute;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0) 70%);
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatParticle 1.8s ease-out;
+  }
+  
+  .p1 {
+    width: 150px;
+    height: 150px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0.1s;
+  }
+  
+  .p2 {
+    width: 100px;
+    height: 100px;
+    top: 60%;
+    left: 15%;
+    animation-delay: 0.3s;
+  }
+  
+  .p3 {
+    width: 120px;
+    height: 120px;
+    top: 25%;
+    right: 15%;
+    animation-delay: 0.5s;
+  }
+  
+  .p4 {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    right: 20%;
+    animation-delay: 0.2s;
+  }
+  
+  .p5 {
+    width: 180px;
+    height: 180px;
+    bottom: 10%;
+    left: 40%;
+    animation-delay: 0.1s;
+  }
+  
+  .p6 {
+    width: 140px;
+    height: 140px;
+    top: 10%;
+    right: 35%;
+    animation-delay: 0.4s;
+  }
+  
+  /* Keyframes for animations */
+  @keyframes logoReveal {
+    from {
+      transform: scale(0.92);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes drawCircle {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+  @keyframes drawLetter {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+  @keyframes revealChar {
+    0% {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes floatParticle {
+    0% {
+      transform: translateY(5px) scale(0.95);
+      opacity: 0;
+    }
+    30% {
+      opacity: 0.2;
+    }
+    100% {
+      transform: translateY(-5px) scale(1.05);
+      opacity: 0;
+    }
+  }
+</style>
