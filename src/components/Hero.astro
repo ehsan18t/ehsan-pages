@@ -7,7 +7,10 @@ import SocialBar from "./SocialBar.astro";
 import Star from "./Star.astro";
 ---
 
-<section id="hero" class="safe-inset-0 relative z-0 overflow-hidden flex flex-col items-center justify-center">
+<section
+  id="hero"
+  class="relative z-0 overflow-hidden flex flex-col items-center justify-center"
+>
   <script is:inline type="module">
     const mdBreakpoint = 768;
 
@@ -36,36 +39,42 @@ import Star from "./Star.astro";
       }
     }
 
-    setFixedSize("hero")
+    setFixedSize("hero");
   </script>
   <!-- Fade out bottom -->
-  <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
+  <div
+    class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]"
+  >
     <!-- Grain Effect -->
-    <div class="absolute inset-0 -z-30 opacity-5" style={`background-image: url(${grain.src});`}></div>
+    <div
+      class="absolute inset-0 -z-30 opacity-5"
+      style={`background-image: url(${grain.src});`}
+    >
+    </div>
     <!-- Rings -->
     <!-- Ring-1: Inner Ring with Smaller Stars -->
     <HeroOrbit size={18} duration={30} rotation={-14}>
-        <Star size={2} duration={28} opacity={20} />
+      <Star size={2} duration={28} opacity={20} />
     </HeroOrbit>
     <HeroOrbit size={18} duration={30} rotation={79} starOnly>
-        <Star size={1.25} duration={16} opacity={20} />
+      <Star size={1.25} duration={16} opacity={20} />
     </HeroOrbit>
     <HeroOrbit size={18} duration={30} rotation={179} starOnly>
-        <Star size={1.25} duration={16} opacity={70} />
+      <Star size={1.25} duration={16} opacity={70} />
     </HeroOrbit>
 
     <!-- Ring-2: Adding More Stars for Increased Density -->
     <HeroOrbit size={28} duration={42} rotation={178}>
-        <Star size={2.5} duration={20} opacity={20} />
+      <Star size={2.5} duration={20} opacity={20} />
     </HeroOrbit>
     <HeroOrbit size={28} duration={42} rotation={98} starOnly>
-        <Star size={2} duration={18} />
+      <Star size={2} duration={18} />
     </HeroOrbit>
     <HeroOrbit size={28} duration={42} rotation={20} starOnly>
-        <Star size={3} duration={18} />
+      <Star size={3} duration={18} />
     </HeroOrbit>
     <HeroOrbit size={28} duration={42} rotation={250} starOnly>
-        <Star size={1.5} duration={18} />
+      <Star size={1.5} duration={18} />
     </HeroOrbit>
 
     <!-- Ring-3: Intermediate Ring with Medium Stars -->
@@ -84,32 +93,36 @@ import Star from "./Star.astro";
     <HeroOrbit size={38} duration={35} rotation={270} starOnly>
       <Star size={2.9} duration={18} />
     </HeroOrbit>
-    
+
     <!-- Ring-4: Larger Ring with Varied Star Sizes -->
     <HeroOrbit size={50} duration={80} rotation={-72}>
       <Star size={7} duration={25} />
     </HeroOrbit>
 
     <!-- Final Larger Orbits for Background Depth -->
-    <HeroOrbit size={62} opacity={60}></HeroOrbit>
-    <HeroOrbit size={74} opacity={50}></HeroOrbit>
-    <HeroOrbit size={86} opacity={40}></HeroOrbit>
-    <HeroOrbit size={98} opacity={30}></HeroOrbit>
-    <HeroOrbit size={110} opacity={20}></HeroOrbit>
+    <HeroOrbit size={62} opacity={60} />
+    <HeroOrbit size={74} opacity={50} />
+    <HeroOrbit size={86} opacity={40} />
+    <HeroOrbit size={98} opacity={30} />
+    <HeroOrbit size={110} opacity={20} />
   </div>
-    <!-- Content -->
-    <div class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3">
-        <div>
-            <Profile />
-        </div>
-        <div class="flex flex-col gap-2 px-5 md:px-10">
-            <h1 class="text-4xl font-bold text-center md:text-left">
-                {info.name}
-            </h1>
-            <h2 class="text-2xl text-center md:text-left text-secondary">{info.title}</h2>
-            <p class="md:text-lg text-justify">{info.description}</p>
-
-            <SocialBar />
-        </div>
+  <!-- Content -->
+  <div
+    class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3"
+  >
+    <div>
+      <Profile />
     </div>
+    <div class="flex flex-col gap-2 px-5 md:px-10">
+      <h1 class="text-4xl font-bold text-center md:text-left">
+        {info.name}
+      </h1>
+      <h2 class="text-2xl text-center md:text-left text-secondary">
+        {info.title}
+      </h2>
+      <p class="md:text-lg text-justify">{info.description}</p>
+
+      <SocialBar />
+    </div>
+  </div>
 </section>

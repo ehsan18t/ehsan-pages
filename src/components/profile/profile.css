@@ -1,3 +1,5 @@
+@reference "../../assets/styles/global.css";
+
 .profile-picture-container {
   --sm-pp-size: 13rem; /* 208px */
   --md-pp-size: 16rem; /* 256px */
