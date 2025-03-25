@@ -1,7 +1,7 @@
 ---
 import Hero from "@/components/Hero.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
-import InfiniteLoader from '../components/InfiniteLoader.astro';
+import InfiniteLoader from "../components/InfiniteLoader.astro";
 ---
 
 <MainLayout>
@@ -9,34 +9,34 @@ import InfiniteLoader from '../components/InfiniteLoader.astro';
 
   <main id="main-content" style="opacity:0; pointer-events: none;">
     <Hero />
-  </main> 
+  </main>
 
   <script is:inline>
-    document.addEventListener('DOMContentLoaded', () => {
-      const loader = document.getElementById('hero-loader');
-      const main = document.getElementById('main-content');
-      
-      // Show loader for exactly 2 seconds
+    document.addEventListener("DOMContentLoaded", () => {
+      const loader = document.getElementById("hero-loader");
+      const main = document.getElementById("main-content");
+
       setTimeout(() => {
-        // 1. First hide the loader
         if (loader) {
-          loader.style.opacity = '0';
-          loader.style.transition = 'opacity 0.4s ease';
-          
-          // 2. After transition completes, remove it from DOM
-          setTimeout(() => {
-            if (loader && document.body.contains(loader)) {
-              loader.remove();
-            }
-          }, 400);
+          // Trigger exit animations
+          loader.classList.add("exit");
+
+          // Wait for animations to complete
+          Promise.all(
+            Array.from(loader.getElementsByClassName("logo-circle"))
+              .concat(Array.from(loader.getElementsByClassName("letter")), Array.from(loader.getElementsByClassName("name-char")), Array.from(loader.getElementsByClassName("particle")))
+              .map((el) => new Promise((res) => el.addEventListener("animationend", res, { once: true })))
+          ).then(() => {
+            // Remove loader after all animations finish
+            loader.remove();
+
+            // Show main content
+            main.style.opacity = "1";
+            main.style.pointerEvents = "auto";
+            main.style.transition = "opacity 0.6s ease";
+          });
         }
-        
-        // 3. Show main content immediately after loader starts fading
-        main.style.opacity = '1';
-        main.style.pointerEvents = 'auto';
-        main.style.transition = 'opacity 0.6s ease';
-        
-      }, 2000); // Exactly 2 seconds
+      }, 2000);
     });
   </script>
 </MainLayout>
