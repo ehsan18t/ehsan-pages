@@ -1,11 +1,11 @@
 ---
 import Hero from "@/components/Hero.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
-import InfiniteLoader from "../components/InfiniteLoader.astro";
+import Loader from "@/components/Loader.astro";
 ---
 
 <MainLayout>
-  <InfiniteLoader client:load />
+  <Loader client:load />
 
   <main id="main-content" style="opacity:0; pointer-events: none;">
     <Hero />
