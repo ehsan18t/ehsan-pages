@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write ./src",
+    "format:check": "prettier --check ./src"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.15",
@@ -15,5 +17,9 @@
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.15"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "prettier-plugin-astro": "^0.14.1"
   }
 }

@@ -7,50 +7,11 @@ import SocialBar from "./SocialBar.astro";
 import Star from "./Star.astro";
 ---
 
-<section
-  id="hero"
-  class="relative z-0 overflow-hidden flex flex-col items-center justify-center"
->
-  <script is:inline type="module">
-    const mdBreakpoint = 768;
-
-    function setFixedSize(id) {
-      // Find the section element and cast it to HTMLElement
-      const section = document.getElementById(id);
-
-      // Check if the current device width is smaller than `md`
-      if (window.innerWidth < mdBreakpoint) {
-        // Create a temporary element to measure 100dvh
-        const tempDiv = document.createElement("div");
-        tempDiv.style.height = "100dvh"; // Set the height to 100dvh
-        tempDiv.style.position = "absolute"; // Prevent it from affecting layout
-        tempDiv.style.visibility = "hidden"; // Hide it visually
-        document.body.appendChild(tempDiv); // Append it to the body to measure
-
-        // Get the computed height in pixels
-        const initialHeight = tempDiv.offsetHeight;
-
-        section.style.height = `${initialHeight}px`;
-
-        // Clean up the temporary element
-        document.body.removeChild(tempDiv);
-      } else {
-        section.classList.add("h-screen");
-      }
-    }
-
-    setFixedSize("hero");
-  </script>
+<section id="hero" class="relative z-0 overflow-hidden flex flex-col items-center justify-center">
   <!-- Fade out bottom -->
-  <div
-    class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]"
-  >
+  <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
     <!-- Grain Effect -->
-    <div
-      class="absolute inset-0 -z-30 opacity-5"
-      style={`background-image: url(${grain.src});`}
-    >
-    </div>
+    <div class="absolute inset-0 -z-30 opacity-5" style={`background-image: url(${grain.src});`}></div>
     <!-- Rings -->
     <!-- Ring-1: Inner Ring with Smaller Stars -->
     <HeroOrbit size={18} duration={30} rotation={-14}>
@@ -107,9 +68,7 @@ import Star from "./Star.astro";
     <HeroOrbit size={110} opacity={20} />
   </div>
   <!-- Content -->
-  <div
-    class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3"
-  >
+  <div class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3">
     <div>
       <Profile />
     </div>
