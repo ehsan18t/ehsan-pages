@@ -1,0 +1,22 @@
+@reference "@/assets/styles/global.css";
+
+/* Styling for the button */
+.ripple-button {
+  @apply relative overflow-hidden font-bold py-3.5 px-5 rounded-lg leading-tight transition duration-300 ease-in-out cursor-pointer border-0;
+  @apply border-2 border-accent-500 text-accent-text hover:bg-accent-bg/60 bg-accent-bg/30;
+}
+
+/* Styling for the ripple effect */
+.ripple {
+  @apply absolute pointer-events-none rounded-full;
+  transform: scale(0);
+  animation: ripple 600ms linear;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}

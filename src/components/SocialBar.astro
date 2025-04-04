@@ -1,7 +1,6 @@
 ---
 import info from "@/data";
 import { Icon } from "astro-icon/components";
-import Button from "./button/Button.astro";
 const iconClass = "p-1 hover:ring-4 hover:text-white md:bg-transparent rounded-full ring-2 transition ease-in-out duration-200";
 const { socials } = info;
 
@@ -17,20 +16,17 @@ const colors: Record<SocialKeys, string> = {
 };
 ---
 
-<div class="appear py-10 flex items-center justify-center md:justify-start">
-  <div class="w-min flex flex-col gap-5">
-    <Button id="btn-cv-dnld" link={info.resume} class="w-full font-bold"> View CV </Button>
-    <div class="flex gap-3">
-      {
-        Object.keys(socials).map((key) => {
-          const url: string = socials[key as SocialKeys];
-          return (
-            <a target="_blank" href={url}>
-              <Icon name={`socials/${key}`} size={size} title={key.toLocaleUpperCase()} class={`${iconClass} ${colors[key as SocialKeys]}`} />
-            </a>
-          );
-        })
-      }
-    </div>
+<div class="appear flex items-center justify-center md:justify-start">
+  <div class="flex gap-3">
+    {
+      Object.keys(socials).map((key) => {
+        const url: string = socials[key as SocialKeys];
+        return (
+          <a target="_blank" href={url}>
+            <Icon name={`socials/${key}`} size={size} title={key.toLocaleUpperCase()} class={`${iconClass} ${colors[key as SocialKeys]}`} />
+          </a>
+        );
+      })
+    }
   </div>
 </div>

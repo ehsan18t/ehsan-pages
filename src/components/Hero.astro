@@ -1,4 +1,5 @@
 ---
+import PDFModalViewer from "@/components/viewer/CV";
 import info from "@/data";
 import grain from "../assets/images/grain.jpg";
 import GlitchText from "./glitch-text/GlitchText.astro";
@@ -79,7 +80,9 @@ import Star from "./Star.astro";
         {info.title}
       </h2>
       <p class="md:text-lg text-justify">{info.description}</p>
-
+      <div class="pt-6 pb-3">
+        <PDFModalViewer client:load />
+      </div>
       <SocialBar />
     </div>
   </div>
