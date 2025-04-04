@@ -12,7 +12,7 @@
     --secondary: 255, 111, 97; /* #ff6f61 */
 
     --scroll-bg: rgb(var(--background));
-    --scroll-main: rgb(var(--primary));
+    --scroll-main: oklch(0.55 0.22 185);
 
     /* Accent */
     --accent-300: 0.95 0.08 185; /* oklch(0.95 0.08 185) */

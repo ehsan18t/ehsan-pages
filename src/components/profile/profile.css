@@ -22,10 +22,11 @@
   background: conic-gradient(
     from 0deg,
     rgb(var(--background)),
-    #3a1c71,
-    #d76d77,
-    #ff6f61,
-    #ffaf7b
+    #1c2a71,
+    #1c3871,
+    oklch(var(--accent-900)),
+    oklch(var(--accent-500)),
+    oklch(var(--accent-300))
   );
   animation: rotate-gradient 5s linear infinite;
 }
