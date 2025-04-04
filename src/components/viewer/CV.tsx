@@ -39,19 +39,14 @@ const PDFModalViewer = () => {
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center px-6 py-3 border-b border-white/10">
-              <h2 className="text-2xl font-semibold text-gray-100">
-                Ehsan's CV
-              </h2>
-              <div className="flex items-center justify-center gap-2">
-                <Button link="/CV.pdf">Download CV</Button>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="text-gray-300 hover:text-white text-6xl leading-none px-2 transition-colors"
-                  aria-label="Close"
-                >
-                  &times;
-                </button>
-              </div>
+              <Button link="/CV.pdf">Download CV</Button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-300 hover:text-white text-6xl leading-none px-2 transition-colors"
+                aria-label="Close"
+              >
+                &times;
+              </button>
             </div>
 
             {/* Scrollable PDF Content */}

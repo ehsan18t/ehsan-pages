@@ -47,7 +47,12 @@ export default function PDFViewer() {
           file={file}
           onLoadSuccess={onDocumentLoadSuccess}
           loading={<div>Loading PDF...</div>}
-          error={<div>Error loading PDF</div>}
+          error={
+            <div>
+              Error loading PDF. Make sure extensions like IDM are disabled then
+              try again.
+            </div>
+          }
         >
           {Array.from(new Array(numPages), (_, index) => (
             <Page
@@ -56,7 +61,7 @@ export default function PDFViewer() {
               pageNumber={index + 1}
               width={Math.min(containerWidth, 900)}
               loading={<div>Loading page...</div>}
-              error={<div>Error rendering page</div>}
+              error={<div>Error rendering page.</div>}
             />
           ))}
         </Document>
