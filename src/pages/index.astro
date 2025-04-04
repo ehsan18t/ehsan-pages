@@ -29,6 +29,7 @@ import Loader from "@/components/loader/Loader.astro";
           ).then(() => {
             // Remove loader after all animations finish
             loader.remove();
+            document.getElementsByTagName("body")[0].style = "overflow: auto;";
 
             // Show main content
             main.style.opacity = "1";

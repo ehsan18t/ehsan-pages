@@ -1,4 +1,7 @@
 @reference "@/assets/styles/global.css";
+body {
+  overflow: hidden;
+}
 
 .loader-container {
   position: fixed;
