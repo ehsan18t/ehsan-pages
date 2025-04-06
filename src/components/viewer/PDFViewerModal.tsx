@@ -1,5 +1,5 @@
+import Button from "@/components/button/Button";
 import { useEffect, useState } from "react";
-import Button from "./Button";
 import PDFViewer from "./PDFViewer";
 
 const PDFViewerModal = () => {

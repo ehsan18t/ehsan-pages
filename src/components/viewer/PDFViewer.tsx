@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
-import "./viewer.css";
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -41,7 +40,7 @@ export default function PDFViewer() {
   }
 
   return (
-    <div className="pdf-viewer-container">
+    <div className="max-w-4xl">
       <div className="pdf-document-container" ref={containerRef}>
         <Document
           file={file}
