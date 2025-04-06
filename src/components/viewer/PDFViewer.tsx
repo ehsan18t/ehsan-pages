@@ -82,12 +82,20 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
     setNumPages(numPages);
   }
 
+  if (isLoading && !pdfBlobUrl) {
+    return (
+      <div className="max-w-4xl pt-3" ref={containerRef}>
+        Loading PDF...
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl" ref={containerRef}>
       <Document
         file={pdfBlobUrl}
         onLoadSuccess={onDocumentLoadSuccess}
-        loading={<div>Loading PDF...</div>}
+        loading={<div className="pt-3">Loading PDF...</div>}
         error={
           <div>
             Error loading PDF. Make sure extensions like IDM are disabled then
