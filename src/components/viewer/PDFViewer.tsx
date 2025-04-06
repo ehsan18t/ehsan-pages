@@ -12,55 +12,50 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   const [numPages, setNumPages] = useState<number>();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState<number>(900); // Default width
+  const [containerWidth, setContainerWidth] = useState(900);
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch PDF whenever currentUrl changes
+  // Improved fetch with cache busting
+  const fetchPdf = async (url: string) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/fetch-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Buster": Date.now().toString(), // Prevent stale cache
+        },
+        body: JSON.stringify({ pdfUrl: url.trim() }),
+      });
+
+      if (!response.ok)
+        throw new Error(`Failed to load: ${response.statusText}`);
+
+      const blob = await response.blob();
+      const newBlobUrl = URL.createObjectURL(blob);
+
+      if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl); // Cleanup
+      setPdfBlobUrl(newBlobUrl);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch on mount and URL change
   useEffect(() => {
-    const fetchPdf = async () => {
-      if (!cvPDF.trim()) return;
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch("/api/fetch-pdf", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pdfUrl: cvPDF.trim() }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to load: ${response.statusText}`);
-        }
-
-        const blob = await response.blob();
-        const newBlobUrl = URL.createObjectURL(blob);
-
-        // Revoke previous URL if exists
-        if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
-
-        setPdfBlobUrl(newBlobUrl);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPdf();
-  }, []);
-
-  // Clean up Blob URLs on unmount
-  useEffect(() => {
+    if (cvPDF.trim()) fetchPdf(cvPDF);
     return () => {
       if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
     };
-  }, [pdfBlobUrl]);
+  }, [cvPDF]);
 
-  // Handle window resize
+  // Responsive width handling
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {
@@ -68,52 +63,38 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
       }
     };
 
-    // Initial width
     handleResize();
-
-    // Add event listener
     window.addEventListener("resize", handleResize);
-
-    // Cleanup
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-    setNumPages(numPages);
-  }
-
-  if (isLoading && !pdfBlobUrl) {
-    return (
-      <div className="max-w-4xl pt-3" ref={containerRef}>
-        Loading PDF...
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-4xl" ref={containerRef}>
-      <Document
-        file={pdfBlobUrl}
-        onLoadSuccess={onDocumentLoadSuccess}
-        loading={<div className="pt-3">Loading PDF...</div>}
-        error={
-          <div>
-            Error loading PDF. Make sure extensions like IDM are disabled then
-            try again.
-          </div>
-        }
-      >
-        {Array.from(new Array(numPages), (_, index) => (
-          <Page
-            className="mb-1"
-            key={`page_${index + 1}`}
-            pageNumber={index + 1}
-            width={Math.min(containerWidth, 900)}
-            loading={<div>Loading page...</div>}
-            error={<div>Error rendering page.</div>}
-          />
-        ))}
-      </Document>
+      {isLoading && !pdfBlobUrl ? (
+        <div className="pt-3">Loading PDF...</div>
+      ) : error ? (
+        <div className="pt-3">
+          Error loading PDF. Disable extensions like IDM and try again.
+          <button onClick={() => fetchPdf(cvPDF)}>Retry</button>
+        </div>
+      ) : (
+        <Document
+          file={pdfBlobUrl}
+          onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+          loading={<div className="pt-3">Rendering PDF...</div>}
+          error={<div className="pt-3">Failed to render PDF</div>}
+        >
+          {Array.from({ length: numPages || 0 }, (_, i) => (
+            <Page
+              className="mb-1"
+              key={`page_${i + 1}`}
+              pageNumber={i + 1}
+              width={Math.min(containerWidth, 900)}
+              loading={<div>Loading page {i + 1}...</div>}
+            />
+          ))}
+        </Document>
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ export const POST: APIRoute = async ({ request, url }) => {
   try {
     const { pdfUrl } = (await request.json()) as RequestBody;
 
+    // Validate input
     if (!pdfUrl?.trim()) {
       return new Response(JSON.stringify({ error: "PDF URL is required" }), {
         status: 400,
@@ -17,18 +18,14 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
     }
 
-    // Convert relative URLs to absolute
-    let finalUrl = pdfUrl;
-    if (pdfUrl.startsWith("/")) {
-      // Get the base URL of the current server
-      const baseUrl = new URL(url.origin);
-      finalUrl = new URL(pdfUrl, baseUrl).toString();
-      console.log("Converted relative URL to:", finalUrl);
-    }
+    // Convert to absolute URL
+    const finalUrl = pdfUrl.startsWith("/")
+      ? new URL(pdfUrl, url.origin).toString()
+      : pdfUrl;
 
     // Validate URL format
     try {
-      new URL(finalUrl); // Will throw if still invalid
+      new URL(finalUrl);
     } catch {
       return new Response(JSON.stringify({ error: "Invalid URL format" }), {
         status: 400,
@@ -41,8 +38,9 @@ export const POST: APIRoute = async ({ request, url }) => {
     return new Response(fetchResponse.body, {
       status: 200,
       headers: {
-        "Content-Type": "application/octet-stream",
-        "Cache-Control": "no-store",
+        "Content-Type": "application/octet-stream", // Required for IDM bypass
+        "Cache-Control": "private, max-age=300", // Cache for 5 minutes (private prevents CDN caching)
+        Vary: "Origin", // Cache separately per requesting origin
       },
     });
   } catch (error) {
@@ -51,10 +49,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       JSON.stringify({
         error: error instanceof Error ? error.message : "Unknown error",
       }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      },
+      { status: 500, headers: { "Content-Type": "application/json" } },
     );
   }
 };
