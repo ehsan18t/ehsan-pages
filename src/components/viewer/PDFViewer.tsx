@@ -13,6 +13,52 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   const [numPages, setNumPages] = useState<number>();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(900); // Default width
+  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch PDF whenever currentUrl changes
+  useEffect(() => {
+    const fetchPdf = async () => {
+      if (!cvPDF.trim()) return;
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch("/api/fetch-pdf", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pdfUrl: cvPDF.trim() }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to load: ${response.statusText}`);
+        }
+
+        const blob = await response.blob();
+        const newBlobUrl = URL.createObjectURL(blob);
+
+        // Revoke previous URL if exists
+        if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
+
+        setPdfBlobUrl(newBlobUrl);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPdf();
+  }, []);
+
+  // Clean up Blob URLs on unmount
+  useEffect(() => {
+    return () => {
+      if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
+    };
+  }, [pdfBlobUrl]);
 
   // Handle window resize
   useEffect(() => {
@@ -39,7 +85,7 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   return (
     <div className="max-w-4xl" ref={containerRef}>
       <Document
-        file={cvPDF}
+        file={pdfBlobUrl}
         onLoadSuccess={onDocumentLoadSuccess}
         loading={<div>Loading PDF...</div>}
         error={
