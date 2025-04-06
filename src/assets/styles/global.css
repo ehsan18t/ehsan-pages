@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Doto:wght,ROND@800,100&display=swap");
+
 @import "tailwindcss";
 
 @layer base {
@@ -7,8 +9,6 @@
     --background: 2, 21, 38; /* #021526 */
     --foreground: 224, 230, 237; /* #E0E6ED */
     --foreground-muted: 170, 183, 196; /* #AAB7C4 */
-    --primary: 61, 136, 68; /* #3d8844 */
-    --primary-muted: 96, 153, 102; /* #609966 */
     --secondary: 255, 111, 97; /* #ff6f61 */
 
     --scroll-bg: rgb(var(--background));
@@ -58,6 +58,8 @@
   --font-Inter:
     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+
+  --font-doto: "Doto", sans-serif;
 }
 
 body {
