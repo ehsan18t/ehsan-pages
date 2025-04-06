@@ -9,10 +9,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
-type PDFFile = string | File | null;
-
-export default function PDFViewer() {
-  const [file] = useState<PDFFile>("/CV.pdf");
+export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   const [numPages, setNumPages] = useState<number>();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(900); // Default width
@@ -40,31 +37,29 @@ export default function PDFViewer() {
   }
 
   return (
-    <div className="max-w-4xl">
-      <div className="pdf-document-container" ref={containerRef}>
-        <Document
-          file={file}
-          onLoadSuccess={onDocumentLoadSuccess}
-          loading={<div>Loading PDF...</div>}
-          error={
-            <div>
-              Error loading PDF. Make sure extensions like IDM are disabled then
-              try again.
-            </div>
-          }
-        >
-          {Array.from(new Array(numPages), (_, index) => (
-            <Page
-              className="mb-1"
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              width={Math.min(containerWidth, 900)}
-              loading={<div>Loading page...</div>}
-              error={<div>Error rendering page.</div>}
-            />
-          ))}
-        </Document>
-      </div>
+    <div className="max-w-4xl" ref={containerRef}>
+      <Document
+        file={cvPDF}
+        onLoadSuccess={onDocumentLoadSuccess}
+        loading={<div>Loading PDF...</div>}
+        error={
+          <div>
+            Error loading PDF. Make sure extensions like IDM are disabled then
+            try again.
+          </div>
+        }
+      >
+        {Array.from(new Array(numPages), (_, index) => (
+          <Page
+            className="mb-1"
+            key={`page_${index + 1}`}
+            pageNumber={index + 1}
+            width={Math.min(containerWidth, 900)}
+            loading={<div>Loading page...</div>}
+            error={<div>Error rendering page.</div>}
+          />
+        ))}
+      </Document>
     </div>
   );
 }

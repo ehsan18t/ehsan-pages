@@ -2,7 +2,7 @@ import Button from "@/components/button/Button";
 import { useEffect, useState } from "react";
 import PDFViewer from "./PDFViewer";
 
-const PDFViewerModal = () => {
+const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Prevent background scrolling when modal is open
@@ -39,7 +39,7 @@ const PDFViewerModal = () => {
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center px-6 py-3 border-b border-white/10">
-              <Button link="/CV.pdf">Download CV</Button>
+              <Button link={cvPDF}>Download CV</Button>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-300 hover:text-white text-6xl leading-none px-2 transition-colors"
@@ -51,7 +51,7 @@ const PDFViewerModal = () => {
 
             {/* Scrollable PDF Content */}
             <div className="overflow-y-auto pb-4 px-1 md:px-2 lg:px-4 bg-[rgb(var(--background))]">
-              <PDFViewer />
+              <PDFViewer cvPDF={cvPDF} />
             </div>
           </div>
         </div>

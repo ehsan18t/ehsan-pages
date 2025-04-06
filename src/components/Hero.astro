@@ -81,7 +81,7 @@ import info from "@/data";
       </h2>
       <p class="md:text-lg text-justify">{info.description}</p>
       <div class="pt-6 pb-3">
-        <PDFViewerModal client:load />
+        <PDFViewerModal cvPDF={info.resume} client:load />
       </div>
       <SocialBar />
     </div>

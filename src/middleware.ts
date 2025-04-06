@@ -4,7 +4,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const response = await next();
 
   // Check if this is a PDF request
-  if (context.request.url.endsWith(".pdf")) {
+  if (context.request.url.endsWith("CV.pdf")) {
     // Clone the response to modify headers
     const newResponse = new Response(response.body, response);
 
