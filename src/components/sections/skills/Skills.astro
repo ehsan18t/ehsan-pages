@@ -1,51 +1,41 @@
 ---
-// Skills.astro - An orbital skills display
+// Skills.astro - A constellation skills display
 import { Icon } from "astro-icon/components";
 
-// Group skills by orbit/category
-const orbitalSkills = [
-  // Core/Central skills
+// Group skills by category for visualization
+const skillGroups = [
   {
-    orbit: "core",
-    radius: 75, // Half of 150px
+    category: "Languages",
+    color: "oklch(var(--accent-300))",
     skills: [
       { name: "JavaScript", icon: "simple-icons:javascript" },
       { name: "HTML", icon: "simple-icons:html5" },
       { name: "CSS", icon: "simple-icons:css3" },
+      { name: "TypeScript", icon: "simple-icons:typescript" },
+      { name: "Python", icon: "simple-icons:python" },
+      { name: "C/C++", icon: "simple-icons:cplusplus" },
+      { name: "Java", icon: "simple-icons:coffeescript" },
+      { name: "PHP", icon: "simple-icons:php" },
+      { name: "SQL", icon: "simple-icons:postgresql" },
     ],
   },
-  // First orbit - Frontend frameworks
   {
-    orbit: "frontend",
-    radius: 175, // Half of 350px
+    category: "Frameworks & Libraries",
+    color: "oklch(var(--accent-500))",
     skills: [
       { name: "React", icon: "simple-icons:react" },
       { name: "NextJS", icon: "simple-icons:nextdotjs" },
       { name: "Svelte", icon: "simple-icons:svelte" },
       { name: "Redux", icon: "simple-icons:redux" },
       { name: "TailwindCSS", icon: "simple-icons:tailwindcss" },
-      { name: "TypeScript", icon: "simple-icons:typescript" },
       { name: "Astro", icon: "simple-icons:astro" },
-    ],
-  },
-  // Second orbit - Backend & databases
-  {
-    orbit: "backend",
-    radius: 275, // Half of 550px
-    skills: [
       { name: "Django", icon: "simple-icons:django" },
-      { name: "PHP", icon: "simple-icons:php" },
-      { name: "SQL", icon: "simple-icons:postgresql" },
       { name: "Firebase", icon: "simple-icons:firebase" },
-      { name: "Python", icon: "simple-icons:python" },
-      { name: "C/C++", icon: "simple-icons:cplusplus" },
-      { name: "Java", icon: "simple-icons:coffeescript" },
     ],
   },
-  // Third orbit - Tools and utilities
   {
-    orbit: "tools",
-    radius: 375, // Half of 750px
+    category: "Tools & Environments",
+    color: "oklch(var(--accent-900))",
     skills: [
       { name: "Git", icon: "simple-icons:git" },
       { name: "GitHub", icon: "simple-icons:github" },
@@ -63,41 +53,48 @@ const orbitalSkills = [
     ],
   },
 ];
+
+// Flatten all skills for rendering
+const allSkills = skillGroups.flatMap((group) => group.skills.map((skill) => ({ ...skill, category: group.category, color: group.color })));
 ---
 
 <section id="skills" class="py-24 relative overflow-hidden">
-  <!-- Accent rings in background -->
+  <!-- Accent elements in background -->
   <div class="absolute inset-0 pointer-events-none">
     <div class="hero-ring w-[120%] aspect-square opacity-10"></div>
     <div class="hero-ring w-[80%] aspect-square opacity-5"></div>
   </div>
 
-  <div class="mx-auto px-4 relative z-10">
-    <div class="text-center mb-36">
+  <div class="container mx-auto px-4 relative z-10">
+    <div class="text-center mb-16">
       <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">Technical <span class="font-doto font-bold"> Skills</span></h2>
       <div class="w-24 h-1 bg-gradient-to-r from-[oklch(var(--accent-500))] to-[oklch(var(--accent-900))] mx-auto rounded-full"></div>
+      <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">A collection of technologies I've worked with</p>
     </div>
 
-    <div class="orbital-system">
+    <!-- Legend/filter for constellation -->
+    <div class="flex flex-wrap justify-center gap-4 mb-10">
       {
-        orbitalSkills.map((orbitGroup, orbitIndex) => (
-          <div class={`orbit orbit-${orbitGroup.orbit}`} data-orbit-index={orbitIndex}>
-            {orbitGroup.skills.map((skill, skillIndex) => {
-              const totalSkills = orbitGroup.skills.length;
-              const angle = (skillIndex / totalSkills) * 360;
-              return (
-                <div class="skill-node" style={`--angle: ${angle}deg; --delay: ${skillIndex * 0.1 + orbitIndex * 0.5}s; --radius: ${orbitGroup.radius}px;`} data-skill-index={skillIndex} data-orbit={orbitGroup.orbit}>
-                  <div class="skill-bubble">
-                    <div class="skill-content">
-                      <div class="skill-icon">
-                        <Icon name={skill.icon} />
-                      </div>
-                      <div class="skill-name">{skill.name}</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+        skillGroups.map((group) => (
+          <button class="skill-filter px-4 py-2 rounded-full border text-sm transition-all duration-300 hover:scale-105" data-category={group.category} style={`--filter-color: ${group.color}`}>
+            {group.category}
+          </button>
+        ))
+      }
+      <button class="skill-filter px-4 py-2 rounded-full border text-sm transition-all duration-300 hover:scale-105 active" data-category="all"> All Skills </button>
+    </div>
+
+    <!-- Skill constellation -->
+    <div class="skill-constellation relative h-[600px] mx-auto">
+      {
+        allSkills.map((skill, index) => (
+          <div class="skill-node" data-category={skill.category} style={`--delay: ${index * 0.05}s; --color: ${skill.color}`}>
+            <div class="skill-bubble">
+              <div class="skill-icon">
+                <Icon name={skill.icon} />
+              </div>
+              <div class="skill-name">{skill.name}</div>
+            </div>
           </div>
         ))
       }
@@ -106,65 +103,25 @@ const orbitalSkills = [
 </section>
 
 <style>
-  .orbital-system {
+  .skill-constellation {
+    perspective: 1000px;
+    max-width: 1000px;
     position: relative;
-    width: 100%;
-    height: 800px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    perspective: 1200px;
   }
 
-  /* Orbit rings - adjust z-index so inner orbits are on top */
-  .orbit {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px dashed rgba(255, 255, 255, 0.1);
-    transform-style: preserve-3d;
-  }
-
-  .orbit-core {
-    width: 150px;
-    height: 150px;
-    animation: rotate 60s linear infinite;
-    z-index: 40;
-  }
-
-  .orbit-frontend {
-    width: 350px;
-    height: 350px;
-    animation: rotate 80s linear infinite reverse;
-    z-index: 30;
-  }
-
-  .orbit-backend {
-    width: 550px;
-    height: 550px;
-    animation: rotate 100s linear infinite;
-    z-index: 20;
-  }
-
-  .orbit-tools {
-    width: 750px;
-    height: 750px;
-    animation: rotate 120s linear infinite reverse;
-    z-index: 10;
-  }
-
-  /* Skill nodes positioned on orbits */
   .skill-node {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform-origin: 0 0;
-    transform: rotate(var(--angle)) translateX(var(--radius));
     opacity: 0;
-    z-index: inherit;
+    transform: scale(0);
   }
 
-  /* Bubble container */
+  .skill-node.visible {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition-delay: var(--delay);
+  }
+
   .skill-bubble {
     width: 85px;
     height: 85px;
@@ -173,31 +130,35 @@ const orbitalSkills = [
     backdrop-filter: blur(5px);
     border: 2px solid rgba(255, 255, 255, 0.05);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.5);
-    position: relative;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  /* Content container that handles rotation */
-  .skill-content {
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
+    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     padding: 10px;
-    /* This counter-rotates to make content initially upright */
-    transform: rotate(calc(-1 * var(--angle)));
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Glow effect based on category */
+  .skill-bubble::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, var(--color) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
   }
 
   .skill-icon {
     font-size: 1.8rem;
     margin-bottom: 5px;
-    color: oklch(var(--accent-text));
+    color: var(--color, oklch(var(--accent-text)));
+    transition: transform 0.3s ease;
   }
 
   .skill-name {
@@ -205,244 +166,275 @@ const orbitalSkills = [
     font-weight: 500;
     line-height: 1.1;
     text-align: center;
+    transition: opacity 0.3s ease;
+    opacity: 0.8;
   }
 
   /* Hover effects */
   .skill-bubble:hover {
-    /* Leave empty - will be handled by active class */
+    border-color: var(--color);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
   }
 
-  /* Always maintain vertical orientation on hover */
-  .skill-bubble:hover .skill-content {
-    /* Leave empty - will be handled by JS */
+  .skill-bubble:hover::before {
+    opacity: 0.15;
   }
 
-  /* Animation for orbital rotation */
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  .skill-bubble:hover .skill-icon {
+    transform: translateY(-2px);
   }
 
-  /* Animation for skills appearing */
-  .skill-node.animated {
-    animation: fadeScale 0.6s forwards;
-    animation-delay: var(--delay);
+  .skill-bubble:hover .skill-name {
+    opacity: 1;
   }
 
-  @keyframes fadeScale {
-    from {
-      opacity: 0;
-      transform: rotate(var(--angle)) translateX(var(--radius)) scale(0.5);
-    }
-    to {
-      opacity: 1;
-      transform: rotate(var(--angle)) translateX(var(--radius)) scale(1);
-    }
+  /* Connection lines between related skills */
+  .skill-connection {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, var(--connection-color, rgba(255, 255, 255, 0.1)), transparent);
+    height: 1px;
+    transform-origin: left center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .skill-connection.visible {
+    opacity: 0.15;
+  }
+
+  /* Filter buttons */
+  .skill-filter {
+    background-color: rgba(var(--background), 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgb(var(--foreground-muted));
+    transition: all 0.3s ease;
+  }
+
+  .skill-filter:hover {
+    border-color: var(--filter-color, oklch(var(--accent-500)));
+    color: rgb(var(--foreground));
+  }
+
+  .skill-filter.active {
+    background-color: var(--filter-color, oklch(var(--accent-500)));
+    border-color: var(--filter-color, oklch(var(--accent-500)));
+    color: rgb(var(--background));
   }
 
   /* Responsive adjustments */
-  @media (max-width: 1100px) {
-    .orbital-system {
-      height: 600px;
-      transform: scale(0.8);
-    }
-  }
-
   @media (max-width: 768px) {
-    .orbital-system {
-      height: 450px;
-      transform: scale(0.6);
+    .skill-constellation {
+      height: 900px;
     }
-  }
 
-  @media (max-width: 480px) {
-    .orbital-system {
-      height: 350px;
-      transform: scale(0.45);
+    .skill-bubble {
+      width: 75px;
+      height: 75px;
     }
-  }
-
-  /* Add these style rules */
-
-  /* Pause animation when orbit is paused */
-  .orbit-paused {
-    animation-play-state: paused !important;
-  }
-
-  /* When a node is active (hovered), ensure it's on top */
-  .skill-node.active {
-    z-index: 1000;
-  }
-
-  /* Adjust the hover effect to work with our new approach */
-  .skill-node.active .skill-bubble {
-    /* transform: scale(1.15); */
-    border-color: oklch(var(--accent-500));
-    box-shadow:
-      0 8px 25px -5px rgba(0, 0, 0, 0.4),
-      0 0 15px rgba(var(--accent-500), 0.3);
-  }
-
-  /* Remove any hover styles from bubble and content to avoid conflicts */
-  .skill-bubble:hover,
-  .skill-bubble:hover .skill-content {
-    /* empty to be handled by JS */
-  }
-
-  /* Add spin animation styles */
-  @keyframes spinToCorrect {
-    from {
-      /* Will be set dynamically */
-    }
-    to {
-      /* Will be set dynamically */
-    }
-  }
-
-  .spin-to-correct {
-    animation: spinToCorrect 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   }
 </style>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // Animation observation code remains unchanged
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const nodes = document.querySelectorAll(".skill-node");
-            nodes.forEach((node) => {
-              node.classList.add("animated");
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+    const constellation = document.querySelector(".skill-constellation");
+    const nodes = Array.from(document.querySelectorAll(".skill-node"));
+    const filterButtons = document.querySelectorAll(".skill-filter");
+    let connections = [];
 
-    const orbitalSystem = document.querySelector(".orbital-system");
-    if (orbitalSystem) {
-      observer.observe(orbitalSystem);
+    // Initialize positions
+    function initializePositions() {
+      // Calculate a dynamic layout based on screen size
+      const containerWidth = constellation.clientWidth;
+      const containerHeight = constellation.clientHeight;
+      const centerX = containerWidth / 2;
+      const centerY = containerHeight / 2;
+
+      // Position nodes in a structured but organic pattern
+      nodes.forEach((node, index) => {
+        // Use golden ratio for distribution
+        const phi = (1 + Math.sqrt(5)) / 2;
+        const i = index + 1;
+
+        // Calculate radius and angle for a spiral-like pattern
+        const radius = Math.sqrt(i) * 30;
+        const angle = i * phi * Math.PI * 2;
+
+        // Convert to cartesian coordinates with some randomness
+        const randomOffset = Math.random() * 40 - 20;
+        const x = centerX + Math.cos(angle) * (radius + randomOffset);
+        const y = centerY + Math.sin(angle) * (radius + randomOffset);
+
+        // Apply position
+        node.style.left = `${Math.max(0, Math.min(containerWidth - 85, x))}px`;
+        node.style.top = `${Math.max(0, Math.min(containerHeight - 85, y))}px`;
+      });
     }
 
-    // Modified hover handling to add spin animation
-    const nodes = document.querySelectorAll(".skill-node");
+    // Create connections between related skills
+    function createConnections() {
+      // Remove existing connections
+      document.querySelectorAll(".skill-connection").forEach((conn) => conn.remove());
+      connections = [];
 
-    nodes.forEach((node: any) => {
-      node.addEventListener("mouseenter", () => {
-        // Find the orbit this node belongs to
-        const orbit = node.closest(".orbit");
+      // Only create connections for visible nodes
+      const visibleNodes = nodes.filter((node) => node.classList.contains("visible"));
 
-        // Pause animation
-        orbit?.classList.add("orbit-paused");
+      // Group nodes by category
+      const categories = {};
+      visibleNodes.forEach((node) => {
+        const category = node.dataset.category;
+        if (!categories[category]) categories[category] = [];
+        categories[category].push(node);
+      });
 
-        // Mark this node as active
-        node.classList.add("active");
+      // Create connections within each category
+      Object.entries(categories).forEach(([category, categoryNodes]) => {
+        // Get color from the first node in category
+        const color = categoryNodes[0].style.getPropertyValue("--color");
 
-        // Get the angle from the style attribute
-        const angle = parseFloat(node.style.getPropertyValue("--angle") || "0");
+        categoryNodes.forEach((node, i) => {
+          // Connect to a few nearby nodes in same category
+          for (let j = i + 1; j < Math.min(i + 3, categoryNodes.length); j++) {
+            if (Math.random() > 0.3) {
+              // 70% chance to create connection
+              const nodeRect = node.getBoundingClientRect();
+              const targetRect = categoryNodes[j].getBoundingClientRect();
+              const constellationRect = constellation.getBoundingClientRect();
 
-        // Calculate what the orbit's current rotation is
-        let orbitRotation = 0;
+              // Calculate positions relative to constellation
+              const x1 = nodeRect.left + nodeRect.width / 2 - constellationRect.left;
+              const y1 = nodeRect.top + nodeRect.height / 2 - constellationRect.top;
+              const x2 = targetRect.left + targetRect.width / 2 - constellationRect.left;
+              const y2 = targetRect.top + targetRect.height / 2 - constellationRect.top;
 
-        // Get computed transform of the orbit
-        const orbitStyle = window.getComputedStyle(orbit);
-        const transform = orbitStyle.getPropertyValue("transform");
+              // Calculate distance and angle
+              const dx = x2 - x1;
+              const dy = y2 - y1;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
 
-        if (transform && transform !== "none") {
-          // Extract rotation from transform matrix
-          try {
-            const values = transform.split("(")[1].split(")")[0].split(",");
-            const a = parseFloat(values[0]);
-            const b = parseFloat(values[1]);
-            orbitRotation = Math.atan2(b, a) * (180 / Math.PI);
-          } catch (e) {
-            console.log("Could not parse transform", e);
-          }
-        }
+              // Create connection element
+              const connection = document.createElement("div");
+              connection.className = "skill-connection";
+              connection.style.width = `${distance}px`;
+              connection.style.left = `${x1}px`;
+              connection.style.top = `${y1}px`;
+              connection.style.transform = `rotate(${angle}deg)`;
+              connection.style.setProperty("--connection-color", color);
 
-        // Get content element
-        const skillContent = node.querySelector(".skill-content");
+              // Add to DOM and track
+              constellation.appendChild(connection);
+              connections.push(connection);
 
-        // Get the current rotation of the content
-        const currentStyle = window.getComputedStyle(skillContent);
-        const currentTransform = currentStyle.getPropertyValue("transform");
-        let currentRotation = -angle; // Default CSS value
-
-        // Try to get the actual current rotation
-        if (currentTransform && currentTransform !== "none") {
-          try {
-            const values = currentTransform.split("(")[1].split(")")[0].split(",");
-            const a = parseFloat(values[0]);
-            const b = parseFloat(values[1]);
-            if (!isNaN(a) && !isNaN(b)) {
-              currentRotation = Math.atan2(b, a) * (180 / Math.PI);
+              // Animate in
+              setTimeout(() => {
+                connection.classList.add("visible");
+              }, 50);
             }
-          } catch (e) {
-            // Use default if parsing fails
           }
-        }
-
-        // Calculate the corrected rotation angle
-        const correctionAngle = (-angle - orbitRotation) % 360;
-
-        // Apply spin animation class and store target angle as a data attribute
-        skillContent.classList.add("spin-to-correct");
-        skillContent.dataset.fromAngle = currentRotation;
-        skillContent.dataset.toAngle = correctionAngle;
-
-        // Remove any inline transform to let the animation take over
-        skillContent.style.transform = "";
+        });
       });
+    }
 
-      node.addEventListener("mouseleave", () => {
-        // Resume animation
-        const orbit = node.closest(".orbit");
-        orbit.classList.remove("orbit-paused");
+    // Initialize filter functionality
+    function initializeFilters() {
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          // Update active state
+          filterButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
 
-        // Remove active state
-        node.classList.remove("active");
+          const category = button.dataset.category;
 
-        // Get the angle again
-        const angle = parseFloat(node.style.getPropertyValue("--angle") || "0");
+          // Hide all nodes first
+          nodes.forEach((node) => {
+            node.classList.remove("visible");
+          });
 
-        // Get content element
-        const skillContent = node.querySelector(".skill-content");
+          // Show nodes that match the filter
+          setTimeout(() => {
+            nodes.forEach((node) => {
+              if (category === "all" || node.dataset.category === category) {
+                node.classList.add("visible");
+              }
+            });
 
-        // Remove spin animation class
-        skillContent.classList.remove("spin-to-correct");
-
-        // Reset to original counter-rotation with animation
-        skillContent.style.transform = `rotate(${-angle}deg)`;
+            // Update connections after nodes are visible
+            setTimeout(createConnections, 100);
+          }, 300);
+        });
       });
+    }
+
+    // Make nodes interactive
+    function initializeNodeInteraction() {
+      nodes.forEach((node) => {
+        node.addEventListener("mouseenter", () => {
+          const category = node.dataset.category;
+
+          // Highlight connections for this node
+          connections.forEach((conn) => {
+            conn.style.opacity = "0.05";
+          });
+
+          // Highlight nodes in same category
+          nodes.forEach((otherNode) => {
+            if (otherNode.dataset.category === category) {
+              otherNode.querySelector(".skill-bubble").style.borderColor = otherNode.style.getPropertyValue("--color");
+            } else {
+              otherNode.style.opacity = "0.5";
+            }
+          });
+
+          node.style.opacity = "1";
+          node.style.zIndex = "10";
+        });
+
+        node.addEventListener("mouseleave", () => {
+          // Reset node styles
+          nodes.forEach((otherNode) => {
+            otherNode.style.opacity = "1";
+            otherNode.style.zIndex = "auto";
+            otherNode.querySelector(".skill-bubble").style.borderColor = "";
+          });
+
+          // Reset connection styles
+          connections.forEach((conn) => {
+            conn.style.opacity = "";
+          });
+        });
+      });
+    }
+
+    // Initial setup
+    function initialize() {
+      initializePositions();
+
+      // Show all nodes with animation delay
+      setTimeout(() => {
+        nodes.forEach((node) => node.classList.add("visible"));
+
+        // Create connections after nodes are visible
+        setTimeout(createConnections, 500);
+      }, 300);
+
+      initializeFilters();
+      initializeNodeInteraction();
+    }
+
+    // Handle window resize
+    let resizeTimeout;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        initializePositions();
+        createConnections();
+      }, 250);
     });
 
-    // Handle the spin animation using animationstart event
-    document.querySelectorAll(".skill-content").forEach((content: any) => {
-      content.addEventListener("animationstart", (e: any) => {
-        if (e.animationName === "spinToCorrect") {
-          // Set the spin animation properties dynamically
-          const fromAngle = parseFloat(content.dataset.fromAngle || "0");
-          const toAngle = parseFloat(content.dataset.toAngle || "0");
-
-          // Create a keyframe animation and apply it
-          const keyframes = [{ transform: `rotate(${fromAngle}deg)` }, { transform: `rotate(${toAngle}deg)` }];
-
-          const options = {
-            duration: 300,
-            easing: "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-            fill: "forwards",
-          };
-
-          content.animate(keyframes, options);
-        }
-      });
-    });
+    initialize();
   });
 </script>
