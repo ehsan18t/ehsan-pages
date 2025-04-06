@@ -1,0 +1,448 @@
+---
+// Skills.astro - An orbital skills display
+import { Icon } from "astro-icon/components";
+
+// Group skills by orbit/category
+const orbitalSkills = [
+  // Core/Central skills
+  {
+    orbit: "core",
+    radius: 75, // Half of 150px
+    skills: [
+      { name: "JavaScript", icon: "simple-icons:javascript" },
+      { name: "HTML", icon: "simple-icons:html5" },
+      { name: "CSS", icon: "simple-icons:css3" },
+    ],
+  },
+  // First orbit - Frontend frameworks
+  {
+    orbit: "frontend",
+    radius: 175, // Half of 350px
+    skills: [
+      { name: "React", icon: "simple-icons:react" },
+      { name: "NextJS", icon: "simple-icons:nextdotjs" },
+      { name: "Svelte", icon: "simple-icons:svelte" },
+      { name: "Redux", icon: "simple-icons:redux" },
+      { name: "TailwindCSS", icon: "simple-icons:tailwindcss" },
+      { name: "TypeScript", icon: "simple-icons:typescript" },
+      { name: "Astro", icon: "simple-icons:astro" },
+    ],
+  },
+  // Second orbit - Backend & databases
+  {
+    orbit: "backend",
+    radius: 275, // Half of 550px
+    skills: [
+      { name: "Django", icon: "simple-icons:django" },
+      { name: "PHP", icon: "simple-icons:php" },
+      { name: "SQL", icon: "simple-icons:postgresql" },
+      { name: "Firebase", icon: "simple-icons:firebase" },
+      { name: "Python", icon: "simple-icons:python" },
+      { name: "C/C++", icon: "simple-icons:cplusplus" },
+      { name: "Java", icon: "simple-icons:coffeescript" },
+    ],
+  },
+  // Third orbit - Tools and utilities
+  {
+    orbit: "tools",
+    radius: 375, // Half of 750px
+    skills: [
+      { name: "Git", icon: "simple-icons:git" },
+      { name: "GitHub", icon: "simple-icons:github" },
+      { name: "Linux", icon: "simple-icons:linux" },
+      { name: "Bash", icon: "simple-icons:gnubash" },
+      { name: "Batch", icon: "simple-icons:windowsterminal" },
+      { name: "Vim", icon: "simple-icons:vim" },
+      { name: "Figma", icon: "simple-icons:figma" },
+      { name: "LaTeX", icon: "simple-icons:latex" },
+      { name: "Markdown", icon: "simple-icons:markdown" },
+      { name: "GitHub Actions", icon: "simple-icons:githubactions" },
+      { name: "Jira", icon: "simple-icons:jira" },
+      { name: "Scrum", icon: "simple-icons:scrumalliance" },
+      { name: "Googling", icon: "simple-icons:google" },
+    ],
+  },
+];
+---
+
+<section id="skills" class="py-24 relative overflow-hidden">
+  <!-- Accent rings in background -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="hero-ring w-[120%] aspect-square opacity-10"></div>
+    <div class="hero-ring w-[80%] aspect-square opacity-5"></div>
+  </div>
+
+  <div class="mx-auto px-4 relative z-10">
+    <div class="text-center mb-36">
+      <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">Technical <span class="font-doto font-bold"> Skills</span></h2>
+      <div class="w-24 h-1 bg-gradient-to-r from-[oklch(var(--accent-500))] to-[oklch(var(--accent-900))] mx-auto rounded-full"></div>
+    </div>
+
+    <div class="orbital-system">
+      {
+        orbitalSkills.map((orbitGroup, orbitIndex) => (
+          <div class={`orbit orbit-${orbitGroup.orbit}`} data-orbit-index={orbitIndex}>
+            {orbitGroup.skills.map((skill, skillIndex) => {
+              const totalSkills = orbitGroup.skills.length;
+              const angle = (skillIndex / totalSkills) * 360;
+              return (
+                <div class="skill-node" style={`--angle: ${angle}deg; --delay: ${skillIndex * 0.1 + orbitIndex * 0.5}s; --radius: ${orbitGroup.radius}px;`} data-skill-index={skillIndex} data-orbit={orbitGroup.orbit}>
+                  <div class="skill-bubble">
+                    <div class="skill-content">
+                      <div class="skill-icon">
+                        <Icon name={skill.icon} />
+                      </div>
+                      <div class="skill-name">{skill.name}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .orbital-system {
+    position: relative;
+    width: 100%;
+    height: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px;
+  }
+
+  /* Orbit rings - adjust z-index so inner orbits are on top */
+  .orbit {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+  }
+
+  .orbit-core {
+    width: 150px;
+    height: 150px;
+    animation: rotate 60s linear infinite;
+    z-index: 40;
+  }
+
+  .orbit-frontend {
+    width: 350px;
+    height: 350px;
+    animation: rotate 80s linear infinite reverse;
+    z-index: 30;
+  }
+
+  .orbit-backend {
+    width: 550px;
+    height: 550px;
+    animation: rotate 100s linear infinite;
+    z-index: 20;
+  }
+
+  .orbit-tools {
+    width: 750px;
+    height: 750px;
+    animation: rotate 120s linear infinite reverse;
+    z-index: 10;
+  }
+
+  /* Skill nodes positioned on orbits */
+  .skill-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 0 0;
+    transform: rotate(var(--angle)) translateX(var(--radius));
+    opacity: 0;
+    z-index: inherit;
+  }
+
+  /* Bubble container */
+  .skill-bubble {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(var(--background), 0.7);
+    backdrop-filter: blur(5px);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  /* Content container that handles rotation */
+  .skill-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    /* This counter-rotates to make content initially upright */
+    transform: rotate(calc(-1 * var(--angle)));
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .skill-icon {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    color: oklch(var(--accent-text));
+  }
+
+  .skill-name {
+    font-size: 0.7rem;
+    font-weight: 500;
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  /* Hover effects */
+  .skill-bubble:hover {
+    /* Leave empty - will be handled by active class */
+  }
+
+  /* Always maintain vertical orientation on hover */
+  .skill-bubble:hover .skill-content {
+    /* Leave empty - will be handled by JS */
+  }
+
+  /* Animation for orbital rotation */
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Animation for skills appearing */
+  .skill-node.animated {
+    animation: fadeScale 0.6s forwards;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes fadeScale {
+    from {
+      opacity: 0;
+      transform: rotate(var(--angle)) translateX(var(--radius)) scale(0.5);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(var(--angle)) translateX(var(--radius)) scale(1);
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 1100px) {
+    .orbital-system {
+      height: 600px;
+      transform: scale(0.8);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .orbital-system {
+      height: 450px;
+      transform: scale(0.6);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .orbital-system {
+      height: 350px;
+      transform: scale(0.45);
+    }
+  }
+
+  /* Add these style rules */
+
+  /* Pause animation when orbit is paused */
+  .orbit-paused {
+    animation-play-state: paused !important;
+  }
+
+  /* When a node is active (hovered), ensure it's on top */
+  .skill-node.active {
+    z-index: 1000;
+  }
+
+  /* Adjust the hover effect to work with our new approach */
+  .skill-node.active .skill-bubble {
+    /* transform: scale(1.15); */
+    border-color: oklch(var(--accent-500));
+    box-shadow:
+      0 8px 25px -5px rgba(0, 0, 0, 0.4),
+      0 0 15px rgba(var(--accent-500), 0.3);
+  }
+
+  /* Remove any hover styles from bubble and content to avoid conflicts */
+  .skill-bubble:hover,
+  .skill-bubble:hover .skill-content {
+    /* empty to be handled by JS */
+  }
+
+  /* Add spin animation styles */
+  @keyframes spinToCorrect {
+    from {
+      /* Will be set dynamically */
+    }
+    to {
+      /* Will be set dynamically */
+    }
+  }
+
+  .spin-to-correct {
+    animation: spinToCorrect 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Animation observation code remains unchanged
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const nodes = document.querySelectorAll(".skill-node");
+            nodes.forEach((node) => {
+              node.classList.add("animated");
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const orbitalSystem = document.querySelector(".orbital-system");
+    if (orbitalSystem) {
+      observer.observe(orbitalSystem);
+    }
+
+    // Modified hover handling to add spin animation
+    const nodes = document.querySelectorAll(".skill-node");
+
+    nodes.forEach((node: any) => {
+      node.addEventListener("mouseenter", () => {
+        // Find the orbit this node belongs to
+        const orbit = node.closest(".orbit");
+
+        // Pause animation
+        orbit?.classList.add("orbit-paused");
+
+        // Mark this node as active
+        node.classList.add("active");
+
+        // Get the angle from the style attribute
+        const angle = parseFloat(node.style.getPropertyValue("--angle") || "0");
+
+        // Calculate what the orbit's current rotation is
+        let orbitRotation = 0;
+
+        // Get computed transform of the orbit
+        const orbitStyle = window.getComputedStyle(orbit);
+        const transform = orbitStyle.getPropertyValue("transform");
+
+        if (transform && transform !== "none") {
+          // Extract rotation from transform matrix
+          try {
+            const values = transform.split("(")[1].split(")")[0].split(",");
+            const a = parseFloat(values[0]);
+            const b = parseFloat(values[1]);
+            orbitRotation = Math.atan2(b, a) * (180 / Math.PI);
+          } catch (e) {
+            console.log("Could not parse transform", e);
+          }
+        }
+
+        // Get content element
+        const skillContent = node.querySelector(".skill-content");
+
+        // Get the current rotation of the content
+        const currentStyle = window.getComputedStyle(skillContent);
+        const currentTransform = currentStyle.getPropertyValue("transform");
+        let currentRotation = -angle; // Default CSS value
+
+        // Try to get the actual current rotation
+        if (currentTransform && currentTransform !== "none") {
+          try {
+            const values = currentTransform.split("(")[1].split(")")[0].split(",");
+            const a = parseFloat(values[0]);
+            const b = parseFloat(values[1]);
+            if (!isNaN(a) && !isNaN(b)) {
+              currentRotation = Math.atan2(b, a) * (180 / Math.PI);
+            }
+          } catch (e) {
+            // Use default if parsing fails
+          }
+        }
+
+        // Calculate the corrected rotation angle
+        const correctionAngle = (-angle - orbitRotation) % 360;
+
+        // Apply spin animation class and store target angle as a data attribute
+        skillContent.classList.add("spin-to-correct");
+        skillContent.dataset.fromAngle = currentRotation;
+        skillContent.dataset.toAngle = correctionAngle;
+
+        // Remove any inline transform to let the animation take over
+        skillContent.style.transform = "";
+      });
+
+      node.addEventListener("mouseleave", () => {
+        // Resume animation
+        const orbit = node.closest(".orbit");
+        orbit.classList.remove("orbit-paused");
+
+        // Remove active state
+        node.classList.remove("active");
+
+        // Get the angle again
+        const angle = parseFloat(node.style.getPropertyValue("--angle") || "0");
+
+        // Get content element
+        const skillContent = node.querySelector(".skill-content");
+
+        // Remove spin animation class
+        skillContent.classList.remove("spin-to-correct");
+
+        // Reset to original counter-rotation with animation
+        skillContent.style.transform = `rotate(${-angle}deg)`;
+      });
+    });
+
+    // Handle the spin animation using animationstart event
+    document.querySelectorAll(".skill-content").forEach((content: any) => {
+      content.addEventListener("animationstart", (e: any) => {
+        if (e.animationName === "spinToCorrect") {
+          // Set the spin animation properties dynamically
+          const fromAngle = parseFloat(content.dataset.fromAngle || "0");
+          const toAngle = parseFloat(content.dataset.toAngle || "0");
+
+          // Create a keyframe animation and apply it
+          const keyframes = [{ transform: `rotate(${fromAngle}deg)` }, { transform: `rotate(${toAngle}deg)` }];
+
+          const options = {
+            duration: 300,
+            easing: "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+            fill: "forwards",
+          };
+
+          content.animate(keyframes, options);
+        }
+      });
+    });
+  });
+</script>

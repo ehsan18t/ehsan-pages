@@ -3,13 +3,14 @@ import Hero from "@/components/Hero.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
 import Loader from "@/components/loader/Loader.astro";
 import background from "../assets/images/background.svg";
+import Skills from "@/components/sections/skills/Skills.astro";
+import AnimateOnScroll from "@/components/AnimateOnScroll.astro";
 ---
 
 <MainLayout>
   <Loader />
 
   <main id="main-content" style="opacity:0; pointer-events: none;">
-    <Hero />
     <div class="relative">
       <div class="bg-background relative z-10">
         <Hero />
@@ -20,38 +21,42 @@ import background from "../assets/images/background.svg";
 
       {/* Next Section with gradient overlay */}
       <div class="relative z-10 bg-gradient-to-b from-background via-background/80 to-transparent pb-[20vh]"></div>
+      <AnimateOnScroll animation="slide-up" delay="300ms">
+        <Skills />
+      </AnimateOnScroll>
     </div>
+
+    <script is:inline>
+      document.addEventListener("DOMContentLoaded", () => {
+        const loader = document.getElementById("hero-loader");
+        const main = document.getElementById("main-content");
+
+        setTimeout(() => {
+          if (loader) {
+            // Trigger exit animations
+            loader.classList.add("exit");
+
+            // Wait for animations to complete
+            Promise.all(
+              Array.from(loader.getElementsByClassName("logo-circle"))
+                .concat(Array.from(loader.getElementsByClassName("letter")), Array.from(loader.getElementsByClassName("name-char")), Array.from(loader.getElementsByClassName("particle")))
+                .map((el) => new Promise((res) => el.addEventListener("animationend", res, { once: true })))
+            ).then(() => {
+              // Remove loader after all animations finish
+              loader.remove();
+              document.getElementsByTagName("body")[0].style = "overflow: auto;";
+
+              // Show main content
+              main.style.opacity = "1";
+              main.style.pointerEvents = "auto";
+              main.style.transition = "opacity 0.6s ease";
+            });
+          }
+        }, 2000);
+      });
+    </script>
   </main>
 
-  <script is:inline>
-    document.addEventListener("DOMContentLoaded", () => {
-      const loader = document.getElementById("hero-loader");
-      const main = document.getElementById("main-content");
-
-      setTimeout(() => {
-        if (loader) {
-          // Trigger exit animations
-          loader.classList.add("exit");
-
-          // Wait for animations to complete
-          Promise.all(
-            Array.from(loader.getElementsByClassName("logo-circle"))
-              .concat(Array.from(loader.getElementsByClassName("letter")), Array.from(loader.getElementsByClassName("name-char")), Array.from(loader.getElementsByClassName("particle")))
-              .map((el) => new Promise((res) => el.addEventListener("animationend", res, { once: true })))
-          ).then(() => {
-            // Remove loader after all animations finish
-            loader.remove();
-            document.getElementsByTagName("body")[0].style = "overflow: auto;";
-
-            // Show main content
-            main.style.opacity = "1";
-            main.style.pointerEvents = "auto";
-            main.style.transition = "opacity 0.6s ease";
-          });
-        }
-      }, 2000);
-    });
-  </script>
   <style>
     #background {
       position: fixed;
