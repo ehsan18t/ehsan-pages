@@ -1,8 +1,8 @@
-import PDFViewer from "@/components/viewer/PDFViewer";
 import { useEffect, useState } from "react";
 import Button from "./Button";
+import PDFViewer from "./PDFViewer";
 
-const PDFModalViewer = () => {
+const PDFViewerModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Prevent background scrolling when modal is open
@@ -60,4 +60,4 @@ const PDFModalViewer = () => {
   );
 };
 
-export default PDFModalViewer;
+export default PDFViewerModal;
