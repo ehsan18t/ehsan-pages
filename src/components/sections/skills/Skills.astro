@@ -1,8 +1,8 @@
 ---
-// Skills.astro - A constellation skills display
+// Skills.astro - Modern Dashboard Layout
 import { Icon } from "astro-icon/components";
 
-// Group skills by category for visualization
+// Group skills by category
 const skillGroups = [
   {
     category: "Languages",
@@ -53,9 +53,6 @@ const skillGroups = [
     ],
   },
 ];
-
-// Flatten all skills for rendering
-const allSkills = skillGroups.flatMap((group) => group.skills.map((skill) => ({ ...skill, category: group.category, color: group.color })));
 ---
 
 <section id="skills" class="py-24 relative overflow-hidden">
@@ -72,369 +69,306 @@ const allSkills = skillGroups.flatMap((group) => group.skills.map((skill) => ({ 
       <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">A collection of technologies I've worked with</p>
     </div>
 
-    <!-- Legend/filter for constellation -->
-    <div class="flex flex-wrap justify-center gap-4 mb-10">
-      {
-        skillGroups.map((group) => (
-          <button class="skill-filter px-4 py-2 rounded-full border text-sm transition-all duration-300 hover:scale-105" data-category={group.category} style={`--filter-color: ${group.color}`}>
-            {group.category}
-          </button>
-        ))
-      }
-      <button class="skill-filter px-4 py-2 rounded-full border text-sm transition-all duration-300 hover:scale-105 active" data-category="all"> All Skills </button>
-    </div>
+    <!-- Skills dashboard -->
+    <div class="skills-dashboard">
+      <!-- Category tabs -->
+      <div class="skills-tabs">
+        {
+          skillGroups.map((group, index) => (
+            <button class={`tab-button ${index === 0 ? "active" : ""}`} data-tab={index} style={`--tab-color: ${group.color}`}>
+              {group.category}
+            </button>
+          ))
+        }
+      </div>
 
-    <!-- Skill constellation -->
-    <div class="skill-constellation relative h-[600px] mx-auto">
-      {
-        allSkills.map((skill, index) => (
-          <div class="skill-node" data-category={skill.category} style={`--delay: ${index * 0.05}s; --color: ${skill.color}`}>
-            <div class="skill-bubble">
-              <div class="skill-icon">
-                <Icon name={skill.icon} />
+      <!-- Skills content -->
+      <div class="skills-content">
+        {
+          skillGroups.map((group, index) => (
+            <div class={`skills-panel ${index === 0 ? "active" : ""}`} data-tab={index} style={`--panel-color: ${group.color}`}>
+              <div class="skills-grid">
+                {group.skills.map((skill, skillIndex) => (
+                  <div class="skill-card" style={`--delay: ${skillIndex * 0.05}s; --skill-color: ${group.color}`}>
+                    <div class="skill-card-inner">
+                      <div class="skill-icon">
+                        <Icon name={skill.icon} />
+                      </div>
+                      <div class="skill-name">{skill.name}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div class="skill-name">{skill.name}</div>
             </div>
-          </div>
-        ))
-      }
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  .skill-constellation {
-    perspective: 1000px;
+  .skills-dashboard {
     max-width: 1000px;
+    margin: 0 auto;
+    background: rgba(var(--background), 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(var(--foreground), 0.05);
+    overflow: hidden;
+  }
+
+  /* Tab navigation */
+  .skills-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid rgba(var(--foreground), 0.1);
+  }
+
+  .tab-button {
+    padding: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    background: transparent;
+    color: rgb(var(--foreground-muted));
+    border: none;
     position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
   }
 
-  .skill-node {
+  .tab-button::after {
+    content: "";
     position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 3px;
+    background: var(--tab-color);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+  }
+
+  .tab-button:hover {
+    color: rgb(var(--foreground));
+  }
+
+  .tab-button.active {
+    color: var(--tab-color);
+  }
+
+  .tab-button.active::after {
+    transform: scaleX(1);
+  }
+
+  /* Skills panels */
+  .skills-content {
+    position: relative;
+    min-height: 300px;
+  }
+
+  .skills-panel {
+    position: absolute;
+    inset: 0;
+    padding: 30px;
     opacity: 0;
-    transform: scale(0);
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+    pointer-events: none;
   }
 
-  .skill-node.visible {
+  .skills-panel.active {
     opacity: 1;
-    transform: scale(1);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transition-delay: var(--delay);
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
-  .skill-bubble {
-    width: 85px;
-    height: 85px;
-    border-radius: 50%;
+  /* Skills grid */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 20px;
+  }
+
+  /* Skill cards */
+  .skill-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardAppear 0.5s forwards;
+    animation-delay: var(--delay, 0s);
+  }
+
+  @keyframes cardAppear {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .skill-card-inner {
+    aspect-ratio: 1;
     background: rgba(var(--background), 0.7);
-    backdrop-filter: blur(5px);
-    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    padding: 10px;
+    text-align: center;
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.05),
+      0 0 0 1px rgba(var(--foreground), 0.05);
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
   }
 
-  /* Glow effect based on category */
-  .skill-bubble::before {
+  .skill-card-inner::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at center, var(--color) 0%, transparent 70%);
+    inset: 0;
+    background: var(--skill-color);
     opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: -1;
+  }
+
+  .skill-card:hover .skill-card-inner {
+    transform: translateY(-5px);
+    box-shadow:
+      0 15px 30px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--skill-color);
+  }
+
+  .skill-card:hover .skill-card-inner::before {
+    opacity: 0.05;
   }
 
   .skill-icon {
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-    color: var(--color, oklch(var(--accent-text)));
+    font-size: 2.2rem;
+    color: var(--skill-color);
+    margin-bottom: 10px;
+    position: relative;
     transition: transform 0.3s ease;
   }
 
+  .skill-card:hover .skill-icon {
+    transform: scale(1.15);
+  }
+
   .skill-name {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    line-height: 1.1;
-    text-align: center;
-    transition: opacity 0.3s ease;
-    opacity: 0.8;
+    position: relative;
   }
 
-  /* Hover effects */
-  .skill-bubble:hover {
-    border-color: var(--color);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-  }
-
-  .skill-bubble:hover::before {
-    opacity: 0.15;
-  }
-
-  .skill-bubble:hover .skill-icon {
-    transform: translateY(-2px);
-  }
-
-  .skill-bubble:hover .skill-name {
-    opacity: 1;
-  }
-
-  /* Connection lines between related skills */
-  .skill-connection {
-    position: absolute;
-    background: linear-gradient(90deg, transparent, var(--connection-color, rgba(255, 255, 255, 0.1)), transparent);
-    height: 1px;
-    transform-origin: left center;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  .skill-connection.visible {
-    opacity: 0.15;
-  }
-
-  /* Filter buttons */
-  .skill-filter {
-    background-color: rgba(var(--background), 0.5);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: rgb(var(--foreground-muted));
-    transition: all 0.3s ease;
-  }
-
-  .skill-filter:hover {
-    border-color: var(--filter-color, oklch(var(--accent-500)));
-    color: rgb(var(--foreground));
-  }
-
-  .skill-filter.active {
-    background-color: var(--filter-color, oklch(var(--accent-500)));
-    border-color: var(--filter-color, oklch(var(--accent-500)));
-    color: rgb(var(--background));
-  }
-
-  /* Responsive adjustments */
+  /* Responsive */
   @media (max-width: 768px) {
-    .skill-constellation {
-      height: 900px;
+    .skills-tabs {
+      display: flex;
+      flex-wrap: wrap;
     }
 
-    .skill-bubble {
-      width: 75px;
-      height: 75px;
+    .tab-button {
+      flex-grow: 1;
+      padding: 15px 10px;
+      font-size: 0.9rem;
+    }
+
+    .skills-grid {
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 15px;
+    }
+
+    .skill-icon {
+      font-size: 1.8rem;
+    }
+
+    .skill-name {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .skills-grid {
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 10px;
+    }
+
+    .skill-icon {
+      font-size: 1.6rem;
+    }
+
+    .skill-name {
+      font-size: 0.7rem;
+    }
+
+    .skills-panel {
+      padding: 20px 15px;
     }
   }
 </style>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const constellation = document.querySelector(".skill-constellation");
-    const nodes = Array.from(document.querySelectorAll(".skill-node"));
-    const filterButtons = document.querySelectorAll(".skill-filter");
-    let connections = [];
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const skillPanels = document.querySelectorAll(".skills-panel");
 
-    // Initialize positions
-    function initializePositions() {
-      // Calculate a dynamic layout based on screen size
-      const containerWidth = constellation.clientWidth;
-      const containerHeight = constellation.clientHeight;
-      const centerX = containerWidth / 2;
-      const centerY = containerHeight / 2;
+    // Tab switching functionality
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const tabIndex = button.dataset.tab;
 
-      // Position nodes in a structured but organic pattern
-      nodes.forEach((node, index) => {
-        // Use golden ratio for distribution
-        const phi = (1 + Math.sqrt(5)) / 2;
-        const i = index + 1;
+        // Update active tab
+        tabButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
 
-        // Calculate radius and angle for a spiral-like pattern
-        const radius = Math.sqrt(i) * 30;
-        const angle = i * phi * Math.PI * 2;
-
-        // Convert to cartesian coordinates with some randomness
-        const randomOffset = Math.random() * 40 - 20;
-        const x = centerX + Math.cos(angle) * (radius + randomOffset);
-        const y = centerY + Math.sin(angle) * (radius + randomOffset);
-
-        // Apply position
-        node.style.left = `${Math.max(0, Math.min(containerWidth - 85, x))}px`;
-        node.style.top = `${Math.max(0, Math.min(containerHeight - 85, y))}px`;
-      });
-    }
-
-    // Create connections between related skills
-    function createConnections() {
-      // Remove existing connections
-      document.querySelectorAll(".skill-connection").forEach((conn) => conn.remove());
-      connections = [];
-
-      // Only create connections for visible nodes
-      const visibleNodes = nodes.filter((node) => node.classList.contains("visible"));
-
-      // Group nodes by category
-      const categories = {};
-      visibleNodes.forEach((node) => {
-        const category = node.dataset.category;
-        if (!categories[category]) categories[category] = [];
-        categories[category].push(node);
-      });
-
-      // Create connections within each category
-      Object.entries(categories).forEach(([category, categoryNodes]) => {
-        // Get color from the first node in category
-        const color = categoryNodes[0].style.getPropertyValue("--color");
-
-        categoryNodes.forEach((node, i) => {
-          // Connect to a few nearby nodes in same category
-          for (let j = i + 1; j < Math.min(i + 3, categoryNodes.length); j++) {
-            if (Math.random() > 0.3) {
-              // 70% chance to create connection
-              const nodeRect = node.getBoundingClientRect();
-              const targetRect = categoryNodes[j].getBoundingClientRect();
-              const constellationRect = constellation.getBoundingClientRect();
-
-              // Calculate positions relative to constellation
-              const x1 = nodeRect.left + nodeRect.width / 2 - constellationRect.left;
-              const y1 = nodeRect.top + nodeRect.height / 2 - constellationRect.top;
-              const x2 = targetRect.left + targetRect.width / 2 - constellationRect.left;
-              const y2 = targetRect.top + targetRect.height / 2 - constellationRect.top;
-
-              // Calculate distance and angle
-              const dx = x2 - x1;
-              const dy = y2 - y1;
-              const distance = Math.sqrt(dx * dx + dy * dy);
-              const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-
-              // Create connection element
-              const connection = document.createElement("div");
-              connection.className = "skill-connection";
-              connection.style.width = `${distance}px`;
-              connection.style.left = `${x1}px`;
-              connection.style.top = `${y1}px`;
-              connection.style.transform = `rotate(${angle}deg)`;
-              connection.style.setProperty("--connection-color", color);
-
-              // Add to DOM and track
-              constellation.appendChild(connection);
-              connections.push(connection);
-
-              // Animate in
-              setTimeout(() => {
-                connection.classList.add("visible");
-              }, 50);
-            }
+        // Update active panel
+        skillPanels.forEach((panel) => {
+          panel.classList.remove("active");
+          if (panel.dataset.tab === tabIndex) {
+            // Small delay for smoother transition
+            setTimeout(() => {
+              panel.classList.add("active");
+            }, 50);
           }
         });
       });
-    }
-
-    // Initialize filter functionality
-    function initializeFilters() {
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          // Update active state
-          filterButtons.forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");
-
-          const category = button.dataset.category;
-
-          // Hide all nodes first
-          nodes.forEach((node) => {
-            node.classList.remove("visible");
-          });
-
-          // Show nodes that match the filter
-          setTimeout(() => {
-            nodes.forEach((node) => {
-              if (category === "all" || node.dataset.category === category) {
-                node.classList.add("visible");
-              }
-            });
-
-            // Update connections after nodes are visible
-            setTimeout(createConnections, 100);
-          }, 300);
-        });
-      });
-    }
-
-    // Make nodes interactive
-    function initializeNodeInteraction() {
-      nodes.forEach((node) => {
-        node.addEventListener("mouseenter", () => {
-          const category = node.dataset.category;
-
-          // Highlight connections for this node
-          connections.forEach((conn) => {
-            conn.style.opacity = "0.05";
-          });
-
-          // Highlight nodes in same category
-          nodes.forEach((otherNode) => {
-            if (otherNode.dataset.category === category) {
-              otherNode.querySelector(".skill-bubble").style.borderColor = otherNode.style.getPropertyValue("--color");
-            } else {
-              otherNode.style.opacity = "0.5";
-            }
-          });
-
-          node.style.opacity = "1";
-          node.style.zIndex = "10";
-        });
-
-        node.addEventListener("mouseleave", () => {
-          // Reset node styles
-          nodes.forEach((otherNode) => {
-            otherNode.style.opacity = "1";
-            otherNode.style.zIndex = "auto";
-            otherNode.querySelector(".skill-bubble").style.borderColor = "";
-          });
-
-          // Reset connection styles
-          connections.forEach((conn) => {
-            conn.style.opacity = "";
-          });
-        });
-      });
-    }
-
-    // Initial setup
-    function initialize() {
-      initializePositions();
-
-      // Show all nodes with animation delay
-      setTimeout(() => {
-        nodes.forEach((node) => node.classList.add("visible"));
-
-        // Create connections after nodes are visible
-        setTimeout(createConnections, 500);
-      }, 300);
-
-      initializeFilters();
-      initializeNodeInteraction();
-    }
-
-    // Handle window resize
-    let resizeTimeout;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        initializePositions();
-        createConnections();
-      }, 250);
     });
 
-    initialize();
+    // Add subtle hover effects for neighboring cards
+    const skillCards = document.querySelectorAll(".skill-card");
+
+    skillCards.forEach((card) => {
+      card.addEventListener("mouseenter", () => {
+        const parent = card.closest(".skills-grid");
+        const siblings = Array.from(parent.querySelectorAll(".skill-card"));
+        const index = siblings.indexOf(card);
+
+        // Get nearby cards
+        siblings.forEach((sibling, siblingIndex) => {
+          const distance = Math.abs(index - siblingIndex);
+
+          // Closer cards get stronger effect
+          if (distance > 0 && distance < 3) {
+            const intensity = 3 - distance;
+            sibling.style.transform = `scale(${1 + intensity * 0.01})`;
+            sibling.style.transition = "transform 0.3s ease";
+          }
+        });
+      });
+
+      card.addEventListener("mouseleave", () => {
+        const parent = card.closest(".skills-grid");
+        const siblings = parent.querySelectorAll(".skill-card");
+
+        siblings.forEach((sibling) => {
+          sibling.style.transform = "";
+        });
+      });
+    });
   });
 </script>
