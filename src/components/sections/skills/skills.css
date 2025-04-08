@@ -46,6 +46,13 @@
   transform: rotate(90deg);
 }
 
+.folder-header {
+  user-select: none; /* Prevent text selection on double-click */
+  -webkit-user-select: none; /* For older Safari/Chrome */
+  -moz-user-select: none; /* For Firefox */
+  -ms-user-select: none; /* For IE/Edge */
+}
+
 .folder-item[data-expanded="true"] .folder-header {
   color: var(--folder-color, oklch(var(--accent-300)));
   background-color: rgba(var(--foreground), 0.05);
@@ -55,6 +62,10 @@
 .file-item.active {
   background-color: rgba(var(--accent-500), 0.15);
   color: oklch(var(--accent-500));
+  user-select: none; /* Prevent text selection on double-click */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .tab.active {
@@ -63,6 +74,10 @@
   border-bottom-color: transparent;
   position: relative;
   top: 1px;
+  user-select: none; /* Prevent text selection on double-click */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .tab.active .tab-icon {
