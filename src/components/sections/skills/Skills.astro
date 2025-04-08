@@ -1,8 +1,6 @@
 ---
-// src/components/SkillEditor.astro
 import { Icon } from "astro-icon/components";
 
-// --- skillGroups Data with Enhanced Descriptions ---
 const skillGroups = [
   {
     category: "Web Frontend",
@@ -71,17 +69,12 @@ const skillGroups = [
   },
 ];
 
-// --- Make sure the rest of your frontmatter (skillsMap, formatDescription) is still here ---
 const skillsMap = new Map();
 skillGroups.forEach((group) => {
   group.skills.forEach((skill) => {
     skillsMap.set(skill.name, { ...skill, categoryColor: group.color, extension: (skill as any).extension });
   });
 });
-
-function formatDescription(text: string): string {
-  return text.replace(/\n/g, "<br/>");
-}
 ---
 
 <section id="skills-editor-section" class="py-20 md:py-28">
@@ -146,7 +139,7 @@ function formatDescription(text: string): string {
             <p>// Click on a file in the explorer (left sidebar) to view details about a specific skill.</p>
             <br />
             <p class="text-accent-500">// Example:</p>
-            <p>// 'Web Frontend' <span class="text-foreground-muted">></span> 'React'</p>
+            <p>// 'Web Frontend' <span class="text-foreground-muted"> > </span> 'React'</p>
           </div>
           <div class="skill-content" style="display: none;">
             <h3 id="skill-title" class="text-lg md:text-xl font-semibold text-foreground mb-4"></h3>
@@ -226,11 +219,11 @@ function formatDescription(text: string): string {
 
   /* Simple cursor animation */
   .editor-pane::after {
-    content: "|"; /* Disabled for now, can be distracting */
+    content: "|";
     animation: blink 1s step-end infinite;
     display: inline-block;
     margin-left: 2px;
-    color: var(--color-accent-500); /* Match text color */
+    color: oklch(var(--accent-500));
   }
   @keyframes blink {
     50% {
