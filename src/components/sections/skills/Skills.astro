@@ -195,27 +195,13 @@ const folderCount = skillGroups.length;
             <h3 id="skill-title" class="text-lg md:text-xl font-semibold text-foreground mb-4"></h3>
             <div id="skill-description" class="whitespace-pre-wrap"></div>
           </div>
-
-          {/* Line numbers */}
-          <div class="line-numbers absolute top-0 left-0 p-4 md:p-6 opacity-30 select-none">
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
-            <div>5</div>
-            <div>6</div>
-            <div>7</div>
-            <div>8</div>
-            <div>9</div>
-            <div>10</div>
-          </div>
         </div>
 
         {/* Status Bar */}
         <footer class="status-bar text-xs px-3 py-1 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_50%)] border-t border-[rgba(var(--foreground)/0.1)] text-foreground-muted flex justify-between">
           <div class="flex gap-4">
             <span>{fileCount} Files, {folderCount} Folders</span>
-            <span id="file-type-indicator"></span>
+            <span class="hidden md:block" id="file-type-indicator"></span>
           </div>
           <div class="flex gap-4">
             <span id="current-line">Ln 1, Col 1</span>
@@ -228,32 +214,42 @@ const folderCount = skillGroups.length;
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // Define interfaces for client-side TypeScript
     interface SkillData {
       name: string;
       icon: string;
       description: string;
       categoryColor: string;
-      categoryIcon: string; // Keep categoryIcon if needed elsewhere, or remove if unused client-side
+      categoryIcon: string;
       extension?: string;
     }
 
-    // DOM element selectors (assuming they remain the same)
+    // --- Grouped DOM Selectors ---
+    // Core Editor Elements
     const editor = document.querySelector<HTMLDivElement>(".code-editor");
+    const editorPane = editor?.querySelector<HTMLDivElement>("#editor-pane");
+    const skillsDataString = editor?.dataset.skills; // Get data string early
+
+    // Sidebar Elements
     const sidebar = editor?.querySelector<HTMLElement>(".sidebar");
     const fileTree = sidebar?.querySelector<HTMLUListElement>(".file-tree");
     const collapseAllBtn = sidebar?.querySelector<HTMLButtonElement>(".collapse-all-btn");
-    const editorPane = editor?.querySelector<HTMLDivElement>("#editor-pane");
+
+    // Editor Content Area Elements
     const welcomeMessage = editorPane?.querySelector<HTMLDivElement>(".welcome-message");
     const skillContent = editorPane?.querySelector<HTMLDivElement>(".skill-content");
-    const skillTitle = editorPane?.querySelector<HTMLHeadingElement>("#skill-title");
-    const skillDescription = editorPane?.querySelector<HTMLDivElement>("#skill-description");
+    const skillTitle = skillContent?.querySelector<HTMLHeadingElement>("#skill-title"); // Query within skillContent
+    const skillDescription = skillContent?.querySelector<HTMLDivElement>("#skill-description"); // Query within skillContent
+
+    // Tab Bar Elements
     const editorTab = editor?.querySelector<HTMLDivElement>("#editor-tab");
     const tabCloseBtn = editorTab?.querySelector<HTMLButtonElement>(".tab-close");
     const tabNameEl = editorTab?.querySelector<HTMLSpanElement>(".tab-name");
     const tabIconEl = editorTab?.querySelector<HTMLSpanElement>(".tab-icon");
-    const currentLine = document.querySelector<HTMLSpanElement>("#current-line");
-    const fileTypeIndicator = document.querySelector<HTMLSpanElement>("#file-type-indicator");
+
+    // Status Bar Elements
+    const statusBar = editor?.querySelector<HTMLElement>(".status-bar"); // Maybe query the footer itself
+    const currentLine = statusBar?.querySelector<HTMLSpanElement>("#current-line"); // Query within status bar
+    const fileTypeIndicator = statusBar?.querySelector<HTMLSpanElement>("#file-type-indicator"); // Query within status bar
 
     // Cache for parsed skills data
     let skillsDataCache: Record<string, SkillData> | null = null;
@@ -261,8 +257,9 @@ const folderCount = skillGroups.length;
     function getSkillsData(): Record<string, SkillData> {
       if (skillsDataCache) return skillsDataCache;
       try {
-        if (editor?.dataset.skills) {
-          skillsDataCache = JSON.parse(editor.dataset.skills) as Record<string, SkillData>;
+        // Use the variable captured earlier
+        if (skillsDataString) {
+          skillsDataCache = JSON.parse(skillsDataString) as Record<string, SkillData>;
           return skillsDataCache;
         }
       } catch (err) {
@@ -271,13 +268,11 @@ const folderCount = skillGroups.length;
       return {};
     }
 
-    // Safety check for required elements
-    if (!fileTree || !editorPane || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl || !fileTypeIndicator /* Added */) {
-      console.error("Skill Editor: Required elements not found");
+    // --- Null Checks (Adapt based on grouped selectors) ---
+    if (!editor || !editorPane || !sidebar || !fileTree || !editorTab || !statusBar) {
+      console.error("Skill Editor: Core layout elements not found");
       return;
     }
-
-    // *** REMOVED fileExtensionToLanguage Map ***
 
     // Helper function to get a display name for a file type (optional improvement)
     function getLanguageNameFromExtension(extension: string | undefined): string {
