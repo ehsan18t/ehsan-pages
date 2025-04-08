@@ -80,7 +80,7 @@ const baseDelay = 0.06; // seconds - Stagger delay multiplier (TUNE THIS)
 
 skillGroups.forEach((group) => {
   const N = group.skills.length;
-  group.skills.forEach((skill, index) => {
+  group.skills.forEach((skill: any, index) => {
     // Calculate angle for even distribution on a circle
     // Add a small offset (-Math.PI / 2) to start blooming from the top
     const angle = (index / N) * 2 * Math.PI - Math.PI / 2;
@@ -110,7 +110,7 @@ skillGroups.forEach((group) => {
               <h3 class="text-sm font-semibold text-center px-2">{group.category}</h3>
             </div>
 
-            {group.skills.map((skill) => (
+            {group.skills.map((skill: any) => (
               <div class="skill-bubble absolute top-1/2 left-1/2" style={`--bloom-tx: ${skill.bloomTx}px; --bloom-ty: ${skill.bloomTy}px; --bloom-delay: ${skill.bloomDelay}s; --color: var(--category-color);`} title={skill.name} { /* Tooltip for accessibility */ }>
                 {/* Reusing your bubble structure */}
                 <div class="skill-icon">
