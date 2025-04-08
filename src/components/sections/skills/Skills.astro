@@ -2,7 +2,6 @@
 import { Icon } from "astro-icon/components";
 import "./skills.css";
 
-// Define TypeScript interfaces with improved structure
 interface Skill {
   name: string;
   icon: string;
@@ -22,7 +21,6 @@ interface SkillGroup {
   skills: Skill[];
 }
 
-// Your existing skill groups array with proper typing
 const skillGroups: SkillGroup[] = [
   {
     category: "Web Frontend",
@@ -236,11 +234,11 @@ const folderCount = skillGroups.length;
       icon: string;
       description: string;
       categoryColor: string;
-      categoryIcon: string;
+      categoryIcon: string; // Keep categoryIcon if needed elsewhere, or remove if unused client-side
       extension?: string;
     }
 
-    // DOM element selectors with proper type checking
+    // DOM element selectors (assuming they remain the same)
     const editor = document.querySelector<HTMLDivElement>(".code-editor");
     const sidebar = editor?.querySelector<HTMLElement>(".sidebar");
     const fileTree = sidebar?.querySelector<HTMLUListElement>(".file-tree");
@@ -257,13 +255,11 @@ const folderCount = skillGroups.length;
     const currentLine = document.querySelector<HTMLSpanElement>("#current-line");
     const fileTypeIndicator = document.querySelector<HTMLSpanElement>("#file-type-indicator");
 
-    // Create a cache for parsed skills data to improve performance
+    // Cache for parsed skills data
     let skillsDataCache: Record<string, SkillData> | null = null;
 
-    // Helper function to get skills data with caching
     function getSkillsData(): Record<string, SkillData> {
       if (skillsDataCache) return skillsDataCache;
-
       try {
         if (editor?.dataset.skills) {
           skillsDataCache = JSON.parse(editor.dataset.skills) as Record<string, SkillData>;
@@ -276,54 +272,57 @@ const folderCount = skillGroups.length;
     }
 
     // Safety check for required elements
-    if (!fileTree || !editorPane || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl) {
+    if (!fileTree || !editorPane || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl || !fileTypeIndicator /* Added */) {
       console.error("Skill Editor: Required elements not found");
       return;
     }
 
-    // Map file extensions to language names for status bar
-    const fileExtensionToLanguage: Record<string, string> = {
-      ".html": "HTML",
-      ".css": "CSS",
-      ".js": "JavaScript",
-      ".jsx": "React JSX",
-      ".ts": "TypeScript",
-      ".tsx": "React TSX",
-      ".py": "Python",
-      ".java": "Java",
-      ".cpp": "C++",
-      ".php": "PHP",
-      ".md": "Markdown",
-      ".astro": "Astro",
-      ".svelte": "Svelte",
-      ".sh": "Shell",
-      ".bat": "Batch",
-      ".yml": "YAML",
-      ".tex": "LaTeX",
-      ".sql": "SQL",
-    };
+    // *** REMOVED fileExtensionToLanguage Map ***
 
-    // Add event listeners with type safety and event delegation
+    // Helper function to get a display name for a file type (optional improvement)
+    function getLanguageNameFromExtension(extension: string | undefined): string {
+      if (!extension) return "Plain Text";
+      // Simple lookup, could be expanded
+      const map: Record<string, string> = {
+        ".html": "HTML",
+        ".css": "CSS",
+        ".js": "JavaScript",
+        ".jsx": "React JSX",
+        ".ts": "TypeScript",
+        ".tsx": "React TSX",
+        ".py": "Python",
+        ".java": "Java",
+        ".cpp": "C++",
+        ".php": "PHP",
+        ".md": "Markdown",
+        ".astro": "Astro",
+        ".svelte": "Svelte",
+        ".sh": "Shell Script", // Nicer name
+        ".bat": "Batch File", // Nicer name
+        ".yml": "YAML",
+        ".yaml": "YAML",
+        ".tex": "LaTeX",
+        ".sql": "SQL",
+      };
+      return map[extension.toLowerCase()] || extension.toUpperCase().substring(1) || "Unknown"; // Fallback logic
+    }
+
+    // Event listeners
     fileTree.addEventListener("click", handleFileTreeClick);
-
     if (collapseAllBtn) {
       collapseAllBtn.addEventListener("click", collapseAllFolders);
     }
-
     if (tabCloseBtn) {
       tabCloseBtn.addEventListener("click", closeCurrentTab);
     }
-
-    // Keyboard shortcuts
     document.addEventListener("keydown", (e: KeyboardEvent) => {
-      // Ctrl+B to toggle sidebar
       if (e.ctrlKey && e.key === "b") {
         e.preventDefault();
         toggleSidebar();
       }
     });
 
-    // Helper functions
+    // --- Helper functions (toggleFolder, collapseAllFolders, toggleSidebar mostly unchanged) ---
     function handleFileTreeClick(event: MouseEvent): void {
       const target = event.target as HTMLElement;
       const folderHeader = target.closest<HTMLDivElement>(".folder-header");
@@ -333,7 +332,7 @@ const folderCount = skillGroups.length;
         const folderItem = folderHeader.closest<HTMLLIElement>(".folder-item");
         if (folderItem) toggleFolder(folderItem);
       } else if (fileItem) {
-        const skillName = fileItem.getAttribute("data-skill-name");
+        const skillName = fileItem.dataset.skillName; // Use dataset
         if (skillName) {
           openSkill(fileItem, skillName);
         }
@@ -341,88 +340,92 @@ const folderCount = skillGroups.length;
     }
 
     function toggleFolder(folderItem: HTMLElement): void {
-      const isExpanded = folderItem.getAttribute("data-expanded") === "true";
-      folderItem.setAttribute("data-expanded", String(!isExpanded));
+      const isExpanded = folderItem.dataset.expanded === "true";
+      folderItem.dataset.expanded = String(!isExpanded); // Use dataset
     }
 
     function collapseAllFolders(): void {
-      const folderItems = document.querySelectorAll<HTMLElement>(".folder-item");
-      folderItems.forEach((folder) => {
-        folder.setAttribute("data-expanded", "false");
+      const folderItems = fileTree?.querySelectorAll<HTMLElement>(".folder-item"); // Scope query
+      folderItems?.forEach((folder) => {
+        folder.dataset.expanded = "false"; // Use dataset
       });
     }
 
     function toggleSidebar(): void {
-      if (sidebar) {
-        sidebar.classList.toggle("hidden");
-      }
+      sidebar?.classList.toggle("hidden"); // More concise toggle
     }
 
     function closeCurrentTab(): void {
-      if (welcomeMessage && skillContent) {
-        skillContent.style.display = "none";
-        welcomeMessage.style.display = "block";
+      // Reset content visibility
+      skillContent!.style.display = "none";
+      welcomeMessage!.style.display = "block";
 
-        // Reset tab
-        if (tabNameEl) tabNameEl.textContent = "welcome.txt";
-        if (tabIconEl) tabIconEl.innerHTML = "";
+      // Reset tab display
+      tabNameEl!.textContent = "welcome.txt";
+      tabIconEl!.innerHTML = ""; // Clear icon
+      // Optional: Reset tab active color if needed
+      // editorTab!.style.setProperty('--active-color', 'transparent');
 
-        // Clear active file item
-        const currentActive = fileTree?.querySelector<HTMLElement>(".file-item.active");
-        if (currentActive) {
-          currentActive.classList.remove("active");
-        }
+      // Clear active file item in the tree
+      const currentActive = fileTree?.querySelector<HTMLElement>(".file-item.active");
+      currentActive?.classList.remove("active");
 
-        // Reset status bar
-        updateStatusBar("");
-      }
+      // Reset status bar
+      updateStatusBar(); // Call without args to reset
     }
 
     function openSkill(fileItem: HTMLElement, skillName: string): void {
       const skillsData = getSkillsData();
       const skill = skillsData[skillName];
-      if (!skill) return;
+      if (!skill) {
+        console.warn(`Skill data not found for: ${skillName}`);
+        return;
+      }
 
       setActiveItem(fileItem);
 
-      // Construct tab name with extension if available
+      // Construct tab name
       const tabDisplayName = skill.extension ? `${skill.name}${skill.extension}` : skill.name;
       if (tabNameEl) tabNameEl.textContent = tabDisplayName;
 
-      // Update Tab Icon
-      if (tabIconEl) tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#icon-${skill.icon.replace(/:/g, "-")}"></use></svg>`;
+      // Update Tab Icon (innerHTML is acceptable here for simplicity)
+      // Ensure your astro-icon setup correctly generates IDs like "icon-mdi-react"
+      const iconId = `icon-${skill.icon.replace(/:/g, "-")}`;
+      if (tabIconEl) tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#${iconId}"></use></svg>`;
+      // Optional: Set CSS variable for active color
+      // editorTab!.style.setProperty('--active-color', skill.categoryColor);
 
-      // Update Editor Pane
+      // Update Editor Pane Content
       if (skillTitle) skillTitle.textContent = skill.name;
-      if (skillDescription) skillDescription.innerHTML = skill.description.replace(/\n/g, "<br/>");
+      if (skillDescription) skillDescription.textContent = skill.description; // Use textContent if description contains no HTML
+      if (skillDescription) skillDescription.style.whiteSpace = "pre-wrap"; // Ensure line breaks are rendered
+
+      // Switch view
       if (welcomeMessage) welcomeMessage.style.display = "none";
       if (skillContent) skillContent.style.display = "block";
 
-      // Update current line indicator with randomized values
+      // Update Status Bar (using the skill data directly)
+      updateStatusBar(skill.extension);
+
+      // Update current line indicator (randomness seems fine for demo)
       if (currentLine) {
         const randomLine = Math.floor(Math.random() * 20) + 1;
         const randomCol = Math.floor(Math.random() * 40) + 1;
         currentLine.textContent = `Ln ${randomLine}, Col ${randomCol}`;
       }
-
-      // Update file type indicator
-      if (fileTypeIndicator) {
-        fileTypeIndicator.textContent = skill.extension ? fileExtensionToLanguage[skill.extension] || "Unknown" : "Plain Text";
-      }
     }
 
     function setActiveItem(activeItem: HTMLElement): void {
-      const currentActive = fileTree?.querySelector<HTMLElement>(".file-item.active");
-      if (currentActive) {
-        currentActive.classList.remove("active");
-      }
+      const currentActive = fileTree?.querySelector<HTMLElement>(".file-item.active"); // Scope query
+      currentActive?.classList.remove("active");
       activeItem.classList.add("active");
     }
 
-    function updateStatusBar(fileType: string): void {
-      if (fileTypeIndicator) {
-        fileTypeIndicator.textContent = fileType || "Plain Text";
-      }
+    // Updated function to accept optional extension
+    function updateStatusBar(extension?: string): void {
+      // Use the helper function to get a nicer name
+      if (fileTypeIndicator) fileTypeIndicator.textContent = getLanguageNameFromExtension(extension);
+      // If closing tab, extension will be undefined, resetting the indicator via the helper
     }
 
     function initializeEditor(): void {
@@ -430,8 +433,10 @@ const folderCount = skillGroups.length;
       if (tabIconEl) tabIconEl.innerHTML = "";
       if (welcomeMessage) welcomeMessage.style.display = "block";
       if (skillContent) skillContent.style.display = "none";
+      updateStatusBar(); // Initial status bar state
     }
 
+    // Initialize
     initializeEditor();
   });
 </script>
