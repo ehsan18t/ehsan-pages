@@ -2,24 +2,23 @@
 // src/components/SkillEditor.astro
 import { Icon } from "astro-icon/components";
 
-// --- Use the enhanced skillGroups data from above ---
+// --- skillGroups Data with Enhanced Descriptions ---
 const skillGroups = [
-  /* Paste the full skillGroups data with descriptions here */
   {
     category: "Web Frontend",
     color: "oklch(var(--accent-300))",
     icon: "mdi:folder-text-outline",
     skills: [
-      { name: "HTML", icon: "mdi:language-html5", description: "Proficient in semantic HTML5 markup for structure and accessibility." },
-      { name: "CSS", icon: "mdi:language-css3", description: "Skilled in modern CSS, including Flexbox, Grid, animations, and responsive design. Experience with preprocessors like Sass/SCSS." },
-      { name: "JavaScript", icon: "mdi:language-javascript", description: "Strong understanding of ES6+ features, DOM manipulation, asynchronous programming (async/await, Promises)." },
-      { name: "TypeScript", icon: "mdi:language-typescript", description: "Using TypeScript for enhanced type safety and maintainability in larger projects." },
-      { name: "React", icon: "mdi:react", description: "Extensive experience building dynamic UIs with React, hooks, context API, and component libraries." },
-      { name: "NextJS", icon: "simple-icons:nextdotjs", description: "Building server-rendered and static React applications with Next.js, including routing and API routes." },
-      { name: "Svelte", icon: "simple-icons:svelte", description: "Experience with Svelte/SvelteKit for building highly performant web applications with less boilerplate." },
-      { name: "Redux", icon: "simple-icons:redux", description: "Managing complex application state using Redux Toolkit and middleware." },
-      { name: "TailwindCSS", icon: "mdi:tailwind", description: "Utilizing Tailwind CSS for rapid UI development with utility-first classes." },
-      { name: "Astro", icon: "simple-icons:astro", description: "Building fast, content-focused websites with Astro's island architecture." },
+      { name: "HTML", icon: "mdi:language-html5", description: "Crafting semantic, accessible, and structured web content. Fluent in HTML5 elements and avoiding `div` soup (mostly!).", extension: ".html" },
+      { name: "CSS", icon: "mdi:language-css3", description: "Styling the web with modern CSS, including Flexbox, Grid, custom properties, and animations. Occasionally wrestling the cascade and celebrating centered divs.", extension: ".css" },
+      { name: "JavaScript", icon: "mdi:language-javascript", description: "Bringing websites to life with ES6+ features, asynchronous operations (Promises, async/await), and effective DOM manipulation. Still pondering 'this' sometimes.", extension: ".js" },
+      { name: "TypeScript", icon: "mdi:language-typescript", description: "Adding static typing to JavaScript for safer, more maintainable codebases. Catching errors at compile time, not Friday 5 PM.", extension: ".ts" },
+      { name: "React", icon: "mdi:react", description: "Building component-based UIs with React, utilizing Hooks (useState, useEffect, useContext) and Context API for state management in small to medium apps. Love the declarative approach!", extension: ".jsx" },
+      { name: "NextJS", icon: "simple-icons:nextdotjs", description: "Leveraging the power of React with Next.js for features like SSR, SSG, API routes, and optimized performance. Making React apps even *Reactier*." },
+      { name: "Svelte", icon: "simple-icons:svelte", description: "Exploring Svelte/SvelteKit for building cybernetically enhanced web apps. Less code, less virtual DOM, more magic (compiler magic, that is).", extension: ".svelte" },
+      { name: "Redux", icon: "simple-icons:redux", description: "Taming complex application state with Redux, primarily using Redux Toolkit for a more streamlined and less boilerplate-heavy experience." },
+      { name: "TailwindCSS", icon: "mdi:tailwind", description: "Rapidly building modern UIs with Tailwind's utility-first approach. My class lists might be long, but my CSS files are short!" },
+      { name: "Astro", icon: "simple-icons:astro", description: "Building faster, content-focused websites by shipping less JavaScript. Loving the Island Architecture and performance focus!", extension: ".astro" },
     ],
   },
   {
@@ -27,20 +26,20 @@ const skillGroups = [
     color: "oklch(var(--accent-500))",
     icon: "mdi:folder-cog-outline",
     skills: [
-      { name: "Django", icon: "simple-icons:django", description: "Developing backend applications and APIs using the Django framework." },
-      { name: "PHP", icon: "mdi:language-php", description: "Experience with PHP for server-side scripting and web development." },
-      { name: "SQL", icon: "mdi:database-search", description: "Writing SQL queries and interacting with relational databases (e.g., PostgreSQL, MySQL)." },
-      { name: "Firebase", icon: "mdi:firebase", description: "Utilizing Firebase services like Firestore, Authentication, and Hosting for backend solutions." },
+      { name: "Django", icon: "simple-icons:django", description: "Developing robust backend systems and APIs with Python using Django's 'batteries-included' philosophy. The admin panel is a lifesaver!" },
+      { name: "PHP", icon: "mdi:language-php", description: "Experience with PHP for server-side logic, building and maintaining web applications. Echo 'Hello, World!';", extension: ".php" },
+      { name: "SQL", icon: "mdi:database-search", description: "Querying and managing relational databases. Crafting `SELECT` statements and trying *very* hard to remember all the `JOIN` types.", extension: ".sql" },
+      { name: "Firebase", icon: "mdi:firebase", description: "Utilizing Firebase (Firestore, Auth, Hosting) for rapid development of backend features and real-time data synchronization. Backend-as-a-Service power!" },
     ],
   },
   {
     category: "Core Languages",
     color: "oklch(var(--accent-900))",
-    icon: "simple-icons:codecrafters",
+    icon: "simple-icons:codecrafters", // You fixed this icon, keeping it
     skills: [
-      { name: "Python", icon: "mdi:language-python", description: "General-purpose programming with Python, including scripting and backend development (with Django)." },
-      { name: "Java", icon: "mdi:language-java", description: "Experience with Java for object-oriented programming concepts." },
-      { name: "C/C++", icon: "mdi:language-cpp", description: "Foundational knowledge of C/C++ for systems programming concepts." },
+      { name: "Python", icon: "mdi:language-python", description: "Versatile language for scripting, backend (Django), and general programming. Appreciating the readability, dreading the accidental indentation error.", extension: ".py" },
+      { name: "Java", icon: "mdi:language-java", description: "Solid understanding of Java and OOP principles. Familiar with its ecosystem and verbosity (sometimes you need a `AbstractSingletonProxyFactoryBean`!).", extension: ".java" },
+      { name: "C/C++", icon: "mdi:language-cpp", description: "Foundational knowledge of C/C++ from academic work, understanding memory management (and the fear of segfaults).", extension: ".cpp" },
     ],
   },
   {
@@ -48,13 +47,13 @@ const skillGroups = [
     color: "oklch(var(--secondary))",
     icon: "mdi:folder-wrench-outline",
     skills: [
-      { name: "Git", icon: "mdi:git", description: "Proficient in version control using Git, including branching, merging, and rebasing." },
-      { name: "GitHub", icon: "mdi:github", description: "Using GitHub for repository hosting, collaboration, and Actions." },
-      { name: "Linux", icon: "mdi:linux", description: "Comfortable working in Linux environments, using command-line tools and shell scripting." },
-      { name: "Bash", icon: "mdi:bash", description: "Writing Bash scripts for automation and system tasks." },
-      { name: "Batch", icon: "mdi:microsoft-windows", description: "Basic knowledge of Windows Batch scripting." },
-      { name: "Figma", icon: "mdi:vector-bezier", description: "Using Figma for UI design mockups, prototyping, and inspecting designs." },
-      { name: "Vim", icon: "simple-icons:vim", description: "Using Vim as a text editor for efficient code editing." },
+      { name: "Git", icon: "mdi:git", description: "Managing code history like a pro (or at least like someone who knows how to `git blame`). Branching, merging, and occasionally resolving merge conflicts with deep breaths." },
+      { name: "GitHub", icon: "mdi:github", description: "Collaborating on projects, managing repositories, and leveraging the GitHub ecosystem (Issues, PRs, Actions). My contribution graph is... a work in progress." },
+      { name: "Linux", icon: "mdi:linux", description: "Navigating the Linux environment comfortably using the command line. `sudo make me a sandwich`." },
+      { name: "Bash", icon: "mdi:bash", description: "Writing shell scripts for automating tasks and making the terminal do my bidding. Sometimes cryptic, always powerful.", extension: ".sh" },
+      { name: "Batch", icon: "mdi:microsoft-windows", description: "Basic Windows Batch scripting knowledge for when PowerShell feels like overkill (or isn't available). `@echo off` is my friend.", extension: ".bat" },
+      { name: "Figma", icon: "mdi:vector-bezier", description: "Translating beautiful Figma designs into functional code. Inspecting properties, exporting assets, and appreciating Auto Layout." },
+      { name: "Vim", icon: "simple-icons:vim", description: "Efficient text editing using Vim's modal interface. Still figuring out how to exit sometimes... just kidding (mostly). `:wq`" },
     ],
   },
   {
@@ -62,27 +61,26 @@ const skillGroups = [
     color: "oklch(var(--foreground-muted))",
     icon: "mdi:folder-sync-outline",
     skills: [
-      { name: "GitHub Actions", icon: "simple-icons:githubactions", description: "Setting up CI/CD pipelines and automating workflows with GitHub Actions." },
-      { name: "Jira", icon: "mdi:jira", description: "Using Jira for issue tracking and project management in Agile environments." },
-      { name: "Scrum", icon: "mdi:account-group-outline", description: "Working within Scrum teams, participating in sprints, stand-ups, and retrospectives." },
-      { name: "LaTeX", icon: "mdi:alpha-l-box-outline", description: "Creating documents and reports using LaTeX." },
-      { name: "Markdown", icon: "mdi:language-markdown-outline", description: "Writing documentation and notes using Markdown." },
-      { name: "Googling", icon: "mdi:google", description: "Expert-level information retrieval and problem-solving via search engines. Essential developer skill!" },
+      { name: "GitHub Actions", icon: "simple-icons:githubactions", description: "Automating build, test, and deployment workflows with GitHub Actions. Making YAML less scary, one workflow at a time.", extension: ".yml" },
+      { name: "Jira", icon: "mdi:jira", description: "Navigating Jira boards, tracking issues, and participating in Agile workflows. Moving tickets from 'To Do' to 'Done' is satisfying." },
+      { name: "Scrum", icon: "mdi:account-group-outline", description: "Experience working in Scrum teams: daily stand-ups, sprint planning, retrospectives. Understanding story points is an ongoing journey." },
+      { name: "LaTeX", icon: "mdi:alpha-l-box-outline", description: "Creating high-quality typeset documents, especially for academic or formal reports. The results are beautiful, even if the syntax feels like coding plain text.", extension: ".tex" },
+      { name: "Markdown", icon: "mdi:language-markdown-outline", description: "Writing clean and readable documentation, READMEs, and notes using Markdown. Simple, effective, and essential.", extension: ".md" },
+      { name: "Googling", icon: "mdi:google", description: "Highly proficient in finding solutions, documentation, and cat memes online. Arguably the most critical skill for any developer. Stack Overflow is my co-pilot." },
     ],
   },
 ];
 
-// Create a flat map for easier lookup in JS
+// --- Make sure the rest of your frontmatter (skillsMap, formatDescription) is still here ---
 const skillsMap = new Map();
 skillGroups.forEach((group) => {
   group.skills.forEach((skill) => {
-    skillsMap.set(skill.name, { ...skill, categoryColor: group.color });
+    skillsMap.set(skill.name, { ...skill, categoryColor: group.color, extension: (skill as any).extension });
   });
 });
 
-// Helper function to format description (simple example)
-function formatDescription(text: string) {
-  return text.replace(/\n/g, "<br/>"); // Replace newlines with <br>
+function formatDescription(text: string): string {
+  return text.replace(/\n/g, "<br/>");
 }
 ---
 
@@ -254,6 +252,8 @@ function formatDescription(text: string) {
     const tabNameEl = editorTab?.querySelector(".tab-name");
     const tabIconEl = editorTab?.querySelector(".tab-icon");
 
+    // Get skill data passed from Astro frontmatter
+    // It now includes the extension property where added
     const skillsData = JSON.parse(editor?.dataset.skills || "{}");
 
     if (!sidebar || !editorPane || !skillsData || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl) {
@@ -263,9 +263,8 @@ function formatDescription(text: string) {
 
     sidebar.addEventListener("click", (event) => {
       const target = event.target as HTMLElement;
-      // Target the folder header directly for folder clicks
       const folderHeader = target.closest(".folder-header");
-      const fileItem = target.closest(".file-item"); // Target file item directly
+      const fileItem = target.closest(".file-item");
 
       if (folderHeader) {
         const folderItem = folderHeader.closest(".folder-item");
@@ -281,27 +280,31 @@ function formatDescription(text: string) {
     function handleFolderClick(folderItem: Element) {
       const isExpanded = folderItem.getAttribute("data-expanded") === "true";
       folderItem.setAttribute("data-expanded", String(!isExpanded));
-      // Simple toggle based on attribute for CSS max-height transition
     }
 
     function handleSkillClick(fileItem: Element, skillName: string) {
       const skill = skillsData[skillName];
       if (!skill) return;
+
       setActiveItem(fileItem);
 
-      tabNameEl.textContent = skill.name;
-      // Use specific MDI icon name structure for astro-icon's <use> element
+      // --- MODIFICATION START ---
+      // Construct tab name with extension if available
+      const tabDisplayName = skill.extension ? `${skill.name}${skill.extension}` : skill.name;
+      tabNameEl.textContent = tabDisplayName;
+      // --- MODIFICATION END ---
+
+      // Update Tab Icon
       const iconId = `icon-${skill.icon.replace(":", "-")}`;
-      // Check if Icon component generated the symbol correctly
       if (document.getElementById(iconId)) {
         tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#${iconId}"></use></svg>`;
       } else {
-        tabIconEl.innerHTML = ""; // Clear if icon not found
+        tabIconEl.innerHTML = "";
         console.warn(`Icon symbol not found for ID: ${iconId}`);
       }
-      // editorTab.style.setProperty("--active-color", skill.categoryColor); // Color set directly now
 
-      skillTitle.textContent = skill.name;
+      // Update Editor Pane
+      skillTitle.textContent = skill.name; // Keep title without extension
       skillDescription.innerHTML = skill.description.replace(/\n/g, "<br/>");
       welcomeMessage.style.display = "none";
       skillContent.style.display = "block";
@@ -313,19 +316,12 @@ function formatDescription(text: string) {
     }
 
     function initializeEditor() {
-      if (tabNameEl) tabNameEl.textContent = "welcome.txt";
+      if (tabNameEl) tabNameEl.textContent = "welcome.txt"; // Initial tab
       if (tabIconEl) tabIconEl.innerHTML = "";
       if (welcomeMessage) welcomeMessage.style.display = "block";
       if (skillContent) skillContent.style.display = "none";
-
-      // **Important:** Ensure initial max-height is set correctly by CSS
-      // The CSS rule `.folder-item[data-expanded="false"] > .skill-list { max-height: 0; }`
-      // and `.folder-item[data-expanded="true"] > .skill-list { max-height: 500px; }`
-      // handle the initial state based on the `data-expanded` attribute set in the HTML.
-      // No extra JS needed here for initial height setting.
+      // Initial folder state handled by CSS + data-attribute
     }
-
-    // --- REMOVED transitionstart / transitionend listeners ---
 
     initializeEditor();
   });
