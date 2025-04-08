@@ -490,7 +490,7 @@ const folderCount = skillGroups.length;
         if (tabIconEl) tabIconEl.innerHTML = "";
 
         // Clear active file item
-        const currentActive = fileTree.querySelector<HTMLElement>(".file-item.active");
+        const currentActive = fileTree?.querySelector<HTMLElement>(".file-item.active");
         if (currentActive) {
           currentActive.classList.remove("active");
         }
@@ -509,16 +509,16 @@ const folderCount = skillGroups.length;
 
       // Construct tab name with extension if available
       const tabDisplayName = skill.extension ? `${skill.name}${skill.extension}` : skill.name;
-      tabNameEl.textContent = tabDisplayName;
+      if (tabNameEl) tabNameEl.textContent = tabDisplayName;
 
       // Update Tab Icon
-      tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#icon-${skill.icon.replace(/:/g, "-")}"></use></svg>`;
+      if (tabIconEl) tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#icon-${skill.icon.replace(/:/g, "-")}"></use></svg>`;
 
       // Update Editor Pane
-      skillTitle.textContent = skill.name;
-      skillDescription.innerHTML = skill.description.replace(/\n/g, "<br/>");
-      welcomeMessage.style.display = "none";
-      skillContent.style.display = "block";
+      if (skillTitle) skillTitle.textContent = skill.name;
+      if (skillDescription) skillDescription.innerHTML = skill.description.replace(/\n/g, "<br/>");
+      if (welcomeMessage) welcomeMessage.style.display = "none";
+      if (skillContent) skillContent.style.display = "block";
 
       // Update current line indicator with randomized values
       if (currentLine) {
@@ -534,7 +534,7 @@ const folderCount = skillGroups.length;
     }
 
     function setActiveItem(activeItem: HTMLElement): void {
-      const currentActive = fileTree.querySelector<HTMLElement>(".file-item.active");
+      const currentActive = fileTree?.querySelector<HTMLElement>(".file-item.active");
       if (currentActive) {
         currentActive.classList.remove("active");
       }
