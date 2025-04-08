@@ -1,374 +1,238 @@
 ---
-// Skills.astro - Modern Dashboard Layout
+// src/components/SkillBloom.astro
 import { Icon } from "astro-icon/components";
 
-// Group skills by category
+// 1. Define Skill Categories and Skills
 const skillGroups = [
   {
-    category: "Languages",
+    category: "Web Frontend",
+    // Using accent colors from your theme for categories
     color: "oklch(var(--accent-300))",
+    icon: "mdi:web", // Example category icon
     skills: [
-      { name: "JavaScript", icon: "simple-icons:javascript" },
       { name: "HTML", icon: "simple-icons:html5" },
       { name: "CSS", icon: "simple-icons:css3" },
+      { name: "JavaScript", icon: "simple-icons:javascript" },
       { name: "TypeScript", icon: "simple-icons:typescript" },
-      { name: "Python", icon: "simple-icons:python" },
-      { name: "C/C++", icon: "simple-icons:cplusplus" },
-      { name: "Java", icon: "simple-icons:coffeescript" },
-      { name: "PHP", icon: "simple-icons:php" },
-      { name: "SQL", icon: "simple-icons:postgresql" },
-    ],
-  },
-  {
-    category: "Frameworks & Libraries",
-    color: "oklch(var(--accent-500))",
-    skills: [
       { name: "React", icon: "simple-icons:react" },
       { name: "NextJS", icon: "simple-icons:nextdotjs" },
       { name: "Svelte", icon: "simple-icons:svelte" },
       { name: "Redux", icon: "simple-icons:redux" },
       { name: "TailwindCSS", icon: "simple-icons:tailwindcss" },
       { name: "Astro", icon: "simple-icons:astro" },
-      { name: "Django", icon: "simple-icons:django" },
-      { name: "Firebase", icon: "simple-icons:firebase" },
     ],
   },
   {
-    category: "Tools & Environments",
-    color: "oklch(var(--accent-900))",
+    category: "Backend & Data",
+    color: "oklch(var(--accent-500))", // Different accent
+    icon: "mdi:database",
+    skills: [
+      { name: "Django", icon: "simple-icons:django" },
+      { name: "PHP", icon: "simple-icons:php" },
+      { name: "SQL", icon: "simple-icons:postgresql" },
+      { name: "Firebase", icon: "simple-icons:firebase" },
+      // { name: "Node.js", icon: "simple-icons:nodedotjs" }, // Example if you add later
+    ],
+  },
+  {
+    category: "Core Languages",
+    color: "oklch(var(--accent-900))", // Another accent
+    icon: "mdi:code-braces",
+    skills: [
+      { name: "Python", icon: "simple-icons:python" },
+      { name: "Java", icon: "simple-icons:openjdk" }, // Changed icon
+      { name: "C/C++", icon: "simple-icons:cplusplus" },
+    ],
+  },
+  {
+    category: "Tools & Systems",
+    color: "oklch(var(--secondary))", // Using secondary color
+    icon: "mdi:tools",
     skills: [
       { name: "Git", icon: "simple-icons:git" },
       { name: "GitHub", icon: "simple-icons:github" },
       { name: "Linux", icon: "simple-icons:linux" },
       { name: "Bash", icon: "simple-icons:gnubash" },
       { name: "Batch", icon: "simple-icons:windowsterminal" },
-      { name: "Vim", icon: "simple-icons:vim" },
       { name: "Figma", icon: "simple-icons:figma" },
-      { name: "LaTeX", icon: "simple-icons:latex" },
-      { name: "Markdown", icon: "simple-icons:markdown" },
+      { name: "Vim", icon: "simple-icons:vim" },
+      // { name: "Docker", icon: "simple-icons:docker" }, // Example
+    ],
+  },
+  {
+    category: "Workflow & Process",
+    color: "oklch(var(--foreground-muted))", // Muted color
+    icon: "mdi:clipboard-check-multiple-outline",
+    skills: [
       { name: "GitHub Actions", icon: "simple-icons:githubactions" },
       { name: "Jira", icon: "simple-icons:jira" },
-      { name: "Scrum", icon: "simple-icons:scrumalliance" },
+      { name: "Scrum", icon: "simple-icons:scrumalliance" }, // Placeholder icon
+      { name: "LaTeX", icon: "simple-icons:latex" },
+      { name: "Markdown", icon: "simple-icons:markdown" },
       { name: "Googling", icon: "simple-icons:google" },
     ],
   },
 ];
+
+// 2. Calculate bloom positions for each skill
+const bloomRadius = 130; // px - How far skills bloom outwards (TUNE THIS)
+const baseDelay = 0.06; // seconds - Stagger delay multiplier (TUNE THIS)
+
+skillGroups.forEach((group) => {
+  const N = group.skills.length;
+  group.skills.forEach((skill, index) => {
+    // Calculate angle for even distribution on a circle
+    // Add a small offset (-Math.PI / 2) to start blooming from the top
+    const angle = (index / N) * 2 * Math.PI - Math.PI / 2;
+    // Calculate the X and Y translation needed from the center
+    skill.bloomTx = Math.cos(angle) * bloomRadius;
+    skill.bloomTy = Math.sin(angle) * bloomRadius;
+    // Calculate staggered delay
+    skill.bloomDelay = index * baseDelay;
+  });
+});
 ---
 
-<section id="skills" class="py-24 relative overflow-hidden">
-  <!-- Accent elements in background -->
-  <div class="absolute inset-0 pointer-events-none">
-    <div class="hero-ring w-[120%] aspect-square opacity-10"></div>
-    <div class="hero-ring w-[80%] aspect-square opacity-5"></div>
-  </div>
-
-  <div class="container mx-auto px-4 relative z-10">
+<section id="skills-bloom" class="py-24">
+  <div class="container mx-auto px-4">
     <div class="text-center mb-16">
-      <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">Technical <span class="font-doto font-bold"> Skills</span></h2>
+      <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">Skill <span class="font-doto font-bold"> Clusters</span></h2>
       <div class="w-24 h-1 bg-gradient-to-r from-[oklch(var(--accent-500))] to-[oklch(var(--accent-900))] mx-auto rounded-full"></div>
-      <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">A collection of technologies I've worked with</p>
+      <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">Hover over a category to see the related skills bloom outwards.</p>
     </div>
 
-    <!-- Skills dashboard -->
-    <div class="skills-dashboard">
-      <!-- Category tabs -->
-      <div class="skills-tabs">
-        {
-          skillGroups.map((group, index) => (
-            <button class={`tab-button ${index === 0 ? "active" : ""}`} data-tab={index} style={`--tab-color: ${group.color}`}>
-              {group.category}
-            </button>
-          ))
-        }
-      </div>
-
-      <!-- Skills content -->
-      <div class="skills-content">
-        {
-          skillGroups.map((group, index) => (
-            <div class={`skills-panel ${index === 0 ? "active" : ""}`} data-tab={index} style={`--panel-color: ${group.color}`}>
-              <div class="skills-grid">
-                {group.skills.map((skill, skillIndex) => (
-                  <div class="skill-card" style={`--delay: ${skillIndex * 0.05}s; --skill-color: ${group.color}`}>
-                    <div class="skill-card-inner">
-                      <div class="skill-icon">
-                        <Icon name={skill.icon} />
-                      </div>
-                      <div class="skill-name">{skill.name}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 md:gap-16 place-items-center">
+      {
+        skillGroups.map((group) => (
+          <div class="category-wrapper group relative" style={`--category-color: ${group.color};`}>
+            <div class="category-bubble relative flex flex-col items-center justify-center w-36 h-36 md:w-40 md:h-40 rounded-full border-2 border-[color:rgba(var(--foreground)/0.1)] bg-[color:rgba(var(--background)/0.7)] backdrop-blur-md shadow-lg cursor-default transition-all duration-300 group-hover:border-[var(--category-color)] group-hover:scale-105 z-10">
+              <div class="text-4xl mb-1 text-[var(--category-color)] transition-transform duration-300 group-hover:scale-110">{group.icon && <Icon name={group.icon} />}</div>
+              <h3 class="text-sm font-semibold text-center px-2">{group.category}</h3>
             </div>
-          ))
-        }
-      </div>
+
+            {group.skills.map((skill) => (
+              <div class="skill-bubble absolute top-1/2 left-1/2" style={`--bloom-tx: ${skill.bloomTx}px; --bloom-ty: ${skill.bloomTy}px; --bloom-delay: ${skill.bloomDelay}s; --color: var(--category-color);`} title={skill.name} { /* Tooltip for accessibility */ }>
+                {/* Reusing your bubble structure */}
+                <div class="skill-icon">
+                  <Icon name={skill.icon} />
+                </div>
+                <div class="skill-name">{skill.name}</div>
+              </div>
+            ))}
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
 
 <style>
-  .skills-dashboard {
-    max-width: 1000px;
-    margin: 0 auto;
-    background: rgba(var(--background), 0.5);
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
-    box-shadow:
-      0 20px 40px rgba(0, 0, 0, 0.1),
-      0 0 0 1px rgba(var(--foreground), 0.05);
-    overflow: hidden;
+  .category-wrapper {
+    /* Ensure enough space around for blooming */
+    min-width: calc(130px * 2 + 160px); /* Approx (bloomRadius * 2 + category bubble width) */
+    min-height: calc(130px * 2 + 160px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* Tab navigation */
-  .skills-tabs {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border-bottom: 1px solid rgba(var(--foreground), 0.1);
-  }
+  /* Inherit styles for .skill-bubble, .skill-icon, .skill-name from your global CSS or previous component style block if needed */
+  /* The key parts are the initial state and the hover transition */
 
-  .tab-button {
-    padding: 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    background: transparent;
-    color: rgb(var(--foreground-muted));
-    border: none;
-    position: relative;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-
-  .tab-button::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 100%;
-    height: 3px;
-    background: var(--tab-color);
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: transform 0.3s ease;
-  }
-
-  .tab-button:hover {
-    color: rgb(var(--foreground));
-  }
-
-  .tab-button.active {
-    color: var(--tab-color);
-  }
-
-  .tab-button.active::after {
-    transform: scaleX(1);
-  }
-
-  /* Skills panels */
-  .skills-content {
-    position: relative;
-    min-height: 300px;
-  }
-
-  .skills-panel {
-    position: absolute;
-    inset: 0;
-    padding: 30px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.4s ease;
-    pointer-events: none;
-  }
-
-  .skills-panel.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  /* Skills grid */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 20px;
-  }
-
-  /* Skill cards */
-  .skill-card {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: cardAppear 0.5s forwards;
-    animation-delay: var(--delay, 0s);
-  }
-
-  @keyframes cardAppear {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .skill-card-inner {
-    aspect-ratio: 1;
-    background: rgba(var(--background), 0.7);
-    border-radius: 16px;
-    padding: 15px;
+  .skill-bubble {
+    width: 80px; /* Slightly smaller */
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(var(--background), 0.8); /* Slightly more opaque */
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    box-shadow:
-      0 8px 20px rgba(0, 0, 0, 0.05),
-      0 0 0 1px rgba(var(--foreground), 0.05);
-    transition: all 0.3s ease;
-    position: relative;
+    box-shadow: 0 2px 10px -3px rgba(0, 0, 0, 0.4);
+    padding: 8px;
+    position: absolute; /* Crucial */
     overflow: hidden;
+    cursor: default;
+    color: rgb(var(--foreground)); /* Default text color */
+
+    /* --- Initial State (Hidden at Center) --- */
+    opacity: 0;
+    /* Start centered within the category bubble and scaled down */
+    transform: translate(-50%, -50%) scale(0);
+    pointer-events: none;
+    z-index: 1; /* Below category bubble */
+    /* Define transition for bloom effect */
+    transition:
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.3s ease-out; /* Bouncy exit easing */
+    /* Apply individual delay calculated in frontmatter */
+    transition-delay: var(--bloom-delay, 0s);
   }
 
-  .skill-card-inner::before {
+  /* --- Bloom State (Triggered by hovering the PARENT .category-wrapper) --- */
+  .category-wrapper:hover .skill-bubble {
+    opacity: 1;
+    /* Move to calculated bloom position and scale up */
+    transform: translate(-50%, -50%) translate(var(--bloom-tx, 0px), var(--bloom-ty, 0px)) scale(1);
+    pointer-events: auto; /* Allow hover on skills */
+  }
+
+  /* --- Skill Bubble Hover Effects (Apply when bloomed) --- */
+  .skill-bubble:hover {
+    border-color: var(--color);
+    /* Apply hover scale relative to the bloomed position */
+    transform: translate(-50%, -50%) translate(var(--bloom-tx, 0px), var(--bloom-ty, 0px)) scale(1.15);
+    box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.5);
+    z-index: 20; /* Bring hovered skill to front */
+    /* Keep transition for hover effect smooth */
+    transition:
+      transform 0.2s ease-out,
+      border-color 0.2s ease-out,
+      box-shadow 0.2s ease-out;
+    transition-delay: 0s !important; /* Override bloom delay for immediate hover feedback */
+  }
+
+  .skill-bubble .skill-icon {
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+    color: var(--color, oklch(var(--accent-text)));
+    transition: transform 0.2s ease;
+  }
+
+  .skill-bubble .skill-name {
+    font-size: 0.65rem; /* Smaller text */
+    font-weight: 500;
+    line-height: 1.1;
+    text-align: center;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
+  .skill-bubble:hover .skill-icon {
+    transform: scale(1.1);
+  }
+
+  .skill-bubble:hover .skill-name {
+    opacity: 1;
+  }
+
+  /* Optional: Subtle glow on skill bubble using pseudo-element */
+  .skill-bubble::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background: var(--skill-color);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, var(--color) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    z-index: -1;
   }
 
-  .skill-card:hover .skill-card-inner {
-    transform: translateY(-5px);
-    box-shadow:
-      0 15px 30px rgba(0, 0, 0, 0.1),
-      0 0 0 1px var(--skill-color);
-  }
-
-  .skill-card:hover .skill-card-inner::before {
-    opacity: 0.05;
-  }
-
-  .skill-icon {
-    font-size: 2.2rem;
-    color: var(--skill-color);
-    margin-bottom: 10px;
-    position: relative;
-    transition: transform 0.3s ease;
-  }
-
-  .skill-card:hover .skill-icon {
-    transform: scale(1.15);
-  }
-
-  .skill-name {
-    font-size: 0.8rem;
-    font-weight: 500;
-    position: relative;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .skills-tabs {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    .tab-button {
-      flex-grow: 1;
-      padding: 15px 10px;
-      font-size: 0.9rem;
-    }
-
-    .skills-grid {
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 15px;
-    }
-
-    .skill-icon {
-      font-size: 1.8rem;
-    }
-
-    .skill-name {
-      font-size: 0.75rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .skills-grid {
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 10px;
-    }
-
-    .skill-icon {
-      font-size: 1.6rem;
-    }
-
-    .skill-name {
-      font-size: 0.7rem;
-    }
-
-    .skills-panel {
-      padding: 20px 15px;
-    }
+  .skill-bubble:hover::before {
+    opacity: 0.1;
   }
 </style>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const tabButtons = document.querySelectorAll(".tab-button");
-    const skillPanels = document.querySelectorAll(".skills-panel");
-
-    // Tab switching functionality
-    tabButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const tabIndex = button.dataset.tab;
-
-        // Update active tab
-        tabButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
-
-        // Update active panel
-        skillPanels.forEach((panel) => {
-          panel.classList.remove("active");
-          if (panel.dataset.tab === tabIndex) {
-            // Small delay for smoother transition
-            setTimeout(() => {
-              panel.classList.add("active");
-            }, 50);
-          }
-        });
-      });
-    });
-
-    // Add subtle hover effects for neighboring cards
-    const skillCards = document.querySelectorAll(".skill-card");
-
-    skillCards.forEach((card) => {
-      card.addEventListener("mouseenter", () => {
-        const parent = card.closest(".skills-grid");
-        const siblings = Array.from(parent.querySelectorAll(".skill-card"));
-        const index = siblings.indexOf(card);
-
-        // Get nearby cards
-        siblings.forEach((sibling, siblingIndex) => {
-          const distance = Math.abs(index - siblingIndex);
-
-          // Closer cards get stronger effect
-          if (distance > 0 && distance < 3) {
-            const intensity = 3 - distance;
-            sibling.style.transform = `scale(${1 + intensity * 0.01})`;
-            sibling.style.transition = "transform 0.3s ease";
-          }
-        });
-      });
-
-      card.addEventListener("mouseleave", () => {
-        const parent = card.closest(".skills-grid");
-        const siblings = parent.querySelectorAll(".skill-card");
-
-        siblings.forEach((sibling) => {
-          sibling.style.transform = "";
-        });
-      });
-    });
-  });
-</script>
