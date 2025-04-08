@@ -1,7 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 
-// Define TypeScript interfaces for better type safety
+// Define TypeScript interfaces with improved structure
 interface Skill {
   name: string;
   icon: string;
@@ -11,6 +11,7 @@ interface Skill {
 
 interface SkillWithCategory extends Skill {
   categoryColor: string;
+  categoryIcon: string; // Add category icon for better organization
 }
 
 interface SkillGroup {
@@ -89,16 +90,29 @@ const skillGroups: SkillGroup[] = [
   },
 ];
 
-// Create a properly typed Map for skills
+// Create a more efficient data structure that's optimized for lookup
 const skillsMap = new Map<string, SkillWithCategory>();
+const fileExtensions = new Set<string>();
+
 skillGroups.forEach((group) => {
   group.skills.forEach((skill) => {
+    // Add to skillsMap with additional metadata
     skillsMap.set(skill.name, {
       ...skill,
       categoryColor: group.color,
+      categoryIcon: group.icon,
     });
+
+    // Track unique file extensions
+    if (skill.extension) {
+      fileExtensions.add(skill.extension);
+    }
   });
 });
+
+// Generate file count for status bar
+const fileCount = skillsMap.size;
+const folderCount = skillGroups.length;
 ---
 
 <section id="skills-editor-section" class="py-20 md:py-28">
@@ -113,24 +127,31 @@ skillGroups.forEach((group) => {
     <div class="code-editor bg-[color-mix(in_oklch,_rgb(var(--background)),_black_25%)] text-sm rounded-lg shadow-2xl border border-[rgba(var(--foreground)/0.1)] overflow-hidden max-w-5xl mx-auto min-h-[60vh] flex" data-skills={JSON.stringify(Object.fromEntries(skillsMap))}>
       {/* Sidebar (File Tree) */}
       <aside class="sidebar w-48 md:w-64 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)] border-r border-[rgba(var(--foreground)/0.1)] p-2 overflow-y-auto">
-        <div class="text-xs text-foreground-muted uppercase mb-2 px-1">Explorer</div>
+        <div class="sidebar-header flex justify-between items-center text-xs text-foreground-muted uppercase mb-2 px-1">
+          <span>Explorer</span>
+          <button title="Collapse All" class="collapse-all-btn p-1 rounded hover:bg-accent-300/10">
+            <Icon name="mdi:chevron-double-up" class="w-3 h-3" />
+          </button>
+        </div>
         <ul class="file-tree space-y-0.5">
           {
             skillGroups.map((group, index) => (
-              <li class="folder-item" data-type="folder" data-expanded={index === 0 ? "true" : "false"}>
-                <div class="folder-header flex items-center p-1 rounded cursor-pointer hover:bg-accent-300/10">
+              <li class="folder-item" data-type="folder" data-expanded={index === 0 ? "true" : "false"} data-category={group.category}>
+                <div class="folder-header flex items-center p-1 rounded cursor-pointer hover:bg-accent-300/10" style={`--folder-color: ${group.color}`}>
                   <span class="folder-arrow transition-transform duration-200">
                     <Icon name="mdi:chevron-right" class="w-4 h-4" />
                   </span>
                   <Icon name={group.icon} class="w-4 h-4 mx-1 flex-shrink-0" />
                   <span class="truncate font-medium text-xs">{group.category}</span>
+                  <span class="ml-auto text-xs opacity-60">{group.skills.length}</span>
                 </div>
                 <ul class="skill-list pl-4 overflow-hidden transition-all duration-300 ease-in-out">
                   {group.skills.map((skill) => (
-                    <li class="file-item p-1 rounded cursor-pointer hover:bg-accent-500/10 text-foreground-muted hover:text-foreground" data-type="file" data-skill-name={skill.name}>
+                    <li class="file-item p-1 rounded cursor-pointer hover:bg-accent-500/10 text-foreground-muted hover:text-foreground" data-type="file" data-skill-name={skill.name} data-ext={skill.extension || ""}>
                       <div class="flex items-center">
-                        <Icon name={skill.icon} class="w-4 h-4 mr-2 flex-shrink-0 opacity-80" />
+                        <Icon name={skill.icon} class="w-4 h-4 mr-2 flex-shrink-0 opacity-80" style={`color: ${group.color};`} />
                         <span class="truncate text-xs">{skill.name}</span>
+                        {skill.extension && <span class="text-xs opacity-60 ml-1">{skill.extension}</span>}
                       </div>
                     </li>
                   ))}
@@ -145,35 +166,61 @@ skillGroups.forEach((group) => {
       <main class="main-content flex-1 flex flex-col min-w-0">
         {/* Tab Bar */}
         <div class="tab-bar flex border-b border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)]">
-          <div id="editor-tab" class="tab active px-4 py-2 text-xs border-r border-[rgba(var(--foreground)/0.1)] flex items-center gap-2 max-w-full">
-            {/* Icon and Name appear here */}
+          <div id="editor-tab" class="tab active px-4 py-2 text-xs border-r border-[rgba(var(--foreground)/0.1)] flex items-center gap-2 max-w-[250px]">
             <span class="tab-icon opacity-80"></span>
             <span class="tab-name truncate"></span>
+            <button class="tab-close ml-2 opacity-0 hover:opacity-100 transition-opacity">
+              <Icon name="mdi:close" class="w-3 h-3" />
+            </button>
           </div>
-          {/* Can add more tabs or controls here later */}
+          <div class="flex-1"></div>
         </div>
 
         {/* Editor Pane */}
         <div id="editor-pane" class="editor-pane flex-1 p-4 md:p-6 overflow-y-auto font-mono text-xs md:text-sm leading-relaxed text-foreground-muted">
-          {/* Welcome message or Skill details appear here */}
+          {/* Welcome message */}
           <div class="welcome-message">
-            <p>// Welcome to my Skill IDE!</p>
-            <p>// Click on a file in the explorer (left sidebar) to view details about a specific skill.</p>
+            <p class="text-accent-300">/**</p>
+            <p>* Welcome to my Skills Explorer</p>
+            <p>* -------------------------</p>
+            <p>* Browse my tech stack and expertise in the file explorer.</p>
+            <p>* Click on any file to view details about that skill.</p>
+            <p class="text-accent-300">*/</p>
             <br />
-            <p class="text-accent-500">// Example:</p>
-            <p>// 'Web Frontend' <span class="text-foreground-muted"> > </span> 'React'</p>
+            <p>// Keyboard shortcuts:</p>
+            <p>// - <span class="kbd">Ctrl+B</span> Toggle sidebar</p>
           </div>
+
+          {/* Skill content */}
           <div class="skill-content" style="display: none;">
             <h3 id="skill-title" class="text-lg md:text-xl font-semibold text-foreground mb-4"></h3>
-            <p id="skill-description" class="whitespace-pre-wrap"></p>
+            <div id="skill-description" class="whitespace-pre-wrap"></div>
+          </div>
+
+          {/* Line numbers */}
+          <div class="line-numbers absolute top-0 left-0 p-4 md:p-6 opacity-30 select-none">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+            <div>6</div>
+            <div>7</div>
+            <div>8</div>
+            <div>9</div>
+            <div>10</div>
           </div>
         </div>
 
-        {/* Status Bar (Optional) */}
+        {/* Status Bar */}
         <footer class="status-bar text-xs px-3 py-1 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_50%)] border-t border-[rgba(var(--foreground)/0.1)] text-foreground-muted flex justify-between">
-          <span>{skillsMap.size} Skills Loaded</span>
-          <span id="current-line">Ln 1, Col 1</span>
-          {/* Placeholder */}
+          <div class="flex gap-4">
+            <span>{fileCount} Files, {folderCount} Folders</span>
+            <span id="file-type-indicator"></span>
+          </div>
+          <div class="flex gap-4">
+            <span id="current-line">Ln 1, Col 1</span>
+          </div>
         </footer>
       </main>
     </div>
@@ -182,16 +229,20 @@ skillGroups.forEach((group) => {
 
 <style>
   .code-editor {
-    font-family: var(--font-Inter); /* Use your main font */
+    font-family: var(--font-Inter);
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(var(--foreground), 0.05);
   }
+
   .editor-pane {
-    /* You can specify a fixed monospace font stack here if needed */
     font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    position: relative;
+    counter-reset: line;
   }
 
   /* File Tree Styling */
   .sidebar {
-    /* Custom scrollbar for sidebar */
     scrollbar-width: thin;
     scrollbar-color: rgba(var(--foreground), 0.2) transparent;
   }
@@ -211,12 +262,11 @@ skillGroups.forEach((group) => {
   }
 
   .folder-item[data-expanded="true"] > .skill-list {
-    /* Calculate max-height dynamically if possible, or use a large enough value */
-    max-height: 500px; /* Adjust if needed */
+    max-height: 500px;
   }
 
   .folder-item .skill-list {
-    transition: max-height 0.3s ease-in-out; /* Ensure transition is on skill-list */
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .folder-item[data-expanded="true"] .folder-arrow {
@@ -224,7 +274,8 @@ skillGroups.forEach((group) => {
   }
 
   .folder-item[data-expanded="true"] .folder-header {
-    color: oklch(var(--accent-300));
+    color: var(--folder-color, oklch(var(--accent-300)));
+    background-color: rgba(var(--foreground), 0.05);
   }
 
   /* Active states */
@@ -232,29 +283,70 @@ skillGroups.forEach((group) => {
     background-color: rgba(var(--accent-500), 0.15);
     color: oklch(var(--accent-500));
   }
+
   .tab.active {
-    background-color: rgba(var(--background), 0.9); /* Match editor pane bg */
+    background-color: rgba(var(--background), 0.9);
     color: rgb(var(--foreground));
-    border-bottom-color: transparent; /* Connect tab to pane */
+    border-bottom-color: transparent;
     position: relative;
-    top: 1px; /* Align with border */
-  }
-  .tab.active .tab-icon {
-    color: var(--active-color, oklch(var(--accent-500))); /* Use skill color */
+    top: 1px;
   }
 
-  /* Simple cursor animation */
-  .editor-pane::after {
-    content: "|";
-    animation: blink 1s step-end infinite;
+  .tab.active .tab-icon {
+    color: var(--active-color, oklch(var(--accent-500)));
+  }
+
+  /* Line numbers */
+  .line-numbers {
+    user-select: none;
+    text-align: right;
+    padding-right: 12px;
+    color: rgba(var(--foreground), 0.3);
+    z-index: 0;
+  }
+
+  /* Keyboard shortcut styling */
+  .kbd {
     display: inline-block;
-    margin-left: 2px;
+    border: 1px solid rgba(var(--foreground), 0.2);
+    border-radius: 3px;
+    padding: 0px 4px;
+    margin: 0 2px;
+    font-size: 0.8em;
     color: oklch(var(--accent-500));
   }
+
+  /* Cursor animation */
+  .editor-pane::after {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    width: 2px;
+    height: 16px;
+    background-color: oklch(var(--accent-500));
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+  }
+
   @keyframes blink {
     50% {
       opacity: 0;
     }
+  }
+
+  /* Transitions for skill content */
+  .skill-content {
+    transition: opacity 0.2s ease;
+  }
+
+  .skill-content.loading {
+    opacity: 0.7;
+  }
+
+  /* File type indicators */
+  #file-type-indicator {
+    opacity: 0.8;
   }
 </style>
 
@@ -266,62 +358,150 @@ skillGroups.forEach((group) => {
       icon: string;
       description: string;
       categoryColor: string;
+      categoryIcon: string;
       extension?: string;
     }
 
-    // Properly typed DOM element selectors with null checks
+    // DOM element selectors with proper type checking
     const editor = document.querySelector<HTMLDivElement>(".code-editor");
-    const sidebar = editor?.querySelector<HTMLUListElement>(".sidebar .file-tree");
+    const sidebar = editor?.querySelector<HTMLElement>(".sidebar");
+    const fileTree = sidebar?.querySelector<HTMLUListElement>(".file-tree");
+    const collapseAllBtn = sidebar?.querySelector<HTMLButtonElement>(".collapse-all-btn");
     const editorPane = editor?.querySelector<HTMLDivElement>("#editor-pane");
     const welcomeMessage = editorPane?.querySelector<HTMLDivElement>(".welcome-message");
     const skillContent = editorPane?.querySelector<HTMLDivElement>(".skill-content");
     const skillTitle = editorPane?.querySelector<HTMLHeadingElement>("#skill-title");
-    const skillDescription = editorPane?.querySelector<HTMLParagraphElement>("#skill-description");
+    const skillDescription = editorPane?.querySelector<HTMLDivElement>("#skill-description");
     const editorTab = editor?.querySelector<HTMLDivElement>("#editor-tab");
+    const tabCloseBtn = editorTab?.querySelector<HTMLButtonElement>(".tab-close");
     const tabNameEl = editorTab?.querySelector<HTMLSpanElement>(".tab-name");
     const tabIconEl = editorTab?.querySelector<HTMLSpanElement>(".tab-icon");
     const currentLine = document.querySelector<HTMLSpanElement>("#current-line");
+    const fileTypeIndicator = document.querySelector<HTMLSpanElement>("#file-type-indicator");
 
-    // Safely parse skills data with proper typing
-    let skillsData: Record<string, SkillData> = {};
-    try {
-      if (editor && editor.dataset.skills) {
-        skillsData = JSON.parse(editor.dataset.skills) as Record<string, SkillData>;
+    // Create a cache for parsed skills data to improve performance
+    let skillsDataCache: Record<string, SkillData> | null = null;
+
+    // Helper function to get skills data with caching
+    function getSkillsData(): Record<string, SkillData> {
+      if (skillsDataCache) return skillsDataCache;
+
+      try {
+        if (editor?.dataset.skills) {
+          skillsDataCache = JSON.parse(editor.dataset.skills) as Record<string, SkillData>;
+          return skillsDataCache;
+        }
+      } catch (err) {
+        console.error("Failed to parse skills data:", err);
       }
-    } catch (err) {
-      console.error("Failed to parse skills data:", err);
+      return {};
     }
 
     // Safety check for required elements
-    if (!sidebar || !editorPane || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl) {
+    if (!fileTree || !editorPane || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl) {
       console.error("Skill Editor: Required elements not found");
       return;
     }
 
-    // Add event listeners with type safety
-    sidebar.addEventListener("click", (event: Event) => {
+    // Map file extensions to language names for status bar
+    const fileExtensionToLanguage: Record<string, string> = {
+      ".html": "HTML",
+      ".css": "CSS",
+      ".js": "JavaScript",
+      ".jsx": "React JSX",
+      ".ts": "TypeScript",
+      ".tsx": "React TSX",
+      ".py": "Python",
+      ".java": "Java",
+      ".cpp": "C++",
+      ".php": "PHP",
+      ".md": "Markdown",
+      ".astro": "Astro",
+      ".svelte": "Svelte",
+      ".sh": "Shell",
+      ".bat": "Batch",
+      ".yml": "YAML",
+      ".tex": "LaTeX",
+      ".sql": "SQL",
+    };
+
+    // Add event listeners with type safety and event delegation
+    fileTree.addEventListener("click", handleFileTreeClick);
+
+    if (collapseAllBtn) {
+      collapseAllBtn.addEventListener("click", collapseAllFolders);
+    }
+
+    if (tabCloseBtn) {
+      tabCloseBtn.addEventListener("click", closeCurrentTab);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+      // Ctrl+B to toggle sidebar
+      if (e.ctrlKey && e.key === "b") {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    });
+
+    // Helper functions
+    function handleFileTreeClick(event: MouseEvent): void {
       const target = event.target as HTMLElement;
       const folderHeader = target.closest<HTMLDivElement>(".folder-header");
       const fileItem = target.closest<HTMLLIElement>(".file-item");
 
       if (folderHeader) {
         const folderItem = folderHeader.closest<HTMLLIElement>(".folder-item");
-        if (folderItem) handleFolderClick(folderItem);
+        if (folderItem) toggleFolder(folderItem);
       } else if (fileItem) {
         const skillName = fileItem.getAttribute("data-skill-name");
         if (skillName) {
-          handleSkillClick(fileItem, skillName);
+          openSkill(fileItem, skillName);
         }
       }
-    });
+    }
 
-    // Type-safe functions
-    function handleFolderClick(folderItem: HTMLElement): void {
+    function toggleFolder(folderItem: HTMLElement): void {
       const isExpanded = folderItem.getAttribute("data-expanded") === "true";
       folderItem.setAttribute("data-expanded", String(!isExpanded));
     }
 
-    function handleSkillClick(fileItem: HTMLElement, skillName: string): void {
+    function collapseAllFolders(): void {
+      const folderItems = document.querySelectorAll<HTMLElement>(".folder-item");
+      folderItems.forEach((folder) => {
+        folder.setAttribute("data-expanded", "false");
+      });
+    }
+
+    function toggleSidebar(): void {
+      if (sidebar) {
+        sidebar.classList.toggle("hidden");
+      }
+    }
+
+    function closeCurrentTab(): void {
+      if (welcomeMessage && skillContent) {
+        skillContent.style.display = "none";
+        welcomeMessage.style.display = "block";
+
+        // Reset tab
+        if (tabNameEl) tabNameEl.textContent = "welcome.txt";
+        if (tabIconEl) tabIconEl.innerHTML = "";
+
+        // Clear active file item
+        const currentActive = fileTree.querySelector<HTMLElement>(".file-item.active");
+        if (currentActive) {
+          currentActive.classList.remove("active");
+        }
+
+        // Reset status bar
+        updateStatusBar("");
+      }
+    }
+
+    function openSkill(fileItem: HTMLElement, skillName: string): void {
+      const skillsData = getSkillsData();
       const skill = skillsData[skillName];
       if (!skill) return;
 
@@ -331,15 +511,8 @@ skillGroups.forEach((group) => {
       const tabDisplayName = skill.extension ? `${skill.name}${skill.extension}` : skill.name;
       tabNameEl.textContent = tabDisplayName;
 
-      // Update Tab Icon with type-safe approach
-      const iconId = `icon-${skill.icon.replace(/:/g, "-")}`;
-      const iconElement = document.getElementById(iconId);
-      if (iconElement) {
-        tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#${iconId}"></use></svg>`;
-      } else {
-        tabIconEl.innerHTML = "";
-        console.warn(`Icon symbol not found for ID: ${iconId}`);
-      }
+      // Update Tab Icon
+      tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#icon-${skill.icon.replace(/:/g, "-")}"></use></svg>`;
 
       // Update Editor Pane
       skillTitle.textContent = skill.name;
@@ -353,14 +526,25 @@ skillGroups.forEach((group) => {
         const randomCol = Math.floor(Math.random() * 40) + 1;
         currentLine.textContent = `Ln ${randomLine}, Col ${randomCol}`;
       }
+
+      // Update file type indicator
+      if (fileTypeIndicator) {
+        fileTypeIndicator.textContent = skill.extension ? fileExtensionToLanguage[skill.extension] || "Unknown" : "Plain Text";
+      }
     }
 
     function setActiveItem(activeItem: HTMLElement): void {
-      const currentActive = sidebar.querySelector<HTMLElement>(".file-item.active");
+      const currentActive = fileTree.querySelector<HTMLElement>(".file-item.active");
       if (currentActive) {
         currentActive.classList.remove("active");
       }
       activeItem.classList.add("active");
+    }
+
+    function updateStatusBar(fileType: string): void {
+      if (fileTypeIndicator) {
+        fileTypeIndicator.textContent = fileType || "Plain Text";
+      }
     }
 
     function initializeEditor(): void {
