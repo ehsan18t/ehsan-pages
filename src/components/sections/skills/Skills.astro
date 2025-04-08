@@ -226,10 +226,11 @@ function formatDescription(text: string): string {
 
   /* Simple cursor animation */
   .editor-pane::after {
-    /* content: '|'; */ /* Disabled for now, can be distracting */
-    /* animation: blink 1s step-end infinite; */
-    /* display: inline-block; */
-    /* margin-left: 2px; */
+    content: "|"; /* Disabled for now, can be distracting */
+    animation: blink 1s step-end infinite;
+    display: inline-block;
+    margin-left: 2px;
+    color: var(--color-accent-500); /* Match text color */
   }
   @keyframes blink {
     50% {
