@@ -1,448 +1,437 @@
 ---
-// Skills.astro - An orbital skills display
 import { Icon } from "astro-icon/components";
+import "./skills.css";
 
-// Group skills by orbit/category
-const orbitalSkills = [
-  // Core/Central skills
+interface Skill {
+  name: string;
+  icon: string;
+  description: string;
+  extension?: string;
+}
+
+interface SkillWithCategory extends Skill {
+  categoryColor: string;
+  categoryIcon: string; // Add category icon for better organization
+}
+
+interface SkillGroup {
+  category: string;
+  color: string;
+  icon: string;
+  skills: Skill[];
+}
+
+const skillGroups: SkillGroup[] = [
   {
-    orbit: "core",
-    radius: 75, // Half of 150px
+    category: "Web Frontend",
+    color: "oklch(var(--accent-300))",
+    icon: "mdi:folder-text-outline",
     skills: [
-      { name: "JavaScript", icon: "simple-icons:javascript" },
-      { name: "HTML", icon: "simple-icons:html5" },
-      { name: "CSS", icon: "simple-icons:css3" },
+      { name: "HTML", icon: "mdi:language-html5", description: "Crafting semantic, accessible, and structured web content. Fluent in HTML5 elements and avoiding `div` soup (mostly!).", extension: ".html" },
+      { name: "CSS", icon: "mdi:language-css3", description: "Styling the web with modern CSS, including Flexbox, Grid, custom properties, and animations. Occasionally wrestling the cascade and celebrating centered divs.", extension: ".css" },
+      { name: "JavaScript", icon: "mdi:language-javascript", description: "Bringing websites to life with ES6+ features, asynchronous operations (Promises, async/await), and effective DOM manipulation. Still pondering 'this' sometimes.", extension: ".js" },
+      { name: "TypeScript", icon: "mdi:language-typescript", description: "Adding static typing to JavaScript for safer, more maintainable codebases. Catching errors at compile time, not Friday 5 PM.", extension: ".ts" },
+      { name: "React", icon: "mdi:react", description: "Building component-based UIs with React, utilizing Hooks (useState, useEffect, useContext) and Context API for state management in small to medium apps. Love the declarative approach!", extension: ".jsx" },
+      { name: "NextJS", icon: "simple-icons:nextdotjs", description: "Leveraging the power of React with Next.js for features like SSR, SSG, API routes, and optimized performance. Making React apps even *Reactier*." },
+      { name: "Svelte", icon: "simple-icons:svelte", description: "Exploring Svelte/SvelteKit for building cybernetically enhanced web apps. Less code, less virtual DOM, more magic (compiler magic, that is).", extension: ".svelte" },
+      { name: "Redux", icon: "simple-icons:redux", description: "Taming complex application state with Redux, primarily using Redux Toolkit for a more streamlined and less boilerplate-heavy experience." },
+      { name: "TailwindCSS", icon: "mdi:tailwind", description: "Rapidly building modern UIs with Tailwind's utility-first approach. My class lists might be long, but my CSS files are short!" },
+      { name: "Astro", icon: "simple-icons:astro", description: "Building faster, content-focused websites by shipping less JavaScript. Loving the Island Architecture and performance focus!", extension: ".astro" },
     ],
   },
-  // First orbit - Frontend frameworks
   {
-    orbit: "frontend",
-    radius: 175, // Half of 350px
+    category: "Backend & Data",
+    color: "oklch(var(--accent-300))",
+    icon: "mdi:folder-cog-outline",
     skills: [
-      { name: "React", icon: "simple-icons:react" },
-      { name: "NextJS", icon: "simple-icons:nextdotjs" },
-      { name: "Svelte", icon: "simple-icons:svelte" },
-      { name: "Redux", icon: "simple-icons:redux" },
-      { name: "TailwindCSS", icon: "simple-icons:tailwindcss" },
-      { name: "TypeScript", icon: "simple-icons:typescript" },
-      { name: "Astro", icon: "simple-icons:astro" },
+      { name: "Django", icon: "simple-icons:django", description: "Developing robust backend systems and APIs with Python using Django's 'batteries-included' philosophy. The admin panel is a lifesaver!" },
+      { name: "PHP", icon: "mdi:language-php", description: "Experience with PHP for server-side logic, building and maintaining web applications. Echo 'Hello, World!';", extension: ".php" },
+      { name: "SQL", icon: "mdi:database-search", description: "Querying and managing relational databases. Crafting `SELECT` statements and trying *very* hard to remember all the `JOIN` types.", extension: ".sql" },
+      { name: "Firebase", icon: "mdi:firebase", description: "Utilizing Firebase (Firestore, Auth, Hosting) for rapid development of backend features and real-time data synchronization. Backend-as-a-Service power!" },
     ],
   },
-  // Second orbit - Backend & databases
   {
-    orbit: "backend",
-    radius: 275, // Half of 550px
+    category: "Core Languages",
+    color: "oklch(var(--accent-300))",
+    icon: "mdi:code-block-tags",
     skills: [
-      { name: "Django", icon: "simple-icons:django" },
-      { name: "PHP", icon: "simple-icons:php" },
-      { name: "SQL", icon: "simple-icons:postgresql" },
-      { name: "Firebase", icon: "simple-icons:firebase" },
-      { name: "Python", icon: "simple-icons:python" },
-      { name: "C/C++", icon: "simple-icons:cplusplus" },
-      { name: "Java", icon: "simple-icons:coffeescript" },
+      { name: "Python", icon: "mdi:language-python", description: "Versatile language for scripting, backend (Django), and general programming. Appreciating the readability, dreading the accidental indentation error.", extension: ".py" },
+      { name: "Java", icon: "mdi:language-java", description: "Solid understanding of Java and OOP principles. Familiar with its ecosystem and verbosity (sometimes you need a `AbstractSingletonProxyFactoryBean`!).", extension: ".java" },
+      { name: "C/C++", icon: "mdi:language-cpp", description: "Foundational knowledge of C/C++ from academic work, understanding memory management (and the fear of segfaults).", extension: ".cpp" },
     ],
   },
-  // Third orbit - Tools and utilities
   {
-    orbit: "tools",
-    radius: 375, // Half of 750px
+    category: "Tools & Systems",
+    color: "oklch(var(--accent-300))",
+    icon: "mdi:folder-wrench-outline",
     skills: [
-      { name: "Git", icon: "simple-icons:git" },
-      { name: "GitHub", icon: "simple-icons:github" },
-      { name: "Linux", icon: "simple-icons:linux" },
-      { name: "Bash", icon: "simple-icons:gnubash" },
-      { name: "Batch", icon: "simple-icons:windowsterminal" },
-      { name: "Vim", icon: "simple-icons:vim" },
-      { name: "Figma", icon: "simple-icons:figma" },
-      { name: "LaTeX", icon: "simple-icons:latex" },
-      { name: "Markdown", icon: "simple-icons:markdown" },
-      { name: "GitHub Actions", icon: "simple-icons:githubactions" },
-      { name: "Jira", icon: "simple-icons:jira" },
-      { name: "Scrum", icon: "simple-icons:scrumalliance" },
-      { name: "Googling", icon: "simple-icons:google" },
+      { name: "Git", icon: "mdi:git", description: "Managing code history like a pro (or at least like someone who knows how to `git blame`). Branching, merging, and occasionally resolving merge conflicts with deep breaths." },
+      { name: "GitHub", icon: "mdi:github", description: "Collaborating on projects, managing repositories, and leveraging the GitHub ecosystem (Issues, PRs, Actions). My contribution graph is... a work in progress." },
+      { name: "Linux", icon: "mdi:linux", description: "Navigating the Linux environment comfortably using the command line. `sudo make me a sandwich`." },
+      { name: "Bash", icon: "mdi:bash", description: "Writing shell scripts for automating tasks and making the terminal do my bidding. Sometimes cryptic, always powerful.", extension: ".sh" },
+      { name: "Batch", icon: "mdi:microsoft-windows", description: "Basic Windows Batch scripting knowledge for when PowerShell feels like overkill (or isn't available). `@echo off` is my friend.", extension: ".bat" },
+      { name: "Figma", icon: "mdi:vector-bezier", description: "Translating beautiful Figma designs into functional code. Inspecting properties, exporting assets, and appreciating Auto Layout." },
+      { name: "Vim", icon: "simple-icons:vim", description: "Efficient text editing using Vim's modal interface. Still figuring out how to exit sometimes... just kidding (mostly). `:wq`" },
+    ],
+  },
+  {
+    category: "Workflow & Process",
+    color: "oklch(var(--accent-300))",
+    icon: "mdi:folder-sync-outline",
+    skills: [
+      { name: "GitHub Actions", icon: "simple-icons:githubactions", description: "Automating build, test, and deployment workflows with GitHub Actions. Making YAML less scary, one workflow at a time.", extension: ".yml" },
+      { name: "Jira", icon: "mdi:jira", description: "Navigating Jira boards, tracking issues, and participating in Agile workflows. Moving tickets from 'To Do' to 'Done' is satisfying." },
+      { name: "Scrum", icon: "mdi:account-group-outline", description: "Experience working in Scrum teams: daily stand-ups, sprint planning, retrospectives. Understanding story points is an ongoing journey." },
+      { name: "LaTeX", icon: "mdi:alpha-l-box-outline", description: "Creating high-quality typeset documents, especially for academic or formal reports. The results are beautiful, even if the syntax feels like coding plain text.", extension: ".tex" },
+      { name: "Markdown", icon: "mdi:language-markdown-outline", description: "Writing clean and readable documentation, READMEs, and notes using Markdown. Simple, effective, and essential.", extension: ".md" },
+      { name: "Googling", icon: "mdi:google", description: "Highly proficient in finding solutions, documentation, and cat memes online. Arguably the most critical skill for any developer. Stack Overflow is my co-pilot." },
     ],
   },
 ];
+
+// Create a more efficient data structure that's optimized for lookup
+const skillsMap = new Map<string, SkillWithCategory>();
+const fileExtensions = new Set<string>();
+
+skillGroups.forEach((group) => {
+  group.skills.forEach((skill) => {
+    // Add to skillsMap with additional metadata
+    skillsMap.set(skill.name, {
+      ...skill,
+      categoryColor: group.color,
+      categoryIcon: group.icon,
+    });
+
+    // Track unique file extensions
+    if (skill.extension) {
+      fileExtensions.add(skill.extension);
+    }
+  });
+});
+
+// Generate file count for status bar
+const fileCount = skillsMap.size;
+const folderCount = skillGroups.length;
 ---
 
-<section id="skills" class="py-24 relative overflow-hidden">
-  <!-- Accent rings in background -->
-  <div class="absolute inset-0 pointer-events-none">
-    <div class="hero-ring w-[120%] aspect-square opacity-10"></div>
-    <div class="hero-ring w-[80%] aspect-square opacity-5"></div>
-  </div>
-
-  <div class="mx-auto px-4 relative z-10">
-    <div class="text-center mb-36">
-      <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">Technical <span class="font-doto font-bold"> Skills</span></h2>
+<section id="skills-editor-section" class="py-20 md:py-28">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12 md:mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">Developer <span class="font-doto font-bold"> Toolkit</span></h2>
       <div class="w-24 h-1 bg-gradient-to-r from-[oklch(var(--accent-500))] to-[oklch(var(--accent-900))] mx-auto rounded-full"></div>
+      <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">An interactive overview of the technologies I use. Click on a file to learn more.</p>
     </div>
 
-    <div class="orbital-system">
-      {
-        orbitalSkills.map((orbitGroup, orbitIndex) => (
-          <div class={`orbit orbit-${orbitGroup.orbit}`} data-orbit-index={orbitIndex}>
-            {orbitGroup.skills.map((skill, skillIndex) => {
-              const totalSkills = orbitGroup.skills.length;
-              const angle = (skillIndex / totalSkills) * 360;
-              return (
-                <div class="skill-node" style={`--angle: ${angle}deg; --delay: ${skillIndex * 0.1 + orbitIndex * 0.5}s; --radius: ${orbitGroup.radius}px;`} data-skill-index={skillIndex} data-orbit={orbitGroup.orbit}>
-                  <div class="skill-bubble">
-                    <div class="skill-content">
-                      <div class="skill-icon">
-                        <Icon name={skill.icon} />
-                      </div>
-                      <div class="skill-name">{skill.name}</div>
-                    </div>
-                  </div>
+    {/* --- Code Editor Structure --- */}
+    <div class="code-editor bg-[color-mix(in_oklch,_rgb(var(--background)),_black_25%)] text-sm rounded-lg shadow-2xl border border-[rgba(var(--foreground)/0.1)] overflow-hidden max-w-5xl mx-auto min-h-[60vh] flex" data-skills={JSON.stringify(Object.fromEntries(skillsMap))}>
+      {/* Sidebar (File Tree) */}
+      <aside class="sidebar w-48 md:w-64 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)] border-r border-[rgba(var(--foreground)/0.1)] p-2 overflow-y-auto">
+        <div class="sidebar-header flex justify-between items-center text-xs text-foreground-muted uppercase mb-2 px-1">
+          <span>Explorer</span>
+          <button title="Collapse All" class="collapse-all-btn p-1 rounded hover:bg-accent-300/10">
+            <Icon name="mdi:chevron-double-up" class="w-3 h-3" />
+          </button>
+        </div>
+        <ul class="file-tree space-y-0.5">
+          {
+            skillGroups.map((group, index) => (
+              <li class="folder-item" data-type="folder" data-expanded={index === 0 ? "true" : "false"} data-category={group.category}>
+                <div class="folder-header flex items-center p-1 rounded cursor-pointer hover:bg-accent-300/10" style={`--folder-color: ${group.color}`}>
+                  <span class="folder-arrow transition-transform duration-200">
+                    <Icon name="mdi:chevron-right" class="w-4 h-4" />
+                  </span>
+                  <Icon name={group.icon} class="w-4 h-4 mx-1 flex-shrink-0" />
+                  <span class="truncate font-medium text-xs">{group.category}</span>
+                  <span class="ml-auto text-xs opacity-60">{group.skills.length}</span>
                 </div>
-              );
-            })}
+                <ul class="skill-list pl-4 overflow-hidden transition-all duration-300 ease-in-out">
+                  {group.skills.map((skill) => (
+                    <li class="file-item p-1 rounded cursor-pointer hover:bg-accent-500/10 text-foreground-muted hover:text-foreground" data-type="file" data-skill-name={skill.name} data-ext={skill.extension || ""}>
+                      <div class="flex items-center">
+                        <Icon name={skill.icon} class="w-4 h-4 mr-2 flex-shrink-0 opacity-80" style={`color: ${group.color};`} />
+                        <span class="truncate text-xs">{skill.name}</span>
+                        {skill.extension && <span class="text-xs opacity-60 ml-1">{skill.extension}</span>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+
+      {/* Main Content */}
+      <main class="main-content flex-1 flex flex-col min-w-0">
+        {/* Tab Bar */}
+        <div class="tab-bar flex border-b border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)]">
+          <div id="editor-tab" class="tab active px-4 py-2 text-xs border-r border-[rgba(var(--foreground)/0.1)] flex items-center gap-2 max-w-[250px]">
+            <span class="tab-icon opacity-80"></span>
+            <span class="tab-name truncate"></span>
+            <button class="tab-close ml-2 opacity-0 hover:opacity-100 transition-opacity">
+              <Icon name="mdi:close" class="w-3 h-3" />
+            </button>
           </div>
-        ))
-      }
+          <div class="flex-1"></div>
+        </div>
+
+        {/* Editor Pane */}
+        <div id="editor-pane" class="editor-pane flex-1 p-4 md:p-6 overflow-y-auto font-mono text-xs md:text-sm leading-relaxed text-foreground-muted">
+          {/* Welcome message */}
+          <div class="welcome-message">
+            <p class="text-accent-300">/**</p>
+            <p>* Welcome to my Skills Explorer</p>
+            <p>* -------------------------</p>
+            <p>* Browse my tech stack and expertise in the file explorer.</p>
+            <p>* Click on any file to view details about that skill.</p>
+            <p class="text-accent-300">*/</p>
+            <br />
+            <p>// Keyboard shortcuts:</p>
+            <p>// - <span class="kbd">Ctrl+B</span> Toggle sidebar</p>
+          </div>
+
+          {/* Skill content */}
+          <div class="skill-content" style="display: none;">
+            <h3 id="skill-title" class="text-lg md:text-xl font-semibold text-foreground mb-4"></h3>
+            <div id="skill-description" class="whitespace-pre-wrap"></div>
+          </div>
+        </div>
+
+        {/* Status Bar */}
+        <footer class="status-bar text-xs px-3 py-1 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_50%)] border-t border-[rgba(var(--foreground)/0.1)] text-foreground-muted flex justify-between">
+          <div class="flex gap-4">
+            <span>{fileCount} Files, {folderCount} Folders</span>
+            <span class="hidden md:block" id="file-type-indicator"></span>
+          </div>
+          <div class="flex gap-4">
+            <span id="current-line">Ln 1, Col 1</span>
+          </div>
+        </footer>
+      </main>
     </div>
   </div>
 </section>
 
-<style>
-  .orbital-system {
-    position: relative;
-    width: 100%;
-    height: 800px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    perspective: 1200px;
-  }
-
-  /* Orbit rings - adjust z-index so inner orbits are on top */
-  .orbit {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px dashed rgba(255, 255, 255, 0.1);
-    transform-style: preserve-3d;
-  }
-
-  .orbit-core {
-    width: 150px;
-    height: 150px;
-    animation: rotate 60s linear infinite;
-    z-index: 40;
-  }
-
-  .orbit-frontend {
-    width: 350px;
-    height: 350px;
-    animation: rotate 80s linear infinite reverse;
-    z-index: 30;
-  }
-
-  .orbit-backend {
-    width: 550px;
-    height: 550px;
-    animation: rotate 100s linear infinite;
-    z-index: 20;
-  }
-
-  .orbit-tools {
-    width: 750px;
-    height: 750px;
-    animation: rotate 120s linear infinite reverse;
-    z-index: 10;
-  }
-
-  /* Skill nodes positioned on orbits */
-  .skill-node {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform-origin: 0 0;
-    transform: rotate(var(--angle)) translateX(var(--radius));
-    opacity: 0;
-    z-index: inherit;
-  }
-
-  /* Bubble container */
-  .skill-bubble {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: rgba(var(--background), 0.7);
-    backdrop-filter: blur(5px);
-    border: 2px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.5);
-    position: relative;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  /* Content container that handles rotation */
-  .skill-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    /* This counter-rotates to make content initially upright */
-    transform: rotate(calc(-1 * var(--angle)));
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  .skill-icon {
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-    color: oklch(var(--accent-text));
-  }
-
-  .skill-name {
-    font-size: 0.7rem;
-    font-weight: 500;
-    line-height: 1.1;
-    text-align: center;
-  }
-
-  /* Hover effects */
-  .skill-bubble:hover {
-    /* Leave empty - will be handled by active class */
-  }
-
-  /* Always maintain vertical orientation on hover */
-  .skill-bubble:hover .skill-content {
-    /* Leave empty - will be handled by JS */
-  }
-
-  /* Animation for orbital rotation */
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  /* Animation for skills appearing */
-  .skill-node.animated {
-    animation: fadeScale 0.6s forwards;
-    animation-delay: var(--delay);
-  }
-
-  @keyframes fadeScale {
-    from {
-      opacity: 0;
-      transform: rotate(var(--angle)) translateX(var(--radius)) scale(0.5);
-    }
-    to {
-      opacity: 1;
-      transform: rotate(var(--angle)) translateX(var(--radius)) scale(1);
-    }
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 1100px) {
-    .orbital-system {
-      height: 600px;
-      transform: scale(0.8);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .orbital-system {
-      height: 450px;
-      transform: scale(0.6);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .orbital-system {
-      height: 350px;
-      transform: scale(0.45);
-    }
-  }
-
-  /* Add these style rules */
-
-  /* Pause animation when orbit is paused */
-  .orbit-paused {
-    animation-play-state: paused !important;
-  }
-
-  /* When a node is active (hovered), ensure it's on top */
-  .skill-node.active {
-    z-index: 1000;
-  }
-
-  /* Adjust the hover effect to work with our new approach */
-  .skill-node.active .skill-bubble {
-    /* transform: scale(1.15); */
-    border-color: oklch(var(--accent-500));
-    box-shadow:
-      0 8px 25px -5px rgba(0, 0, 0, 0.4),
-      0 0 15px rgba(var(--accent-500), 0.3);
-  }
-
-  /* Remove any hover styles from bubble and content to avoid conflicts */
-  .skill-bubble:hover,
-  .skill-bubble:hover .skill-content {
-    /* empty to be handled by JS */
-  }
-
-  /* Add spin animation styles */
-  @keyframes spinToCorrect {
-    from {
-      /* Will be set dynamically */
-    }
-    to {
-      /* Will be set dynamically */
-    }
-  }
-
-  .spin-to-correct {
-    animation: spinToCorrect 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  }
-</style>
-
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // Animation observation code remains unchanged
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const nodes = document.querySelectorAll(".skill-node");
-            nodes.forEach((node) => {
-              node.classList.add("animated");
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const orbitalSystem = document.querySelector(".orbital-system");
-    if (orbitalSystem) {
-      observer.observe(orbitalSystem);
+    interface SkillData {
+      name: string;
+      icon: string;
+      description: string;
+      categoryColor: string;
+      categoryIcon: string;
+      extension?: string;
     }
 
-    // Modified hover handling to add spin animation
-    const nodes = document.querySelectorAll(".skill-node");
+    // --- Grouped DOM Selectors ---
+    // Core Editor Elements
+    const editor = document.querySelector<HTMLDivElement>(".code-editor");
+    const editorPane = editor?.querySelector<HTMLDivElement>("#editor-pane");
+    const skillsDataString = editor?.dataset.skills; // Get data string early
 
-    nodes.forEach((node: any) => {
-      node.addEventListener("mouseenter", () => {
-        // Find the orbit this node belongs to
-        const orbit = node.closest(".orbit");
+    // Sidebar Elements
+    const sidebar = editor?.querySelector<HTMLElement>(".sidebar");
+    const fileTree = sidebar?.querySelector<HTMLUListElement>(".file-tree");
+    const collapseAllBtn = sidebar?.querySelector<HTMLButtonElement>(".collapse-all-btn");
 
-        // Pause animation
-        orbit?.classList.add("orbit-paused");
+    // Editor Content Area Elements
+    const welcomeMessage = editorPane?.querySelector<HTMLDivElement>(".welcome-message");
+    const skillContent = editorPane?.querySelector<HTMLDivElement>(".skill-content");
+    const skillTitle = skillContent?.querySelector<HTMLHeadingElement>("#skill-title"); // Query within skillContent
+    const skillDescription = skillContent?.querySelector<HTMLDivElement>("#skill-description"); // Query within skillContent
 
-        // Mark this node as active
-        node.classList.add("active");
+    // Tab Bar Elements
+    const editorTab = editor?.querySelector<HTMLDivElement>("#editor-tab");
+    const tabCloseBtn = editorTab?.querySelector<HTMLButtonElement>(".tab-close");
+    const tabNameEl = editorTab?.querySelector<HTMLSpanElement>(".tab-name");
+    const tabIconEl = editorTab?.querySelector<HTMLSpanElement>(".tab-icon");
 
-        // Get the angle from the style attribute
-        const angle = parseFloat(node.style.getPropertyValue("--angle") || "0");
+    // Status Bar Elements
+    const statusBar = editor?.querySelector<HTMLElement>(".status-bar"); // Maybe query the footer itself
+    const currentLine = statusBar?.querySelector<HTMLSpanElement>("#current-line"); // Query within status bar
+    const fileTypeIndicator = statusBar?.querySelector<HTMLSpanElement>("#file-type-indicator"); // Query within status bar
 
-        // Calculate what the orbit's current rotation is
-        let orbitRotation = 0;
+    // Cache for parsed skills data
+    let skillsDataCache: Record<string, SkillData> | null = null;
 
-        // Get computed transform of the orbit
-        const orbitStyle = window.getComputedStyle(orbit);
-        const transform = orbitStyle.getPropertyValue("transform");
-
-        if (transform && transform !== "none") {
-          // Extract rotation from transform matrix
-          try {
-            const values = transform.split("(")[1].split(")")[0].split(",");
-            const a = parseFloat(values[0]);
-            const b = parseFloat(values[1]);
-            orbitRotation = Math.atan2(b, a) * (180 / Math.PI);
-          } catch (e) {
-            console.log("Could not parse transform", e);
-          }
+    function getSkillsData(): Record<string, SkillData> {
+      if (skillsDataCache) return skillsDataCache;
+      try {
+        // Use the variable captured earlier
+        if (skillsDataString) {
+          skillsDataCache = JSON.parse(skillsDataString) as Record<string, SkillData>;
+          return skillsDataCache;
         }
+      } catch (err) {
+        console.error("Failed to parse skills data:", err);
+      }
+      return {};
+    }
 
-        // Get content element
-        const skillContent = node.querySelector(".skill-content");
+    // --- Null Checks (Adapt based on grouped selectors) ---
+    if (!editor || !editorPane || !sidebar || !fileTree || !editorTab || !statusBar) {
+      console.error("Skill Editor: Core layout elements not found");
+      return;
+    }
 
-        // Get the current rotation of the content
-        const currentStyle = window.getComputedStyle(skillContent);
-        const currentTransform = currentStyle.getPropertyValue("transform");
-        let currentRotation = -angle; // Default CSS value
+    // Helper function to get a display name for a file type (optional improvement)
+    function getLanguageNameFromExtension(extension: string | undefined): string {
+      if (!extension) return "Plain Text";
+      // Simple lookup, could be expanded
+      const map: Record<string, string> = {
+        ".html": "HTML",
+        ".css": "CSS",
+        ".js": "JavaScript",
+        ".jsx": "React JSX",
+        ".ts": "TypeScript",
+        ".tsx": "React TSX",
+        ".py": "Python",
+        ".java": "Java",
+        ".cpp": "C++",
+        ".php": "PHP",
+        ".md": "Markdown",
+        ".astro": "Astro",
+        ".svelte": "Svelte",
+        ".sh": "Shell Script", // Nicer name
+        ".bat": "Batch File", // Nicer name
+        ".yml": "YAML",
+        ".yaml": "YAML",
+        ".tex": "LaTeX",
+        ".sql": "SQL",
+      };
+      return map[extension.toLowerCase()] || extension.toUpperCase().substring(1) || "Unknown"; // Fallback logic
+    }
 
-        // Try to get the actual current rotation
-        if (currentTransform && currentTransform !== "none") {
-          try {
-            const values = currentTransform.split("(")[1].split(")")[0].split(",");
-            const a = parseFloat(values[0]);
-            const b = parseFloat(values[1]);
-            if (!isNaN(a) && !isNaN(b)) {
-              currentRotation = Math.atan2(b, a) * (180 / Math.PI);
-            }
-          } catch (e) {
-            // Use default if parsing fails
-          }
-        }
-
-        // Calculate the corrected rotation angle
-        const correctionAngle = (-angle - orbitRotation) % 360;
-
-        // Apply spin animation class and store target angle as a data attribute
-        skillContent.classList.add("spin-to-correct");
-        skillContent.dataset.fromAngle = currentRotation;
-        skillContent.dataset.toAngle = correctionAngle;
-
-        // Remove any inline transform to let the animation take over
-        skillContent.style.transform = "";
-      });
-
-      node.addEventListener("mouseleave", () => {
-        // Resume animation
-        const orbit = node.closest(".orbit");
-        orbit.classList.remove("orbit-paused");
-
-        // Remove active state
-        node.classList.remove("active");
-
-        // Get the angle again
-        const angle = parseFloat(node.style.getPropertyValue("--angle") || "0");
-
-        // Get content element
-        const skillContent = node.querySelector(".skill-content");
-
-        // Remove spin animation class
-        skillContent.classList.remove("spin-to-correct");
-
-        // Reset to original counter-rotation with animation
-        skillContent.style.transform = `rotate(${-angle}deg)`;
-      });
+    // Event listeners
+    fileTree.addEventListener("click", handleFileTreeClick);
+    if (collapseAllBtn) {
+      collapseAllBtn.addEventListener("click", collapseAllFolders);
+    }
+    if (tabCloseBtn) {
+      tabCloseBtn.addEventListener("click", closeCurrentTab);
+    }
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "b") {
+        e.preventDefault();
+        toggleSidebar();
+      }
     });
 
-    // Handle the spin animation using animationstart event
-    document.querySelectorAll(".skill-content").forEach((content: any) => {
-      content.addEventListener("animationstart", (e: any) => {
-        if (e.animationName === "spinToCorrect") {
-          // Set the spin animation properties dynamically
-          const fromAngle = parseFloat(content.dataset.fromAngle || "0");
-          const toAngle = parseFloat(content.dataset.toAngle || "0");
+    // --- Helper functions (toggleFolder, collapseAllFolders, toggleSidebar mostly unchanged) ---
+    function handleFileTreeClick(event: MouseEvent): void {
+      const target = event.target as HTMLElement;
+      const folderHeader = target.closest<HTMLDivElement>(".folder-header");
+      const fileItem = target.closest<HTMLLIElement>(".file-item");
 
-          // Create a keyframe animation and apply it
-          const keyframes = [{ transform: `rotate(${fromAngle}deg)` }, { transform: `rotate(${toAngle}deg)` }];
-
-          const options = {
-            duration: 300,
-            easing: "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-            fill: "forwards",
-          };
-
-          content.animate(keyframes, options);
+      if (folderHeader) {
+        const folderItem = folderHeader.closest<HTMLLIElement>(".folder-item");
+        if (folderItem) toggleFolder(folderItem);
+      } else if (fileItem) {
+        const skillName = fileItem.dataset.skillName; // Use dataset
+        if (skillName) {
+          openSkill(fileItem, skillName);
         }
+      }
+    }
+
+    function toggleFolder(folderItem: HTMLElement): void {
+      const isExpanded = folderItem.dataset.expanded === "true";
+      folderItem.dataset.expanded = String(!isExpanded); // Use dataset
+    }
+
+    function collapseAllFolders(): void {
+      const folderItems = fileTree?.querySelectorAll<HTMLElement>(".folder-item"); // Scope query
+      folderItems?.forEach((folder) => {
+        folder.dataset.expanded = "false"; // Use dataset
       });
-    });
+    }
+
+    function toggleSidebar(): void {
+      sidebar?.classList.toggle("hidden"); // More concise toggle
+    }
+
+    function closeCurrentTab(): void {
+      // Reset content visibility
+      skillContent!.style.display = "none";
+      welcomeMessage!.style.display = "block";
+
+      // Reset tab display
+      tabNameEl!.textContent = "welcome.txt";
+      tabIconEl!.innerHTML = ""; // Clear icon
+      // Optional: Reset tab active color if needed
+      // editorTab!.style.setProperty('--active-color', 'transparent');
+
+      // Clear active file item in the tree
+      const currentActive = fileTree?.querySelector<HTMLElement>(".file-item.active");
+      currentActive?.classList.remove("active");
+
+      // Reset status bar
+      updateStatusBar(); // Call without args to reset
+    }
+
+    function openSkill(fileItem: HTMLElement, skillName: string): void {
+      const skillsData = getSkillsData();
+      const skill = skillsData[skillName];
+      if (!skill) {
+        console.warn(`Skill data not found for: ${skillName}`);
+        return;
+      }
+
+      setActiveItem(fileItem);
+
+      // Construct tab name
+      const tabDisplayName = skill.extension ? `${skill.name}${skill.extension}` : skill.name;
+      if (tabNameEl) tabNameEl.textContent = tabDisplayName;
+
+      // Update Tab Icon (innerHTML is acceptable here for simplicity)
+      // Ensure your astro-icon setup correctly generates IDs like "icon-mdi-react"
+      const iconId = `icon-${skill.icon.replace(/:/g, "-")}`;
+      if (tabIconEl) tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#${iconId}"></use></svg>`;
+      // Optional: Set CSS variable for active color
+      // editorTab!.style.setProperty('--active-color', skill.categoryColor);
+
+      // Update Editor Pane Content
+      if (skillTitle) skillTitle.textContent = skill.name;
+      if (skillDescription) skillDescription.textContent = skill.description; // Use textContent if description contains no HTML
+      if (skillDescription) skillDescription.style.whiteSpace = "pre-wrap"; // Ensure line breaks are rendered
+
+      // Switch view
+      if (welcomeMessage) welcomeMessage.style.display = "none";
+      if (skillContent) skillContent.style.display = "block";
+
+      // Update Status Bar (using the skill data directly)
+      updateStatusBar(skill.extension);
+
+      // Update current line indicator (randomness seems fine for demo)
+      if (currentLine) {
+        const randomLine = Math.floor(Math.random() * 20) + 1;
+        const randomCol = Math.floor(Math.random() * 40) + 1;
+        currentLine.textContent = `Ln ${randomLine}, Col ${randomCol}`;
+      }
+    }
+
+    function setActiveItem(activeItem: HTMLElement): void {
+      const currentActive = fileTree?.querySelector<HTMLElement>(".file-item.active"); // Scope query
+      currentActive?.classList.remove("active");
+      activeItem.classList.add("active");
+    }
+
+    // Updated function to accept optional extension
+    function updateStatusBar(extension?: string): void {
+      // Use the helper function to get a nicer name
+      if (fileTypeIndicator) fileTypeIndicator.textContent = getLanguageNameFromExtension(extension);
+      // If closing tab, extension will be undefined, resetting the indicator via the helper
+    }
+
+    function initializeEditor(): void {
+      if (tabNameEl) tabNameEl.textContent = "welcome.txt";
+      if (tabIconEl) tabIconEl.innerHTML = "";
+      if (welcomeMessage) welcomeMessage.style.display = "block";
+      if (skillContent) skillContent.style.display = "none";
+      updateStatusBar(); // Initial status bar state
+    }
+
+    // Initialize
+    initializeEditor();
   });
 </script>
