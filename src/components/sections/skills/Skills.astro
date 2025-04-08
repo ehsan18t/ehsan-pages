@@ -1,239 +1,332 @@
 ---
-// src/components/SkillBloom.astro
+// src/components/SkillEditor.astro
 import { Icon } from "astro-icon/components";
 
-// 1. Define Skill Categories and Skills
+// --- Use the enhanced skillGroups data from above ---
 const skillGroups = [
+  /* Paste the full skillGroups data with descriptions here */
   {
     category: "Web Frontend",
-    // Using accent colors from your theme for categories
     color: "oklch(var(--accent-300))",
-    icon: "mdi:web", // Example category icon
+    icon: "mdi:folder-text-outline",
     skills: [
-      { name: "HTML", icon: "simple-icons:html5" },
-      { name: "CSS", icon: "simple-icons:css3" },
-      { name: "JavaScript", icon: "simple-icons:javascript" },
-      { name: "TypeScript", icon: "simple-icons:typescript" },
-      { name: "React", icon: "simple-icons:react" },
-      { name: "NextJS", icon: "simple-icons:nextdotjs" },
-      { name: "Svelte", icon: "simple-icons:svelte" },
-      { name: "Redux", icon: "simple-icons:redux" },
-      { name: "TailwindCSS", icon: "simple-icons:tailwindcss" },
-      { name: "Astro", icon: "simple-icons:astro" },
+      { name: "HTML", icon: "mdi:language-html5", description: "Proficient in semantic HTML5 markup for structure and accessibility." },
+      { name: "CSS", icon: "mdi:language-css3", description: "Skilled in modern CSS, including Flexbox, Grid, animations, and responsive design. Experience with preprocessors like Sass/SCSS." },
+      { name: "JavaScript", icon: "mdi:language-javascript", description: "Strong understanding of ES6+ features, DOM manipulation, asynchronous programming (async/await, Promises)." },
+      { name: "TypeScript", icon: "mdi:language-typescript", description: "Using TypeScript for enhanced type safety and maintainability in larger projects." },
+      { name: "React", icon: "mdi:react", description: "Extensive experience building dynamic UIs with React, hooks, context API, and component libraries." },
+      { name: "NextJS", icon: "simple-icons:nextdotjs", description: "Building server-rendered and static React applications with Next.js, including routing and API routes." },
+      { name: "Svelte", icon: "simple-icons:svelte", description: "Experience with Svelte/SvelteKit for building highly performant web applications with less boilerplate." },
+      { name: "Redux", icon: "simple-icons:redux", description: "Managing complex application state using Redux Toolkit and middleware." },
+      { name: "TailwindCSS", icon: "mdi:tailwind", description: "Utilizing Tailwind CSS for rapid UI development with utility-first classes." },
+      { name: "Astro", icon: "simple-icons:astro", description: "Building fast, content-focused websites with Astro's island architecture." },
     ],
   },
   {
     category: "Backend & Data",
-    color: "oklch(var(--accent-500))", // Different accent
-    icon: "mdi:database",
+    color: "oklch(var(--accent-500))",
+    icon: "mdi:folder-cog-outline",
     skills: [
-      { name: "Django", icon: "simple-icons:django" },
-      { name: "PHP", icon: "simple-icons:php" },
-      { name: "SQL", icon: "simple-icons:postgresql" },
-      { name: "Firebase", icon: "simple-icons:firebase" },
-      // { name: "Node.js", icon: "simple-icons:nodedotjs" }, // Example if you add later
+      { name: "Django", icon: "simple-icons:django", description: "Developing backend applications and APIs using the Django framework." },
+      { name: "PHP", icon: "mdi:language-php", description: "Experience with PHP for server-side scripting and web development." },
+      { name: "SQL", icon: "mdi:database-search", description: "Writing SQL queries and interacting with relational databases (e.g., PostgreSQL, MySQL)." },
+      { name: "Firebase", icon: "mdi:firebase", description: "Utilizing Firebase services like Firestore, Authentication, and Hosting for backend solutions." },
     ],
   },
   {
     category: "Core Languages",
-    color: "oklch(var(--accent-900))", // Another accent
-    icon: "mdi:code-braces",
+    color: "oklch(var(--accent-900))",
+    icon: "simple-icons:codecrafters",
     skills: [
-      { name: "Python", icon: "simple-icons:python" },
-      { name: "Java", icon: "simple-icons:openjdk" }, // Changed icon
-      { name: "C/C++", icon: "simple-icons:cplusplus" },
+      { name: "Python", icon: "mdi:language-python", description: "General-purpose programming with Python, including scripting and backend development (with Django)." },
+      { name: "Java", icon: "mdi:language-java", description: "Experience with Java for object-oriented programming concepts." },
+      { name: "C/C++", icon: "mdi:language-cpp", description: "Foundational knowledge of C/C++ for systems programming concepts." },
     ],
   },
   {
     category: "Tools & Systems",
-    color: "oklch(var(--secondary))", // Using secondary color
-    icon: "mdi:tools",
+    color: "oklch(var(--secondary))",
+    icon: "mdi:folder-wrench-outline",
     skills: [
-      { name: "Git", icon: "simple-icons:git" },
-      { name: "GitHub", icon: "simple-icons:github" },
-      { name: "Linux", icon: "simple-icons:linux" },
-      { name: "Bash", icon: "simple-icons:gnubash" },
-      { name: "Batch", icon: "simple-icons:windowsterminal" },
-      { name: "Figma", icon: "simple-icons:figma" },
-      { name: "Vim", icon: "simple-icons:vim" },
-      // { name: "Docker", icon: "simple-icons:docker" }, // Example
+      { name: "Git", icon: "mdi:git", description: "Proficient in version control using Git, including branching, merging, and rebasing." },
+      { name: "GitHub", icon: "mdi:github", description: "Using GitHub for repository hosting, collaboration, and Actions." },
+      { name: "Linux", icon: "mdi:linux", description: "Comfortable working in Linux environments, using command-line tools and shell scripting." },
+      { name: "Bash", icon: "mdi:bash", description: "Writing Bash scripts for automation and system tasks." },
+      { name: "Batch", icon: "mdi:microsoft-windows", description: "Basic knowledge of Windows Batch scripting." },
+      { name: "Figma", icon: "mdi:vector-bezier", description: "Using Figma for UI design mockups, prototyping, and inspecting designs." },
+      { name: "Vim", icon: "simple-icons:vim", description: "Using Vim as a text editor for efficient code editing." },
     ],
   },
   {
     category: "Workflow & Process",
-    color: "oklch(var(--foreground-muted))", // Muted color
-    icon: "mdi:clipboard-check-multiple-outline",
+    color: "oklch(var(--foreground-muted))",
+    icon: "mdi:folder-sync-outline",
     skills: [
-      { name: "GitHub Actions", icon: "simple-icons:githubactions" },
-      { name: "Jira", icon: "simple-icons:jira" },
-      { name: "Scrum", icon: "simple-icons:scrumalliance" }, // Placeholder icon
-      { name: "LaTeX", icon: "simple-icons:latex" },
-      { name: "Markdown", icon: "simple-icons:markdown" },
-      { name: "Googling", icon: "simple-icons:google" },
+      { name: "GitHub Actions", icon: "simple-icons:githubactions", description: "Setting up CI/CD pipelines and automating workflows with GitHub Actions." },
+      { name: "Jira", icon: "mdi:jira", description: "Using Jira for issue tracking and project management in Agile environments." },
+      { name: "Scrum", icon: "mdi:account-group-outline", description: "Working within Scrum teams, participating in sprints, stand-ups, and retrospectives." },
+      { name: "LaTeX", icon: "mdi:alpha-l-box-outline", description: "Creating documents and reports using LaTeX." },
+      { name: "Markdown", icon: "mdi:language-markdown-outline", description: "Writing documentation and notes using Markdown." },
+      { name: "Googling", icon: "mdi:google", description: "Expert-level information retrieval and problem-solving via search engines. Essential developer skill!" },
     ],
   },
 ];
 
-// 2. Calculate bloom positions for each skill
-const bloomRadius = 130; // px - How far skills bloom outwards (TUNE THIS)
-const baseDelay = 0.06; // seconds - Stagger delay multiplier (TUNE THIS)
-
+// Create a flat map for easier lookup in JS
+const skillsMap = new Map();
 skillGroups.forEach((group) => {
-  const N = group.skills.length;
-  group.skills.forEach((skill: any, index) => {
-    // Calculate angle for even distribution on a circle
-    // Add a small offset (-Math.PI / 2) to start blooming from the top
-    const angle = (index / N) * 2 * Math.PI - Math.PI / 2;
-    // Calculate the X and Y translation needed from the center
-    skill.bloomTx = Math.cos(angle) * bloomRadius;
-    skill.bloomTy = Math.sin(angle) * bloomRadius;
-    // Calculate staggered delay
-    skill.bloomDelay = index * baseDelay;
+  group.skills.forEach((skill) => {
+    skillsMap.set(skill.name, { ...skill, categoryColor: group.color });
   });
 });
+
+// Helper function to format description (simple example)
+function formatDescription(text: string) {
+  return text.replace(/\n/g, "<br/>"); // Replace newlines with <br>
+}
 ---
 
-<section id="skills-bloom" class="py-24">
+<section id="skills-editor-section" class="py-20 md:py-28">
   <div class="container mx-auto px-4">
-    <div class="text-center mb-16">
-      <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">Skill <span class="font-doto font-bold"> Clusters</span></h2>
+    <div class="text-center mb-12 md:mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">Developer <span class="font-doto font-bold"> Toolkit</span></h2>
       <div class="w-24 h-1 bg-gradient-to-r from-[oklch(var(--accent-500))] to-[oklch(var(--accent-900))] mx-auto rounded-full"></div>
-      <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">Hover over a category to see the related skills bloom outwards.</p>
+      <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">An interactive overview of the technologies I use. Click on a file to learn more.</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 md:gap-16 place-items-center">
-      {
-        skillGroups.map((group) => (
-          <div class="category-wrapper group relative" style={`--category-color: ${group.color};`}>
-            <div class="category-bubble relative flex flex-col items-center justify-center w-36 h-36 md:w-40 md:h-40 rounded-full border-2 border-[color:rgba(var(--foreground)/0.1)] bg-[color:rgba(var(--background)/0.7)] backdrop-blur-md shadow-lg cursor-default transition-all duration-300 group-hover:border-[var(--category-color)] group-hover:scale-105 z-10">
-              <div class="text-4xl mb-1 text-[var(--category-color)] transition-transform duration-300 group-hover:scale-110">{group.icon && <Icon name={group.icon} />}</div>
-              <h3 class="text-sm font-semibold text-center px-2">{group.category}</h3>
-            </div>
-
-            {group.skills.map((skill: any) => (
-              <div class="skill-bubble absolute top-1/2 left-1/2" style={`--bloom-tx: ${skill.bloomTx}px; --bloom-ty: ${skill.bloomTy}px; --bloom-delay: ${skill.bloomDelay}s; --color: var(--category-color);`} title={skill.name} { /* Tooltip for accessibility */ }>
-                {/* Reusing your bubble structure */}
-                <div class="skill-icon">
-                  <Icon name={skill.icon} />
+    {/* --- Code Editor Structure --- */}
+    <div class="code-editor bg-[color-mix(in_oklch,_rgb(var(--background)),_black_25%)] text-sm rounded-lg shadow-2xl border border-[rgba(var(--foreground)/0.1)] overflow-hidden max-w-5xl mx-auto min-h-[60vh] flex" data-skills={JSON.stringify(Object.fromEntries(skillsMap))}>
+      {/* Sidebar (File Tree) */}
+      <aside class="sidebar w-48 md:w-64 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)] border-r border-[rgba(var(--foreground)/0.1)] p-2 overflow-y-auto">
+        <div class="text-xs text-foreground-muted uppercase mb-2 px-1">Explorer</div>
+        <ul class="file-tree space-y-0.5">
+          {
+            skillGroups.map((group, index) => (
+              <li class="folder-item" data-type="folder" data-expanded={index === 0 ? "true" : "false"}>
+                {" "}
+                {/* Expand first folder */}
+                <div class="folder-header flex items-center p-1 rounded cursor-pointer hover:bg-[rgba(var(--foreground)/0.05)]" style={`color: ${group.color};`}>
+                  <span class="folder-arrow transition-transform duration-200">
+                    <Icon name="mdi:chevron-right" class="w-4 h-4" />
+                  </span>
+                  <Icon name={group.icon} class="w-4 h-4 mx-1 flex-shrink-0" />
+                  <span class="truncate font-medium text-xs">{group.category}</span>
                 </div>
-                <div class="skill-name">{skill.name}</div>
-              </div>
-            ))}
+                <ul class="skill-list pl-4 overflow-hidden transition-all duration-300 ease-in-out">
+                  {group.skills.map((skill) => (
+                    <li class="file-item p-1 rounded cursor-pointer hover:bg-[rgba(var(--foreground)/0.1)] text-foreground-muted hover:text-foreground" data-type="file" data-skill-name={skill.name}>
+                      <div class="flex items-center">
+                        <Icon name={skill.icon} class="w-4 h-4 mr-2 flex-shrink-0 opacity-80" style={`color: ${group.color};`} />
+                        <span class="truncate text-xs">{skill.name}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+
+      {/* Main Content */}
+      <main class="main-content flex-1 flex flex-col min-w-0">
+        {/* Tab Bar */}
+        <div class="tab-bar flex border-b border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)]">
+          <div id="editor-tab" class="tab active px-4 py-2 text-xs border-r border-[rgba(var(--foreground)/0.1)] flex items-center gap-2 max-w-full">
+            {/* Icon and Name appear here */}
+            <span class="tab-icon opacity-80"></span>
+            <span class="tab-name truncate"></span>
           </div>
-        ))
-      }
+          {/* Can add more tabs or controls here later */}
+        </div>
+
+        {/* Editor Pane */}
+        <div id="editor-pane" class="editor-pane flex-1 p-4 md:p-6 overflow-y-auto font-mono text-xs md:text-sm leading-relaxed text-foreground-muted">
+          {/* Welcome message or Skill details appear here */}
+          <div class="welcome-message">
+            <p>// Welcome to my Skill IDE!</p>
+            <p>// Click on a file in the explorer (left sidebar) to view details about a specific skill.</p>
+            <br />
+            <p class="text-accent-500">// Example:</p>
+            <p>// 'Web Frontend' <span class="text-foreground-muted">></span> 'React'</p>
+          </div>
+          <div class="skill-content" style="display: none;">
+            <h3 id="skill-title" class="text-lg md:text-xl font-semibold text-foreground mb-4"></h3>
+            <p id="skill-description" class="whitespace-pre-wrap"></p>
+          </div>
+        </div>
+
+        {/* Status Bar (Optional) */}
+        <footer class="status-bar text-xs px-3 py-1 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_50%)] border-t border-[rgba(var(--foreground)/0.1)] text-foreground-muted flex justify-between">
+          <span>{skillsMap.size} Skills Loaded</span>
+          <span id="current-line">Ln 1, Col 1</span>
+          {/* Placeholder */}
+        </footer>
+      </main>
     </div>
   </div>
 </section>
 
+{/* --- CSS --- */}
 <style>
-  .category-wrapper {
-    /* REMOVE fixed min-width and min-height from here */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative; /* Keep relative for absolute children */
-    /* Add some vertical padding on mobile instead, if needed */
-    /* e.g., padding-block: 2rem; */
-    /* Or rely primarily on the grid gap below */
+  .code-editor {
+    font-family: var(--font-Inter); /* Use your main font */
+  }
+  .editor-pane {
+    /* You can specify a fixed monospace font stack here if needed */
+    font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
   }
 
-  /* Apply min dimensions only on 'sm' screens and up (matches your grid change) */
-  @media (min-width: 640px) {
-    /* Tailwind's 'sm' breakpoint */
-    .category-wrapper {
-      /* Use CSS variable for bloomRadius for consistency */
-      --bloom-radius: 130px;
-      min-width: calc(var(--bloom-radius) * 2 + 160px); /* Approx (radius*2 + bubble width) */
-      min-height: calc(var(--bloom-radius) * 2 + 160px);
+  /* File Tree Styling */
+  .sidebar {
+    /* Custom scrollbar for sidebar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--foreground), 0.2) transparent;
+  }
+  .sidebar::-webkit-scrollbar {
+    width: 5px;
+  }
+  .sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--foreground), 0.2);
+    border-radius: 3px;
+  }
+
+  .folder-item[data-expanded="false"] > .skill-list {
+    max-height: 0;
+  }
+  .folder-item[data-expanded="true"] > .skill-list {
+    /* Calculate max-height dynamically if possible, or use a large enough value */
+    max-height: 500px; /* Adjust if needed */
+  }
+
+  .folder-item .skill-list {
+    transition: max-height 0.3s ease-in-out; /* Ensure transition is on skill-list */
+  }
+
+  .folder-item[data-expanded="true"] .folder-arrow {
+    transform: rotate(90deg);
+  }
+
+  /* Active states */
+  .file-item.active {
+    background-color: rgba(var(--accent-500), 0.15);
+    color: rgb(var(--foreground));
+  }
+  .tab.active {
+    background-color: rgba(var(--background), 0.9); /* Match editor pane bg */
+    color: rgb(var(--foreground));
+    border-bottom-color: transparent; /* Connect tab to pane */
+    position: relative;
+    top: 1px; /* Align with border */
+  }
+  .tab.active .tab-icon {
+    color: var(--active-color, oklch(var(--accent-500))); /* Use skill color */
+  }
+
+  /* Simple cursor animation */
+  .editor-pane::after {
+    /* content: '|'; */ /* Disabled for now, can be distracting */
+    /* animation: blink 1s step-end infinite; */
+    /* display: inline-block; */
+    /* margin-left: 2px; */
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
     }
   }
-
-  /* Inherit styles for .skill-bubble, .skill-icon, .skill-name from your global CSS or previous component style block if needed */
-  /* The key parts are the initial state and the hover transition */
-
-  .skill-bubble {
-    width: 80px; /* Slightly smaller */
-    height: 80px;
-    border-radius: 50%;
-    background: rgba(var(--background), 0.8); /* Slightly more opaque */
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 10px -3px rgba(0, 0, 0, 0.4);
-    padding: 8px;
-    position: absolute; /* Crucial */
-    overflow: hidden;
-    cursor: default;
-    color: rgb(var(--foreground)); /* Default text color */
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
-    pointer-events: none;
-    z-index: 999; /* Below category bubble */
-    transition:
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.3s ease-out; /* Bouncy exit easing */
-    transition-delay: var(--bloom-delay, 0s);
-  }
-
-  .category-wrapper:hover .skill-bubble {
-    opacity: 1;
-    transform: translate(-50%, -50%) translate(var(--bloom-tx, 0px), var(--bloom-ty, 0px)) scale(1);
-    pointer-events: auto; /* Allow hover on skills */
-  }
-
-  .skill-bubble:hover {
-    border-color: var(--color);
-    transform: translate(-50%, -50%) translate(var(--bloom-tx, 0px), var(--bloom-ty, 0px)) scale(1.15);
-    box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.5);
-    z-index: 20; /* Bring hovered skill to front */
-    transition:
-      transform 0.2s ease-out,
-      border-color 0.2s ease-out,
-      box-shadow 0.2s ease-out;
-    transition-delay: 0s !important;
-  }
-
-  .skill-bubble .skill-icon {
-    font-size: 1.6rem;
-    margin-bottom: 4px;
-    color: var(--color, oklch(var(--accent-text)));
-    transition: transform 0.2s ease;
-  }
-
-  .skill-bubble .skill-name {
-    font-size: 0.65rem; /* Smaller text */
-    font-weight: 500;
-    line-height: 1.1;
-    text-align: center;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
-  }
-
-  .skill-bubble:hover .skill-icon {
-    transform: scale(1.1);
-  }
-  .skill-bubble:hover .skill-name {
-    opacity: 1;
-  }
-
-  .skill-bubble::before {
-    /* Optional glow */
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at center, var(--color) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-  }
-  .skill-bubble:hover::before {
-    opacity: 0.1;
-  }
 </style>
+
+{/* --- JavaScript --- */}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const editor = document.querySelector(".code-editor");
+    const sidebar = editor?.querySelector(".sidebar .file-tree");
+    const editorPane = editor?.querySelector("#editor-pane");
+    const welcomeMessage = editorPane?.querySelector(".welcome-message");
+    const skillContent = editorPane?.querySelector(".skill-content");
+    const skillTitle = editorPane?.querySelector("#skill-title");
+    const skillDescription = editorPane?.querySelector("#skill-description");
+    const editorTab = editor?.querySelector("#editor-tab");
+    const tabNameEl = editorTab?.querySelector(".tab-name");
+    const tabIconEl = editorTab?.querySelector(".tab-icon");
+
+    const skillsData = JSON.parse(editor?.dataset.skills || "{}");
+
+    if (!sidebar || !editorPane || !skillsData || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl) {
+      console.error("Skill Editor elements not found!");
+      return;
+    }
+
+    sidebar.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      // Target the folder header directly for folder clicks
+      const folderHeader = target.closest(".folder-header");
+      const fileItem = target.closest(".file-item"); // Target file item directly
+
+      if (folderHeader) {
+        const folderItem = folderHeader.closest(".folder-item");
+        if (folderItem) handleFolderClick(folderItem);
+      } else if (fileItem) {
+        const skillName = fileItem.getAttribute("data-skill-name");
+        if (skillName) {
+          handleSkillClick(fileItem, skillName);
+        }
+      }
+    });
+
+    function handleFolderClick(folderItem: Element) {
+      const isExpanded = folderItem.getAttribute("data-expanded") === "true";
+      folderItem.setAttribute("data-expanded", String(!isExpanded));
+      // Simple toggle based on attribute for CSS max-height transition
+    }
+
+    function handleSkillClick(fileItem: Element, skillName: string) {
+      const skill = skillsData[skillName];
+      if (!skill) return;
+      setActiveItem(fileItem);
+
+      tabNameEl.textContent = skill.name;
+      // Use specific MDI icon name structure for astro-icon's <use> element
+      const iconId = `icon-${skill.icon.replace(":", "-")}`;
+      // Check if Icon component generated the symbol correctly
+      if (document.getElementById(iconId)) {
+        tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#${iconId}"></use></svg>`;
+      } else {
+        tabIconEl.innerHTML = ""; // Clear if icon not found
+        console.warn(`Icon symbol not found for ID: ${iconId}`);
+      }
+      // editorTab.style.setProperty("--active-color", skill.categoryColor); // Color set directly now
+
+      skillTitle.textContent = skill.name;
+      skillDescription.innerHTML = skill.description.replace(/\n/g, "<br/>");
+      welcomeMessage.style.display = "none";
+      skillContent.style.display = "block";
+    }
+
+    function setActiveItem(activeItem: Element) {
+      sidebar.querySelector(".file-item.active")?.classList.remove("active");
+      activeItem.classList.add("active");
+    }
+
+    function initializeEditor() {
+      if (tabNameEl) tabNameEl.textContent = "welcome.txt";
+      if (tabIconEl) tabIconEl.innerHTML = "";
+      if (welcomeMessage) welcomeMessage.style.display = "block";
+      if (skillContent) skillContent.style.display = "none";
+
+      // **Important:** Ensure initial max-height is set correctly by CSS
+      // The CSS rule `.folder-item[data-expanded="false"] > .skill-list { max-height: 0; }`
+      // and `.folder-item[data-expanded="true"] > .skill-list { max-height: 500px; }`
+      // handle the initial state based on the `data-expanded` attribute set in the HTML.
+      // No extra JS needed here for initial height setting.
+    }
+
+    // --- REMOVED transitionstart / transitionend listeners ---
+
+    initializeEditor();
+  });
+</script>
