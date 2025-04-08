@@ -128,12 +128,25 @@ skillGroups.forEach((group) => {
 
 <style>
   .category-wrapper {
-    /* Ensure enough space around for blooming */
-    min-width: calc(130px * 2 + 160px); /* Approx (bloomRadius * 2 + category bubble width) */
-    min-height: calc(130px * 2 + 160px);
+    /* REMOVE fixed min-width and min-height from here */
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative; /* Keep relative for absolute children */
+    /* Add some vertical padding on mobile instead, if needed */
+    /* e.g., padding-block: 2rem; */
+    /* Or rely primarily on the grid gap below */
+  }
+
+  /* Apply min dimensions only on 'sm' screens and up (matches your grid change) */
+  @media (min-width: 640px) {
+    /* Tailwind's 'sm' breakpoint */
+    .category-wrapper {
+      /* Use CSS variable for bloomRadius for consistency */
+      --bloom-radius: 130px;
+      min-width: calc(var(--bloom-radius) * 2 + 160px); /* Approx (radius*2 + bubble width) */
+      min-height: calc(var(--bloom-radius) * 2 + 160px);
+    }
   }
 
   /* Inherit styles for .skill-bubble, .skill-icon, .skill-name from your global CSS or previous component style block if needed */
@@ -156,42 +169,32 @@ skillGroups.forEach((group) => {
     overflow: hidden;
     cursor: default;
     color: rgb(var(--foreground)); /* Default text color */
-
-    /* --- Initial State (Hidden at Center) --- */
     opacity: 0;
-    /* Start centered within the category bubble and scaled down */
     transform: translate(-50%, -50%) scale(0);
     pointer-events: none;
-    z-index: 1; /* Below category bubble */
-    /* Define transition for bloom effect */
+    z-index: 999; /* Below category bubble */
     transition:
       transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
       opacity 0.3s ease-out; /* Bouncy exit easing */
-    /* Apply individual delay calculated in frontmatter */
     transition-delay: var(--bloom-delay, 0s);
   }
 
-  /* --- Bloom State (Triggered by hovering the PARENT .category-wrapper) --- */
   .category-wrapper:hover .skill-bubble {
     opacity: 1;
-    /* Move to calculated bloom position and scale up */
     transform: translate(-50%, -50%) translate(var(--bloom-tx, 0px), var(--bloom-ty, 0px)) scale(1);
     pointer-events: auto; /* Allow hover on skills */
   }
 
-  /* --- Skill Bubble Hover Effects (Apply when bloomed) --- */
   .skill-bubble:hover {
     border-color: var(--color);
-    /* Apply hover scale relative to the bloomed position */
     transform: translate(-50%, -50%) translate(var(--bloom-tx, 0px), var(--bloom-ty, 0px)) scale(1.15);
     box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.5);
     z-index: 20; /* Bring hovered skill to front */
-    /* Keep transition for hover effect smooth */
     transition:
       transform 0.2s ease-out,
       border-color 0.2s ease-out,
       box-shadow 0.2s ease-out;
-    transition-delay: 0s !important; /* Override bloom delay for immediate hover feedback */
+    transition-delay: 0s !important;
   }
 
   .skill-bubble .skill-icon {
@@ -213,13 +216,12 @@ skillGroups.forEach((group) => {
   .skill-bubble:hover .skill-icon {
     transform: scale(1.1);
   }
-
   .skill-bubble:hover .skill-name {
     opacity: 1;
   }
 
-  /* Optional: Subtle glow on skill bubble using pseudo-element */
   .skill-bubble::before {
+    /* Optional glow */
     content: "";
     position: absolute;
     top: 0;
@@ -231,7 +233,6 @@ skillGroups.forEach((group) => {
     transition: opacity 0.3s ease;
     z-index: -1;
   }
-
   .skill-bubble:hover::before {
     opacity: 0.1;
   }
