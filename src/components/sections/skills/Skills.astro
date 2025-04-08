@@ -1,7 +1,27 @@
 ---
 import { Icon } from "astro-icon/components";
 
-const skillGroups = [
+// Define TypeScript interfaces for better type safety
+interface Skill {
+  name: string;
+  icon: string;
+  description: string;
+  extension?: string;
+}
+
+interface SkillWithCategory extends Skill {
+  categoryColor: string;
+}
+
+interface SkillGroup {
+  category: string;
+  color: string;
+  icon: string;
+  skills: Skill[];
+}
+
+// Your existing skill groups array with proper typing
+const skillGroups: SkillGroup[] = [
   {
     category: "Web Frontend",
     color: "oklch(var(--accent-300))",
@@ -33,7 +53,7 @@ const skillGroups = [
   {
     category: "Core Languages",
     color: "oklch(var(--accent-900))",
-    icon: "simple-icons:codecrafters", // You fixed this icon, keeping it
+    icon: "mdi:code-block-tags",
     skills: [
       { name: "Python", icon: "mdi:language-python", description: "Versatile language for scripting, backend (Django), and general programming. Appreciating the readability, dreading the accidental indentation error.", extension: ".py" },
       { name: "Java", icon: "mdi:language-java", description: "Solid understanding of Java and OOP principles. Familiar with its ecosystem and verbosity (sometimes you need a `AbstractSingletonProxyFactoryBean`!).", extension: ".java" },
@@ -69,10 +89,14 @@ const skillGroups = [
   },
 ];
 
-const skillsMap = new Map();
+// Create a properly typed Map for skills
+const skillsMap = new Map<string, SkillWithCategory>();
 skillGroups.forEach((group) => {
   group.skills.forEach((skill) => {
-    skillsMap.set(skill.name, { ...skill, categoryColor: group.color, extension: (skill as any).extension });
+    skillsMap.set(skill.name, {
+      ...skill,
+      categoryColor: group.color,
+    });
   });
 });
 ---
@@ -94,9 +118,7 @@ skillGroups.forEach((group) => {
           {
             skillGroups.map((group, index) => (
               <li class="folder-item" data-type="folder" data-expanded={index === 0 ? "true" : "false"}>
-                {" "}
-                {/* Expand first folder */}
-                <div class="folder-header flex items-center p-1 rounded cursor-pointer hover:bg-[rgba(var(--foreground)/0.05)]" style={`color: ${group.color};`}>
+                <div class="folder-header flex items-center p-1 rounded cursor-pointer hover:bg-accent-300/10">
                   <span class="folder-arrow transition-transform duration-200">
                     <Icon name="mdi:chevron-right" class="w-4 h-4" />
                   </span>
@@ -105,9 +127,9 @@ skillGroups.forEach((group) => {
                 </div>
                 <ul class="skill-list pl-4 overflow-hidden transition-all duration-300 ease-in-out">
                   {group.skills.map((skill) => (
-                    <li class="file-item p-1 rounded cursor-pointer hover:bg-[rgba(var(--foreground)/0.1)] text-foreground-muted hover:text-foreground" data-type="file" data-skill-name={skill.name}>
+                    <li class="file-item p-1 rounded cursor-pointer hover:bg-accent-500/10 text-foreground-muted hover:text-foreground" data-type="file" data-skill-name={skill.name}>
                       <div class="flex items-center">
-                        <Icon name={skill.icon} class="w-4 h-4 mr-2 flex-shrink-0 opacity-80" style={`color: ${group.color};`} />
+                        <Icon name={skill.icon} class="w-4 h-4 mr-2 flex-shrink-0 opacity-80" />
                         <span class="truncate text-xs">{skill.name}</span>
                       </div>
                     </li>
@@ -158,7 +180,6 @@ skillGroups.forEach((group) => {
   </div>
 </section>
 
-{/* --- CSS --- */}
 <style>
   .code-editor {
     font-family: var(--font-Inter); /* Use your main font */
@@ -188,6 +209,7 @@ skillGroups.forEach((group) => {
   .folder-item[data-expanded="false"] > .skill-list {
     max-height: 0;
   }
+
   .folder-item[data-expanded="true"] > .skill-list {
     /* Calculate max-height dynamically if possible, or use a large enough value */
     max-height: 500px; /* Adjust if needed */
@@ -201,10 +223,14 @@ skillGroups.forEach((group) => {
     transform: rotate(90deg);
   }
 
+  .folder-item[data-expanded="true"] .folder-header {
+    color: oklch(var(--accent-300));
+  }
+
   /* Active states */
   .file-item.active {
     background-color: rgba(var(--accent-500), 0.15);
-    color: rgb(var(--foreground));
+    color: oklch(var(--accent-500));
   }
   .tab.active {
     background-color: rgba(var(--background), 0.9); /* Match editor pane bg */
@@ -232,36 +258,54 @@ skillGroups.forEach((group) => {
   }
 </style>
 
-{/* --- JavaScript --- */}
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const editor = document.querySelector(".code-editor");
-    const sidebar = editor?.querySelector(".sidebar .file-tree");
-    const editorPane = editor?.querySelector("#editor-pane");
-    const welcomeMessage = editorPane?.querySelector(".welcome-message");
-    const skillContent = editorPane?.querySelector(".skill-content");
-    const skillTitle = editorPane?.querySelector("#skill-title");
-    const skillDescription = editorPane?.querySelector("#skill-description");
-    const editorTab = editor?.querySelector("#editor-tab");
-    const tabNameEl = editorTab?.querySelector(".tab-name");
-    const tabIconEl = editorTab?.querySelector(".tab-icon");
+    // Define interfaces for client-side TypeScript
+    interface SkillData {
+      name: string;
+      icon: string;
+      description: string;
+      categoryColor: string;
+      extension?: string;
+    }
 
-    // Get skill data passed from Astro frontmatter
-    // It now includes the extension property where added
-    const skillsData = JSON.parse(editor?.dataset.skills || "{}");
+    // Properly typed DOM element selectors with null checks
+    const editor = document.querySelector<HTMLDivElement>(".code-editor");
+    const sidebar = editor?.querySelector<HTMLUListElement>(".sidebar .file-tree");
+    const editorPane = editor?.querySelector<HTMLDivElement>("#editor-pane");
+    const welcomeMessage = editorPane?.querySelector<HTMLDivElement>(".welcome-message");
+    const skillContent = editorPane?.querySelector<HTMLDivElement>(".skill-content");
+    const skillTitle = editorPane?.querySelector<HTMLHeadingElement>("#skill-title");
+    const skillDescription = editorPane?.querySelector<HTMLParagraphElement>("#skill-description");
+    const editorTab = editor?.querySelector<HTMLDivElement>("#editor-tab");
+    const tabNameEl = editorTab?.querySelector<HTMLSpanElement>(".tab-name");
+    const tabIconEl = editorTab?.querySelector<HTMLSpanElement>(".tab-icon");
+    const currentLine = document.querySelector<HTMLSpanElement>("#current-line");
 
-    if (!sidebar || !editorPane || !skillsData || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl) {
-      console.error("Skill Editor elements not found!");
+    // Safely parse skills data with proper typing
+    let skillsData: Record<string, SkillData> = {};
+    try {
+      if (editor && editor.dataset.skills) {
+        skillsData = JSON.parse(editor.dataset.skills) as Record<string, SkillData>;
+      }
+    } catch (err) {
+      console.error("Failed to parse skills data:", err);
+    }
+
+    // Safety check for required elements
+    if (!sidebar || !editorPane || !welcomeMessage || !skillContent || !skillTitle || !skillDescription || !editorTab || !tabNameEl || !tabIconEl) {
+      console.error("Skill Editor: Required elements not found");
       return;
     }
 
-    sidebar.addEventListener("click", (event) => {
+    // Add event listeners with type safety
+    sidebar.addEventListener("click", (event: Event) => {
       const target = event.target as HTMLElement;
-      const folderHeader = target.closest(".folder-header");
-      const fileItem = target.closest(".file-item");
+      const folderHeader = target.closest<HTMLDivElement>(".folder-header");
+      const fileItem = target.closest<HTMLLIElement>(".file-item");
 
       if (folderHeader) {
-        const folderItem = folderHeader.closest(".folder-item");
+        const folderItem = folderHeader.closest<HTMLLIElement>(".folder-item");
         if (folderItem) handleFolderClick(folderItem);
       } else if (fileItem) {
         const skillName = fileItem.getAttribute("data-skill-name");
@@ -271,26 +315,26 @@ skillGroups.forEach((group) => {
       }
     });
 
-    function handleFolderClick(folderItem: Element) {
+    // Type-safe functions
+    function handleFolderClick(folderItem: HTMLElement): void {
       const isExpanded = folderItem.getAttribute("data-expanded") === "true";
       folderItem.setAttribute("data-expanded", String(!isExpanded));
     }
 
-    function handleSkillClick(fileItem: Element, skillName: string) {
+    function handleSkillClick(fileItem: HTMLElement, skillName: string): void {
       const skill = skillsData[skillName];
       if (!skill) return;
 
       setActiveItem(fileItem);
 
-      // --- MODIFICATION START ---
       // Construct tab name with extension if available
       const tabDisplayName = skill.extension ? `${skill.name}${skill.extension}` : skill.name;
       tabNameEl.textContent = tabDisplayName;
-      // --- MODIFICATION END ---
 
-      // Update Tab Icon
-      const iconId = `icon-${skill.icon.replace(":", "-")}`;
-      if (document.getElementById(iconId)) {
+      // Update Tab Icon with type-safe approach
+      const iconId = `icon-${skill.icon.replace(/:/g, "-")}`;
+      const iconElement = document.getElementById(iconId);
+      if (iconElement) {
         tabIconEl.innerHTML = `<svg class="astro-icon" width="16" height="16" style="color: ${skill.categoryColor};"><use xlink:href="#${iconId}"></use></svg>`;
       } else {
         tabIconEl.innerHTML = "";
@@ -298,23 +342,32 @@ skillGroups.forEach((group) => {
       }
 
       // Update Editor Pane
-      skillTitle.textContent = skill.name; // Keep title without extension
+      skillTitle.textContent = skill.name;
       skillDescription.innerHTML = skill.description.replace(/\n/g, "<br/>");
       welcomeMessage.style.display = "none";
       skillContent.style.display = "block";
+
+      // Update current line indicator with randomized values
+      if (currentLine) {
+        const randomLine = Math.floor(Math.random() * 20) + 1;
+        const randomCol = Math.floor(Math.random() * 40) + 1;
+        currentLine.textContent = `Ln ${randomLine}, Col ${randomCol}`;
+      }
     }
 
-    function setActiveItem(activeItem: Element) {
-      sidebar.querySelector(".file-item.active")?.classList.remove("active");
+    function setActiveItem(activeItem: HTMLElement): void {
+      const currentActive = sidebar.querySelector<HTMLElement>(".file-item.active");
+      if (currentActive) {
+        currentActive.classList.remove("active");
+      }
       activeItem.classList.add("active");
     }
 
-    function initializeEditor() {
-      if (tabNameEl) tabNameEl.textContent = "welcome.txt"; // Initial tab
+    function initializeEditor(): void {
+      if (tabNameEl) tabNameEl.textContent = "welcome.txt";
       if (tabIconEl) tabIconEl.innerHTML = "";
       if (welcomeMessage) welcomeMessage.style.display = "block";
       if (skillContent) skillContent.style.display = "none";
-      // Initial folder state handled by CSS + data-attribute
     }
 
     initializeEditor();
