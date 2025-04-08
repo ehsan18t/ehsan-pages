@@ -32,14 +32,11 @@
 }
 
 .folder-item[data-expanded="true"] > .skill-list {
-  grid-template-rows: 1fr;
+  max-height: 500px;
 }
 
 .folder-item .skill-list {
-  display: grid;
-  grid-template-rows: 0fr; /* Initially collapsed */
-  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .folder-item[data-expanded="true"] .folder-arrow {
