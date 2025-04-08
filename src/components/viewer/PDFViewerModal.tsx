@@ -34,7 +34,7 @@ const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
           aria-modal="true"
         >
           <div
-            className="pb-3 bg-[rgb(var(--background))]/75 rounded-xl w-full max-w-4xl max-h-[90dvh] flex flex-col border border-white/20 shadow-2xl"
+            className="pb-3 bg-[rgb(var(--background))]/75 rounded-xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-white/20 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}

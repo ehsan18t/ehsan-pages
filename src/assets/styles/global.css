@@ -63,7 +63,7 @@
 }
 
 body {
-  @apply bg-background text-foreground min-h-dvh min-w-full;
+  @apply bg-background text-foreground min-h-screen min-w-full;
 
   scroll-behavior: smooth;
 
@@ -104,7 +104,7 @@ body {
 .main-container {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  height: 100dvh;
+  height: 100vh;
 }
 
 .fade-in {
