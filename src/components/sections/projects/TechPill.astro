@@ -1,198 +1,447 @@
 ---
+import { Icon } from "astro-icon/components";
+
 interface Props {
   name: string;
+  class?: string;
+  showIcon?: boolean;
+  filterable?: boolean;
   [key: string]: any;
 }
-const { name, class: className, ...rest } = Astro.props;
+
+const { name, class: className, showIcon = true, filterable = false, ...rest } = Astro.props;
+
+// Map of tech names to their icons
+const techIcons: Record<string, string> = {
+  html: "mdi:language-html5",
+  css: "mdi:language-css3",
+  javascript: "mdi:language-javascript",
+  typescript: "mdi:language-typescript",
+  react: "mdi:react",
+  nextjs: "simple-icons:nextdotjs",
+  svelte: "simple-icons:svelte",
+  redux: "simple-icons:redux",
+  tailwindcss: "mdi:tailwind",
+  astro: "simple-icons:astro",
+  django: "simple-icons:django",
+  php: "mdi:language-php",
+  sql: "mdi:database",
+  firebase: "mdi:firebase",
+  python: "mdi:language-python",
+  java: "mdi:language-java",
+  cplusplus: "mdi:language-cpp",
+  c: "mdi:language-c",
+  git: "mdi:git",
+  github: "mdi:github",
+  linux: "mdi:linux",
+  bash: "mdi:console",
+  batch: "mdi:microsoft-windows",
+  figma: "mdi:figma",
+  vim: "simple-icons:vim",
+  githubactions: "mdi:github-actions",
+  jira: "mdi:jira",
+  scrum: "mdi:chart-timeline",
+  latex: "simple-icons:latex",
+  markdown: "mdi:language-markdown-outline",
+  googling: "mdi:google",
+};
+
+// Calculate slug for data attribute
+const techSlug = name
+  .toLowerCase()
+  .replace(/\+/g, "plus")
+  .replace(/[^a-z0-9]/g, "");
+
+// Get icon for this tech
+const iconName = techIcons[techSlug] || "mdi:code-tags";
+
+// Determine if we should show the tooltip
+const showTooltip = filterable;
 ---
 
-<span class:list={["tech-pill", className]} {...rest}>
-  {name}
+<span class:list={["tech-pill group", className]} data-tech={techSlug} role={filterable ? "button" : undefined} tabindex={filterable ? 0 : undefined} aria-label={filterable ? `Filter by ${name}` : undefined} {...rest}>
+  {
+    showIcon && (
+      <span class="tech-icon">
+        <Icon name={iconName} />
+      </span>
+    )
+  }
+  <span class="tech-name">{name}</span>
+
+  {
+    showTooltip && (
+      <span class="tech-tooltip" role="tooltip">
+        Click to filter by {name}
+      </span>
+    )
+  }
 </span>
 
 <style>
-  /* Base Tech Pill Style */
+  /* Base Tech Pill Style with updated design */
   .tech-pill {
-    display: inline-block;
-    font-size: 0.75rem; /* text-xs */
-    font-weight: 500; /* font-medium */
-    padding: 0.125rem 0.625rem; /* px-2.5 py-0.5 */
-    border-radius: 9999px; /* rounded-full */
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
     white-space: nowrap;
-    /* Add a default border */
-    border: 1px solid transparent;
-    /* Default fallback colors */
-    background-color: #475569; /* slate-600 */
-    color: #f1f5f9; /* slate-100 */
-    border-color: color-mix(in oklch, #475569, black 20%); /* Darker fallback border */
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: linear-gradient(135deg, oklch(var(--accent-500)), oklch(var(--accent-700)));
+    color: white;
+    backdrop-filter: blur(4px);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.04),
+      0 1px 1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
   }
 
-  /* --- Tech Specific Colors (Refined) --- */
-  /* Using color-mix(in oklch, [BG_COLOR], black 20%) for a consistent darker border */
+  /* Add subtle interactive effects */
+  .tech-pill[role="button"] {
+    cursor: pointer;
+  }
 
+  .tech-pill[role="button"]:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .tech-pill[role="button"]:active {
+    transform: translateY(0);
+  }
+
+  /* Tech icon styling */
+  .tech-icon {
+    display: inline-flex;
+    margin-right: 0.375rem;
+  }
+
+  .tech-icon svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  /* Modern gradient backgrounds instead of flat colors */
   /* Frontend */
   .tech-pill[data-tech="html"] {
-    background-color: #e44d26;
+    background: linear-gradient(135deg, #e44d26, #f16529);
     color: white;
-    border-color: color-mix(in oklch, #e44d26, black 20%);
+    box-shadow: 0 2px 5px rgba(228, 77, 38, 0.3);
   }
+
   .tech-pill[data-tech="css"] {
-    background-color: #1572b6;
+    background: linear-gradient(135deg, #1572b6, #33a9dc);
     color: white;
-    border-color: color-mix(in oklch, #1572b6, black 20%);
+    box-shadow: 0 2px 5px rgba(21, 114, 182, 0.3);
   }
+
   .tech-pill[data-tech="javascript"] {
-    background-color: #f7df1e;
+    background: linear-gradient(135deg, #f7df1e, #f4c41d);
     color: #111;
-    border-color: color-mix(in oklch, #f7df1e, black 20%);
+    box-shadow: 0 2px 5px rgba(247, 223, 30, 0.3);
   }
+
   .tech-pill[data-tech="typescript"] {
-    background-color: #3178c6;
+    background: linear-gradient(135deg, #3178c6, #235a97);
     color: white;
-    border-color: color-mix(in oklch, #3178c6, black 20%);
+    box-shadow: 0 2px 5px rgba(49, 120, 198, 0.3);
   }
+
   .tech-pill[data-tech="react"] {
-    background-color: #61dafb;
+    background: linear-gradient(135deg, #61dafb, #2ec6f2);
     color: #111;
-    border-color: color-mix(in oklch, #61dafb, black 20%);
+    box-shadow: 0 2px 5px rgba(97, 218, 251, 0.3);
   }
+
   .tech-pill[data-tech="nextjs"] {
-    background-color: #000000;
+    background: linear-gradient(135deg, #000000, #1a1a1a);
     color: white;
-    border-color: #444;
-  } /* Special case for black */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+
   .tech-pill[data-tech="svelte"] {
-    background-color: #ff3e00;
+    background: linear-gradient(135deg, #ff3e00, #ff5e3a);
     color: white;
-    border-color: color-mix(in oklch, #ff3e00, black 20%);
+    box-shadow: 0 2px 5px rgba(255, 62, 0, 0.3);
   }
+
+  .tech-pill[data-tech="sveltekit"] {
+    background: linear-gradient(135deg, #ff3e00, #ff8e3c);
+    color: white;
+    box-shadow: 0 2px 5px rgba(255, 62, 0, 0.3);
+  }
+
   .tech-pill[data-tech="redux"] {
-    background-color: #764abc;
+    background: linear-gradient(135deg, #764abc, #5a38a0);
     color: white;
-    border-color: color-mix(in oklch, #764abc, black 20%);
+    box-shadow: 0 2px 5px rgba(118, 74, 188, 0.3);
   }
+
   .tech-pill[data-tech="tailwindcss"] {
-    background-color: #06b6d4;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
     color: white;
-    border-color: color-mix(in oklch, #06b6d4, black 20%);
+    box-shadow: 0 2px 5px rgba(6, 182, 212, 0.3);
   }
+
   .tech-pill[data-tech="astro"] {
-    background-color: #ff5d01;
+    background: linear-gradient(135deg, #ff5d01, #ff7e33);
     color: white;
-    border-color: color-mix(in oklch, #ff5d01, black 20%);
+    box-shadow: 0 2px 5px rgba(255, 93, 1, 0.3);
   }
 
   /* Backend & Data */
   .tech-pill[data-tech="django"] {
-    background-color: #0c4b33;
-    color: #44b78b;
-    border-color: color-mix(in oklch, #0c4b33, black 20%);
-  } /* Adjusted for better text contrast */
+    background: linear-gradient(135deg, #0c4b33, #44b78b);
+    color: white;
+    box-shadow: 0 2px 5px rgba(12, 75, 51, 0.3);
+  }
+
   .tech-pill[data-tech="php"] {
-    background-color: #777bb4;
+    background: linear-gradient(135deg, #777bb4, #8f92d1);
     color: white;
-    border-color: color-mix(in oklch, #777bb4, black 20%);
+    box-shadow: 0 2px 5px rgba(119, 123, 180, 0.3);
   }
+
   .tech-pill[data-tech="sql"] {
-    background-color: #336791;
+    background: linear-gradient(135deg, #336791, #4682b4);
     color: white;
-    border-color: color-mix(in oklch, #336791, black 20%);
-  } /* Slightly adjusted blue */
+    box-shadow: 0 2px 5px rgba(51, 103, 145, 0.3);
+  }
+
   .tech-pill[data-tech="firebase"] {
-    background-color: #ffca28;
+    background: linear-gradient(135deg, #ffca28, #ffa000);
     color: #111;
-    border-color: color-mix(in oklch, #ffca28, black 20%);
+    box-shadow: 0 2px 5px rgba(255, 202, 40, 0.3);
   }
+
   .tech-pill[data-tech="python"] {
-    background-color: #3776ab;
-    color: #ffd43b;
-    border-color: color-mix(in oklch, #3776ab, black 20%);
-  } /* Using Python yellow for text */
-
-  /* Core Languages */
-  /* python already defined */
-  .tech-pill[data-tech="java"] {
-    background-color: #f89820;
-    color: #111;
-    border-color: color-mix(in oklch, #f89820, black 20%);
-  }
-  .tech-pill[data-tech="cplusplus"] {
-    background-color: #00599c;
+    background: linear-gradient(135deg, #3776ab, #2d5f8e);
     color: white;
-    border-color: color-mix(in oklch, #00599c, black 20%);
-  }
-  .tech-pill[data-tech="c"] {
-    background-color: #a8b9cc;
-    color: #111;
-    border-color: color-mix(in oklch, #a8b9cc, black 20%);
+    box-shadow: 0 2px 5px rgba(55, 118, 171, 0.3);
   }
 
-  /* Tools & Systems */
+  /* Cloud & Deployment */
+  .tech-pill[data-tech="vercel"] {
+    background: linear-gradient(135deg, #000000, #323232);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+
+  .tech-pill[data-tech="stripeapi"] {
+    background: linear-gradient(135deg, #6772e5, #4f56bd);
+    color: white;
+    box-shadow: 0 2px 5px rgba(103, 114, 229, 0.3);
+  }
+
+  .tech-pill[data-tech="fastapi"] {
+    background: linear-gradient(135deg, #009688, #06d6a0);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 150, 136, 0.3);
+  }
+
+  /* VCS & Tools */
   .tech-pill[data-tech="git"] {
-    background-color: #f05032;
+    background: linear-gradient(135deg, #f34f29, #f1502f);
     color: white;
-    border-color: color-mix(in oklch, #f05032, black 20%);
-  }
-  .tech-pill[data-tech="github"] {
-    background-color: #181717;
-    color: white;
-    border-color: #444;
-  } /* Special case */
-  .tech-pill[data-tech="linux"] {
-    background-color: #fcc624;
-    color: #111;
-    border-color: color-mix(in oklch, #fcc624, black 20%);
-  }
-  .tech-pill[data-tech="bash"] {
-    background-color: #2d3748;
-    color: #9ae6b4;
-    border-color: color-mix(in oklch, #2d3748, black 20%);
-  } /* Terminal look */
-  .tech-pill[data-tech="batch"] {
-    background-color: #0078d6;
-    color: white;
-    border-color: color-mix(in oklch, #0078d6, black 20%);
-  }
-  .tech-pill[data-tech="figma"] {
-    background-color: #f24e1e;
-    color: white;
-    border-color: color-mix(in oklch, #f24e1e, black 20%);
-  }
-  .tech-pill[data-tech="vim"] {
-    background-color: #019733;
-    color: white;
-    border-color: color-mix(in oklch, #019733, black 20%);
+    box-shadow: 0 2px 5px rgba(243, 79, 41, 0.3);
   }
 
-  /* Workflow & Process */
+  .tech-pill[data-tech="github"] {
+    background: linear-gradient(135deg, #24292e, #3a434c);
+    color: white;
+    box-shadow: 0 2px 5px rgba(36, 41, 46, 0.3);
+  }
+
   .tech-pill[data-tech="githubactions"] {
-    background-color: #2088ff;
+    background: linear-gradient(135deg, #2088ff, #4daff8);
     color: white;
-    border-color: color-mix(in oklch, #2088ff, black 20%);
+    box-shadow: 0 2px 5px rgba(32, 136, 255, 0.3);
   }
-  .tech-pill[data-tech="jira"] {
-    background-color: #0052cc;
-    color: white;
-    border-color: color-mix(in oklch, #0052cc, black 20%);
-  }
-  .tech-pill[data-tech="scrum"] {
-    background-color: #f0b90b;
+
+  .tech-pill[data-tech="linux"] {
+    background: linear-gradient(135deg, #fcc624, #f0bc30);
     color: #111;
-    border-color: color-mix(in oklch, #f0b90b, black 20%);
+    box-shadow: 0 2px 5px rgba(252, 198, 36, 0.3);
   }
+
+  .tech-pill[data-tech="bash"] {
+    background: linear-gradient(135deg, #3c3c3c, #575757);
+    color: white;
+    box-shadow: 0 2px 5px rgba(60, 60, 60, 0.3);
+  }
+
+  .tech-pill[data-tech="batch"] {
+    background: linear-gradient(135deg, #0078d6, #359af0);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 120, 214, 0.3);
+  }
+
+  /* Design */
+  .tech-pill[data-tech="figma"] {
+    background: linear-gradient(135deg, #f24e1e, #ff7262);
+    color: white;
+    box-shadow: 0 2px 5px rgba(242, 78, 30, 0.3);
+  }
+
+  /* Editors */
+  .tech-pill[data-tech="vim"] {
+    background: linear-gradient(135deg, #019833, #2fb54e);
+    color: white;
+    box-shadow: 0 2px 5px rgba(1, 152, 51, 0.3);
+  }
+
+  /* Project Management */
+  .tech-pill[data-tech="jira"] {
+    background: linear-gradient(135deg, #0052cc, #2684ff);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 82, 204, 0.3);
+  }
+
+  .tech-pill[data-tech="scrum"] {
+    background: linear-gradient(135deg, #6554c0, #8777d9);
+    color: white;
+    box-shadow: 0 2px 5px rgba(101, 84, 192, 0.3);
+  }
+
+  /* Documentation */
   .tech-pill[data-tech="latex"] {
-    background-color: #008080;
+    background: linear-gradient(135deg, #008080, #20b2aa);
     color: white;
-    border-color: color-mix(in oklch, #008080, black 20%);
+    box-shadow: 0 2px 5px rgba(0, 128, 128, 0.3);
   }
+
   .tech-pill[data-tech="markdown"] {
-    background-color: #08395f;
+    background: linear-gradient(135deg, #083fa1, #2979ff);
     color: white;
-    border-color: color-mix(in oklch, #08395f, black 20%);
+    box-shadow: 0 2px 5px rgba(8, 63, 161, 0.3);
   }
+
   .tech-pill[data-tech="googling"] {
-    background-color: #4285f4;
+    background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
     color: white;
-    border-color: color-mix(in oklch, #4285f4, black 20%);
+    box-shadow: 0 2px 5px rgba(66, 133, 244, 0.3);
+    background-size: 300% 100%;
+    animation: google-gradient 3s ease infinite;
+  }
+
+  @keyframes google-gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Add animation for filterable pills */
+  @media (prefers-reduced-motion: no-preference) {
+    .tech-pill[role="button"] {
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .tech-pill[role="button"]:hover {
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(var(--accent-500), 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 6px rgba(var(--accent-500), 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(var(--accent-500), 0);
+      }
+    }
+  }
+
+  /* Tooltip styling */
+  .tech-tooltip {
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(0.25rem);
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease-out;
+    z-index: 10;
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(var(--foreground), 0.1);
+  }
+
+  .tech-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(var(--background)) transparent transparent transparent;
+  }
+
+  .tech-pill:hover .tech-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .tech-pill {
+      transition: none;
+    }
+
+    .tech-pill:hover {
+      transform: none;
+      animation: none;
+    }
   }
 </style>
+
+<script>
+  // Add client-side interactivity for filterable pills
+  document.addEventListener("DOMContentLoaded", () => {
+    const filterablePills = document.querySelectorAll('.tech-pill[role="button"]');
+
+    filterablePills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        const tech = pill.getAttribute("data-tech");
+        // Dispatch custom event that can be captured by parent components
+        const event = new CustomEvent("tech-filter", {
+          bubbles: true,
+          detail: { tech },
+        });
+        pill.dispatchEvent(event);
+
+        // Visual feedback
+        pill.classList.add("active");
+        setTimeout(() => pill.classList.remove("active"), 300);
+      });
+
+      // Accessibility - keyboard support
+      pill.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          (pill as HTMLElement).click();
+        }
+      });
+    });
+  });
+</script>
