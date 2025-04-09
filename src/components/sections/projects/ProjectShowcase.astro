@@ -1,8 +1,19 @@
 ---
 import { Icon } from "astro-icon/components";
-import type { Project } from "./Project";
-import "./project-showcase.css";
 import TechPill from "./TechPill.astro";
+import "./project-showcase.css";
+
+export interface Project {
+  title: string;
+  shortDescription: string;
+  imageUrls: string[];
+  techStack: string[];
+  liveUrl?: string;
+  repoUrl?: string;
+  imageLayout?: "cover" | "contain";
+  backgroundStyle?: string;
+  layout?: string;
+}
 
 // --- Define Your Projects Data with REAL image URLs ---
 const projects: Project[] = [
