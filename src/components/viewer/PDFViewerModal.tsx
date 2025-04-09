@@ -42,7 +42,7 @@ const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
               <Button link={cvPDF}>Download CV</Button>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-300 hover:text-white text-6xl leading-none px-2 transition-colors"
+                className="text-gray-300 hover:text-white text-6xl leading-none px-2 transition-colors cursor-pointer"
                 aria-label="Close"
               >
                 &times;
