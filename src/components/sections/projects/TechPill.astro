@@ -1,0 +1,198 @@
+---
+interface Props {
+  name: string;
+  [key: string]: any;
+}
+const { name, class: className, ...rest } = Astro.props;
+---
+
+<span class:list={["tech-pill", className]} {...rest}>
+  {name}
+</span>
+
+<style>
+  /* Base Tech Pill Style */
+  .tech-pill {
+    display: inline-block;
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 500; /* font-medium */
+    padding: 0.125rem 0.625rem; /* px-2.5 py-0.5 */
+    border-radius: 9999px; /* rounded-full */
+    white-space: nowrap;
+    /* Add a default border */
+    border: 1px solid transparent;
+    /* Default fallback colors */
+    background-color: #475569; /* slate-600 */
+    color: #f1f5f9; /* slate-100 */
+    border-color: color-mix(in oklch, #475569, black 20%); /* Darker fallback border */
+  }
+
+  /* --- Tech Specific Colors (Refined) --- */
+  /* Using color-mix(in oklch, [BG_COLOR], black 20%) for a consistent darker border */
+
+  /* Frontend */
+  .tech-pill[data-tech="html"] {
+    background-color: #e44d26;
+    color: white;
+    border-color: color-mix(in oklch, #e44d26, black 20%);
+  }
+  .tech-pill[data-tech="css"] {
+    background-color: #1572b6;
+    color: white;
+    border-color: color-mix(in oklch, #1572b6, black 20%);
+  }
+  .tech-pill[data-tech="javascript"] {
+    background-color: #f7df1e;
+    color: #111;
+    border-color: color-mix(in oklch, #f7df1e, black 20%);
+  }
+  .tech-pill[data-tech="typescript"] {
+    background-color: #3178c6;
+    color: white;
+    border-color: color-mix(in oklch, #3178c6, black 20%);
+  }
+  .tech-pill[data-tech="react"] {
+    background-color: #61dafb;
+    color: #111;
+    border-color: color-mix(in oklch, #61dafb, black 20%);
+  }
+  .tech-pill[data-tech="nextjs"] {
+    background-color: #000000;
+    color: white;
+    border-color: #444;
+  } /* Special case for black */
+  .tech-pill[data-tech="svelte"] {
+    background-color: #ff3e00;
+    color: white;
+    border-color: color-mix(in oklch, #ff3e00, black 20%);
+  }
+  .tech-pill[data-tech="redux"] {
+    background-color: #764abc;
+    color: white;
+    border-color: color-mix(in oklch, #764abc, black 20%);
+  }
+  .tech-pill[data-tech="tailwindcss"] {
+    background-color: #06b6d4;
+    color: white;
+    border-color: color-mix(in oklch, #06b6d4, black 20%);
+  }
+  .tech-pill[data-tech="astro"] {
+    background-color: #ff5d01;
+    color: white;
+    border-color: color-mix(in oklch, #ff5d01, black 20%);
+  }
+
+  /* Backend & Data */
+  .tech-pill[data-tech="django"] {
+    background-color: #0c4b33;
+    color: #44b78b;
+    border-color: color-mix(in oklch, #0c4b33, black 20%);
+  } /* Adjusted for better text contrast */
+  .tech-pill[data-tech="php"] {
+    background-color: #777bb4;
+    color: white;
+    border-color: color-mix(in oklch, #777bb4, black 20%);
+  }
+  .tech-pill[data-tech="sql"] {
+    background-color: #336791;
+    color: white;
+    border-color: color-mix(in oklch, #336791, black 20%);
+  } /* Slightly adjusted blue */
+  .tech-pill[data-tech="firebase"] {
+    background-color: #ffca28;
+    color: #111;
+    border-color: color-mix(in oklch, #ffca28, black 20%);
+  }
+  .tech-pill[data-tech="python"] {
+    background-color: #3776ab;
+    color: #ffd43b;
+    border-color: color-mix(in oklch, #3776ab, black 20%);
+  } /* Using Python yellow for text */
+
+  /* Core Languages */
+  /* python already defined */
+  .tech-pill[data-tech="java"] {
+    background-color: #f89820;
+    color: #111;
+    border-color: color-mix(in oklch, #f89820, black 20%);
+  }
+  .tech-pill[data-tech="cplusplus"] {
+    background-color: #00599c;
+    color: white;
+    border-color: color-mix(in oklch, #00599c, black 20%);
+  }
+  .tech-pill[data-tech="c"] {
+    background-color: #a8b9cc;
+    color: #111;
+    border-color: color-mix(in oklch, #a8b9cc, black 20%);
+  }
+
+  /* Tools & Systems */
+  .tech-pill[data-tech="git"] {
+    background-color: #f05032;
+    color: white;
+    border-color: color-mix(in oklch, #f05032, black 20%);
+  }
+  .tech-pill[data-tech="github"] {
+    background-color: #181717;
+    color: white;
+    border-color: #444;
+  } /* Special case */
+  .tech-pill[data-tech="linux"] {
+    background-color: #fcc624;
+    color: #111;
+    border-color: color-mix(in oklch, #fcc624, black 20%);
+  }
+  .tech-pill[data-tech="bash"] {
+    background-color: #2d3748;
+    color: #9ae6b4;
+    border-color: color-mix(in oklch, #2d3748, black 20%);
+  } /* Terminal look */
+  .tech-pill[data-tech="batch"] {
+    background-color: #0078d6;
+    color: white;
+    border-color: color-mix(in oklch, #0078d6, black 20%);
+  }
+  .tech-pill[data-tech="figma"] {
+    background-color: #f24e1e;
+    color: white;
+    border-color: color-mix(in oklch, #f24e1e, black 20%);
+  }
+  .tech-pill[data-tech="vim"] {
+    background-color: #019733;
+    color: white;
+    border-color: color-mix(in oklch, #019733, black 20%);
+  }
+
+  /* Workflow & Process */
+  .tech-pill[data-tech="githubactions"] {
+    background-color: #2088ff;
+    color: white;
+    border-color: color-mix(in oklch, #2088ff, black 20%);
+  }
+  .tech-pill[data-tech="jira"] {
+    background-color: #0052cc;
+    color: white;
+    border-color: color-mix(in oklch, #0052cc, black 20%);
+  }
+  .tech-pill[data-tech="scrum"] {
+    background-color: #f0b90b;
+    color: #111;
+    border-color: color-mix(in oklch, #f0b90b, black 20%);
+  }
+  .tech-pill[data-tech="latex"] {
+    background-color: #008080;
+    color: white;
+    border-color: color-mix(in oklch, #008080, black 20%);
+  }
+  .tech-pill[data-tech="markdown"] {
+    background-color: #08395f;
+    color: white;
+    border-color: color-mix(in oklch, #08395f, black 20%);
+  }
+  .tech-pill[data-tech="googling"] {
+    background-color: #4285f4;
+    color: white;
+    border-color: color-mix(in oklch, #4285f4, black 20%);
+  }
+</style>

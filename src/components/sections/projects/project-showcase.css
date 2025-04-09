@@ -1,0 +1,332 @@
+/* --- Base Card Styles --- */
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background-color: color-mix(
+    in oklch,
+    rgb(var(--background)),
+    white 3%
+  ); /* Slightly lighter */
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  overflow: hidden; /* Important for positioning children */
+  position: relative;
+  transition: all 0.3s ease-out;
+}
+
+/* Enhanced hover/focus */
+.project-card:hover,
+.project-card:focus-within {
+  box-shadow:
+    0 10px 20px -5px oklch(var(--accent-500) / 0.2),
+    0 4px 6px -4px oklch(var(--accent-500) / 0.1);
+  transform: translateY(-6px); /* Slightly more lift */
+}
+
+/* --- Slider Styles --- */
+.slider-viewport {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border-radius: 0.75rem 0.75rem 0 0; /* Round top corners */
+}
+.slider-container {
+  /* Scroll Snap Container */
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  display: flex;
+  height: 100%; /* Ensure full height */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.slider-container::-webkit-scrollbar {
+  display: none;
+}
+.slider-slide {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+}
+.slider-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease-out;
+}
+
+/* --- Card Content Area (Minimal - Title Overlay + Actions on Hover) --- */
+.card-content-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Push title down, actions up */
+  padding: 1rem; /* p-4 */
+  /* Gradient for text readability over image */
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.4) 30%,
+    transparent 60%
+  );
+  opacity: 1; /* Always visible */
+  transition: background 0.3s ease-out;
+}
+.project-card:hover .card-content-overlay,
+.project-card:focus-within .card-content-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.5) 40%,
+    transparent 70%
+  );
+}
+
+.project-title-static {
+  color: white;
+  font-size: 1.125rem; /* text-lg */
+  line-height: 1.4;
+  font-weight: 600; /* font-semibold */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  margin-top: auto; /* Push title towards bottom */
+}
+
+/* Action buttons container */
+.project-actions {
+  display: flex;
+  gap: 0.5rem; /* gap-2 */
+  justify-content: flex-end; /* Position top-right (adjust if needed) */
+  position: absolute;
+  top: 1rem; /* p-4 */
+  right: 1rem; /* p-4 */
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+  transition-delay: 0.1s; /* Slight delay */
+}
+.project-card:hover .project-actions,
+.project-card:focus-within .project-actions {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+/* Individual action button/link styling */
+.project-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; /* Center icon */
+  padding: 0.5rem; /* p-2 */
+  border-radius: 9999px; /* rounded-full */
+  background-color: rgba(var(--background), 0.6);
+  color: rgb(var(--foreground));
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(var(--foreground), 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-out;
+}
+.project-action-link:hover {
+  background-color: rgba(var(--background), 0.8);
+  color: oklch(var(--accent-500));
+  transform: scale(1.1);
+}
+.project-action-link svg {
+  width: 1.125rem;
+  height: 1.125rem; /* w-4.5 h-4.5 */
+}
+
+/* Slider Controls - Always show on hover now */
+.slider-button {
+  /* Base styles */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0; /* Hidden initially */
+  transition:
+    opacity 0.3s ease-out,
+    background-color 0.2s ease-out;
+}
+.project-card:hover .slider-button, /* Show controls on card hover */
+.project-card:focus-within .slider-button {
+  opacity: 0.7;
+}
+.slider-button:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+}
+.slider-button.prev {
+  left: 0.5rem;
+}
+.slider-button.next {
+  right: 0.5rem;
+}
+.slider-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.slider-pagination {
+  /* Base styles */
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+  transition-delay: 0.1s;
+}
+.project-card:hover .slider-pagination,
+.project-card:focus-within .slider-pagination {
+  opacity: 1;
+}
+.pagination-dot {
+  /* Base styles */
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition:
+    background-color 0.3s ease-out,
+    transform 0.3s ease-out;
+}
+.pagination-dot.active {
+  background-color: white;
+  transform: scale(1.2);
+}
+
+/* Image zoom on card hover */
+.project-card:hover .slider-slide img,
+.project-card:focus-within .slider-slide img {
+  transform: scale(1.05);
+}
+
+/* --- Content Overlay / Info Section --- */
+.project-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    to top,
+    rgba(var(--background), 1) 20%,
+    rgba(var(--background), 0.9) 70%,
+    transparent 100%
+  );
+  padding: 1.25rem; /* p-5 */
+  padding-top: 3rem; /* More top padding for gradient */
+  color: rgb(var(--foreground));
+  transform: translateY(100%); /* Start hidden below */
+  transition:
+    transform 0.35s ease-out,
+    opacity 0.35s ease-out;
+  opacity: 0;
+  /* Clip content initially - removed, let transform handle hiding */
+}
+
+/* Make info slightly visible at bottom initially */
+.project-card .project-title-static {
+  position: absolute;
+  bottom: 1.25rem; /* p-5 */
+  left: 1.25rem;
+  right: 1.25rem;
+  z-index: 5; /* Below buttons */
+  color: white;
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600; /* font-semibold */
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.project-card:hover .project-title-static,
+.project-card:focus-within .project-title-static {
+  opacity: 0; /* Hide static title when overlay comes up */
+  transform: translateY(-10px);
+}
+
+.project-card:hover .project-info,
+.project-card:focus-within .project-info {
+  transform: translateY(0); /* Slide up */
+  opacity: 1;
+}
+
+.project-info-content {
+  /* Add styles if needed, e.g., max height for description */
+}
+
+.project-info-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  margin-bottom: 0.5rem; /* mb-2 */
+  color: rgb(var(--foreground));
+}
+
+.project-info-description {
+  font-size: 0.875rem; /* text-sm */
+  color: rgb(var(--foreground-muted));
+  margin-bottom: 1rem; /* mb-4 */
+  /* Limit lines shown initially if desired */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Show 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-info-tech {
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.project-info-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem; /* gap-1 */
+  font-size: 0.875rem; /* text-sm */
+  color: oklch(var(--accent-300));
+  transition: color 0.2s ease-out;
+}
+.project-info-links a:hover {
+  color: oklch(var(--accent-500));
+}
+.project-info-links a svg {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+}
+
+/* --- Scroll Entrance Animations (Optional via AOS or Observer) --- */
+/* Add simple fade-up using opacity and transform */
+.project-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.project-card.is-visible {
+  /* Class added by Intersection Observer */
+  opacity: 1;
+  transform: translateY(0);
+  /* Delay can be added via inline style --aos-delay or JS */
+}
