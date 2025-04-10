@@ -78,7 +78,7 @@ function techNameToSlug(name: string): string {
     <div id="project-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
       {
         projects.map((project, index) => (
-          <article class="project-card" data-aos="fade-up" data-aos-delay={index * 100}>
+          <article class="project-card">
             <div class="slider-viewport">
               <div class="slider-container" data-total-slides={project.imageUrls.length}>
                 {project.imageUrls.map((url, slideIndex) => (
@@ -149,178 +149,170 @@ function techNameToSlug(name: string): string {
   </div>
 </section>
 
-<script>
+<!-- Create the lightbox container ahead of time -->
+<div id="project-lightbox" class="lightbox-container" aria-hidden="true">
+  <div class="lightbox-content">
+    <img src="" alt="Project image in lightscreen mode" id="lightbox-img" />
+    <button class="lightbox-close" aria-label="Close fullscreen view">&times;</button>
+  </div>
+</div>
+
+<script lang="js">
   document.addEventListener("DOMContentLoaded", () => {
-    // Store original scroll position and overflow value
-    let originalScrollPos = 0;
-    let originalOverflow = "";
-    let bodyStyle = document.body.style;
-    let isLightboxOpen = false;
-
-    // Cached selectors
+    // Simple cached selectors
     const gridContainer = document.getElementById("project-grid-container");
-    const cards = Array.from(document.querySelectorAll(".project-card"));
-    const sliders = Array.from(document.querySelectorAll(".slider-container"));
+    const lightbox = document.getElementById("project-lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const lightboxClose = lightbox?.querySelector(".lightbox-close");
 
-    // Touch state objects by slider element (using WeakMap for memory optimization)
-    const touchStates = new WeakMap();
+    // Original scroll state
+    let originalScrollPos = 0;
+    let bodyPaddingRight = 0;
 
-    // --- Performance optimization for observation ----
-    if ("IntersectionObserver" in window) {
-      // Use a single observer for all cards to improve performance
-      const cardObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              // Delay adding the class to stagger animations and improve rendering
-              requestAnimationFrame(() => {
-                entry.target.classList.add("is-visible");
-              });
-              cardObserver.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
-      );
-
-      // Observe each card with a small delay between observations
-      cards.forEach((card, index) => {
-        setTimeout(() => {
-          cardObserver.observe(card);
-        }, index * 50); // Stagger observation to improve performance
-      });
-    } else {
-      // Fallback for browsers without IntersectionObserver
-      cards.forEach((card) => card.classList.add("is-visible"));
+    // --- Event Delegation ---
+    if (gridContainer) {
+      gridContainer.addEventListener("click", handleGridClick);
     }
 
-    // ----- Event Delegation for Better Performance -----
-    if (gridContainer) {
-      gridContainer.addEventListener(
-        "click",
+    // Setup slider event listeners
+    document.querySelectorAll(".slider-container").forEach((slider) => {
+      slider.addEventListener("scroll", handleSliderScroll, { passive: true });
+      setupTouchHandler(slider);
+    });
+
+    // Lightbox event handlers
+    if (lightbox && lightboxClose) {
+      lightboxClose.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      // Keyboard support
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && lightbox.getAttribute("aria-hidden") === "false") {
+          closeLightbox();
+        }
+      });
+    }
+
+    // --- Core Functions ---
+
+    // Event delegation for clicks
+    function handleGridClick(e) {
+      const target = e.target;
+
+      // Find what was clicked
+      const sliderButton = target.closest(".slider-button");
+      const paginationDot = target.closest(".pagination-dot");
+      const fullscreenButton = target.closest(".fullscreen-button");
+
+      if (!sliderButton && !paginationDot && !fullscreenButton) return;
+
+      // Find parent container
+      const card = target.closest(".project-card");
+      if (!card) return;
+
+      // Handle different click types
+      if (sliderButton) {
+        e.preventDefault();
+        const direction = parseInt(sliderButton.dataset.direction || "0", 10);
+        const sliderContainer = card.querySelector(".slider-container");
+        navigateSlider(sliderContainer, direction);
+      } else if (paginationDot) {
+        e.preventDefault();
+        const index = parseInt(paginationDot.dataset.index || "0", 10);
+        const sliderContainer = card.querySelector(".slider-container");
+        goToSlide(sliderContainer, index);
+      } else if (fullscreenButton) {
+        e.preventDefault();
+        const sliderContainer = card.querySelector(".slider-container");
+        const currentIndex = Math.round(sliderContainer.scrollLeft / sliderContainer.clientWidth);
+        const img = card.querySelectorAll(".slider-slide img")[currentIndex];
+        if (img) openLightbox(img);
+      }
+    }
+
+    // Slider scroll handler
+    function handleSliderScroll(e) {
+      const container = e.target;
+      const card = container.closest(".project-card");
+      if (!card) return;
+
+      updateSliderIndicators(container);
+    }
+
+    // Update slider indicators (pagination dots and counter)
+    function updateSliderIndicators(container) {
+      const card = container.closest(".project-card");
+      if (!card) return;
+
+      const slideWidth = container.clientWidth;
+      const activeIndex = Math.round(container.scrollLeft / slideWidth);
+
+      // Update pagination dots
+      const dots = card.querySelectorAll(".pagination-dot");
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === activeIndex);
+      });
+
+      // Update counter
+      const counter = card.querySelector(".current-slide");
+      if (counter) counter.textContent = (activeIndex + 1).toString();
+
+      // Mark current slide as active (for animations)
+      const slides = container.querySelectorAll(".slider-slide");
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === activeIndex);
+      });
+    }
+
+    // Touch handling
+    function setupTouchHandler(slider) {
+      let startX = 0;
+      let startY = 0;
+      let isVerticalScroll = null;
+
+      slider.addEventListener(
+        "touchstart",
         (e) => {
-          if (isLightboxOpen) return; // Prevent interactions when lightbox is open
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          isVerticalScroll = null;
+        },
+        { passive: true }
+      );
 
-          // Find the closest interactive element
-          const target = e.target;
-          const button = target.closest(".slider-button");
-          const paginationDot = target.closest(".pagination-dot");
-          const fullscreenButton = target.closest(".fullscreen-button");
+      slider.addEventListener(
+        "touchmove",
+        (e) => {
+          if (isVerticalScroll === null) {
+            const diffX = Math.abs(e.touches[0].clientX - startX);
+            const diffY = Math.abs(e.touches[0].clientY - startY);
+            isVerticalScroll = diffY > diffX;
+          }
 
-          if (!button && !paginationDot && !fullscreenButton) return;
-
-          // Get associated card
-          const card = button?.closest(".project-card") || paginationDot?.closest(".project-card") || fullscreenButton?.closest(".project-card");
-
-          if (!card) return;
-
-          // Handle different control clicks
-          if (button) {
+          // Only prevent default if this is a horizontal swipe
+          if (!isVerticalScroll) {
             e.preventDefault();
-            e.stopPropagation();
-            const direction = parseInt(button.dataset.direction || "0", 10);
-            const sliderContainer = card.querySelector(".slider-container");
-            if (sliderContainer && (direction === 1 || direction === -1)) {
-              navigateSlider(sliderContainer, direction);
-            }
-          } else if (paginationDot) {
-            e.preventDefault();
-            e.stopPropagation();
-            const index = parseInt(paginationDot.dataset.index || "0", 10);
-            const sliderContainer = card.querySelector(".slider-container");
-            if (sliderContainer) {
-              goToSlide(sliderContainer, index);
-            }
-          } else if (fullscreenButton) {
-            e.preventDefault();
-            e.stopPropagation();
-            const currentIndex = getCurrentSlideIndex(card);
-            const currentImage = card.querySelectorAll(".slider-slide img")[currentIndex];
-            if (currentImage) {
-              openLightbox(currentImage);
-            }
           }
         },
         { passive: false }
       );
-    }
 
-    // --- Optimized Touch Handling for Mobile ---
-    sliders.forEach((slider) => {
-      // Initialize touch state object
-      touchStates.set(slider, {
-        startX: 0,
-        startY: 0,
-        startTime: 0,
-        isSwiping: false,
-        isScrolling: null,
-      });
+      slider.addEventListener(
+        "touchend",
+        (e) => {
+          if (isVerticalScroll) return;
 
-      // More efficient event handling
-      slider.addEventListener("touchstart", handleTouchStart, { passive: true });
-      slider.addEventListener("touchmove", handleTouchMove, { passive: false });
-      slider.addEventListener("touchend", handleTouchEnd, { passive: true });
+          const diffX = e.changedTouches[0].clientX - startX;
 
-      // Set up scroll detection with optimized performance
-      setupSliderScrollDetection(slider);
-    });
-
-    // Touch event handlers
-    function handleTouchStart(e) {
-      if (isLightboxOpen) return;
-
-      const state = touchStates.get(this);
-      if (!state) return;
-
-      const touch = e.touches[0];
-      state.startX = touch.clientX;
-      state.startY = touch.clientY;
-      state.startTime = Date.now();
-      state.isSwiping = false;
-      state.isScrolling = null; // null means undetermined
-    }
-
-    function handleTouchMove(e) {
-      if (isLightboxOpen) return;
-
-      const state = touchStates.get(this);
-      if (!state) return;
-
-      if (state.isScrolling === null) {
-        const touch = e.touches[0];
-        const diffX = touch.clientX - state.startX;
-        const diffY = touch.clientY - state.startY;
-
-        // Determine if the user is scrolling vertically or swiping horizontally
-        // Use a higher threshold for vertical to allow small accidental movements
-        state.isScrolling = Math.abs(diffY) > Math.abs(diffX) * 1.2;
-      }
-
-      // If horizontal swipe is detected, prevent default to avoid page scroll
-      if (state.isScrolling === false) {
-        e.preventDefault();
-        state.isSwiping = true;
-      }
-    }
-
-    function handleTouchEnd(e) {
-      if (isLightboxOpen) return;
-
-      const state = touchStates.get(this);
-      if (!state || !state.isSwiping) return;
-
-      const touch = e.changedTouches[0];
-      const diffX = touch.clientX - state.startX;
-      const elapsedTime = Date.now() - state.startTime;
-
-      // Only navigate if the swipe was significant and fast enough
-      if (Math.abs(diffX) > 40 && elapsedTime < 300) {
-        navigateSlider(this, diffX < 0 ? 1 : -1);
-      }
-
-      // Reset state for next touch
-      state.isSwiping = false;
-      state.isScrolling = null;
+          // Only navigate if swipe was significant
+          if (Math.abs(diffX) > 30) {
+            navigateSlider(slider, diffX < 0 ? 1 : -1);
+          }
+        },
+        { passive: true }
+      );
     }
 
     // Navigation functions
@@ -328,11 +320,11 @@ function techNameToSlug(name: string): string {
       if (!container) return;
 
       const slideWidth = container.clientWidth;
-      const totalSlides = parseInt(container.dataset.totalSlides || "1");
+      const totalSlides = parseInt(container.dataset.totalSlides || "1", 10);
       const currentIndex = Math.round(container.scrollLeft / slideWidth);
       let targetIndex = currentIndex + direction;
 
-      // Ensure target index is within bounds
+      // Boundary checks
       if (targetIndex < 0) targetIndex = 0;
       if (targetIndex >= totalSlides) targetIndex = totalSlides - 1;
 
@@ -341,252 +333,52 @@ function techNameToSlug(name: string): string {
 
     function goToSlide(container, index) {
       if (!container) return;
-
-      // Use a variable to track if this is the first time we are calling updateSliderIndicators
       const slideWidth = container.clientWidth;
 
-      // Ensure smooth scrolling only happens when really changing slides
-      const currentSlide = Math.round(container.scrollLeft / slideWidth);
-
-      if (currentSlide !== index) {
-        container.scrollTo({
-          left: slideWidth * index,
-          behavior: "smooth",
-        });
-
-        // Immediately update indicators for better UX
-        updateSliderIndicators(container, index);
-      }
-    }
-
-    function getCurrentSlideIndex(card) {
-      const container = card.querySelector(".slider-container");
-      return container ? Math.round(container.scrollLeft / container.clientWidth) : 0;
-    }
-
-    // Optimized scroll detection to reduce jank
-    function setupSliderScrollDetection(slider) {
-      // Use requestAnimationFrame for better performance and throttling
-      let isScrolling = false;
-      let lastScrollPos = slider.scrollLeft;
-
-      slider.addEventListener(
-        "scroll",
-        () => {
-          if (!isScrolling) {
-            isScrolling = true;
-
-            requestAnimationFrame(() => {
-              // Only update if the scroll position has changed significantly
-              if (Math.abs(slider.scrollLeft - lastScrollPos) > 10) {
-                updateSliderIndicators(slider);
-                lastScrollPos = slider.scrollLeft;
-              }
-              isScrolling = false;
-            });
-          }
-        },
-        { passive: true }
-      );
-
-      // Initial update
-      updateSliderIndicators(slider);
-    }
-
-    // Optimize indicator updates
-    function updateSliderIndicators(container, forcedIndex = null) {
-      const card = container.closest(".project-card");
-      if (!card) return;
-
-      // Use a uniform calculation for active index to avoid jitter
-      const slideWidth = container.clientWidth;
-      const activeIndex = forcedIndex !== null ? forcedIndex : Math.round(container.scrollLeft / slideWidth);
-
-      // Update pagination dots (use cached property for performance)
-      const dots = card.querySelectorAll(".pagination-dot");
-      for (let i = 0; i < dots.length; i++) {
-        dots[i].classList.toggle("active", i === activeIndex);
-      }
-
-      // Update counter
-      const currentSlideEl = card.querySelector(".current-slide");
-      if (currentSlideEl) {
-        currentSlideEl.textContent = `${activeIndex + 1}`;
-      }
-
-      // Optimize slide updating by only toggling classes on what's needed
-      const slides = container.querySelectorAll(".slider-slide");
-      for (let i = 0; i < slides.length; i++) {
-        slides[i].classList.toggle("active", i === activeIndex);
-      }
-    }
-
-    // Improved lightbox with proper focus and scroll management
-    function openLightbox(img) {
-      // Save the current scroll position and overflow state
-      originalScrollPos = window.scrollY;
-      originalOverflow = document.body.style.overflow || "";
-      isLightboxOpen = true;
-
-      const lightbox = document.createElement("div");
-      lightbox.className = "image-lightbox";
-      lightbox.setAttribute("role", "dialog");
-      lightbox.setAttribute("aria-modal", "true");
-
-      const content = document.createElement("div");
-      content.className = "lightbox-content";
-
-      // Clone image with properties preserved
-      const imgClone = document.createElement("img");
-      imgClone.src = img.src;
-      imgClone.alt = img.alt;
-      imgClone.loading = "eager"; // Force immediate loading for lightbox
-
-      const closeBtn = document.createElement("button");
-      closeBtn.className = "lightbox-close";
-      closeBtn.innerHTML = "&times;";
-      closeBtn.setAttribute("aria-label", "Close fullscreen view");
-
-      // Assemble lightbox
-      content.appendChild(imgClone);
-      content.appendChild(closeBtn);
-      lightbox.appendChild(content);
-      document.body.appendChild(lightbox);
-
-      // Add blur effect to non-lightbox content (improves focus)
-      document.getElementById("main-content")?.classList.add("lightbox-blur");
-
-      // Prevent background scrolling
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      document.body.style.top = `-${originalScrollPos}px`;
-
-      // Give keyboard focus to close button
-      setTimeout(() => closeBtn.focus(), 100);
-
-      // Set up close handlers with scroll position restoration
-      function closeLightbox(e) {
-        if (e) e.stopPropagation();
-
-        // Fade out
-        lightbox.classList.add("closing");
-        document.getElementById("main-content")?.classList.remove("lightbox-blur");
-
-        // Wait for animation
-        setTimeout(() => {
-          // Restore body state and scroll position
-          document.body.style.overflow = originalOverflow;
-          document.body.style.position = "";
-          document.body.style.width = "";
-          document.body.style.top = "";
-          window.scrollTo(0, originalScrollPos);
-
-          // Remove the lightbox
-          document.body.removeChild(lightbox);
-          isLightboxOpen = false;
-        }, 300);
-      }
-
-      // Set up event handlers
-      closeBtn.addEventListener("click", closeLightbox, { once: true });
-      lightbox.addEventListener("click", (e) => {
-        if (e.target === lightbox) closeLightbox(e);
+      container.scrollTo({
+        left: slideWidth * index,
+        behavior: "smooth",
       });
-
-      // Keyboard support (ESC key)
-      const handleKeyDown = (e) => {
-        if (e.key === "Escape") {
-          closeLightbox(e);
-          document.removeEventListener("keydown", handleKeyDown);
-        }
-      };
-      document.addEventListener("keydown", handleKeyDown);
     }
 
-    // Create and add lightbox styles if they don't exist
-    if (!document.getElementById("lightbox-styles")) {
-      const style = document.createElement("style");
-      style.id = "lightbox-styles";
-      style.textContent = `
-        .image-lightbox {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.92);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-          cursor: pointer;
-          transition: opacity 0.3s ease;
-        }
-        
-        .image-lightbox.closing {
-          opacity: 0;
-        }
-        
-        .lightbox-content {
-          position: relative;
-          max-width: 90%;
-          max-height: 90%;
-        }
-        
-        .lightbox-content img {
-          max-width: 100%;
-          max-height: 85vh;
-          object-fit: contain;
-          animation: lightbox-zoom-in 0.4s ease-out forwards;
-        }
-        
-        .lightbox-close {
-          position: absolute;
-          top: -2.5rem;
-          right: -2.5rem;
-          background: transparent;
-          border: none;
-          color: white;
-          font-size: 2.5rem;
-          cursor: pointer;
-          padding: 0.5rem;
-          line-height: 0.8;
-          opacity: 0.8;
-          transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-        
-        .lightbox-close:hover,
-        .lightbox-close:focus {
-          opacity: 1;
-          transform: scale(1.1);
-          outline: none;
-        }
-        
-        .lightbox-blur {
-          filter: blur(3px);
-        }
-        
-        @media (max-width: 768px) {
-          .lightbox-close {
-            top: -2rem;
-            right: -1rem;
-            font-size: 2rem;
-            background: rgba(0,0,0,0.5);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          
-          .lightbox-content img {
-            max-height: 80vh;
-          }
-        }
-      `;
-      document.head.appendChild(style);
+    // Lightbox functions with improved scroll handling
+    function openLightbox(img) {
+      if (!lightbox || !lightboxImg) return;
+
+      // Save scroll position and body state
+      originalScrollPos = window.scrollY;
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      bodyPaddingRight = parseInt(getComputedStyle(document.body).paddingRight) || 0;
+
+      // Update lightbox image
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt || "Project image";
+
+      // Show lightbox with animation
+      lightbox.setAttribute("aria-hidden", "false");
+
+      // Prevent background scrolling but keep position
+      document.body.style.top = `-${originalScrollPos}px`;
+      document.body.style.paddingRight = `${bodyPaddingRight + scrollbarWidth}px`;
+      document.body.classList.add("lightbox-open");
+    }
+
+    function closeLightbox() {
+      if (!lightbox) return;
+
+      // Hide lightbox with animation
+      lightbox.setAttribute("aria-hidden", "true");
+
+      // Restore scrolling and position
+      document.body.classList.remove("lightbox-open");
+      document.body.style.paddingRight = `${bodyPaddingRight}px`;
+      document.body.style.top = "";
+      window.scrollTo(0, originalScrollPos);
+
+      // Clear src after closing for performance
+      setTimeout(() => {
+        if (lightboxImg) lightboxImg.src = "";
+      }, 300);
     }
   });
 </script>
