@@ -151,232 +151,360 @@ function techNameToSlug(name: string): string {
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // Store original scroll position and overflow value
+    let originalScrollPos = 0;
+    let originalOverflow = "";
+    let bodyStyle = document.body.style;
+    let isLightboxOpen = false;
+
+    // Cached selectors
     const gridContainer = document.getElementById("project-grid-container");
     const cards = Array.from(document.querySelectorAll(".project-card"));
     const sliders = Array.from(document.querySelectorAll(".slider-container"));
 
+    // Touch state objects by slider element (using WeakMap for memory optimization)
+    const touchStates = new WeakMap();
+
+    // --- Performance optimization for observation ----
     if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
+      // Use a single observer for all cards to improve performance
+      const cardObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add("is-visible");
-              observer.unobserve(entry.target);
+              // Delay adding the class to stagger animations and improve rendering
+              requestAnimationFrame(() => {
+                entry.target.classList.add("is-visible");
+              });
+              cardObserver.unobserve(entry.target);
             }
           });
         },
         { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
       );
 
-      cards.forEach((card) => observer.observe(card));
+      // Observe each card with a small delay between observations
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          cardObserver.observe(card);
+        }, index * 50); // Stagger observation to improve performance
+      });
     } else {
+      // Fallback for browsers without IntersectionObserver
       cards.forEach((card) => card.classList.add("is-visible"));
     }
 
+    // ----- Event Delegation for Better Performance -----
     if (gridContainer) {
-      gridContainer.addEventListener("click", (e: any) => {
-        const target = e.target;
+      gridContainer.addEventListener(
+        "click",
+        (e) => {
+          if (isLightboxOpen) return; // Prevent interactions when lightbox is open
 
-        const button = target.closest(".slider-button");
-        const paginationDot = target.closest(".pagination-dot");
-        const fullscreenButton = target.closest(".fullscreen-button");
+          // Find the closest interactive element
+          const target = e.target;
+          const button = target.closest(".slider-button");
+          const paginationDot = target.closest(".pagination-dot");
+          const fullscreenButton = target.closest(".fullscreen-button");
 
-        if (!button && !paginationDot && !fullscreenButton) return;
+          if (!button && !paginationDot && !fullscreenButton) return;
 
-        const card = button?.closest(".project-card") || paginationDot?.closest(".project-card") || fullscreenButton?.closest(".project-card");
+          // Get associated card
+          const card = button?.closest(".project-card") || paginationDot?.closest(".project-card") || fullscreenButton?.closest(".project-card");
 
-        if (!card) return;
+          if (!card) return;
 
-        if (button) {
-          const direction = parseInt(button.dataset.direction || "0", 10);
-          const sliderContainer = card.querySelector(".slider-container");
-          if (sliderContainer && (direction === 1 || direction === -1)) {
+          // Handle different control clicks
+          if (button) {
             e.preventDefault();
-            navigateSlider(sliderContainer, direction);
-          }
-        } else if (paginationDot) {
-          const index = parseInt(paginationDot.dataset.index || "0", 10);
-          const sliderContainer = card.querySelector(".slider-container");
-          if (sliderContainer) {
+            e.stopPropagation();
+            const direction = parseInt(button.dataset.direction || "0", 10);
+            const sliderContainer = card.querySelector(".slider-container");
+            if (sliderContainer && (direction === 1 || direction === -1)) {
+              navigateSlider(sliderContainer, direction);
+            }
+          } else if (paginationDot) {
             e.preventDefault();
-            goToSlide(sliderContainer, index);
-          }
-        } else if (fullscreenButton) {
-          e.preventDefault();
-          const currentIndex = getCurrentSlideIndex(card);
-          const currentImage = card.querySelectorAll(".slider-slide img")[currentIndex];
-          if (currentImage) {
-            openLightbox(currentImage);
-          }
-        }
-      });
-    }
-
-    sliders.forEach((slider: any) => {
-      let touchStartX = 0;
-      let touchStartY = 0;
-      let isSwiping = false;
-      let preventScroll = false;
-
-      slider.addEventListener(
-        "touchstart",
-        (e: any) => {
-          touchStartX = e.touches[0].clientX;
-          touchStartY = e.touches[0].clientY;
-          isSwiping = false;
-          preventScroll = false;
-        },
-        { passive: true }
-      );
-
-      slider.addEventListener(
-        "touchmove",
-        (e: any) => {
-          if (preventScroll) {
+            e.stopPropagation();
+            const index = parseInt(paginationDot.dataset.index || "0", 10);
+            const sliderContainer = card.querySelector(".slider-container");
+            if (sliderContainer) {
+              goToSlide(sliderContainer, index);
+            }
+          } else if (fullscreenButton) {
             e.preventDefault();
-          }
-
-          if (!isSwiping) {
-            const touchMoveX = e.touches[0].clientX;
-            const touchMoveY = e.touches[0].clientY;
-            const diffX = Math.abs(touchMoveX - touchStartX);
-            const diffY = Math.abs(touchMoveY - touchStartY);
-
-            if (diffX > diffY && diffX > 10) {
-              isSwiping = true;
-              preventScroll = true;
+            e.stopPropagation();
+            const currentIndex = getCurrentSlideIndex(card);
+            const currentImage = card.querySelectorAll(".slider-slide img")[currentIndex];
+            if (currentImage) {
+              openLightbox(currentImage);
             }
           }
         },
         { passive: false }
       );
+    }
 
-      slider.addEventListener(
-        "touchend",
-        (e: any) => {
-          if (isSwiping) {
-            const touchEndX = e.changedTouches[0].clientX;
-            const diffX = touchStartX - touchEndX;
+    // --- Optimized Touch Handling for Mobile ---
+    sliders.forEach((slider) => {
+      // Initialize touch state object
+      touchStates.set(slider, {
+        startX: 0,
+        startY: 0,
+        startTime: 0,
+        isSwiping: false,
+        isScrolling: null,
+      });
 
-            if (Math.abs(diffX) > 30) {
-              navigateSlider(slider, diffX > 0 ? 1 : -1);
-            }
-          }
-        },
-        { passive: true }
-      );
+      // More efficient event handling
+      slider.addEventListener("touchstart", handleTouchStart, { passive: true });
+      slider.addEventListener("touchmove", handleTouchMove, { passive: false });
+      slider.addEventListener("touchend", handleTouchEnd, { passive: true });
 
-      setupSliderScrollHandling(slider);
+      // Set up scroll detection with optimized performance
+      setupSliderScrollDetection(slider);
     });
 
-    function navigateSlider(container: any, direction: any) {
+    // Touch event handlers
+    function handleTouchStart(e) {
+      if (isLightboxOpen) return;
+
+      const state = touchStates.get(this);
+      if (!state) return;
+
+      const touch = e.touches[0];
+      state.startX = touch.clientX;
+      state.startY = touch.clientY;
+      state.startTime = Date.now();
+      state.isSwiping = false;
+      state.isScrolling = null; // null means undetermined
+    }
+
+    function handleTouchMove(e) {
+      if (isLightboxOpen) return;
+
+      const state = touchStates.get(this);
+      if (!state) return;
+
+      if (state.isScrolling === null) {
+        const touch = e.touches[0];
+        const diffX = touch.clientX - state.startX;
+        const diffY = touch.clientY - state.startY;
+
+        // Determine if the user is scrolling vertically or swiping horizontally
+        // Use a higher threshold for vertical to allow small accidental movements
+        state.isScrolling = Math.abs(diffY) > Math.abs(diffX) * 1.2;
+      }
+
+      // If horizontal swipe is detected, prevent default to avoid page scroll
+      if (state.isScrolling === false) {
+        e.preventDefault();
+        state.isSwiping = true;
+      }
+    }
+
+    function handleTouchEnd(e) {
+      if (isLightboxOpen) return;
+
+      const state = touchStates.get(this);
+      if (!state || !state.isSwiping) return;
+
+      const touch = e.changedTouches[0];
+      const diffX = touch.clientX - state.startX;
+      const elapsedTime = Date.now() - state.startTime;
+
+      // Only navigate if the swipe was significant and fast enough
+      if (Math.abs(diffX) > 40 && elapsedTime < 300) {
+        navigateSlider(this, diffX < 0 ? 1 : -1);
+      }
+
+      // Reset state for next touch
+      state.isSwiping = false;
+      state.isScrolling = null;
+    }
+
+    // Navigation functions
+    function navigateSlider(container, direction) {
+      if (!container) return;
+
       const slideWidth = container.clientWidth;
-      const currentScrollLeft = container.scrollLeft;
-      const targetScrollLeft = currentScrollLeft + slideWidth * direction;
+      const totalSlides = parseInt(container.dataset.totalSlides || "1");
+      const currentIndex = Math.round(container.scrollLeft / slideWidth);
+      let targetIndex = currentIndex + direction;
 
-      container.scrollTo({
-        left: targetScrollLeft,
-        behavior: "smooth",
-      });
+      // Ensure target index is within bounds
+      if (targetIndex < 0) targetIndex = 0;
+      if (targetIndex >= totalSlides) targetIndex = totalSlides - 1;
+
+      goToSlide(container, targetIndex);
     }
 
-    function goToSlide(container: any, index: number) {
-      container.scrollTo({
-        left: container.clientWidth * index,
-        behavior: "smooth",
-      });
+    function goToSlide(container, index) {
+      if (!container) return;
+
+      // Use a variable to track if this is the first time we are calling updateSliderIndicators
+      const slideWidth = container.clientWidth;
+
+      // Ensure smooth scrolling only happens when really changing slides
+      const currentSlide = Math.round(container.scrollLeft / slideWidth);
+
+      if (currentSlide !== index) {
+        container.scrollTo({
+          left: slideWidth * index,
+          behavior: "smooth",
+        });
+
+        // Immediately update indicators for better UX
+        updateSliderIndicators(container, index);
+      }
     }
 
-    function getCurrentSlideIndex(card: any) {
+    function getCurrentSlideIndex(card) {
       const container = card.querySelector(".slider-container");
       return container ? Math.round(container.scrollLeft / container.clientWidth) : 0;
     }
 
-    function setupSliderScrollHandling(slider: any) {
-      let ticking = false;
+    // Optimized scroll detection to reduce jank
+    function setupSliderScrollDetection(slider) {
+      // Use requestAnimationFrame for better performance and throttling
+      let isScrolling = false;
+      let lastScrollPos = slider.scrollLeft;
 
       slider.addEventListener(
         "scroll",
         () => {
-          if (!ticking) {
-            window.requestAnimationFrame(() => {
-              updateSliderIndicators(slider);
-              ticking = false;
+          if (!isScrolling) {
+            isScrolling = true;
+
+            requestAnimationFrame(() => {
+              // Only update if the scroll position has changed significantly
+              if (Math.abs(slider.scrollLeft - lastScrollPos) > 10) {
+                updateSliderIndicators(slider);
+                lastScrollPos = slider.scrollLeft;
+              }
+              isScrolling = false;
             });
-            ticking = true;
           }
         },
         { passive: true }
       );
 
+      // Initial update
       updateSliderIndicators(slider);
     }
 
-    function updateSliderIndicators(container: any) {
+    // Optimize indicator updates
+    function updateSliderIndicators(container, forcedIndex = null) {
       const card = container.closest(".project-card");
       if (!card) return;
 
+      // Use a uniform calculation for active index to avoid jitter
+      const slideWidth = container.clientWidth;
+      const activeIndex = forcedIndex !== null ? forcedIndex : Math.round(container.scrollLeft / slideWidth);
+
+      // Update pagination dots (use cached property for performance)
       const dots = card.querySelectorAll(".pagination-dot");
+      for (let i = 0; i < dots.length; i++) {
+        dots[i].classList.toggle("active", i === activeIndex);
+      }
+
+      // Update counter
       const currentSlideEl = card.querySelector(".current-slide");
-      const activeIndex = Math.round(container.scrollLeft / container.clientWidth);
-
-      dots.forEach((dot: any, i: number) => {
-        dot.classList.toggle("active", i === activeIndex);
-      });
-
       if (currentSlideEl) {
         currentSlideEl.textContent = `${activeIndex + 1}`;
       }
 
+      // Optimize slide updating by only toggling classes on what's needed
       const slides = container.querySelectorAll(".slider-slide");
-      slides.forEach((slide: any, i: number) => {
-        slide.classList.toggle("active", i === activeIndex);
-      });
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].classList.toggle("active", i === activeIndex);
+      }
     }
 
-    function openLightbox(img: any) {
+    // Improved lightbox with proper focus and scroll management
+    function openLightbox(img) {
+      // Save the current scroll position and overflow state
+      originalScrollPos = window.scrollY;
+      originalOverflow = document.body.style.overflow || "";
+      isLightboxOpen = true;
+
       const lightbox = document.createElement("div");
       lightbox.className = "image-lightbox";
+      lightbox.setAttribute("role", "dialog");
+      lightbox.setAttribute("aria-modal", "true");
 
       const content = document.createElement("div");
       content.className = "lightbox-content";
 
-      const imgClone = img.cloneNode(false);
+      // Clone image with properties preserved
+      const imgClone = document.createElement("img");
+      imgClone.src = img.src;
+      imgClone.alt = img.alt;
+      imgClone.loading = "eager"; // Force immediate loading for lightbox
 
       const closeBtn = document.createElement("button");
       closeBtn.className = "lightbox-close";
       closeBtn.innerHTML = "&times;";
       closeBtn.setAttribute("aria-label", "Close fullscreen view");
 
+      // Assemble lightbox
       content.appendChild(imgClone);
       content.appendChild(closeBtn);
       lightbox.appendChild(content);
       document.body.appendChild(lightbox);
 
-      document.body.style.overflow = "hidden";
+      // Add blur effect to non-lightbox content (improves focus)
+      document.getElementById("main-content")?.classList.add("lightbox-blur");
 
-      function closeLightbox() {
-        lightbox.style.opacity = "0";
+      // Prevent background scrolling
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.top = `-${originalScrollPos}px`;
+
+      // Give keyboard focus to close button
+      setTimeout(() => closeBtn.focus(), 100);
+
+      // Set up close handlers with scroll position restoration
+      function closeLightbox(e) {
+        if (e) e.stopPropagation();
+
+        // Fade out
+        lightbox.classList.add("closing");
+        document.getElementById("main-content")?.classList.remove("lightbox-blur");
+
+        // Wait for animation
         setTimeout(() => {
+          // Restore body state and scroll position
+          document.body.style.overflow = originalOverflow;
+          document.body.style.position = "";
+          document.body.style.width = "";
+          document.body.style.top = "";
+          window.scrollTo(0, originalScrollPos);
+
+          // Remove the lightbox
           document.body.removeChild(lightbox);
-          document.body.style.overflow = "";
+          isLightboxOpen = false;
         }, 300);
       }
 
+      // Set up event handlers
       closeBtn.addEventListener("click", closeLightbox, { once: true });
       lightbox.addEventListener("click", (e) => {
-        if (e.target === lightbox) closeLightbox();
+        if (e.target === lightbox) closeLightbox(e);
       });
 
-      const escHandler = (e: any) => {
+      // Keyboard support (ESC key)
+      const handleKeyDown = (e) => {
         if (e.key === "Escape") {
-          closeLightbox();
-          document.removeEventListener("keydown", escHandler);
+          closeLightbox(e);
+          document.removeEventListener("keydown", handleKeyDown);
         }
       };
-      document.addEventListener("keydown", escHandler);
+      document.addEventListener("keydown", handleKeyDown);
     }
 
+    // Create and add lightbox styles if they don't exist
     if (!document.getElementById("lightbox-styles")) {
       const style = document.createElement("style");
       style.id = "lightbox-styles";
@@ -387,33 +515,75 @@ function techNameToSlug(name: string): string {
           left: 0;
           width: 100%;
           height: 100%;
-          background: rgba(0, 0, 0, 0.9);
+          background: rgba(0, 0, 0, 0.92);
           display: flex;
           align-items: center;
           justify-content: center;
           z-index: 9999;
           cursor: pointer;
-          transition: opacity 0.3s;
+          transition: opacity 0.3s ease;
         }
+        
+        .image-lightbox.closing {
+          opacity: 0;
+        }
+        
         .lightbox-content {
           position: relative;
           max-width: 90%;
           max-height: 90%;
         }
+        
         .lightbox-content img {
           max-width: 100%;
-          max-height: 90vh;
+          max-height: 85vh;
           object-fit: contain;
+          animation: lightbox-zoom-in 0.4s ease-out forwards;
         }
+        
         .lightbox-close {
           position: absolute;
-          top: -2rem;
-          right: -2rem;
+          top: -2.5rem;
+          right: -2.5rem;
           background: transparent;
           border: none;
           color: white;
-          font-size: 2rem;
+          font-size: 2.5rem;
           cursor: pointer;
+          padding: 0.5rem;
+          line-height: 0.8;
+          opacity: 0.8;
+          transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        
+        .lightbox-close:hover,
+        .lightbox-close:focus {
+          opacity: 1;
+          transform: scale(1.1);
+          outline: none;
+        }
+        
+        .lightbox-blur {
+          filter: blur(3px);
+        }
+        
+        @media (max-width: 768px) {
+          .lightbox-close {
+            top: -2rem;
+            right: -1rem;
+            font-size: 2rem;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .lightbox-content img {
+            max-height: 80vh;
+          }
         }
       `;
       document.head.appendChild(style);
