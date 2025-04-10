@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import TechPill from "./TechPill.astro";
 import "./project-showcase.css";
 import ImageSlider from "./slider/ImageSlider";
 
@@ -85,7 +86,13 @@ function techNameToSlug(name: string): string {
               <h3 class="project-title">{project.title}</h3>
               <p class="project-description">{project.shortDescription}</p>
 
-              <div class="project-tech"></div>
+              <div class="project-tech">
+                <div class="flex flex-wrap gap-1.5">
+                  {project.techStack.map((tech) => (
+                    <TechPill name={tech} data-tech={techNameToSlug(tech)} />
+                  ))}
+                </div>
+              </div>
 
               <div class="project-links">
                 {project.liveUrl && (
