@@ -1,0 +1,326 @@
+---
+import { Icon } from "astro-icon/components";
+const currentYear = new Date().getFullYear();
+
+const tech = [
+  {
+    name: "Astro",
+    icon: "simple-icons:astro",
+  },
+  {
+    name: "React",
+    icon: "simple-icons:react",
+  },
+  {
+    name: "TailwindCSS",
+    icon: "simple-icons:tailwindcss",
+  },
+];
+---
+
+<footer class="footer-wrapper relative overflow-hidden pt-16 pb-10 mt-12">
+  <!-- Advanced Background Elements -->
+  <div class="absolute inset-0 -z-10 overflow-hidden">
+    <div class="constellation"></div>
+    <div class="code-particles"></div>
+    <div class="hero-ring w-[1000px] h-[1000px] opacity-10 top-3/4"></div>
+    <div class="gradient-orb absolute top-1/4 right-1/4"></div>
+  </div>
+
+  <!-- Main Footer Content -->
+  <div class="container mx-auto px-4 z-10 relative">
+    <!-- Interactive Logo -->
+    <div class="logo-container flex justify-center mb-8">
+      <a href="#home" class="group">
+        <div class="flex items-center">
+          <div class="logo-wrapper relative h-10 w-10 mr-3 overflow-hidden">
+            <div class="logo-bg absolute inset-0 bg-gradient-to-br from-[oklch(var(--accent-300))] to-[oklch(var(--accent-900))] rounded-lg"></div>
+            <div class="logo-inner absolute inset-[2px] bg-[rgb(var(--background))] rounded-lg flex items-center justify-center text-xl font-bold text-[oklch(var(--accent-title))]">E</div>
+            <div class="logo-glow absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          </div>
+          <h2 class="text-2xl font-bold font-doto transition-all duration-300">
+            <span class="text-[oklch(var(--accent-title))] group-hover:text-[oklch(var(--accent-text))] transition-colors duration-300">Ehsan</span>
+            <span class="group-hover:tracking-wider transition-all duration-300">Khan</span>
+          </h2>
+        </div>
+      </a>
+    </div>
+
+    <!-- Interactive Code Divider -->
+    <div class="code-terminal">
+      <div class="terminal-header flex items-center mb-1 px-2">
+        <div class="terminal-dot bg-red-500"></div>
+        <div class="terminal-dot bg-yellow-500"></div>
+        <div class="terminal-dot bg-green-500"></div>
+        <div class="terminal-title ml-2 text-xs">developer-portfolio</div>
+      </div>
+      <div class="terminal-body px-4 py-2">
+        <div class="typewriter">
+          <span class="terminal-prompt">&gt;</span>
+          <span class="code-el">&lt;<span class="code-tag">div</span> <span class="code-attr">className</span>=<span class="code-string">"developer"</span>&gt;</span>
+          <span class="code-content typing-effect">Passionate about creating exceptional web experiences</span>
+          <span class="code-el">&lt;/<span class="code-tag">div</span>&gt;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer bottom -->
+    <div class="footer-bottom flex flex-col md:flex-row justify-between items-center pt-4">
+      <p class="text-sm text-foreground-muted hover:text-foreground transition-colors duration-300">
+        © <span class="text-foreground">{currentYear}</span> Ehsan Khan. All rights reserved.
+      </p>
+      <div class="mt-4 md:mt-0 text-sm text-foreground-muted flex gap-1 items-center">
+        <span class="status-indicator"></span>
+        <span class="flex gap-1 items-center">
+          Built with
+          <span class="tech-icons">
+            {
+              tech.map((item) => (
+                <span class="tech-icon" title={item.name}>
+                  <Icon name={item.icon} width={20} height={20} />
+                </span>
+              ))
+            }
+          </span>
+        </span>
+      </div>
+
+      <!-- Easter Egg: Hidden Message -->
+      <div class="hidden">Thanks for checking out my code!</div>
+    </div>
+  </div>
+
+  <style>
+    .footer-wrapper {
+      background: linear-gradient(180deg, rgba(var(--background), 0) 0%, rgba(var(--background), 0.9) 15%, rgb(var(--background)) 40%);
+    }
+
+    /* Background Elements */
+    .constellation {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(oklch(var(--accent-text) / 0.4) 1px, transparent 1px);
+      background-size: 25px 25px;
+      opacity: 0.1;
+    }
+
+    .code-particles {
+      position: absolute;
+      inset: 0;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ctext x='50%25' y='50%25' font-family='monospace' font-size='10' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'%3E%7B%7D%3C/text%3E%3Ctext x='20%25' y='30%25' font-family='monospace' font-size='8' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'%3E%3C/%3E%3C/text%3E%3Ctext x='80%25' y='60%25' font-family='monospace' font-size='12' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'%3E%28%29%3C/text%3E%3Ctext x='35%25' y='80%25' font-family='monospace' font-size='10' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'%3E%3D%3E%3C/text%3E%3C/svg%3E");
+    }
+
+    .gradient-orb {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle, oklch(var(--accent-title)) 0%, transparent 70%);
+      filter: blur(40px);
+      opacity: 0.15;
+      animation: float 20s infinite alternate ease-in-out;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.15;
+      }
+      50% {
+        transform: translate(-30px, 20px) scale(1.1);
+        opacity: 0.2;
+      }
+      100% {
+        transform: translate(20px, -10px) scale(0.9);
+        opacity: 0.1;
+      }
+    }
+
+    /* Interactive Logo */
+    .logo-wrapper {
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .logo-bg {
+      transition: all 0.3s ease;
+    }
+
+    .logo-glow {
+      box-shadow: 0 0 20px 5px oklch(var(--accent-text) / 0.5);
+      border-radius: 8px;
+      transition: all 0.5s ease;
+    }
+
+    .group:hover .logo-wrapper {
+      transform: rotate(5deg) scale(1.05);
+    }
+
+    /* Terminal Code Divider */
+    .code-terminal {
+      margin: 2rem auto;
+      max-width: 500px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid oklch(var(--accent-bg) / 0.2);
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.2);
+    }
+
+    .terminal-header {
+      background: rgba(30, 30, 30, 0.7);
+      padding: 6px 10px;
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .terminal-title {
+      color: var(--color-foreground-muted);
+    }
+
+    .terminal-body {
+      font-family: monospace;
+      line-height: 1.5;
+    }
+
+    .terminal-prompt {
+      color: oklch(var(--accent-text));
+      margin-right: 8px;
+      animation: blink 1s infinite;
+    }
+
+    .code-tag {
+      color: oklch(var(--accent-title));
+    }
+
+    .code-attr {
+      color: oklch(var(--accent-text) / 0.8);
+    }
+
+    .code-string {
+      color: oklch(var(--accent-300));
+    }
+
+    .code-content {
+      color: var(--color-foreground);
+      position: relative;
+    }
+
+    .typing-effect {
+      border-right: 2px solid oklch(var(--accent-text));
+      animation:
+        typing 4s steps(40) 1s infinite alternate both,
+        blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+      to {
+        width: 100%;
+      }
+    }
+
+    @keyframes blink-caret {
+      from,
+      to {
+        border-color: transparent;
+      }
+      50% {
+        border-color: oklch(var(--accent-text));
+      }
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: oklch(var(--accent-text));
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .heart {
+      color: oklch(var(--accent-title));
+      animation: beat 1s infinite;
+    }
+
+    @keyframes beat {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+    }
+
+    .tech-stack {
+      font-weight: bold;
+      color: oklch(var(--accent-title));
+    }
+
+    .hidden-message {
+      display: none;
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      color: var(--color-foreground-muted);
+    }
+
+    /* Tech Icons Styling */
+    .tech-icons {
+      display: flex;
+      align-items: center;
+      margin-left: 8px;
+      gap: 10px;
+    }
+
+    .tech-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 28px;
+      width: 28px;
+      border-radius: 6px;
+      background: oklch(var(--accent-bg) / 0.2);
+      padding: 5px;
+      transition: all 0.3s ease;
+      position: relative;
+      color: oklch(var(--accent-text));
+    }
+
+    .tech-icon:hover {
+      transform: translateY(-3px);
+      color: oklch(var(--accent-300));
+      background: oklch(var(--accent-bg) / 0.3);
+      box-shadow: 0 4px 8px -2px oklch(var(--accent-bg) / 0.5);
+    }
+
+    .tech-icon:hover::before {
+      content: attr(title);
+      position: absolute;
+      top: -24px;
+      font-size: 10px;
+      background: oklch(var(--accent-bg) / 0.8);
+      color: oklch(var(--accent-text));
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 640px) {
+      .tech-icons {
+        margin-top: 8px;
+        margin-left: 0;
+        justify-content: center;
+      }
+    }
+  </style>
+</footer>
