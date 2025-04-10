@@ -79,8 +79,8 @@ function techNameToSlug(name: string): string {
     <div id="project-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
       {
         projects.map((project, index) => (
-          <article class="project-card">
-            <ImageSlider client:load title={project.title} images={project.imageUrls} imageLayout={project.imageLayout} />
+          <article class="project-card" style={`--delay: ${index * 0.1}s`}>
+            <ImageSlider client:idle title={project.title} images={project.imageUrls} imageLayout={project.imageLayout} />
 
             <div class="project-info">
               <h3 class="project-title">{project.title}</h3>
