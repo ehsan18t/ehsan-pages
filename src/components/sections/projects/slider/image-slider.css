@@ -329,9 +329,43 @@ body.lightbox-closing {
   will-change: transform, background-color;
 }
 
+.slider-lightbox-nav.slider-prev {
+  left: 2rem;
+}
+
+.slider-lightbox-nav.slider-next {
+  right: 2rem;
+}
+
 .slider-lightbox-nav svg {
   width: 1.8rem;
   height: 1.8rem;
+}
+
+/* Add proper styles for the lightbox counter */
+.slider-lightbox-counter {
+  @apply absolute bottom-6 left-1/2 text-white;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 0.6rem 1.2rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  z-index: 10;
+  animation: slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Add responsive styles for the counter */
+@media (max-width: 768px) {
+  .slider-lightbox-counter {
+    bottom: 2rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
 }
 
 /* Animations - keeping all original animations */
