@@ -70,14 +70,12 @@
 /* Make visible when parent slider is hovered */
 .slider:hover .slider-controls {
   opacity: 1;
-  backdrop-filter: blur(2px);
   background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Ensure .visible class still works for explicit control */
 .slider-controls.visible {
   opacity: 1;
-  backdrop-filter: blur(2px);
   background-color: rgba(0, 0, 0, 0.05);
 }
 
