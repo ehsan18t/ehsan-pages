@@ -90,6 +90,7 @@ const iconName = techIcons[techSlug] || "mdi:code-tags";
     box-shadow: var(--pill-shadow-base);
     overflow: hidden;
     text-shadow: var(--pill-text-shadow);
+    user-select: none;
   }
 
   /* Tech icon styling */
@@ -141,7 +142,7 @@ const iconName = techIcons[techSlug] || "mdi:code-tags";
   }
 
   .tech-pill[data-tech="nextjs"] {
-    background: linear-gradient(135deg, #121212, #000000); /* Darker gradient */
+    background: linear-gradient(135deg, #191818, #070707); /* Darker gradient */
     color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   }
@@ -211,7 +212,7 @@ const iconName = techIcons[techSlug] || "mdi:code-tags";
 
   /* Cloud & Deployment - Better visibility */
   .tech-pill[data-tech="vercel"] {
-    background: linear-gradient(135deg, #111111, #000000);
+    background: linear-gradient(135deg, #222222, #000000);
     color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   }
