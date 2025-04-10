@@ -1,0 +1,46 @@
+---
+import { Icon } from "astro-icon/components";
+import "./image-slider.css";
+
+const { project, index } = Astro.props;
+---
+
+<div class="slider-viewport">
+  <div class="slider-container" data-total-slides={project.imageUrls.length}>
+    {
+      project.imageUrls.map((url: string, slideIndex: number) => (
+        <div class="slider-slide" data-slide-index={slideIndex}>
+          <img src={url} alt={`${project.title} screenshot ${slideIndex + 1}`} loading="lazy" width="800" height="500" />
+        </div>
+      ))
+    }
+  </div>
+
+  {
+    project.imageUrls.length > 1 && (
+      <>
+        <button type="button" aria-label="Previous Slide" class="slider-button prev" data-direction="-1">
+          <Icon name="mdi:chevron-left" />
+        </button>
+        <button type="button" aria-label="Next Slide" class="slider-button next" data-direction="1">
+          <Icon name="mdi:chevron-right" />
+        </button>
+
+        <div class="slider-pagination">
+          {project.imageUrls.map((_: any, i: number) => (
+            <button class={`pagination-dot ${i === 0 ? "active" : ""}`} data-index={i} aria-label={`Go to slide ${i + 1}`} title={`Slide ${i + 1}`} />
+          ))}
+        </div>
+
+        <div class="slide-counter">
+          <span class="current-slide">1</span>
+          <span class="total-slides">/{project.imageUrls.length}</span>
+        </div>
+      </>
+    )
+  }
+
+  <button type="button" class="fullscreen-button" aria-label="View image fullscreen">
+    <Icon name="mdi:fullscreen" />
+  </button>
+</div>
