@@ -16,15 +16,13 @@ import ProjectShowcase from "@/components/sections/projects/ProjectShowcase.astr
       <div class="bg-background relative z-10">
         <Hero />
       </div>
-      <div class="fixed inset-0 -z-10 overflow-hidden">
-        <img src={background.src} alt="" id="background" fetchpriority="high" />
-      </div>
 
-      {/* Next Section with gradient overlay */}
-      <div class="relative z-1 bg-gradient-to-b from-background via-background/80 to-transparent pb-[20vh]"></div>
-      <AnimateOnScroll animation="slide-up" delay="300ms">
-        <Skills />
-      </AnimateOnScroll>
+      <img src={background.src} alt="" id="background" fetchpriority="high" />
+      <div class="relative z-1 bg-gradient-to-b from-background via-background/80 to-transparent">
+        <AnimateOnScroll animation="slide-up" delay="300ms">
+          <Skills />
+        </AnimateOnScroll>
+      </div>
       <ProjectShowcase />
     </div>
 
