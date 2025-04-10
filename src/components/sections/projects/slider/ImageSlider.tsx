@@ -24,7 +24,7 @@ export default function ImageSlider({
 
   const sliderTrackRef = useRef<HTMLDivElement>(null);
   const preventScrollUpdate = useRef(false);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
 
   // Derived values don't need explicit types
   const { currentIndex, isFullscreen, showControls } = state;
