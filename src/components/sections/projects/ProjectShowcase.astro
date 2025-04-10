@@ -159,11 +159,34 @@ function techNameToSlug(name: string): string {
 
 <script lang="js">
   document.addEventListener("DOMContentLoaded", () => {
-    // Simple cached selectors
+    // Enhanced cached selectors
     const gridContainer = document.getElementById("project-grid-container");
     const lightbox = document.getElementById("project-lightbox");
     const lightboxImg = document.getElementById("lightbox-img");
     const lightboxClose = lightbox?.querySelector(".lightbox-close");
+
+    // Cache all slider containers and their related elements upfront
+    const sliderData = [];
+    document.querySelectorAll(".project-card").forEach((card) => {
+      const container = card.querySelector(".slider-container");
+      if (!container) return;
+
+      const data = {
+        container,
+        card,
+        slides: Array.from(container.querySelectorAll(".slider-slide")),
+        dots: Array.from(card.querySelectorAll(".pagination-dot")),
+        counter: card.querySelector(".current-slide"),
+        slideWidth: container.clientWidth,
+        totalSlides: parseInt(container.dataset.totalSlides || "1", 10),
+        currentIndex: 0,
+      };
+
+      sliderData.push(data);
+
+      // Set up data reference on the DOM element for quick access
+      container.sliderData = data;
+    });
 
     // Original scroll state
     let originalScrollPos = 0;
@@ -174,10 +197,17 @@ function techNameToSlug(name: string): string {
       gridContainer.addEventListener("click", handleGridClick);
     }
 
-    // Setup slider event listeners
-    document.querySelectorAll(".slider-container").forEach((slider) => {
-      slider.addEventListener("scroll", handleSliderScroll, { passive: true });
-      setupTouchHandler(slider);
+    // Setup slider scroll event listeners with throttling
+    sliderData.forEach((data) => {
+      data.container.addEventListener(
+        "scroll",
+        throttle(function () {
+          updateSliderIndicators(data);
+        }, 100),
+        { passive: true }
+      );
+
+      setupTouchHandler(data);
     });
 
     // Lightbox event handlers
@@ -197,6 +227,20 @@ function techNameToSlug(name: string): string {
 
     // --- Core Functions ---
 
+    // Simple throttle function to limit function calls
+    function throttle(func, limit) {
+      let inThrottle;
+      return function () {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+          func.apply(context, args);
+          inThrottle = true;
+          setTimeout(() => (inThrottle = false), limit);
+        }
+      };
+    }
+
     // Event delegation for clicks
     function handleGridClick(e) {
       const target = e.target;
@@ -212,67 +256,68 @@ function techNameToSlug(name: string): string {
       const card = target.closest(".project-card");
       if (!card) return;
 
+      const container = card.querySelector(".slider-container");
+      if (!container || !container.sliderData) return;
+
+      const data = container.sliderData;
+
       // Handle different click types
       if (sliderButton) {
         e.preventDefault();
         const direction = parseInt(sliderButton.dataset.direction || "0", 10);
-        const sliderContainer = card.querySelector(".slider-container");
-        navigateSlider(sliderContainer, direction);
+        navigateSlider(data, direction);
       } else if (paginationDot) {
         e.preventDefault();
         const index = parseInt(paginationDot.dataset.index || "0", 10);
-        const sliderContainer = card.querySelector(".slider-container");
-        goToSlide(sliderContainer, index);
+        goToSlide(data, index);
       } else if (fullscreenButton) {
         e.preventDefault();
-        const sliderContainer = card.querySelector(".slider-container");
-        const currentIndex = Math.round(sliderContainer.scrollLeft / sliderContainer.clientWidth);
-        const img = card.querySelectorAll(".slider-slide img")[currentIndex];
+        const img = data.slides[data.currentIndex]?.querySelector("img");
         if (img) openLightbox(img);
       }
     }
 
-    // Slider scroll handler
-    function handleSliderScroll(e) {
-      const container = e.target;
-      const card = container.closest(".project-card");
-      if (!card) return;
-
-      updateSliderIndicators(container);
-    }
-
     // Update slider indicators (pagination dots and counter)
-    function updateSliderIndicators(container) {
-      const card = container.closest(".project-card");
-      if (!card) return;
+    function updateSliderIndicators(data) {
+      // Calculate current index based on scroll position
+      const newIndex = Math.round(data.container.scrollLeft / data.container.clientWidth);
 
-      const slideWidth = container.clientWidth;
-      const activeIndex = Math.round(container.scrollLeft / slideWidth);
+      // Skip update if index hasn't changed
+      if (newIndex === data.currentIndex) return;
+
+      data.currentIndex = newIndex;
 
       // Update pagination dots
-      const dots = card.querySelectorAll(".pagination-dot");
-      dots.forEach((dot, i) => {
-        dot.classList.toggle("active", i === activeIndex);
+      data.dots.forEach((dot, i) => {
+        // Set/remove class directly instead of toggle for better performance
+        if (i === newIndex) {
+          if (!dot.classList.contains("active")) dot.classList.add("active");
+        } else {
+          if (dot.classList.contains("active")) dot.classList.remove("active");
+        }
       });
 
       // Update counter
-      const counter = card.querySelector(".current-slide");
-      if (counter) counter.textContent = (activeIndex + 1).toString();
+      if (data.counter) data.counter.textContent = (newIndex + 1).toString();
 
       // Mark current slide as active (for animations)
-      const slides = container.querySelectorAll(".slider-slide");
-      slides.forEach((slide, i) => {
-        slide.classList.toggle("active", i === activeIndex);
+      data.slides.forEach((slide, i) => {
+        if (i === newIndex) {
+          if (!slide.classList.contains("active")) slide.classList.add("active");
+        } else {
+          if (slide.classList.contains("active")) slide.classList.remove("active");
+        }
       });
     }
 
-    // Touch handling
-    function setupTouchHandler(slider) {
+    // Touch handling with improved efficiency
+    function setupTouchHandler(data) {
       let startX = 0;
       let startY = 0;
       let isVerticalScroll = null;
+      const container = data.container;
 
-      slider.addEventListener(
+      container.addEventListener(
         "touchstart",
         (e) => {
           startX = e.touches[0].clientX;
@@ -282,7 +327,7 @@ function techNameToSlug(name: string): string {
         { passive: true }
       );
 
-      slider.addEventListener(
+      container.addEventListener(
         "touchmove",
         (e) => {
           if (isVerticalScroll === null) {
@@ -299,7 +344,7 @@ function techNameToSlug(name: string): string {
         { passive: false }
       );
 
-      slider.addEventListener(
+      container.addEventListener(
         "touchend",
         (e) => {
           if (isVerticalScroll) return;
@@ -308,7 +353,7 @@ function techNameToSlug(name: string): string {
 
           // Only navigate if swipe was significant
           if (Math.abs(diffX) > 30) {
-            navigateSlider(slider, diffX < 0 ? 1 : -1);
+            navigateSlider(data, diffX < 0 ? 1 : -1);
           }
         },
         { passive: true }
@@ -316,29 +361,28 @@ function techNameToSlug(name: string): string {
     }
 
     // Navigation functions
-    function navigateSlider(container, direction) {
-      if (!container) return;
-
-      const slideWidth = container.clientWidth;
-      const totalSlides = parseInt(container.dataset.totalSlides || "1", 10);
-      const currentIndex = Math.round(container.scrollLeft / slideWidth);
-      let targetIndex = currentIndex + direction;
+    function navigateSlider(data, direction) {
+      let targetIndex = data.currentIndex + direction;
 
       // Boundary checks
       if (targetIndex < 0) targetIndex = 0;
-      if (targetIndex >= totalSlides) targetIndex = totalSlides - 1;
+      if (targetIndex >= data.totalSlides) targetIndex = data.totalSlides - 1;
 
-      goToSlide(container, targetIndex);
+      goToSlide(data, targetIndex);
     }
 
-    function goToSlide(container, index) {
-      if (!container) return;
+    function goToSlide(data, index) {
+      const container = data.container;
       const slideWidth = container.clientWidth;
 
       container.scrollTo({
         left: slideWidth * index,
         behavior: "smooth",
       });
+
+      // Optional: Update indicators immediately for more responsive UI
+      data.currentIndex = index;
+      updateSliderIndicators(data);
     }
 
     // Lightbox functions with improved scroll handling
@@ -380,5 +424,19 @@ function techNameToSlug(name: string): string {
         if (lightboxImg) lightboxImg.src = "";
       }, 300);
     }
+
+    // Handle resize events to update slide widths
+    const resizeObserver = new ResizeObserver(
+      throttle(() => {
+        sliderData.forEach((data) => {
+          data.slideWidth = data.container.clientWidth;
+          updateSliderIndicators(data);
+        });
+      }, 250)
+    );
+
+    sliderData.forEach((data) => {
+      resizeObserver.observe(data.container);
+    });
   });
 </script>
