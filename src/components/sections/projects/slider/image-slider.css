@@ -1,6 +1,6 @@
 @reference "@/assets/styles/global.css";
 
-.new-slider {
+.slider {
   @apply relative w-full overflow-hidden;
   aspect-ratio: 16/10;
   border-radius: 0.75rem 0.75rem 0 0;
@@ -10,25 +10,25 @@
   transition: box-shadow 0.5s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
-.new-slider:hover {
+.slider:hover {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
 }
 
 /* Slider track - uses transform instead of scroll */
-.new-slider-track {
+.slider-track {
   @apply flex h-full w-full;
   transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform;
 }
 
 /* Individual slides */
-.new-slider-slide {
+.slider-slide {
   @apply relative h-full overflow-hidden;
   transition: opacity 0.4s ease-out;
 }
 
 /* Loading state for images - improved animation */
-.new-slider-slide::before {
+.slider-slide::before {
   content: "";
   @apply absolute inset-0 z-[1];
   background: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
@@ -38,12 +38,12 @@
   transition: opacity 0.3s ease-out;
 }
 
-.new-slider-slide.loading::before {
+.slider-slide.loading::before {
   opacity: 1;
 }
 
 /* Images - improved transitions */
-.new-slider-image {
+.slider-image {
   @apply block h-full w-full;
   transition: all 0.8s cubic-bezier(0.2, 0, 0.2, 1);
   filter: brightness(0.95) contrast(1.02);
@@ -51,13 +51,13 @@
 }
 
 /* Image hover effect - more elegant response */
-.new-slider-slide:has(.new-slider-image:hover) .new-slider-image {
+.slider-slide:has(.slider-image:hover) .slider-image {
   transform: scale(1.05);
   filter: brightness(1.05) contrast(1.05);
 }
 
-/* Enhanced controls container */
-.new-slider-controls {
+/* Fix for controls visibility */
+.slider-controls {
   @apply absolute inset-0 pointer-events-none;
   opacity: 0;
   transition:
@@ -67,13 +67,29 @@
   background-color: rgba(0, 0, 0, 0);
 }
 
-.new-slider-controls.visible {
+/* Make visible when parent slider is hovered */
+.slider:hover .slider-controls {
   opacity: 1;
   backdrop-filter: blur(2px);
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.new-slider-button {
+/* Ensure .visible class still works for explicit control */
+.slider-controls.visible {
+  opacity: 1;
+  backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Fix pointer events for buttons and pagination */
+.slider-button,
+.slider-pagination,
+.slider-counter,
+.slider-fullscreen {
+  pointer-events: auto;
+}
+
+.slider-button {
   @apply absolute top-1/2 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
   transform: translateY(-50%) translateZ(0);
   background-color: rgba(0, 0, 0, 0.5);
@@ -86,42 +102,42 @@
   will-change: transform, background-color, box-shadow;
 }
 
-.new-slider-button:hover {
+.slider-button:hover {
   background-color: rgba(0, 0, 0, 0.85);
   transform: translateY(-50%) scale(1.08);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-.new-slider-button:disabled {
+.slider-button:disabled {
   @apply opacity-30 cursor-not-allowed;
 }
 
-.new-slider-button:active {
+.slider-button:active {
   transform: translateY(-50%) scale(0.92);
   transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
-.new-slider-button.new-slider-prev {
+.slider-button.slider-prev {
   @apply left-4;
 }
 
-.new-slider-button.new-slider-next {
+.slider-button.slider-next {
   @apply right-4;
 }
 
-.new-slider-button svg {
+.slider-button svg {
   width: 1.5rem;
   height: 1.5rem;
   transition: transform 0.3s ease;
 }
 
-.new-slider-button:hover svg {
+.slider-button:hover svg {
   transform: scale(1.15);
 }
 
 /* Refined pagination dots - slightly smaller */
-.new-slider-pagination {
+.slider-pagination {
   @apply absolute bottom-6 left-1/2 flex pointer-events-auto;
   transform: translateX(-50%) translateZ(0);
   gap: 0.6rem;
@@ -133,12 +149,12 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.new-slider-pagination:hover {
+.slider-pagination:hover {
   transform: translateX(-50%) translateZ(0) scale(1.05);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
-.new-slider-dot {
+.slider-dot {
   @apply rounded-full cursor-pointer;
   width: 0.6rem;
   height: 0.6rem;
@@ -148,19 +164,19 @@
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.new-slider-dot:hover {
+.slider-dot:hover {
   background-color: rgba(255, 255, 255, 0.9);
   transform: scale(1.2);
 }
 
-.new-slider-dot.active {
+.slider-dot.active {
   background-color: white;
   transform: scale(1.4);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
 }
 
 /* Counter */
-.new-slider-counter {
+.slider-counter {
   @apply absolute bottom-6 right-6 text-white pointer-events-auto;
   background-color: rgba(0, 0, 0, 0.45);
   padding: 0.5rem 1rem;
@@ -177,13 +193,13 @@
     box-shadow 0.4s ease;
 }
 
-.new-slider-counter:hover {
+.slider-counter:hover {
   transform: scale(1.08);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 /* Fullscreen button - reduced size */
-.new-slider-fullscreen {
+.slider-fullscreen {
   @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
   background-color: rgba(0, 0, 0, 0.45);
   width: 2rem;
@@ -196,25 +212,25 @@
   will-change: transform, background-color;
 }
 
-.new-slider-fullscreen:hover {
+.slider-fullscreen:hover {
   background-color: rgba(0, 0, 0, 0.85);
   transform: scale(1.18);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.new-slider-fullscreen svg {
+.slider-fullscreen svg {
   width: 1.2rem;
   height: 1.2rem;
   transition: transform 0.3s ease;
 }
 
-.new-slider-fullscreen:hover svg {
+.slider-fullscreen:hover svg {
   transform: scale(1.12);
 }
 
 /* Slide indicator for current position */
-.new-slider::after {
+.slider::after {
   content: "";
   @apply absolute bottom-0 left-0 z-[6];
   height: 4px;
@@ -228,7 +244,7 @@
 }
 
 /* Enhanced fullscreen lightbox */
-.new-slider-lightbox {
+.slider-lightbox {
   @apply fixed inset-0 z-[9999] flex items-center justify-center;
   width: 100vw;
   height: 100vh;
@@ -260,12 +276,12 @@ body.lightbox-closing {
   overflow: auto;
 }
 
-.new-slider-lightbox-content {
+.slider-lightbox-content {
   @apply relative flex h-full w-full items-center justify-center;
   perspective: 1000px;
 }
 
-.new-slider-lightbox-image {
+.slider-lightbox-image {
   @apply rounded;
   max-width: 90%;
   max-height: 85vh;
@@ -276,7 +292,7 @@ body.lightbox-closing {
 }
 
 /* Lightbox close button - reduced size */
-.new-slider-lightbox-close {
+.slider-lightbox-close {
   @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer z-10 text-white rounded-full;
   width: 2.5rem;
   height: 2.5rem;
@@ -286,24 +302,24 @@ body.lightbox-closing {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.new-slider-lightbox-close svg {
+.slider-lightbox-close svg {
   width: 1.3rem;
   height: 1.3rem;
   transition: transform 0.3s ease;
 }
 
-.new-slider-lightbox-close:hover {
+.slider-lightbox-close:hover {
   background-color: rgba(255, 30, 30, 0.9);
   transform: scale(1.15);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-.new-slider-lightbox-close:hover svg {
+.slider-lightbox-close:hover svg {
   transform: rotate(90deg);
 }
 
 /* Lightbox navigation - reduced size */
-.new-slider-lightbox-nav {
+.slider-lightbox-nav {
   @apply absolute top-1/2 flex items-center justify-center cursor-pointer text-white rounded-full;
   transform: translateY(-50%) translateZ(0);
   width: 3rem;
@@ -315,7 +331,7 @@ body.lightbox-closing {
   will-change: transform, background-color;
 }
 
-.new-slider-lightbox-nav svg {
+.slider-lightbox-nav svg {
   width: 1.8rem;
   height: 1.8rem;
 }
@@ -368,30 +384,30 @@ body.lightbox-closing {
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .new-slider-controls {
+  .slider-controls {
     opacity: 1;
   }
 
-  .new-slider-button,
-  .new-slider-fullscreen {
+  .slider-button,
+  .slider-fullscreen {
     width: 2.5rem;
     height: 2.5rem;
   }
 
-  .new-slider-lightbox-nav {
+  .slider-lightbox-nav {
     width: 3rem;
     height: 3rem;
   }
 
-  .new-slider-lightbox-nav.new-slider-prev {
+  .slider-lightbox-nav.slider-prev {
     left: 1rem;
   }
 
-  .new-slider-lightbox-nav.new-slider-next {
+  .slider-lightbox-nav.slider-next {
     right: 1rem;
   }
 
-  .new-slider-lightbox-close {
+  .slider-lightbox-close {
     top: 1rem;
     right: 1rem;
   }
@@ -399,12 +415,12 @@ body.lightbox-closing {
 
 /* Accessibility and reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .new-slider-track,
-  .new-slider-image,
-  .new-slider-button,
-  .new-slider-fullscreen,
-  .new-slider-lightbox-image,
-  .new-slider-controls {
+  .slider-track,
+  .slider-image,
+  .slider-button,
+  .slider-fullscreen,
+  .slider-lightbox-image,
+  .slider-controls {
     transition: none;
     animation: none;
   }
