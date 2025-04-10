@@ -1,4 +1,5 @@
-/* Base card styling with hardware acceleration */
+@reference "@/assets/styles/global.css";
+
 .project-card {
   display: flex;
   flex-direction: column;
@@ -104,6 +105,18 @@
   height: 1rem;
 }
 
+.project-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow:
+    0 15px 30px -5px oklch(var(--accent-500) / 0.2),
+    0 8px 15px -6px oklch(var(--accent-500) / 0.15);
+  background-color: color-mix(in oklch, rgb(var(--background)), white 5%);
+}
+
+.project-card:hover .project-title {
+  color: oklch(var(--accent-500));
+}
+
 /* Optimize based on device capability */
 @media screen and (min-width: 768px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
   /* Desktop animations for capable devices */
@@ -111,18 +124,6 @@
     transition:
       transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
       box-shadow 0.4s ease-out;
-  }
-
-  .project-card:hover {
-    transform: translateY(-8px) scale(1.01);
-    box-shadow:
-      0 15px 30px -5px oklch(var(--accent-500) / 0.2),
-      0 8px 15px -6px oklch(var(--accent-500) / 0.15);
-    background-color: color-mix(in oklch, rgb(var(--background)), white 5%);
-  }
-
-  .project-card:hover .project-title {
-    color: oklch(var(--accent-500));
   }
 
   .project-link:hover {
@@ -136,12 +137,6 @@
 
 /* Mobile-specific optimizations */
 @media (max-width: 767px), (hover: none) {
-  .project-card {
-    /* Simpler shadow for mobile */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease;
-  }
-
   .project-card:active {
     transform: scale(0.98) translateZ(0);
   }
