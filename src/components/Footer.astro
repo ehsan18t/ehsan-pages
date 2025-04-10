@@ -21,7 +21,6 @@ const tech = [
 <footer class="relative overflow-hidden pt-16 pb-10 mt-12 bg-gradient-to-t from-background via-background/90 to-transparent">
   <!-- Advanced Background Elements -->
   <div class="absolute inset-0 -z-10 overflow-hidden">
-    <!-- Keep custom classes for complex background patterns -->
     <div class="constellation"></div>
     <div class="code-particles"></div>
     <div class="absolute w-[1000px] h-[1000px] opacity-10 top-3/4 hero-ring"></div>
@@ -47,20 +46,50 @@ const tech = [
       </a>
     </div>
 
-    <!-- Interactive Code Divider -->
-    <div class="mx-auto max-w-[500px] rounded-lg overflow-hidden bg-black/20 border border-[oklch(var(--accent-bg)/0.2)] backdrop-blur-sm shadow-md my-8">
-      <div class="flex items-center mb-1 px-2 py-1.5 bg-[rgba(30,30,30,0.7)]">
-        <div class="w-2.5 h-2.5 rounded-full bg-red-500 mr-1.5"></div>
-        <div class="w-2.5 h-2.5 rounded-full bg-yellow-500 mr-1.5"></div>
-        <div class="w-2.5 h-2.5 rounded-full bg-green-500 mr-1.5"></div>
-        <div class="ml-2 text-xs text-foreground-muted">developer-portfolio</div>
+    <!-- Enhanced Realistic Terminal -->
+    <div class="mx-auto max-w-[650px] rounded-lg overflow-hidden bg-[#1e1e1e] border border-gray-800 shadow-lg my-8 terminal-container">
+      <!-- Terminal Header -->
+      <div class="flex items-center px-3 py-1.5 bg-[#323233] border-b border-gray-800 justify-between">
+        <div class="flex items-center">
+          <div class="w-3 h-3 rounded-full bg-[#ff5f56] mr-2"></div>
+          <div class="w-3 h-3 rounded-full bg-[#ffbd2e] mr-2"></div>
+          <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+        </div>
+        <div class="text-xs text-gray-400 flex-1 text-center font-sans select-none">bash ~ ehsan@dev-machine</div>
+        <div class="text-gray-500 text-xs">⌘</div>
       </div>
-      <div class="px-4 py-2 font-mono leading-relaxed">
-        <div class="typewriter font-mono text-xs">
-          <span class="text-[oklch(var(--accent-text))] mr-2 terminal-prompt">&gt;</span>
-          <span class="code-el">&lt;<span class="text-[oklch(var(--accent-title))]">div</span> <span class="text-[oklch(var(--accent-text)/0.8)]">className</span>=<span class="text-[oklch(var(--accent-300))]">"developer"</span>&gt;</span>
-          <span class="text-foreground typing-effect">Passionate about creating exceptional web experiences</span>
-          <span class="code-el">&lt;/<span class="text-[oklch(var(--accent-title))]">div</span>&gt;</span>
+
+      <!-- Terminal Content with Scrollbar -->
+      <div class="p-4 font-mono text-sm leading-relaxed text-gray-300 terminal-content overflow-y-auto">
+        <div class="mb-1.5 flex gap-1">
+          <span class="flex">
+            <span class="text-[#33d790]">ehsan</span>
+            <span class="text-gray-400">@</span>
+            <span class="text-[#78b9fa]">dev-machine</span>
+            <span class="text-gray-400">:</span>
+          </span>
+          <span class="flex">
+            <span class="text-[#c792ea]">~/projects/portfolio</span>
+            <span class="text-gray-400">$</span>
+          </span>
+          <span class="ml-1 command-input">compile index.html</span>
+        </div>
+        <div class="pl-0 mb-1 terminal-output">
+          <div class="text-red-400">Error: Cannot compile index.html. HTML is not a programming language.</div>
+          <div class="mb-1 text-yellow-300">Did you mean to use a build tool like Webpack or Vite instead?</div>
+        </div>
+
+        <div class="flex gap-1">
+          <span class="flex">
+            <span class="text-[#33d790]">ehsan</span>
+            <span class="text-gray-400">@</span>
+            <span class="text-[#78b9fa]">dev-machine</span>
+            <span class="text-gray-400">:</span>
+          </span>
+          <span class="flex">
+            <span class="text-[#c792ea]">~/projects/portfolio</span>
+            <span class="text-gray-400">$</span>
+          </span>
         </div>
       </div>
     </div>
@@ -96,6 +125,7 @@ const tech = [
 </footer>
 
 <style>
+  /* Background elements */
   .constellation {
     position: absolute;
     inset: 0;
@@ -136,33 +166,66 @@ const tech = [
     }
   }
 
-  .terminal-prompt {
-    animation: blink 2s infinite;
+  /* Enhanced terminal styling */
+  .terminal-container {
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.3),
+      0 10px 10px -5px rgba(0, 0, 0, 0.2);
   }
 
-  .typing-effect {
-    border-right: 2px solid oklch(var(--accent-text));
-    animation:
-      typing 4s steps(40) 1s infinite alternate both,
-      blink-caret 0.75s step-end infinite;
+  .terminal-content {
+    font-family: "Menlo", "Monaco", "Consolas", monospace;
+    height: 320px;
+    scrollbar-width: thin;
+    scrollbar-color: #4a4a4a #2a2a2a;
+    line-height: 1.4;
+  }
+
+  .terminal-content::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .terminal-content::-webkit-scrollbar-track {
+    background: #2a2a2a;
+  }
+
+  .terminal-content::-webkit-scrollbar-thumb {
+    background-color: #4a4a4a;
+    border-radius: 4px;
+  }
+
+  .terminal-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background-color: #adbac7;
+    animation: blink 1.2s step-start infinite;
+    vertical-align: middle;
+  }
+
+  .command-input {
+    position: relative;
+    animation: typing 1s steps(15);
   }
 
   @keyframes typing {
     from {
       width: 0;
+      opacity: 0;
     }
     to {
       width: 100%;
+      opacity: 1;
     }
   }
 
-  @keyframes blink-caret {
-    from,
-    to {
-      border-color: transparent;
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
     }
     50% {
-      border-color: oklch(var(--accent-text));
+      opacity: 0;
     }
   }
 
