@@ -1,5 +1,4 @@
 ---
-// Testimonials data with actual images
 const testimonials = [
   {
     id: 1,
@@ -53,7 +52,7 @@ const testimonials = [
         </svg>
       </button>
 
-      <div class="testimonial-carousel relative h-[450px] md:h-[370px]">
+      <div class="testimonial-carousel relative min-h-[370px]">
         {
           testimonials.map((testimonial, index) => (
             <div class={`testimonial-item absolute w-full ${index === 0 ? "active" : ""}`} data-index={index}>
@@ -64,7 +63,7 @@ const testimonials = [
                   </svg>
                 </div>
 
-                <p class="testimonial-content">{testimonial.content}</p>
+                <p class="testimonial-content text-justify">{testimonial.content}</p>
 
                 <div class="testimonial-author">
                   <div class="testimonial-avatar">
@@ -97,6 +96,7 @@ const testimonials = [
 
   .testimonial-carousel {
     position: relative;
+    margin-bottom: 3rem;
   }
 
   .testimonial-item {
@@ -105,14 +105,18 @@ const testimonials = [
     transition:
       opacity 0.5s ease,
       transform 0.5s ease;
-    visibility: hidden;
     width: 100%;
+    position: relative;
+    left: 0;
+    top: 0;
+    display: none;
   }
 
   .testimonial-item.active {
     opacity: 1;
     transform: translateY(0);
     visibility: visible;
+    display: block;
   }
 
   .testimonial-card {
@@ -305,10 +309,11 @@ const testimonials = [
     const nextBtn = document.querySelector(".testimonial-nav-next");
 
     let currentIndex = 0;
-    let interval;
-    const intervalTime = 6000; // 6 seconds
+    let interval: any;
+    const intervalTime = 3000; // 3 seconds
+    const intervalTimeWithUserInteraction = 6000; // 6 seconds
 
-    function showTestimonial(index) {
+    function showTestimonial(index: number) {
       // Remove active class from all items and dots
       items.forEach((item) => {
         if (item.classList.contains("active")) {
@@ -359,8 +364,7 @@ const testimonials = [
       dot.addEventListener("click", () => {
         stopAutoplay();
         showTestimonial(index);
-        // Restart autoplay after user interaction
-        setTimeout(startAutoplay, 10000);
+        setTimeout(startAutoplay, intervalTimeWithUserInteraction);
       });
     });
 
@@ -369,8 +373,7 @@ const testimonials = [
       prevBtn.addEventListener("click", () => {
         stopAutoplay();
         prevTestimonial();
-        // Restart autoplay after user interaction
-        setTimeout(startAutoplay, 10000);
+        setTimeout(startAutoplay, intervalTimeWithUserInteraction);
       });
     }
 
@@ -378,8 +381,7 @@ const testimonials = [
       nextBtn.addEventListener("click", () => {
         stopAutoplay();
         nextTestimonial();
-        // Restart autoplay after user interaction
-        setTimeout(startAutoplay, 10000);
+        setTimeout(startAutoplay, intervalTimeWithUserInteraction);
       });
     }
 
