@@ -6,79 +6,91 @@
   border-radius: 0.75rem 0.75rem 0 0;
   background-color: #f0f0f0;
   touch-action: pinch-zoom;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.new-slider:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
 }
 
 /* Slider track - uses transform instead of scroll */
 .new-slider-track {
   @apply flex h-full w-full;
-  transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
 }
 
 /* Individual slides */
 .new-slider-slide {
   @apply relative h-full overflow-hidden;
+  transition: opacity 0.4s ease-out;
 }
 
-/* Loading state for images */
+/* Loading state for images - improved animation */
 .new-slider-slide::before {
   content: "";
   @apply absolute inset-0 z-[1];
   background: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
   background-size: 200% 100%;
-  animation: loading 1.5s infinite;
+  animation: loading 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease-out;
 }
 
 .new-slider-slide.loading::before {
   opacity: 1;
 }
 
-/* Images - smoother transitions */
+/* Images - improved transitions */
 .new-slider-image {
   @apply block h-full w-full;
   transition: all 0.8s cubic-bezier(0.2, 0, 0.2, 1);
-  filter: brightness(0.95);
+  filter: brightness(0.95) contrast(1.02);
+  will-change: transform, filter;
 }
 
-/* Image hover effect - smoother and more pronounced */
+/* Image hover effect - more elegant response */
 .new-slider-slide:has(.new-slider-image:hover) .new-slider-image {
   transform: scale(1.05);
-  filter: brightness(1.05);
+  filter: brightness(1.05) contrast(1.05);
 }
 
 /* Enhanced controls container */
 .new-slider-controls {
   @apply absolute inset-0 pointer-events-none;
   opacity: 0;
-  transition: opacity 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+  transition:
+    opacity 0.5s cubic-bezier(0.2, 0, 0.2, 1),
+    backdrop-filter 0.5s cubic-bezier(0.2, 0, 0.2, 1);
   backdrop-filter: blur(0px);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .new-slider-controls.visible {
   opacity: 1;
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Improved navigation buttons */
 .new-slider-button {
   @apply absolute top-1/2 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
-  transform: translateY(-50%);
+  transform: translateY(-50%) translateZ(0);
   background-color: rgba(0, 0, 0, 0.5);
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  will-change: transform, background-color, box-shadow;
 }
 
 .new-slider-button:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(0, 0, 0, 0.85);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .new-slider-button:disabled {
@@ -86,8 +98,8 @@
 }
 
 .new-slider-button:active {
-  transform: translateY(-50%) scale(0.95);
-  transition: all 0.1s cubic-bezier(0.2, 0, 0.2, 1);
+  transform: translateY(-50%) scale(0.92);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
 .new-slider-button.new-slider-prev {
@@ -99,81 +111,106 @@
 }
 
 .new-slider-button svg {
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: transform 0.3s ease;
 }
 
-/* Refined pagination dots */
+.new-slider-button:hover svg {
+  transform: scale(1.15);
+}
+
+/* Refined pagination dots - slightly smaller */
 .new-slider-pagination {
   @apply absolute bottom-6 left-1/2 flex pointer-events-auto;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateZ(0);
   gap: 0.6rem;
-  padding: 0.6rem 1rem;
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 3rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  background-color: rgba(0, 0, 0, 0.45);
+  border-radius: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.new-slider-pagination:hover {
+  transform: translateX(-50%) translateZ(0) scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .new-slider-dot {
   @apply rounded-full cursor-pointer;
-  width: 0.7rem;
-  height: 0.7rem;
+  width: 0.6rem;
+  height: 0.6rem;
   background-color: rgba(255, 255, 255, 0.5);
   border: none;
   padding: 0;
-  transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .new-slider-dot:hover {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.2);
 }
 
 .new-slider-dot.active {
   background-color: white;
   transform: scale(1.4);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
 }
 
 /* Counter */
 .new-slider-counter {
   @apply absolute bottom-6 right-6 text-white pointer-events-auto;
-  background-color: rgba(0, 0, 0, 0.4);
-  padding: 0.4rem 0.8rem;
+  background-color: rgba(0, 0, 0, 0.45);
+  padding: 0.5rem 1rem;
   border-radius: 1.5rem;
   font-size: 0.8rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  animation: slide-up 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  animation: slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s ease;
 }
 
-/* Fullscreen button */
+.new-slider-counter:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Fullscreen button - reduced size */
 .new-slider-fullscreen {
   @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
-  background-color: rgba(0, 0, 0, 0.4);
-  width: 2.5rem;
-  height: 2.5rem;
+  background-color: rgba(0, 0, 0, 0.45);
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
+  will-change: transform, background-color;
 }
 
 .new-slider-fullscreen:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-  transform: scale(1.15);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(0, 0, 0, 0.85);
+  transform: scale(1.18);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .new-slider-fullscreen svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.new-slider-fullscreen:hover svg {
+  transform: scale(1.12);
 }
 
 /* Slide indicator for current position */
@@ -183,10 +220,11 @@
   height: 4px;
   background: linear-gradient(to right, #3498db, #2ecc71);
   transition:
-    width 0.7s cubic-bezier(0.25, 0.1, 0.25, 1),
-    transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+    width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
   width: calc(100% / var(--slider-image-count, 1));
   transform: translateX(calc(var(--current-index, 0) * 100%));
+  box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
 }
 
 /* Enhanced fullscreen lightbox */
@@ -195,12 +233,36 @@
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.95);
-  animation: fade-in 0.4s cubic-bezier(0.2, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
+  animation: fade-in 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  overflow-y: auto; /* Allow scrolling within lightbox if needed */
+}
+
+/* Add these styles to fix the scrollbar issue */
+html.lightbox-open {
+  overflow: hidden;
+  margin-right: var(--scrollbar-width, 0px); /* Prevent layout shift */
+}
+
+/* Ensure proper cleanup after lightbox closes */
+html.lightbox-closing {
+  overflow: visible;
+  transition: margin-right 0.2s ease;
+  margin-right: 0;
+}
+
+/* Prevent content behind lightbox from scrolling but restore afterward */
+body.lightbox-open {
+  overflow: hidden;
+}
+
+body.lightbox-closing {
+  overflow: auto;
 }
 
 .new-slider-lightbox-content {
   @apply relative flex h-full w-full items-center justify-center;
+  perspective: 1000px;
 }
 
 .new-slider-lightbox-image {
@@ -208,62 +270,54 @@
   max-width: 90%;
   max-height: 85vh;
   object-fit: contain;
-  animation: zoom-in 0.5s cubic-bezier(0.2, 0, 0.2, 1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: zoom-in-3d 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  will-change: transform, opacity;
 }
 
+/* Lightbox close button - reduced size */
 .new-slider-lightbox-close {
   @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer z-10 text-white rounded-full;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border: none;
-  background-color: rgba(255, 0, 0, 0.5);
-  transition: background-color 0.2s ease;
+  background-color: rgba(255, 30, 30, 0.6);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .new-slider-lightbox-close svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.3rem;
+  height: 1.3rem;
+  transition: transform 0.3s ease;
 }
 
 .new-slider-lightbox-close:hover {
-  background-color: rgba(255, 0, 0, 0.8);
+  background-color: rgba(255, 30, 30, 0.9);
+  transform: scale(1.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* Lightbox navigation */
+.new-slider-lightbox-close:hover svg {
+  transform: rotate(90deg);
+}
+
+/* Lightbox navigation - reduced size */
 .new-slider-lightbox-nav {
   @apply absolute top-1/2 flex items-center justify-center cursor-pointer text-white rounded-full;
-  transform: translateY(-50%);
-  width: 4rem;
-  height: 4rem;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: none;
-  transition: background-color 0.2s ease;
-}
-
-.new-slider-lightbox-nav.new-slider-prev {
-  left: 2rem;
-}
-
-.new-slider-lightbox-nav.new-slider-next {
-  right: 2rem;
-}
-
-.new-slider-lightbox-nav:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) translateZ(0);
+  width: 3rem;
+  height: 3rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  will-change: transform, background-color;
 }
 
 .new-slider-lightbox-nav svg {
-  width: 3rem;
-  height: 3rem;
-}
-
-.new-slider-lightbox-counter {
-  @apply absolute bottom-8 left-1/2 text-white rounded-full;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  width: 1.8rem;
+  height: 1.8rem;
 }
 
 /* Animations - keeping all original animations */
@@ -276,14 +330,14 @@
   }
 }
 
-@keyframes zoom-in {
+@keyframes zoom-in-3d {
   from {
-    transform: scale(0.9);
+    transform: scale(0.9) rotateX(10deg);
     opacity: 0;
     filter: blur(4px);
   }
   to {
-    transform: scale(1);
+    transform: scale(1) rotateX(0);
     opacity: 1;
     filter: blur(0);
   }

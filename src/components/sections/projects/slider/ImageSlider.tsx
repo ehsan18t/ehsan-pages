@@ -75,11 +75,11 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
     if (isFullscreen) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = "auto";
     }
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = "auto";
     };
   }, [isFullscreen]);
 
