@@ -88,16 +88,16 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
     if (!isFullscreen) return null;
 
     return createPortal(
-      <div className="new-slider-lightbox">
-        <div className="new-slider-lightbox-content">
+      <div className="slider-lightbox">
+        <div className="slider-lightbox-content">
           <img
             src={images[currentIndex]}
             alt={`${title} (fullscreen view)`}
-            className="new-slider-lightbox-image"
+            className="slider-lightbox-image"
           />
 
           <button
-            className="new-slider-lightbox-close"
+            className="slider-lightbox-close"
             onClick={toggleFullscreen}
             aria-label="Close fullscreen view"
           >
@@ -107,7 +107,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
           {images.length > 1 && (
             <>
               <button
-                className="new-slider-lightbox-nav new-slider-prev"
+                className="slider-lightbox-nav slider-prev"
                 onClick={() => navigate(-1)}
                 disabled={currentIndex === 0}
                 aria-label="Previous image"
@@ -115,7 +115,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
                 <MdChevronLeft />
               </button>
               <button
-                className="new-slider-lightbox-nav new-slider-next"
+                className="slider-lightbox-nav slider-next"
                 onClick={() => navigate(1)}
                 disabled={currentIndex === images.length - 1}
                 aria-label="Next image"
@@ -123,7 +123,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
                 <MdChevronRight />
               </button>
 
-              <div className="new-slider-lightbox-counter">
+              <div className="slider-lightbox-counter">
                 {currentIndex + 1} / {images.length}
               </div>
             </>
@@ -136,14 +136,14 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
 
   return (
     <div
-      className="new-slider"
+      className="slider"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
       {/* Main slider track - direct transform, no scrolling */}
       <div
         ref={sliderTrackRef}
-        className="new-slider-track"
+        className="slider-track"
         style={{
           width: `${images.length * 100}%`,
           transform: `translateX(-${(currentIndex * 100) / images.length}%)`,
@@ -152,13 +152,13 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
         {images.map((image, index) => (
           <div
             key={index}
-            className="new-slider-slide"
+            className="slider-slide"
             style={{ width: `${100 / images.length}%` }}
           >
             <img
               src={image}
               alt={`${title} - image ${index + 1}`}
-              className="new-slider-image"
+              className="slider-image"
               style={{ objectFit: imageLayout }}
             />
           </div>
@@ -166,12 +166,12 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
       </div>
 
       {/* Controls */}
-      <div className={`new-slider-controls ${showControls ? "visible" : ""}`}>
+      <div className={`slider-controls ${showControls ? "visible" : ""}`}>
         {/* Navigation buttons */}
         {images.length > 1 && (
           <>
             <button
-              className="new-slider-button new-slider-prev"
+              className="slider-button slider-prev"
               onClick={() => navigate(-1)}
               disabled={currentIndex === 0}
               aria-label="Previous slide"
@@ -179,7 +179,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
               <MdChevronLeft />
             </button>
             <button
-              className="new-slider-button new-slider-next"
+              className="slider-button slider-next"
               onClick={() => navigate(1)}
               disabled={currentIndex === images.length - 1}
               aria-label="Next slide"
@@ -188,11 +188,11 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
             </button>
 
             {/* Pagination dots */}
-            <div className="new-slider-pagination">
+            <div className="slider-pagination">
               {images.map((_, index) => (
                 <button
                   key={index}
-                  className={`new-slider-dot ${index === currentIndex ? "active" : ""}`}
+                  className={`slider-dot ${index === currentIndex ? "active" : ""}`}
                   onClick={() => goToSlide(index)}
                   aria-label={`Go to slide ${index + 1}`}
                 />
@@ -200,7 +200,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
             </div>
 
             {/* Counter */}
-            <div className="new-slider-counter">
+            <div className="slider-counter">
               <span>{currentIndex + 1}</span>/<span>{images.length}</span>
             </div>
           </>
@@ -208,7 +208,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
 
         {/* Fullscreen button */}
         <button
-          className="new-slider-fullscreen"
+          className="slider-fullscreen"
           onClick={toggleFullscreen}
           aria-label="View fullscreen"
         >
