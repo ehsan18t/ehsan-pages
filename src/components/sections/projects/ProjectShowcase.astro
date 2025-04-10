@@ -15,29 +15,27 @@ export interface Project {
   layout?: string;
 }
 
-// --- Define Your Projects Data with REAL image URLs ---
 const projects: Project[] = [
   {
     title: "Portfolio Site V3",
     shortDescription: "This portfolio, built with Astro, showcasing interactive components and design.",
     imageUrls: [
-      // Replace with actual relevant image URLs from Unsplash etc.
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80", // Code on screen
-      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80", // Laptop showing website
-      "https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1031&q=80", // Abstract code lines
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      "https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1031&q=80",
     ],
     techStack: ["Astro", "TailwindCSS", "TypeScript", "Vercel"],
-    liveUrl: "#", // Link to the live site
-    repoUrl: "https://github.com/yourusername/portfolio-v3", // Replace username
+    liveUrl: "#",
+    repoUrl: "https://github.com/yourusername/portfolio-v3",
     imageLayout: "cover",
   },
   {
     title: "E-Commerce Platform",
     shortDescription: "Full-featured online store with user auth, cart, and checkout.",
     imageUrls: [
-      "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80", // People shopping online
-      "https://images.unsplash.com/photo-1585194166760-6090e40f094e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80", // UI closeup
-      "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80", // Credit card / payment
+      "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      "https://images.unsplash.com/photo-1585194166760-6090e40f094e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     ],
     techStack: ["React", "Next.js", "Firebase", "Stripe API", "TailwindCSS"],
     liveUrl: "#",
@@ -48,29 +46,27 @@ const projects: Project[] = [
     title: "Data Visualizer",
     shortDescription: "Interactive dashboard displaying complex data using charts.",
     imageUrls: [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80", // Dashboard screen
-      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80", // Abstract data lines
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80", // Graph on laptop
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80",
     ],
     techStack: ["SvelteKit", "D3.js", "Python", "FastAPI"],
     liveUrl: "#",
     repoUrl: "#",
     imageLayout: "cover",
   },
-  // Add more projects...
 ];
 
 function techNameToSlug(name: string): string {
   return name
     .toLowerCase()
-    .replace(/\+/g, "plus") // Replace C++ with cplusplus
-    .replace(/[^a-z0-9]/g, ""); // Remove non-alphanumeric chars
+    .replace(/\+/g, "plus")
+    .replace(/[^a-z0-9]/g, "");
 }
 ---
 
 <section id="projects" class="py-20 md:py-28 scroll-mt-20">
   <div class="container mx-auto px-4">
-    {/* Section Title */}
     <div class="text-center mb-12 md:mb-16">
       <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-[oklch(var(--accent-300))] to-[oklch(var(--accent-500))] text-transparent bg-clip-text">
         My <span class="font-doto font-bold">Creations</span>
@@ -79,14 +75,11 @@ function techNameToSlug(name: string): string {
       <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">A selection of projects where code meets creativity.</p>
     </div>
 
-    {/* Projects Grid */}
     <div id="project-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
       {
         projects.map((project, index) => (
           <article class="project-card" data-aos="fade-up" data-aos-delay={index * 100}>
-            {/* Slider Viewport */}
             <div class="slider-viewport">
-              {/* Scroll Snap Container */}
               <div class="slider-container" data-total-slides={project.imageUrls.length}>
                 {project.imageUrls.map((url, slideIndex) => (
                   <div class="slider-slide" data-slide-index={slideIndex}>
@@ -95,7 +88,6 @@ function techNameToSlug(name: string): string {
                 ))}
               </div>
 
-              {/* Enhanced Slider Navigation - Only shown if multiple images */}
               {project.imageUrls.length > 1 && (
                 <>
                   <button type="button" aria-label="Previous Slide" class="slider-button prev" data-direction="-1">
@@ -105,14 +97,12 @@ function techNameToSlug(name: string): string {
                     <Icon name="mdi:chevron-right" />
                   </button>
 
-                  {/* Pagination Dots */}
                   <div class="slider-pagination">
                     {project.imageUrls.map((_, i) => (
                       <button class={`pagination-dot ${i === 0 ? "active" : ""}`} data-index={i} aria-label={`Go to slide ${i + 1}`} title={`Slide ${i + 1}`} />
                     ))}
                   </div>
 
-                  {/* Slide Counter */}
                   <div class="slide-counter">
                     <span class="current-slide">1</span>
                     <span class="total-slides">/{project.imageUrls.length}</span>
@@ -120,18 +110,15 @@ function techNameToSlug(name: string): string {
                 </>
               )}
 
-              {/* Fullscreen Button */}
               <button type="button" class="fullscreen-button" aria-label="View image fullscreen">
                 <Icon name="mdi:fullscreen" />
               </button>
             </div>
 
-            {/* Always Visible Project Info */}
             <div class="project-info">
               <h3 class="project-title">{project.title}</h3>
               <p class="project-description">{project.shortDescription}</p>
 
-              {/* Tech Stack */}
               <div class="project-tech">
                 <div class="flex flex-wrap gap-1.5">
                   {project.techStack.map((tech) => (
@@ -140,7 +127,6 @@ function techNameToSlug(name: string): string {
                 </div>
               </div>
 
-              {/* Action Links */}
               <div class="project-links">
                 {project.liveUrl && (
                   <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" class="project-link" title="View live demo">
@@ -164,264 +150,273 @@ function techNameToSlug(name: string): string {
 </section>
 
 <script>
-  // Define TypeScript interfaces
-  interface SliderElements {
-    container: HTMLElement;
-    dots: NodeListOf<HTMLElement>;
-    currentSlideEl: HTMLElement | null;
-  }
-
-  interface LightboxElements {
-    lightbox: HTMLDivElement;
-    closeButton: HTMLButtonElement;
-    content: HTMLDivElement;
-  }
-
-  // Constants for better maintainability
-  const SLIDER_THRESHOLD = 0.1;
-  const SWIPE_THRESHOLD = 50;
-  const DEBOUNCE_DELAY = 100;
-
   document.addEventListener("DOMContentLoaded", () => {
-    // Cache DOM elements
     const gridContainer = document.getElementById("project-grid-container");
-    const cards = Array.from(document.querySelectorAll<HTMLElement>("#project-grid-container .project-card"));
-    const sliders = Array.from(document.querySelectorAll<HTMLElement>(".slider-container"));
+    const cards = Array.from(document.querySelectorAll(".project-card"));
+    const sliders = Array.from(document.querySelectorAll(".slider-container"));
 
-    // --- Intersection Observer for Card Entrance ---
-    const initIntersectionObserver = (): void => {
-      if (!cards.length || !("IntersectionObserver" in window)) {
-        cards.forEach((card) => card.classList.add("is-visible"));
-        return;
-      }
-
-      const observerCallback: IntersectionObserverCallback = (entries) => {
-        entries.forEach((entry) => {
-          entry.target.classList.toggle("is-visible", entry.isIntersecting);
-        });
-      };
-
-      const observer = new IntersectionObserver(observerCallback, {
-        threshold: SLIDER_THRESHOLD,
-        rootMargin: "0px 0px -100px 0px",
-      });
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
+      );
 
       cards.forEach((card) => observer.observe(card));
-    };
+    } else {
+      cards.forEach((card) => card.classList.add("is-visible"));
+    }
 
-    // --- Slider Navigation System ---
-    const handleSliderNavigation = (event: MouseEvent): void => {
-      const target = event.target as HTMLElement;
-      const button = target.closest<HTMLElement>(".slider-button");
-      const paginationDot = target.closest<HTMLElement>(".pagination-dot");
-      const fullscreenButton = target.closest<HTMLElement>(".fullscreen-button");
+    if (gridContainer) {
+      gridContainer.addEventListener("click", (e: any) => {
+        const target = e.target;
 
-      if (button) {
-        const direction = parseInt(button.dataset.direction || "0", 10);
-        const sliderContainer = button.closest<HTMLElement>(".project-card")?.querySelector<HTMLElement>(".slider-container");
-        if (sliderContainer && direction !== 0) {
-          navigateSlider(sliderContainer, direction as 1 | -1);
+        const button = target.closest(".slider-button");
+        const paginationDot = target.closest(".pagination-dot");
+        const fullscreenButton = target.closest(".fullscreen-button");
+
+        if (!button && !paginationDot && !fullscreenButton) return;
+
+        const card = button?.closest(".project-card") || paginationDot?.closest(".project-card") || fullscreenButton?.closest(".project-card");
+
+        if (!card) return;
+
+        if (button) {
+          const direction = parseInt(button.dataset.direction || "0", 10);
+          const sliderContainer = card.querySelector(".slider-container");
+          if (sliderContainer && (direction === 1 || direction === -1)) {
+            e.preventDefault();
+            navigateSlider(sliderContainer, direction);
+          }
+        } else if (paginationDot) {
+          const index = parseInt(paginationDot.dataset.index || "0", 10);
+          const sliderContainer = card.querySelector(".slider-container");
+          if (sliderContainer) {
+            e.preventDefault();
+            goToSlide(sliderContainer, index);
+          }
+        } else if (fullscreenButton) {
+          e.preventDefault();
+          const currentIndex = getCurrentSlideIndex(card);
+          const currentImage = card.querySelectorAll(".slider-slide img")[currentIndex];
+          if (currentImage) {
+            openLightbox(currentImage);
+          }
         }
-      } else if (paginationDot) {
-        const index = parseInt(paginationDot.dataset.index || "0", 10);
-        const sliderContainer = paginationDot.closest<HTMLElement>(".project-card")?.querySelector<HTMLElement>(".slider-container");
-        if (sliderContainer) {
-          goToSlide(sliderContainer, index);
-        }
-      } else if (fullscreenButton) {
-        const card = fullscreenButton.closest<HTMLElement>(".project-card");
-        const currentSlideIndex = getCurrentSlideIndex(card);
-        const currentImage = card?.querySelectorAll<HTMLImageElement>(".slider-slide img")[currentSlideIndex];
-        currentImage && openLightbox(currentImage);
-      }
-    };
+      });
+    }
 
-    // --- Core Slider Functions ---
-    const navigateSlider = (container: HTMLElement, direction: -1 | 1): void => {
-      const scrollAmount = container.clientWidth * direction;
-      const newScrollLeft = container.scrollLeft + scrollAmount;
-      const maxScroll = container.scrollWidth - container.clientWidth;
+    sliders.forEach((slider: any) => {
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let isSwiping = false;
+      let preventScroll = false;
+
+      slider.addEventListener(
+        "touchstart",
+        (e: any) => {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          isSwiping = false;
+          preventScroll = false;
+        },
+        { passive: true }
+      );
+
+      slider.addEventListener(
+        "touchmove",
+        (e: any) => {
+          if (preventScroll) {
+            e.preventDefault();
+          }
+
+          if (!isSwiping) {
+            const touchMoveX = e.touches[0].clientX;
+            const touchMoveY = e.touches[0].clientY;
+            const diffX = Math.abs(touchMoveX - touchStartX);
+            const diffY = Math.abs(touchMoveY - touchStartY);
+
+            if (diffX > diffY && diffX > 10) {
+              isSwiping = true;
+              preventScroll = true;
+            }
+          }
+        },
+        { passive: false }
+      );
+
+      slider.addEventListener(
+        "touchend",
+        (e: any) => {
+          if (isSwiping) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diffX = touchStartX - touchEndX;
+
+            if (Math.abs(diffX) > 30) {
+              navigateSlider(slider, diffX > 0 ? 1 : -1);
+            }
+          }
+        },
+        { passive: true }
+      );
+
+      setupSliderScrollHandling(slider);
+    });
+
+    function navigateSlider(container: any, direction: any) {
+      const slideWidth = container.clientWidth;
+      const currentScrollLeft = container.scrollLeft;
+      const targetScrollLeft = currentScrollLeft + slideWidth * direction;
 
       container.scrollTo({
-        left: Math.max(0, Math.min(newScrollLeft, maxScroll)),
+        left: targetScrollLeft,
         behavior: "smooth",
       });
-    };
+    }
 
-    const goToSlide = (container: HTMLElement, index: number): void => {
+    function goToSlide(container: any, index: number) {
       container.scrollTo({
         left: container.clientWidth * index,
         behavior: "smooth",
       });
-    };
+    }
 
-    const getCurrentSlideIndex = (card: HTMLElement | null): number => {
-      const container = card?.querySelector<HTMLElement>(".slider-container");
+    function getCurrentSlideIndex(card: any) {
+      const container = card.querySelector(".slider-container");
       return container ? Math.round(container.scrollLeft / container.clientWidth) : 0;
-    };
+    }
 
-    // --- Slider Indicators Management ---
-    const updateSliderIndicators = (container: HTMLElement, dots: NodeListOf<HTMLElement>, currentSlideEl: HTMLElement | null): void => {
+    function setupSliderScrollHandling(slider: any) {
+      let ticking = false;
+
+      slider.addEventListener(
+        "scroll",
+        () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              updateSliderIndicators(slider);
+              ticking = false;
+            });
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+
+      updateSliderIndicators(slider);
+    }
+
+    function updateSliderIndicators(container: any) {
+      const card = container.closest(".project-card");
+      if (!card) return;
+
+      const dots = card.querySelectorAll(".pagination-dot");
+      const currentSlideEl = card.querySelector(".current-slide");
       const activeIndex = Math.round(container.scrollLeft / container.clientWidth);
 
-      dots.forEach((dot, index) => dot.classList.toggle("active", index === activeIndex));
-      container.querySelectorAll(".slider-slide").forEach((slide, index) => {
-        (slide as HTMLElement).classList.toggle("active", index === activeIndex);
+      dots.forEach((dot: any, i: number) => {
+        dot.classList.toggle("active", i === activeIndex);
       });
 
       if (currentSlideEl) {
-        currentSlideEl.classList.add("changing");
-        requestAnimationFrame(() => {
-          currentSlideEl.textContent = `${activeIndex + 1}`;
-          requestAnimationFrame(() => currentSlideEl.classList.remove("changing"));
-        });
+        currentSlideEl.textContent = `${activeIndex + 1}`;
       }
-    };
 
-    // --- Lightbox System ---
-    const createLightbox = (img: HTMLImageElement): LightboxElements => {
+      const slides = container.querySelectorAll(".slider-slide");
+      slides.forEach((slide: any, i: number) => {
+        slide.classList.toggle("active", i === activeIndex);
+      });
+    }
+
+    function openLightbox(img: any) {
       const lightbox = document.createElement("div");
       lightbox.className = "image-lightbox";
 
       const content = document.createElement("div");
       content.className = "lightbox-content";
 
-      const closeButton = document.createElement("button");
-      closeButton.className = "lightbox-close";
-      closeButton.innerHTML = "&times;";
-      closeButton.setAttribute("aria-label", "Close fullscreen view");
+      const imgClone = img.cloneNode(false);
 
-      content.append(img.cloneNode(), closeButton);
-      lightbox.append(content);
+      const closeBtn = document.createElement("button");
+      closeBtn.className = "lightbox-close";
+      closeBtn.innerHTML = "&times;";
+      closeBtn.setAttribute("aria-label", "Close fullscreen view");
 
-      return { lightbox, closeButton, content };
-    };
+      content.appendChild(imgClone);
+      content.appendChild(closeBtn);
+      lightbox.appendChild(content);
+      document.body.appendChild(lightbox);
 
-    const openLightbox = (img: HTMLImageElement): void => {
-      const { lightbox, closeButton, content } = createLightbox(img);
-      document.body.append(lightbox);
       document.body.style.overflow = "hidden";
 
-      const closeLightbox = (): void => {
-        lightbox.style.animation = "lightbox-fade-out 0.3s forwards";
+      function closeLightbox() {
+        lightbox.style.opacity = "0";
         setTimeout(() => {
-          lightbox.remove();
+          document.body.removeChild(lightbox);
           document.body.style.overflow = "";
         }, 300);
-      };
+      }
 
-      closeButton.addEventListener("click", closeLightbox);
-      lightbox.addEventListener("click", (e) => e.target === lightbox && closeLightbox());
-      document.addEventListener("keydown", function escHandler(e: KeyboardEvent) {
+      closeBtn.addEventListener("click", closeLightbox, { once: true });
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      const escHandler = (e: any) => {
         if (e.key === "Escape") {
           closeLightbox();
           document.removeEventListener("keydown", escHandler);
         }
-      });
-    };
+      };
+      document.addEventListener("keydown", escHandler);
+    }
 
-    // --- Touch Handling ---
-    const handleSwipe = (slider: HTMLElement, startX: number, endX: number): void => {
-      const diff = startX - endX;
-      if (Math.abs(diff) < SWIPE_THRESHOLD) return;
-      navigateSlider(slider, diff > 0 ? 1 : -1);
-    };
-
-    // --- Event Listeners Setup ---
-    const setupEventListeners = (): void => {
-      gridContainer?.addEventListener("click", handleSliderNavigation);
-
-      sliders.forEach((slider) => {
-        let touchStartX = 0;
-
-        slider.addEventListener(
-          "touchstart",
-          (e) => {
-            touchStartX = e.touches[0].clientX;
-          },
-          { passive: true }
-        );
-
-        slider.addEventListener(
-          "touchend",
-          (e) => {
-            handleSwipe(slider, touchStartX, e.changedTouches[0].clientX);
-          },
-          { passive: true }
-        );
-
-        const parentCard = slider.closest<HTMLElement>(".project-card");
-        const elements: SliderElements = {
-          container: slider,
-          dots: parentCard?.querySelectorAll(".pagination-dot") || ([] as unknown as NodeListOf<HTMLElement>),
-          currentSlideEl: parentCard?.querySelector(".current-slide") ?? null,
-        };
-
-        let scrollTimeout: number;
-        slider.addEventListener("scroll", () => {
-          window.clearTimeout(scrollTimeout);
-          scrollTimeout = window.setTimeout(() => {
-            updateSliderIndicators(elements.container, elements.dots, elements.currentSlideEl);
-          }, DEBOUNCE_DELAY);
-        });
-      });
-
-      document.addEventListener("keydown", (e) => {
-        const focusedCard = document.activeElement?.closest<HTMLElement>(".project-card");
-        const sliderContainer = focusedCard?.querySelector<HTMLElement>(".slider-container");
-        if (!sliderContainer) return;
-
-        if (e.key === "ArrowLeft") navigateSlider(sliderContainer, -1);
-        if (e.key === "ArrowRight") navigateSlider(sliderContainer, 1);
-      });
-    };
-
-    // --- Initialization ---
-    initIntersectionObserver();
-    setupEventListeners();
-    addLightboxStyles();
-
-    // --- Style Injection (Singleton) ---
-    function addLightboxStyles(): void {
-      if (document.querySelector("#lightbox-styles")) return;
-
+    if (!document.getElementById("lightbox-styles")) {
       const style = document.createElement("style");
+      style.id = "lightbox-styles";
       style.textContent = `
-      .image-lightbox {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        cursor: pointer;
-      }
-      .lightbox-content {
-        position: relative;
-        max-width: 90%;
-        max-height: 90%;
-      }
-      .lightbox-content img {
-        max-width: 100%;
-        max-height: 90vh;
-        object-fit: contain;
-      }
-      .lightbox-close {
-        position: absolute;
-        top: -2rem;
-        right: -2rem;
-        background: transparent;
-        border: none;
-        color: white;
-        font-size: 2rem;
-        cursor: pointer;
-      }
-    `;
-      document.head.append(style);
+        .image-lightbox {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          cursor: pointer;
+          transition: opacity 0.3s;
+        }
+        .lightbox-content {
+          position: relative;
+          max-width: 90%;
+          max-height: 90%;
+        }
+        .lightbox-content img {
+          max-width: 100%;
+          max-height: 90vh;
+          object-fit: contain;
+        }
+        .lightbox-close {
+          position: absolute;
+          top: -2rem;
+          right: -2rem;
+          background: transparent;
+          border: none;
+          color: white;
+          font-size: 2rem;
+          cursor: pointer;
+        }
+      `;
+      document.head.appendChild(style);
     }
   });
 </script>
