@@ -13,20 +13,18 @@
     background-color 0.3s ease-out;
   height: 100%;
   will-change: transform, box-shadow;
-  /* Add hardware acceleration */
-  transform: translateZ(0);
 }
 
 /* Improved card entrance animations */
 .project-card.is-visible {
-  transform: translateY(0) translateZ(0);
+  transform: translateY(0);
   opacity: 1;
 }
 
-/* Full hover effect with spring animation - but only on non-mobile */
-@media (hover: hover) and (min-width: 768px) {
+/* Full hover effect with spring animation */
+@media (hover: hover) {
   .project-card:hover {
-    transform: translateY(-8px) scale(1.01) translateZ(0);
+    transform: translateY(-8px) scale(1.01);
     box-shadow:
       0 15px 30px -5px oklch(var(--accent-500) / 0.2),
       0 8px 15px -6px oklch(var(--accent-500) / 0.15);
@@ -52,24 +50,6 @@
   }
 }
 
-/* Simplified mobile animations */
-@media (hover: none) or (max-width: 767px) {
-  .project-card {
-    transition: transform 0.2s ease-out;
-  }
-
-  .project-card:active {
-    transform: scale(0.98) translateZ(0);
-  }
-
-  /* Disable expensive hover animations on mobile */
-  .project-card:hover .project-title,
-  .project-card:hover .project-tech,
-  .project-card:hover .project-links {
-    transform: none;
-  }
-}
-
 /* Touch device optimized animation */
 @media (hover: none) {
   .project-card:active {
@@ -84,24 +64,6 @@
   }
   to {
     transform: scale(1.05);
-  }
-}
-
-/* Remove animation that's not necessary on mobile */
-@media (max-width: 767px) {
-  @keyframes subtle-zoom {
-    from,
-    to {
-      transform: none;
-    }
-  }
-
-  @keyframes lightbox-zoom-in {
-    from,
-    to {
-      transform: none;
-      opacity: 1;
-    }
   }
 }
 
@@ -284,17 +246,4 @@
     transform: scale(1);
     opacity: 1;
   }
-}
-
-/* Add a scroll optimization class that's applied during scrolling */
-.optimize-for-scroll .project-card {
-  transition: none !important;
-  animation: none !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
-}
-
-.optimize-for-scroll .project-link::before,
-.optimize-for-scroll .project-tech {
-  transition: none !important;
-  animation: none !important;
 }

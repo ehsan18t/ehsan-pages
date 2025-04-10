@@ -115,30 +115,3 @@ function techNameToSlug(name: string): string {
     </div>
   </div>
 </section>
-
-<script>
-  // Optimize performance during scrolling
-  document.addEventListener("DOMContentLoaded", () => {
-    const projectSection = document.getElementById("projects");
-    let scrollTimeout: any;
-
-    // Function to temporarily disable animations during scroll
-    function handleScroll() {
-      if (!projectSection) return;
-
-      // Add optimization class during scroll
-      projectSection.classList.add("optimize-for-scroll");
-
-      // Clear any existing timeout
-      clearTimeout(scrollTimeout);
-
-      // Remove optimization class after scrolling stops
-      scrollTimeout = setTimeout(() => {
-        projectSection.classList.remove("optimize-for-scroll");
-      }, 150);
-    }
-
-    // Add scroll event listener
-    window.addEventListener("scroll", handleScroll, { passive: true });
-  });
-</script>
