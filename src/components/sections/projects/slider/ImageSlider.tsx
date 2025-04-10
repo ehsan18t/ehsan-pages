@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { FaTimes } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight, MdFullscreen } from "react-icons/md";
 
@@ -15,235 +16,209 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
   title,
   imageLayout = "cover",
 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  // Core state
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const sliderContainerRef = useRef<HTMLDivElement>(null);
-  const scrollingRef = useRef(false);
-  const touchStartX = useRef(0);
-  const isVerticalScroll = useRef<boolean | null>(null);
+  const [showControls, setShowControls] = useState(false);
 
+  // Refs
+  const sliderTrackRef = useRef<HTMLDivElement>(null);
+  const preventScrollUpdate = useRef(false);
+
+  // Go to a specific slide directly (no scroll events)
   const goToSlide = (index: number) => {
-    if (!sliderContainerRef.current) return;
-    const container = sliderContainerRef.current;
-    const slideWidth = container.clientWidth;
+    if (index < 0 || index >= images.length) return;
 
-    // Set flag to indicate programmatic scrolling
-    scrollingRef.current = true;
+    setCurrentIndex(index);
+    preventScrollUpdate.current = true;
 
-    container.scrollTo({
-      left: slideWidth * index,
-      behavior: "smooth",
-    });
-
-    setCurrentSlide(index);
+    if (sliderTrackRef.current) {
+      sliderTrackRef.current.style.transform = `translateX(-${index * 100}%)`;
+    }
 
     // Clear the flag after animation completes
     setTimeout(() => {
-      scrollingRef.current = false;
+      preventScrollUpdate.current = false;
     }, 500);
   };
 
-  const navigateSlide = (direction: number) => {
-    const newIndex = currentSlide + direction;
-    if (newIndex >= 0 && newIndex < images.length) {
-      goToSlide(newIndex);
-    }
+  // Navigate left/right
+  const navigate = (direction: number) => {
+    goToSlide(currentIndex + direction);
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    isVerticalScroll.current = null;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (isVerticalScroll.current === null) {
-      const diffX = Math.abs(e.touches[0].clientX - touchStartX.current);
-      const diffY = Math.abs(e.touches[0].clientY - touchStartX.current);
-      isVerticalScroll.current = diffY > diffX;
-    }
-
-    if (!isVerticalScroll.current) {
-      e.preventDefault();
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (isVerticalScroll.current) return;
-
-    const diffX = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(diffX) > 30) {
-      navigateSlide(diffX < 0 ? 1 : -1);
-    }
-  };
-
-  const handleScroll = () => {
-    if (!sliderContainerRef.current || scrollingRef.current) return;
-
-    const container = sliderContainerRef.current;
-    const slideWidth = container.clientWidth;
-    const scrollPosition = container.scrollLeft;
-
-    // Use a more precise calculation
-    const exactIndex = scrollPosition / slideWidth;
-    const newIndex = Math.round(exactIndex);
-
-    if (
-      newIndex >= 0 &&
-      newIndex < images.length &&
-      newIndex !== currentSlide
-    ) {
-      setCurrentSlide(newIndex);
-    }
-  };
-
+  // Toggle fullscreen mode
   const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
+    setIsFullscreen((prev) => !prev);
   };
 
-  // Add keyboard navigation for fullscreen
+  // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isFullscreen) return;
-
-      if (e.key === "Escape") {
-        setIsFullscreen(false);
-      } else if (e.key === "ArrowLeft") {
-        navigateSlide(-1);
-      } else if (e.key === "ArrowRight") {
-        navigateSlide(1);
+      if (isFullscreen) {
+        if (e.key === "Escape") {
+          setIsFullscreen(false);
+        } else if (e.key === "ArrowLeft") {
+          navigate(-1);
+        } else if (e.key === "ArrowRight") {
+          navigate(1);
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isFullscreen, currentSlide]);
+  }, [isFullscreen, currentIndex]);
 
-  // Scroll event listener
-  useEffect(() => {
-    const container = sliderContainerRef.current;
-    if (container) {
-      const throttledScrollHandler = () => {
-        if (!scrollingRef.current) {
-          window.requestAnimationFrame(() => {
-            handleScroll();
-          });
-        }
-      };
-
-      container.addEventListener("scroll", throttledScrollHandler, {
-        passive: true,
-      });
-      return () => {
-        container.removeEventListener("scroll", throttledScrollHandler);
-      };
-    }
-  }, [currentSlide]);
-
+  // Handle body scroll locking
   useEffect(() => {
     if (isFullscreen) {
-      document.body.classList.add("lightbox-open");
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.classList.remove("lightbox-open");
+      document.body.style.overflow = "";
     }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isFullscreen]);
 
-  return (
-    <>
-      <div
-        className="slider-viewport"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div
-          ref={sliderContainerRef}
-          className="slider-container"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {images?.map((url, index) => (
-            <div
-              key={index}
-              className={`slider-slide ${index === currentSlide ? "active" : ""}`}
-            >
-              <img
-                src={url}
-                alt={`${title} screenshot ${index + 1}`}
-                loading="lazy"
-                width="800"
-                height="500"
-                style={{ objectFit: imageLayout }}
-              />
-            </div>
-          ))}
-        </div>
+  // Render the Fullscreen component using a portal
+  const renderFullscreen = () => {
+    if (!isFullscreen) return null;
 
-        {images?.length > 1 && (
+    return createPortal(
+      <div className="new-slider-lightbox">
+        <div className="new-slider-lightbox-content">
+          <img
+            src={images[currentIndex]}
+            alt={`${title} (fullscreen view)`}
+            className="new-slider-lightbox-image"
+          />
+
+          <button
+            className="new-slider-lightbox-close"
+            onClick={toggleFullscreen}
+            aria-label="Close fullscreen view"
+          >
+            <FaTimes />
+          </button>
+
+          {images.length > 1 && (
+            <>
+              <button
+                className="new-slider-lightbox-nav new-slider-prev"
+                onClick={() => navigate(-1)}
+                disabled={currentIndex === 0}
+                aria-label="Previous image"
+              >
+                <MdChevronLeft />
+              </button>
+              <button
+                className="new-slider-lightbox-nav new-slider-next"
+                onClick={() => navigate(1)}
+                disabled={currentIndex === images.length - 1}
+                aria-label="Next image"
+              >
+                <MdChevronRight />
+              </button>
+
+              <div className="new-slider-lightbox-counter">
+                {currentIndex + 1} / {images.length}
+              </div>
+            </>
+          )}
+        </div>
+      </div>,
+      document.body,
+    );
+  };
+
+  return (
+    <div
+      className="new-slider"
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => setShowControls(false)}
+    >
+      {/* Main slider track - direct transform, no scrolling */}
+      <div
+        ref={sliderTrackRef}
+        className="new-slider-track"
+        style={{
+          width: `${images.length * 100}%`,
+          transform: `translateX(-${(currentIndex * 100) / images.length}%)`,
+        }}
+      >
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className="new-slider-slide"
+            style={{ width: `${100 / images.length}%` }}
+          >
+            <img
+              src={image}
+              alt={`${title} - image ${index + 1}`}
+              className="new-slider-image"
+              style={{ objectFit: imageLayout }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Controls */}
+      <div className={`new-slider-controls ${showControls ? "visible" : ""}`}>
+        {/* Navigation buttons */}
+        {images.length > 1 && (
           <>
             <button
-              type="button"
-              aria-label="Previous Slide"
-              className="slider-button prev"
-              onClick={() => navigateSlide(-1)}
+              className="new-slider-button new-slider-prev"
+              onClick={() => navigate(-1)}
+              disabled={currentIndex === 0}
+              aria-label="Previous slide"
             >
               <MdChevronLeft />
             </button>
             <button
-              type="button"
-              aria-label="Next Slide"
-              className="slider-button next"
-              onClick={() => navigateSlide(1)}
+              className="new-slider-button new-slider-next"
+              onClick={() => navigate(1)}
+              disabled={currentIndex === images.length - 1}
+              aria-label="Next slide"
             >
               <MdChevronRight />
             </button>
 
-            <div className="slider-pagination">
+            {/* Pagination dots */}
+            <div className="new-slider-pagination">
               {images.map((_, index) => (
                 <button
                   key={index}
-                  className={`pagination-dot ${index === currentSlide ? "active" : ""}`}
+                  className={`new-slider-dot ${index === currentIndex ? "active" : ""}`}
                   onClick={() => goToSlide(index)}
                   aria-label={`Go to slide ${index + 1}`}
-                  title={`Slide ${index + 1}`}
                 />
               ))}
             </div>
 
-            <div className="slide-counter">
-              <span className="current-slide">{currentSlide + 1}</span>
-              <span className="total-slides">/{images.length}</span>
+            {/* Counter */}
+            <div className="new-slider-counter">
+              <span>{currentIndex + 1}</span>/<span>{images.length}</span>
             </div>
           </>
         )}
 
+        {/* Fullscreen button */}
         <button
-          type="button"
-          className="fullscreen-button"
-          aria-label="View image fullscreen"
+          className="new-slider-fullscreen"
           onClick={toggleFullscreen}
+          aria-label="View fullscreen"
         >
           <MdFullscreen />
         </button>
       </div>
 
-      <div className={`lightbox-container ${isFullscreen ? "active" : ""}`}>
-        <div className="lightbox-content">
-          <img
-            src={images[currentSlide]}
-            alt={`${title} in fullscreen mode`}
-            className="lightbox-img"
-          />
-          <button
-            className="lightbox-close"
-            aria-label="Close fullscreen view"
-            onClick={toggleFullscreen}
-          >
-            <FaTimes />
-          </button>
-        </div>
-      </div>
-    </>
+      {/* Render fullscreen view using portal */}
+      {renderFullscreen()}
+    </div>
   );
 };
 
