@@ -1,146 +1,92 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaTimes } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight, MdFullscreen } from "react-icons/md";
-
 import "./image-slider.css";
 
-interface ImageSliderProps {
+type ImageSliderProps = {
   images: string[];
   title: string;
   imageLayout?: "cover" | "contain";
-}
+};
 
-const ImageSlider: React.FC<ImageSliderProps> = ({
+export default function ImageSlider({
   images,
   title,
   imageLayout = "cover",
-}) => {
-  // Core state
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showControls, setShowControls] = useState(false);
+}: ImageSliderProps) {
+  // Core state with minimal but essential typing
+  const [state, setState] = useState({
+    currentIndex: 0,
+    isFullscreen: false,
+    showControls: false,
+  });
 
-  // Refs
   const sliderTrackRef = useRef<HTMLDivElement>(null);
   const preventScrollUpdate = useRef(false);
+  const animationFrameRef = useRef<number>();
 
-  // Go to a specific slide directly (no scroll events)
+  // Derived values don't need explicit types
+  const { currentIndex, isFullscreen, showControls } = state;
+  const hasMultipleImages = images.length > 1;
+
   const goToSlide = (index: number) => {
     if (index < 0 || index >= images.length) return;
 
-    setCurrentIndex(index);
-    preventScrollUpdate.current = true;
+    cancelAnimationFrame(animationFrameRef.current!);
 
-    if (sliderTrackRef.current) {
-      sliderTrackRef.current.style.transform = `translateX(-${index * 100}%)`;
-    }
+    animationFrameRef.current = requestAnimationFrame(() => {
+      setState((prev) => ({ ...prev, currentIndex: index }));
+      preventScrollUpdate.current = true;
 
-    // Clear the flag after animation completes
-    setTimeout(() => {
-      preventScrollUpdate.current = false;
-    }, 500);
+      sliderTrackRef.current!.style.transform = `translateX(-${index * 100}%)`;
+
+      setTimeout(() => {
+        preventScrollUpdate.current = false;
+      }, 500);
+    });
   };
 
-  // Navigate left/right
   const navigate = (direction: number) => {
     goToSlide(currentIndex + direction);
   };
 
-  // Toggle fullscreen mode
   const toggleFullscreen = () => {
-    setIsFullscreen((prev) => !prev);
+    setState((prev) => ({ ...prev, isFullscreen: !prev.isFullscreen }));
   };
 
-  // Handle keyboard navigation
+  // Effects with only necessary typing
   useEffect(() => {
+    if (!isFullscreen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isFullscreen) {
-        if (e.key === "Escape") {
-          setIsFullscreen(false);
-        } else if (e.key === "ArrowLeft") {
-          navigate(-1);
-        } else if (e.key === "ArrowRight") {
-          navigate(1);
-        }
-      }
+      if (e.key === "Escape") toggleFullscreen();
+      else if (e.key === "ArrowLeft") navigate(-1);
+      else if (e.key === "ArrowRight") navigate(1);
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isFullscreen, currentIndex]);
 
-  // Handle body scroll locking
   useEffect(() => {
-    if (isFullscreen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
+    document.body.style.overflow = isFullscreen ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
+      cancelAnimationFrame(animationFrameRef.current!);
     };
   }, [isFullscreen]);
 
-  // Render the Fullscreen component using a portal
-  const renderFullscreen = () => {
-    if (!isFullscreen) return null;
-
-    return createPortal(
-      <div className="slider-lightbox">
-        <div className="slider-lightbox-content">
-          <img
-            src={images[currentIndex]}
-            alt={`${title} (fullscreen view)`}
-            className="slider-lightbox-image"
-          />
-
-          <button
-            className="slider-lightbox-close"
-            onClick={toggleFullscreen}
-            aria-label="Close fullscreen view"
-          >
-            <FaTimes />
-          </button>
-
-          {images.length > 1 && (
-            <>
-              <button
-                className="slider-lightbox-nav slider-prev"
-                onClick={() => navigate(-1)}
-                disabled={currentIndex === 0}
-                aria-label="Previous image"
-              >
-                <MdChevronLeft />
-              </button>
-              <button
-                className="slider-lightbox-nav slider-next"
-                onClick={() => navigate(1)}
-                disabled={currentIndex === images.length - 1}
-                aria-label="Next image"
-              >
-                <MdChevronRight />
-              </button>
-
-              <div className="slider-lightbox-counter">
-                {currentIndex + 1} / {images.length}
-              </div>
-            </>
-          )}
-        </div>
-      </div>,
-      document.body,
-    );
-  };
+  if (!images.length) return null;
 
   return (
     <div
       className="slider"
-      onMouseEnter={() => setShowControls(true)}
-      onMouseLeave={() => setShowControls(false)}
+      onMouseEnter={() => setState((prev) => ({ ...prev, showControls: true }))}
+      onMouseLeave={() =>
+        setState((prev) => ({ ...prev, showControls: false }))
+      }
     >
-      {/* Main slider track - direct transform, no scrolling */}
       <div
         ref={sliderTrackRef}
         className="slider-track"
@@ -151,7 +97,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
       >
         {images.map((image, index) => (
           <div
-            key={index}
+            key={image} // Using URL as key is often better for image sliders
             className="slider-slide"
             style={{ width: `${100 / images.length}%` }}
           >
@@ -160,15 +106,14 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
               alt={`${title} - image ${index + 1}`}
               className="slider-image"
               style={{ objectFit: imageLayout }}
+              loading={index === 0 ? "eager" : "lazy"}
             />
           </div>
         ))}
       </div>
 
-      {/* Controls */}
       <div className={`slider-controls ${showControls ? "visible" : ""}`}>
-        {/* Navigation buttons */}
-        {images.length > 1 && (
+        {hasMultipleImages && (
           <>
             <button
               className="slider-button slider-prev"
@@ -187,7 +132,6 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
               <MdChevronRight />
             </button>
 
-            {/* Pagination dots */}
             <div className="slider-pagination">
               {images.map((_, index) => (
                 <button
@@ -199,14 +143,12 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
               ))}
             </div>
 
-            {/* Counter */}
             <div className="slider-counter">
-              <span>{currentIndex + 1}</span>/<span>{images.length}</span>
+              {currentIndex + 1}/{images.length}
             </div>
           </>
         )}
 
-        {/* Fullscreen button */}
         <button
           className="slider-fullscreen"
           onClick={toggleFullscreen}
@@ -216,10 +158,52 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
         </button>
       </div>
 
-      {/* Render fullscreen view using portal */}
-      {renderFullscreen()}
+      {isFullscreen &&
+        createPortal(
+          <div className="slider-lightbox">
+            <div className="slider-lightbox-content">
+              <img
+                src={images[currentIndex]}
+                alt={`${title} (fullscreen view)`}
+                className="slider-lightbox-image"
+              />
+
+              <button
+                className="slider-lightbox-close"
+                onClick={toggleFullscreen}
+                aria-label="Close fullscreen view"
+              >
+                <FaTimes />
+              </button>
+
+              {hasMultipleImages && (
+                <>
+                  <button
+                    className="slider-lightbox-nav slider-prev"
+                    onClick={() => navigate(-1)}
+                    disabled={currentIndex === 0}
+                    aria-label="Previous image"
+                  >
+                    <MdChevronLeft />
+                  </button>
+                  <button
+                    className="slider-lightbox-nav slider-next"
+                    onClick={() => navigate(1)}
+                    disabled={currentIndex === images.length - 1}
+                    aria-label="Next image"
+                  >
+                    <MdChevronRight />
+                  </button>
+
+                  <div className="slider-lightbox-counter">
+                    {currentIndex + 1} / {images.length}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
-};
-
-export default ImageSlider;
+}
