@@ -9,7 +9,7 @@ import PDFViewerModal from "@/components/viewer/PDFViewerModal";
 import info from "@/data";
 ---
 
-<section id="hero" class="h-dvh relative z-0 overflow-hidden flex flex-col items-center justify-center">
+<section id="hero" class="relative z-0 overflow-hidden flex flex-col items-center justify-center">
   <!-- Fade out bottom -->
   <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
     <!-- Grain Effect -->
@@ -87,3 +87,27 @@ import info from "@/data";
     </div>
   </div>
 </section>
+
+<script>
+  // Set hero height on load and resize (debounced)
+  function setHeroHeight() {
+    const hero = document.querySelector("#hero");
+    hero.style.height = `${window.innerHeight}px`;
+  }
+
+  // Debounce to prevent rapid execution
+  function debounce(func, timeout = 100) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(this, args);
+      }, timeout);
+    };
+  }
+
+  // Set initial height & update on resize/orientation change
+  setHeroHeight();
+  window.addEventListener("resize", debounce(setHeroHeight));
+  window.addEventListener("orientationchange", debounce(setHeroHeight));
+</script>
