@@ -1,6 +1,6 @@
 import useEmblaCarousel from "embla-carousel-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import "./testimonials.css";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 interface Testimonial {
   id: number;
@@ -105,10 +105,8 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
 
         if (containerRef.current) {
           if (isInView) {
-            containerRef.current.classList.add("in-view");
             setAutoplayActive(true);
           } else {
-            containerRef.current.classList.remove("in-view");
             setAutoplayActive(false);
           }
         }
@@ -134,65 +132,48 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
   }, [emblaApi, onSelect]);
 
   return (
-    <div className="relative max-w-6xl w-full mx-auto" ref={containerRef}>
-      {/* Carousel */}
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex">
-          {testimonials?.map((testimonial) => (
-            <TestimonialSlide key={testimonial.id} testimonial={testimonial} />
-          ))}
+    <div className="relative max-w-6xl w-full mx-auto pb-12" ref={containerRef}>
+      <h2 className="text-4xl md:text-5xl font-doto font-bold mb-4 text-center">
+        <span className="text-[oklch(var(--accent-title))]">Client</span>{" "}
+        Testimonials
+      </h2>
+      <p className="text-foreground-muted text-center max-w-2xl mx-auto mb-16">
+        Don't just take my word for it - here's what clients have to say about
+        working with me.
+      </p>
+
+      {/* Carousel wrapper with padding for buttons */}
+      <div className="px-0 relative">
+        {/* Carousel */}
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex">
+            {testimonials?.map((testimonial) => (
+              <TestimonialSlide
+                key={testimonial.id}
+                testimonial={testimonial}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Navigation arrows */}
-      <div className="navigation-container px-4">
-        <button
-          className="absolute top-1/2 -translate-y-1/2 -left-3 md:left-0 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
-          onClick={scrollPrev}
-          aria-label="Previous testimonial"
-          onMouseEnter={() => setAutoplayActive(false)}
-          onMouseLeave={() => setAutoplayActive(true)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            className="w-6 h-6"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5"
-            />
-          </svg>
-        </button>
+        {/* Navigation arrows - now positioned outside the overflow:hidden container */}
+        <div className="navigation-container absolute inset-0 pointer-events-none">
+          <MdChevronLeft
+            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+            onClick={scrollPrev}
+            aria-label="Previous testimonial"
+            onMouseEnter={() => setAutoplayActive(false)}
+            onMouseLeave={() => setAutoplayActive(true)}
+          />
 
-        <button
-          className="absolute top-1/2 -translate-y-1/2 -right-3 md:right-0 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
-          onClick={scrollNext}
-          aria-label="Next testimonial"
-          onMouseEnter={() => setAutoplayActive(false)}
-          onMouseLeave={() => setAutoplayActive(true)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            className="w-6 h-6"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8.25 4.5l7.5 7.5-7.5 7.5"
-            />
-          </svg>
-        </button>
+          <MdChevronRight
+            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 right-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+            onClick={scrollNext}
+            aria-label="Next testimonial"
+            onMouseEnter={() => setAutoplayActive(false)}
+            onMouseLeave={() => setAutoplayActive(true)}
+          />
+        </div>
       </div>
 
       {/* Dots navigation */}
