@@ -196,11 +196,82 @@
 
 /* --- Lightbox --- */
 .slider-lightbox {
-  @apply fixed inset-0 z-[9999] flex items-center justify-center animate-fade-in animated;
+  @apply fixed inset-0 z-[9999] flex items-center justify-center animated animate-lightbox-open;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(0); /* Start with no blur for transition effect */
+}
+
+/* Update image container for CSS-based transitions */
+.slider-lightbox-image-container {
+  @apply relative flex items-center justify-center animated;
+  width: 100%;
+  height: 100%;
+}
+
+/* Image transition using pure CSS, no React state */
+.slider-lightbox-image-container.transitioning .slider-lightbox-image {
+  animation-name: var(--transition-animation);
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  animation-fill-mode: forwards;
+}
+
+/* Set animation variables based on data attributes */
+.slider-lightbox-image-container[data-direction="next"].transitioning {
+  --transition-animation: slide-from-right;
+}
+
+.slider-lightbox-image-container[data-direction="prev"].transitioning {
+  --transition-animation: slide-from-left;
+}
+
+/* Base image style - no animations by default */
+.slider-lightbox-image {
+  @apply absolute rounded gpu-accelerated;
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Initial zoom animation - only plays once when opening lightbox */
+.slider-lightbox-image.animate-zoom-in {
+  animation-duration: 600ms;
+  animation-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+/* Provide a background style to avoid visual flickering during transitions */
+.slider-lightbox-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+}
+
+/* Give lower z-index to the exiting image */
+.slider-lightbox-image.animate-slide-to-left,
+.slider-lightbox-image.animate-slide-to-right {
+  z-index: 0;
+}
+
+/* Enhance transition behavior */
+.slider-lightbox-image.animate-zoom-in {
+  animation-duration: 600ms;
+  animation-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.slider-lightbox-image.animate-slide-from-right,
+.slider-lightbox-image.animate-slide-from-left {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.slider-lightbox-image.animate-slide-to-left,
+.slider-lightbox-image.animate-slide-to-right {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 /* Body scroll management */
@@ -216,14 +287,6 @@ body.lightbox-open {
 .slider-lightbox-content {
   @apply relative flex h-full w-full items-center justify-center animated;
   perspective: 1000px;
-}
-
-.slider-lightbox-image {
-  @apply rounded animate-zoom-in fill-both gpu-accelerated;
-  max-width: 90vw;
-  max-height: 85vh;
-  object-fit: contain;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* Lightbox Close Button */

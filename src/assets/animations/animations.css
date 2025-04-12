@@ -4,27 +4,38 @@
   --anim-fade-out: fade-out 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
   --anim-fade-up: fade-up 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
   --anim-fade-down: fade-down 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --anim-slide-in: slide-in 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --anim-slide-out: slide-out 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+
   --anim-scale-up: scale-up 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   --anim-scale-down: scale-down 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  --anim-zoom-in: zoom-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --anim-zoom-out: zoom-out 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
   --anim-rotate: rotate 1.5s linear infinite;
   --anim-flip: flip 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
   --anim-bounce: bounce 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   --anim-pulse: pulse 2s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
   --anim-special: special-effect 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   --anim-wiggle: wiggle 1s ease-in-out infinite;
+
   --anim-slide-in-right: slide-in-right 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
   --anim-slide-in-bottom: slide-in-bottom 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
   --anim-slide-in-top: slide-in-top 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-in: slide-in 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-out: slide-out 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-from-right: slide-from-right 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-from-left: slide-from-left 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-to-left: slide-to-left 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-to-right: slide-to-right 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+
   --anim-shake: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   --anim-flash: flash 1s;
-  --anim-zoom-in: zoom-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --anim-zoom-out: zoom-out 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --anim-blur-in: blur-in 0.6s;
   --anim-swing: swing 1s ease-out;
   --anim-typing: typing 3.5s steps(40, end);
   --anim-spin: custom-spin 1.5s linear infinite;
+  --anim-lightbox-open: lightbox-open 0.5s cubic-bezier(0.1, 0.9, 0.2, 1)
+    forwards;
 }
 
 /* ---------------------------------- */
@@ -308,6 +319,62 @@
   }
 }
 
+/* --- Image Slider Specific Animations --- */
+@keyframes slide-from-right {
+  from {
+    opacity: 0;
+    transform: translate3d(60px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slide-from-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-60px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slide-to-left {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-60px, 0, 0);
+  }
+}
+
+@keyframes slide-to-right {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(60px, 0, 0);
+  }
+}
+
+@keyframes lightbox-open {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(12px);
+  }
+}
+
 /* ------------------------------- */
 /* ----- Performance Utility ----- */
 /* ------------------------------- */
@@ -480,6 +547,31 @@
   animation: var(--anim-spin);
   will-change: transform;
   transform: translateZ(0);
+}
+
+@utility animate-slide-from-right {
+  animation: var(--anim-slide-from-right);
+  will-change: transform, opacity;
+}
+
+@utility animate-slide-from-left {
+  animation: var(--anim-slide-from-left);
+  will-change: transform, opacity;
+}
+
+@utility animate-slide-to-left {
+  animation: var(--anim-slide-to-left);
+  will-change: transform, opacity;
+}
+
+@utility animate-slide-to-right {
+  animation: var(--anim-slide-to-right);
+  will-change: transform, opacity;
+}
+
+@utility animate-lightbox-open {
+  animation: var(--anim-lightbox-open);
+  will-change: backdrop-filter, background-color;
 }
 
 /* Performance utilities for scroll optimization */

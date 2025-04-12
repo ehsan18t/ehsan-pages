@@ -1,6 +1,6 @@
 import type { EmblaCarouselType, EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaTimes } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight, MdFullscreen } from "react-icons/md";
@@ -29,13 +29,36 @@ function Lightbox({
   title: string;
 }) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
-  // Navigation
-  const prevImage = () =>
+  // Navigation without transitioning state
+  const prevImage = useCallback(() => {
+    if (!imageContainerRef.current) return;
+
+    // Set direction via data attribute instead of state
+    imageContainerRef.current.dataset.direction = "prev";
+    imageContainerRef.current.classList.remove("transitioning");
+    // Force reflow to ensure animation restart
+    void imageContainerRef.current.offsetWidth;
+    imageContainerRef.current.classList.add("transitioning");
+
+    // Update index after transition completes
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+  }, [images.length]);
 
-  const nextImage = () =>
+  const nextImage = useCallback(() => {
+    if (!imageContainerRef.current) return;
+
+    // Set direction via data attribute instead of state
+    imageContainerRef.current.dataset.direction = "next";
+    imageContainerRef.current.classList.remove("transitioning");
+    // Force reflow to ensure animation restart
+    void imageContainerRef.current.offsetWidth;
+    imageContainerRef.current.classList.add("transitioning");
+
+    // Update index after transition completes
     setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+  }, [images.length]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -49,9 +72,9 @@ function Lightbox({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, prevImage, nextImage]);
 
-  // Update index when initialIndex changes
+  // Update index when initialIndex changes without animation
   useEffect(() => {
     setCurrentIndex(initialIndex);
   }, [initialIndex]);
@@ -69,14 +92,22 @@ function Lightbox({
         className="slider-lightbox-content"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={images[currentIndex]}
-          alt={`${title} - image ${currentIndex + 1}`}
-          className="slider-lightbox-image"
-        />
+        <div
+          ref={imageContainerRef}
+          className="slider-lightbox-image-container"
+          data-direction="next"
+        >
+          <img
+            key={`lightbox-image-${currentIndex}`}
+            src={images[currentIndex]}
+            alt={`${title} - image ${currentIndex + 1}`}
+            className="slider-lightbox-image animate-zoom-in fill-forwards"
+            loading="eager"
+          />
+        </div>
 
         <button
-          className="slider-lightbox-close"
+          className="slider-lightbox-close animate-fade-in fill-forwards"
           onClick={onClose}
           aria-label="Close fullscreen view"
         >
@@ -86,20 +117,20 @@ function Lightbox({
         {images.length > 1 && (
           <>
             <button
-              className="slider-lightbox-nav slider-prev"
+              className="slider-lightbox-nav slider-prev animate-fade-in fill-forwards animation-delay-200"
               onClick={prevImage}
               aria-label="Previous image"
             >
               <MdChevronLeft />
             </button>
             <button
-              className="slider-lightbox-nav slider-next"
+              className="slider-lightbox-nav slider-next animate-fade-in fill-forwards animation-delay-200"
               onClick={nextImage}
               aria-label="Next image"
             >
               <MdChevronRight />
             </button>
-            <div className="slider-lightbox-counter">
+            <div className="slider-lightbox-counter animate-fade-up fill-forwards animation-delay-300">
               {currentIndex + 1} / {images.length}
             </div>
           </>
