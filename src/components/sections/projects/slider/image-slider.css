@@ -1,10 +1,21 @@
 @reference "@/assets/styles/global.css";
 
+/* Common animation values as CSS variables */
+:root {
+  --slider-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --slider-shadow-normal: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --slider-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.35);
+  --slider-bg-normal: rgba(0, 0, 0, 0.5);
+  --slider-bg-hover: rgba(0, 0, 0, 0.85);
+  --slider-duration-normal: 0.4s;
+  --slider-duration-short: 0.3s;
+}
+
 /* --- Core Embla Styles --- */
 .embla {
-  @apply relative w-full select-none overflow-hidden aspect-[16/10] rounded-t-xl bg-[#f0f0f0];
+  @apply relative w-full select-none overflow-hidden aspect-[16/10] rounded-t-xl bg-[#f0f0f0] animated;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-  transition: box-shadow 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+  transition: box-shadow 0.5s ease;
 }
 
 .embla:hover {
@@ -16,7 +27,7 @@
 }
 
 .embla__container {
-  @apply flex h-full will-change-transform;
+  @apply flex h-full will-change-transform gpu-accelerated;
 }
 
 .embla__slide {
@@ -26,7 +37,9 @@
 /* --- Images --- */
 .slider-image {
   @apply block h-full w-full object-cover;
-  transition: all 0.8s cubic-bezier(0.2, 0, 0.2, 1);
+  transition:
+    transform 0.5s ease,
+    filter 0.5s ease;
   filter: brightness(0.95) contrast(1.02);
   will-change: transform, filter;
 }
@@ -38,16 +51,15 @@
 
 /* --- Controls --- */
 .slider-controls {
-  @apply absolute inset-0 pointer-events-none opacity-0 z-[1] bg-black/0 backdrop-blur-none;
-  transition:
-    opacity 0.5s cubic-bezier(0.2, 0, 0.2, 1),
-    backdrop-filter 0.5s cubic-bezier(0.2, 0, 0.2, 1);
-  will-change: opacity, backdrop-filter;
+  @apply absolute inset-0 pointer-events-none opacity-0 z-[1] bg-black/0 animated;
+  transition: opacity 0.5s ease;
+  will-change: opacity;
 }
 
 .embla:hover .slider-controls,
 .slider-controls.visible {
   @apply opacity-100 bg-black/5;
+  backdrop-filter: blur(3px);
 }
 
 /* Enable pointer events for controls */
@@ -60,17 +72,20 @@
 
 /* --- Navigation Buttons --- */
 .slider-button {
-  @apply absolute h-11 w-11  bg-black/50 border border-white/20 rounded-[50%] top-1/2 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
-  transform: translateY(-50%) translateZ(0);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  will-change: transform, background-color, box-shadow;
+  @apply absolute h-11 w-11 bg-black/50 border border-white/20 rounded-[50%] top-1/2 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white gpu-accelerated;
+  transform: translateY(-50%);
+  transition:
+    background-color var(--slider-duration-normal) ease,
+    transform var(--slider-duration-normal) var(--slider-timing-function),
+    border-color var(--slider-duration-normal) ease;
+  box-shadow: var(--slider-shadow-normal);
+  will-change: transform, background-color;
 }
 
 .slider-button:hover {
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: var(--slider-bg-hover);
   transform: translateY(-50%) scale(1.08);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--slider-shadow-hover);
   border-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -80,7 +95,7 @@
 
 .slider-button:active:not(:disabled) {
   transform: translateY(-50%) scale(0.92);
-  transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+  transition: transform 0.2s ease-out;
 }
 
 .slider-button.slider-prev {
@@ -92,7 +107,8 @@
 }
 
 .slider-button svg {
-  @apply h-6 w-6 transition-transform duration-300 ease-in-out;
+  @apply h-6 w-6;
+  transition: transform var(--slider-duration-short) ease;
 }
 
 .slider-button:hover:not(:disabled) svg {
@@ -102,24 +118,27 @@
 /* --- Pagination Dots --- */
 .slider-pagination {
   @apply absolute bg-black/45 py-2 px-4 border border-white/15 rounded-4xl backdrop-blur-xs bottom-6 left-1/2 flex gap-2.5 pointer-events-auto z-[5];
-  transform: translateX(-50%) translateZ(0);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition:
-    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.4s ease;
+  transform: translateX(-50%);
+  box-shadow: var(--slider-shadow-normal);
+  transition: transform var(--slider-duration-normal)
+    var(--slider-timing-function);
 }
 
 .slider-pagination:hover {
-  transform: translateX(-50%) translateZ(0) scale(1.05);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: var(--slider-shadow-hover);
 }
 
 .slider-dot {
-  @apply rounded-full w-[0.6rem] h-[0.6rem] cursor-pointer border-0 p-0 bg-white/50 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)];
+  @apply rounded-full w-[0.6rem] h-[0.6rem] cursor-pointer border-0 p-0 bg-white/50;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s var(--slider-timing-function);
 }
 
 .slider-dot:hover {
-  @apply bg-white/90 scale-125;
+  @apply bg-white/90;
+  transform: scale(1.25);
 }
 
 .slider-dot.active {
@@ -130,37 +149,33 @@
 
 /* --- Counter --- */
 .slider-counter {
-  @apply absolute bg-black/45 border border-white/15 font-semibold backdrop-blur-xs py-1.5 px-3 text-sm rounded-3xl bottom-6 right-6 text-white pointer-events-auto z-[5];
-
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  @apply absolute bg-black/45 border border-white/15 font-semibold backdrop-blur-xs py-1.5 px-3 text-sm rounded-3xl bottom-6 right-6 text-white pointer-events-auto z-[5] animate-fade-up fill-forwards;
+  box-shadow: var(--slider-shadow-normal);
   letter-spacing: 0.6px;
-  animation: slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transition:
-    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.4s ease;
 }
 
 /* --- Fullscreen Button --- */
 .slider-fullscreen {
   @apply absolute bg-black/45 rounded-[50%] border border-white/15 w-8 h-8 top-6 right-6 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
-
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition:
+    transform var(--slider-duration-normal) var(--slider-timing-function),
+    background-color var(--slider-duration-normal) ease;
+  box-shadow: var(--slider-shadow-normal);
   backdrop-filter: blur(6px);
   will-change: transform, background-color;
 }
 
 .slider-fullscreen:hover {
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: var(--slider-bg-hover);
   transform: scale(1.18);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--slider-shadow-hover);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
 .slider-fullscreen svg {
   width: 1.2rem;
   height: 1.2rem;
-  transition: transform 0.3s ease;
+  transition: transform var(--slider-duration-short) ease;
 }
 
 .slider-fullscreen:hover svg {
@@ -170,12 +185,10 @@
 /* --- Slide Progress Indicator --- */
 .embla::after {
   content: "";
-  @apply absolute bottom-0 left-0 z-[6];
+  @apply absolute bottom-0 left-0 z-[6] gpu-accelerated;
   height: 4px;
   background: linear-gradient(to right, #3498db, #2ecc71);
-  transition:
-    width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
-    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.7s var(--slider-timing-function);
   width: calc(100% / var(--slider-image-count, 1));
   transform: translateX(calc(var(--current-index, 0) * 100%));
   box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
@@ -184,11 +197,10 @@
 
 /* --- Lightbox --- */
 .slider-lightbox {
-  @apply fixed inset-0 z-[9999] flex items-center justify-center;
+  @apply fixed inset-0 z-[9999] flex items-center justify-center animate-fade-in animated;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.95);
-  animation: fade-in 0.5s cubic-bezier(0.2, 0, 0.2, 1);
   backdrop-filter: blur(12px);
 }
 
@@ -203,35 +215,36 @@ body.lightbox-open {
 }
 
 .slider-lightbox-content {
-  @apply relative flex h-full w-full items-center justify-center;
+  @apply relative flex h-full w-full items-center justify-center animated;
   perspective: 1000px;
 }
 
 .slider-lightbox-image {
-  @apply rounded;
+  @apply rounded animate-zoom-in fill-both gpu-accelerated;
   max-width: 90vw;
   max-height: 85vh;
   object-fit: contain;
-  animation: zoom-in-3d 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-  will-change: transform, opacity;
 }
 
 /* Lightbox Close Button */
 .slider-lightbox-close {
-  @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer z-10 text-white rounded-full;
+  @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer z-10 text-white rounded-full animate-fade-in fill-forwards gpu-accelerated;
   width: 2.5rem;
   height: 2.5rem;
   border: none;
   background-color: rgba(255, 30, 30, 0.6);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition:
+    background-color var(--slider-duration-normal) ease,
+    transform var(--slider-duration-normal) var(--slider-timing-function),
+    box-shadow var(--slider-duration-normal) ease;
+  box-shadow: var(--slider-shadow-normal);
 }
 
 .slider-lightbox-close svg {
   width: 1.3rem;
   height: 1.3rem;
-  transition: transform 0.3s ease;
+  transition: transform var(--slider-duration-short) ease;
 }
 
 .slider-lightbox-close:hover {
@@ -246,14 +259,18 @@ body.lightbox-open {
 
 /* Lightbox Navigation */
 .slider-lightbox-nav {
-  @apply absolute top-1/2 flex items-center justify-center cursor-pointer text-white rounded-full z-[15];
-  transform: translateY(-50%) translateZ(0);
+  @apply absolute top-1/2 flex items-center justify-center cursor-pointer text-white rounded-full z-[15] animate-fade-in fill-forwards gpu-accelerated;
+  transform: translateY(-50%);
   width: 3rem;
   height: 3rem;
   background-color: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition:
+    background-color var(--slider-duration-normal) ease,
+    transform var(--slider-duration-normal) var(--slider-timing-function),
+    box-shadow var(--slider-duration-normal) ease,
+    border-color var(--slider-duration-normal) ease;
+  box-shadow: var(--slider-shadow-normal);
   will-change: transform, background-color;
 }
 
@@ -277,60 +294,25 @@ body.lightbox-open {
 }
 
 .slider-lightbox-nav:hover:not(:disabled) {
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: var(--slider-bg-hover);
   transform: translateY(-50%) scale(1.08);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--slider-shadow-hover);
   border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* Lightbox Counter */
 .slider-lightbox-counter {
-  @apply absolute bottom-6 left-1/2 text-white z-[10];
+  @apply absolute bottom-6 left-1/2 text-white z-[10] animate-fade-up fill-forwards gpu-accelerated;
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.6);
   padding: 0.6rem 1.2rem;
   border-radius: 2rem;
   font-size: 1rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--slider-shadow-normal);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   font-weight: 600;
   letter-spacing: 0.6px;
-  animation: slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* --- Animations --- */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes zoom-in-3d {
-  from {
-    transform: scale(0.9) rotateX(10deg);
-    opacity: 0;
-    filter: blur(4px);
-  }
-  to {
-    transform: scale(1) rotateX(0);
-    opacity: 1;
-    filter: blur(0);
-  }
-}
-
-@keyframes slide-up {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 /* --- Responsive Adjustments --- */
@@ -367,7 +349,6 @@ body.lightbox-open {
   .slider-lightbox-image,
   .slider-lightbox-nav,
   .slider-lightbox-close {
-    transition: none;
-    animation: none;
+    @apply reduced-motion;
   }
 }
