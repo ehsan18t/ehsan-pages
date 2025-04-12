@@ -1,32 +1,30 @@
 :root {
   /* Optimized Animation Variables with Performance-Focused Timing */
-  --animate-fade-in: fade-in 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-  --animate-fade-out: fade-out 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-  --animate-fade-up: fade-up 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --animate-fade-down: fade-down 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --animate-slide-in: slide-in 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --animate-slide-out: slide-out 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --animate-scale-up: scale-up 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --animate-scale-down: scale-down 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --animate-rotate: rotate 1.5s linear infinite;
-  --animate-flip: flip 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --animate-bounce: bounce 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --animate-pulse: pulse 2s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
-  --animate-special: special-effect 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --animate-wiggle: wiggle 1s ease-in-out infinite;
-  --animate-slide-in-right: slide-in-right 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --animate-slide-in-bottom: slide-in-bottom 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --animate-slide-in-top: slide-in-top 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --animate-shake: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-  --animate-flash: flash 1s;
-  --animate-zoom-in: zoom-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --animate-zoom-out: zoom-out 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --animate-blur-in: blur-in 0.6s;
-  --animate-swing: swing 1s ease-out;
-  --animate-typing: typing 3.5s steps(40, end);
-  --animate-legacy-fade-in: fadeIn 2s forwards;
-  --animate-legacy-fade-up: fadeInUp 0.5s forwards;
-  --animate-custom-spin: custom-spin 1.5s linear infinite;
+  --anim-fade-in: fade-in 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+  --anim-fade-out: fade-out 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+  --anim-fade-up: fade-up 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --anim-fade-down: fade-down 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --anim-slide-in: slide-in 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-out: slide-out 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-scale-up: scale-up 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --anim-scale-down: scale-down 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --anim-rotate: rotate 1.5s linear infinite;
+  --anim-flip: flip 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --anim-bounce: bounce 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --anim-pulse: pulse 2s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+  --anim-special: special-effect 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --anim-wiggle: wiggle 1s ease-in-out infinite;
+  --anim-slide-in-right: slide-in-right 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-in-bottom: slide-in-bottom 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-slide-in-top: slide-in-top 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --anim-shake: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  --anim-flash: flash 1s;
+  --anim-zoom-in: zoom-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --anim-zoom-out: zoom-out 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --anim-blur-in: blur-in 0.6s;
+  --anim-swing: swing 1s ease-out;
+  --anim-typing: typing 3.5s steps(40, end);
+  --anim-spin: custom-spin 1.5s linear infinite;
 }
 
 /* Hardware-Accelerated Keyframes */
@@ -301,27 +299,6 @@
   }
 }
 
-/* Add these legacy/custom animations for backward compatibility */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 100px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 @keyframes custom-spin {
   from {
     transform: rotate3d(0, 0, 1, var(--initial-rotation, 0deg));
@@ -340,119 +317,119 @@
 
 /* Performance-optimized animation utility classes */
 .animate-fade-in {
-  animation: var(--animate-fade-in);
+  animation: var(--anim-fade-in);
   will-change: opacity;
 }
 
 .animate-fade-out {
-  animation: var(--animate-fade-out);
+  animation: var(--anim-fade-out);
   will-change: opacity;
 }
 
 .animate-fade-up {
-  animation: var(--animate-fade-up);
+  animation: var(--anim-fade-up);
   will-change: transform, opacity;
 }
 
 .animate-fade-down {
-  animation: var(--animate-fade-down);
+  animation: var(--anim-fade-down);
   will-change: transform, opacity;
 }
 
 .animate-slide-in {
-  animation: var(--animate-slide-in);
+  animation: var(--anim-slide-in);
   will-change: transform;
 }
 
 .animate-slide-out {
-  animation: var(--animate-slide-out);
+  animation: var(--anim-slide-out);
   will-change: transform;
 }
 
 .animate-scale-up {
-  animation: var(--animate-scale-up);
+  animation: var(--anim-scale-up);
   will-change: transform;
 }
 
 .animate-scale-down {
-  animation: var(--animate-scale-down);
+  animation: var(--anim-scale-down);
   will-change: transform;
 }
 
 .animate-rotate {
-  animation: var(--animate-rotate);
+  animation: var(--anim-rotate);
   will-change: transform;
 }
 
 .animate-flip {
-  animation: var(--animate-flip);
+  animation: var(--anim-flip);
   backface-visibility: hidden;
   will-change: transform;
 }
 
 .animate-bounce {
-  animation: var(--animate-bounce);
+  animation: var(--anim-bounce);
   will-change: transform;
 }
 
 .animate-pulse {
-  animation: var(--animate-pulse);
+  animation: var(--anim-pulse);
   will-change: transform;
 }
 
 .animate-special {
-  animation: var(--animate-special);
+  animation: var(--anim-special);
   will-change: transform, opacity;
 }
 
 .animate-wiggle {
-  animation: var(--animate-wiggle);
+  animation: var(--anim-wiggle);
   will-change: transform;
 }
 
 .animate-slide-in-right {
-  animation: var(--animate-slide-in-right);
+  animation: var(--anim-slide-in-right);
   will-change: transform;
 }
 
 .animate-slide-in-bottom {
-  animation: var(--animate-slide-in-bottom);
+  animation: var(--anim-slide-in-bottom);
   will-change: transform;
 }
 
 .animate-slide-in-top {
-  animation: var(--animate-slide-in-top);
+  animation: var(--anim-slide-in-top);
   will-change: transform;
 }
 
 .animate-shake {
-  animation: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: var(--anim-shake);
   will-change: transform;
 }
 
 .animate-flash {
-  animation: flash 1s;
+  animation: var(--anim-flash);
   will-change: opacity;
 }
 
 .animate-zoom-in {
-  animation: zoom-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: var(--anim-zoom-in);
   will-change: transform, opacity;
 }
 
 .animate-zoom-out {
-  animation: zoom-out 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: var(--anim-zoom-out);
   will-change: transform, opacity;
 }
 
 .animate-blur-in {
-  animation: blur-in 0.6s;
+  animation: var(--anim-blur-in);
   will-change: opacity, filter;
 }
 
 .animate-swing {
   transform-origin: top center;
-  animation: swing 1s ease-out;
+  animation: var(--anim-swing);
   will-change: transform;
 }
 
@@ -460,25 +437,26 @@
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  animation: typing 3.5s steps(40, end);
+  animation: var(--anim-typing);
   width: 0;
 }
 
-/* Add these for backward compatibility */
-.fade-in {
-  animation: var(--animate-legacy-fade-in);
+.animate-fade-in {
+  animation: var(--anim-fade-in);
+  animation-fill-mode: forwards;
   will-change: opacity;
 }
 
-.appear {
+.animate-appear {
   opacity: 0;
   transform: translate3d(0, 100px, 0);
-  animation: var(--animate-legacy-fade-up);
+  animation: var(--anim-fade-up);
+  animation-fill-mode: forwards;
   will-change: transform, opacity;
 }
 
-.custom-spin {
-  animation: var(--animate-custom-spin);
+.animate-spin {
+  animation: var(--anim-spin);
   will-change: transform;
 }
 
@@ -503,29 +481,44 @@
 }
 
 /* Animation duration utilities */
-.duration-100 {
+.animation-duration-100 {
   animation-duration: 100ms;
 }
-.duration-200 {
+.animation-duration-200 {
   animation-duration: 200ms;
 }
-.duration-300 {
+.animation-duration-300 {
   animation-duration: 300ms;
 }
-.duration-500 {
+.animation-duration-500 {
   animation-duration: 500ms;
 }
-.duration-700 {
+.animation-duration-700 {
   animation-duration: 700ms;
 }
-.duration-1000 {
+.animation-duration-1000 {
   animation-duration: 1000ms;
 }
-.duration-1500 {
+.animation-duration-1500 {
   animation-duration: 1500ms;
 }
-.duration-2000 {
+.animation-duration-2000 {
   animation-duration: 2s;
+}
+.animation-duration-3000 {
+  animation-duration: 3s;
+}
+.animation-duration-5000 {
+  animation-duration: 5s;
+}
+.animation-duration-10000 {
+  animation-duration: 10s;
+}
+.animation-duration-infinite {
+  animation-duration: infinite;
+}
+.animation-duration-0 {
+  animation-duration: 0ms;
 }
 
 /* Improved accessibility - respect user preference for reduced motion */
@@ -561,4 +554,62 @@
 }
 .fill-both {
   animation-fill-mode: both;
+}
+
+/* Intersection Observer Animation Support */
+/* Base class for elements that will animate when in view */
+.animate-when-visible {
+  opacity: 0; /* Start invisible */
+  will-change: transform, opacity;
+  visibility: visible; /* Keep element in layout */
+  transition: opacity 0.2s ease-out;
+}
+
+/* Applied by JS when element comes into view */
+.animate-when-visible.is-visible {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+/* Override existing animation classes to be paused initially */
+.animate-when-visible.animate-fade-in,
+.animate-when-visible.animate-fade-out,
+.animate-when-visible.animate-fade-up,
+.animate-when-visible.animate-fade-down,
+.animate-when-visible.animate-slide-in,
+.animate-when-visible.animate-slide-out,
+.animate-when-visible.animate-scale-up,
+.animate-when-visible.animate-scale-down,
+.animate-when-visible.animate-rotate,
+.animate-when-visible.animate-flip,
+.animate-when-visible.animate-bounce,
+.animate-when-visible.animate-pulse,
+.animate-when-visible.animate-special,
+.animate-when-visible.animate-wiggle,
+.animate-when-visible.animate-slide-in-right,
+.animate-when-visible.animate-slide-in-bottom,
+.animate-when-visible.animate-slide-in-top,
+.animate-when-visible.animate-shake,
+.animate-when-visible.animate-flash,
+.animate-when-visible.animate-zoom-in,
+.animate-when-visible.animate-zoom-out,
+.animate-when-visible.animate-blur-in,
+.animate-when-visible.animate-swing,
+.animate-when-visible.animate-typing {
+  animation-play-state: paused;
+  animation-fill-mode: both; /* Ensures animation stays at final state */
+}
+
+/* Animation play state utility classes */
+.animation-paused {
+  animation-play-state: paused !important;
+}
+
+.animation-running {
+  animation-play-state: running !important;
+}
+
+/* For elements that should animate only once when they appear */
+.animate-once {
+  animation-iteration-count: 1 !important;
 }
