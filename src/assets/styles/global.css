@@ -6,6 +6,8 @@
 @layer base {
   :root,
   [data-theme="dark"] {
+    color-scheme: light dark;
+
     --background: 2, 21, 38; /* #021526 */
     --foreground: 224, 230, 237; /* #E0E6ED */
     --foreground-muted: 170, 183, 196; /* #AAB7C4 */
@@ -107,6 +109,7 @@ body {
   height: 100vh;
 }
 
+/* Maintained for backward compatibility */
 .fade-in {
   animation: fadeIn 2s forwards;
 }
@@ -132,6 +135,7 @@ body {
     transform: translateY(0);
   }
 }
+
 @keyframes custom-spin {
   from {
     transform: rotate(var(--initial-rotation, 0deg));
