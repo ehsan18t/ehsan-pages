@@ -9,7 +9,7 @@ import PDFViewerModal from "@/components/viewer/PDFViewerModal";
 import info from "@/data";
 ---
 
-<section id="hero" class="relative z-0 overflow-hidden flex flex-col items-center justify-center">
+<section id="hero" class="md:h-dvh relative z-0 overflow-hidden flex flex-col items-center justify-center">
   <!-- Fade out bottom -->
   <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
     <!-- Grain Effect -->
@@ -89,24 +89,29 @@ import info from "@/data";
 </section>
 
 <script>
-  // Set hero height on load and resize (debounced)
-  function setHeroHeight() {
-    const hero = document.querySelector("#hero");
-    hero.style.height = `${window.innerHeight}px`;
-  }
-
-  // Debounce to prevent rapid execution
-  function debounce(func, timeout = 100) {
-    let timer;
-    return (...args) => {
+  // Debounce utility function with TypeScript
+  const debounce = <T extends (...args: any[]) => void>(func: T, timeout: number = 100): ((...args: Parameters<T>) => void) => {
+    let timer: ReturnType<typeof setTimeout>;
+    return (...args: Parameters<T>) => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        func.apply(this, args);
+        func(...args);
       }, timeout);
     };
-  }
+  };
 
-  // Set initial height & update on resize/orientation change
+  // Set hero height (mobile-only)
+  const setHeroHeight = (): void => {
+    const hero = document.querySelector<HTMLElement>("#hero");
+    if (!hero) return;
+
+    // Apply fixed height only on mobile (breakpoint: 768px)
+    if (window.innerWidth < 768) {
+      hero.style.height = `${window.innerHeight}px`;
+    }
+  };
+
+  // Initialize and handle orientation changes (no resize listener)
   setHeroHeight();
   window.addEventListener("orientationchange", debounce(setHeroHeight));
 </script>
