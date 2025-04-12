@@ -14,6 +14,19 @@
   --animate-pulse: pulse 2s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
   --animate-special: special-effect 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   --animate-wiggle: wiggle 1s ease-in-out infinite;
+  --animate-slide-in-right: slide-in-right 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --animate-slide-in-bottom: slide-in-bottom 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --animate-slide-in-top: slide-in-top 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --animate-shake: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  --animate-flash: flash 1s;
+  --animate-zoom-in: zoom-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animate-zoom-out: zoom-out 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animate-blur-in: blur-in 0.6s;
+  --animate-swing: swing 1s ease-out;
+  --animate-typing: typing 3.5s steps(40, end);
+  --animate-legacy-fade-in: fadeIn 2s forwards;
+  --animate-legacy-fade-up: fadeInUp 0.5s forwards;
+  --animate-custom-spin: custom-spin 1.5s linear infinite;
 }
 
 /* Hardware-Accelerated Keyframes */
@@ -166,6 +179,158 @@
   }
 }
 
+/* Additional slide direction animations */
+@keyframes slide-in-right {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slide-in-bottom {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slide-in-top {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+@keyframes flash {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale3d(1.5, 1.5, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes zoom-out {
+  from {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes blur-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes swing {
+  20% {
+    transform: rotate3d(0, 0, 1, 15deg);
+  }
+  40% {
+    transform: rotate3d(0, 0, 1, -10deg);
+  }
+  60% {
+    transform: rotate3d(0, 0, 1, 5deg);
+  }
+  80% {
+    transform: rotate3d(0, 0, 1, -5deg);
+  }
+  to {
+    transform: rotate3d(0, 0, 1, 0deg);
+  }
+}
+
+@keyframes typing {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* Add these legacy/custom animations for backward compatibility */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes custom-spin {
+  from {
+    transform: rotate3d(0, 0, 1, var(--initial-rotation, 0deg));
+  }
+  to {
+    transform: rotate3d(0, 0, 1, calc(var(--initial-rotation, 0deg) + 360deg));
+  }
+}
+
 /* Composite animation classes with hardware acceleration hints */
 .animated {
   backface-visibility: hidden;
@@ -245,6 +410,78 @@
   will-change: transform;
 }
 
+.animate-slide-in-right {
+  animation: var(--animate-slide-in-right);
+  will-change: transform;
+}
+
+.animate-slide-in-bottom {
+  animation: var(--animate-slide-in-bottom);
+  will-change: transform;
+}
+
+.animate-slide-in-top {
+  animation: var(--animate-slide-in-top);
+  will-change: transform;
+}
+
+.animate-shake {
+  animation: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  will-change: transform;
+}
+
+.animate-flash {
+  animation: flash 1s;
+  will-change: opacity;
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+}
+
+.animate-zoom-out {
+  animation: zoom-out 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+}
+
+.animate-blur-in {
+  animation: blur-in 0.6s;
+  will-change: opacity, filter;
+}
+
+.animate-swing {
+  transform-origin: top center;
+  animation: swing 1s ease-out;
+  will-change: transform;
+}
+
+.animate-typing {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 3.5s steps(40, end);
+  width: 0;
+}
+
+/* Add these for backward compatibility */
+.fade-in {
+  animation: var(--animate-legacy-fade-in);
+  will-change: opacity;
+}
+
+.appear {
+  opacity: 0;
+  transform: translate3d(0, 100px, 0);
+  animation: var(--animate-legacy-fade-up);
+  will-change: transform, opacity;
+}
+
+.custom-spin {
+  animation: var(--animate-custom-spin);
+  will-change: transform;
+}
+
 /* Performance utilities for scroll optimization */
 .scroll-active {
   animation-play-state: paused !important;
@@ -314,4 +551,14 @@
   backface-visibility: hidden;
   perspective: 1000px;
   transform-style: preserve-3d;
+}
+
+.fill-forwards {
+  animation-fill-mode: forwards;
+}
+.fill-backwards {
+  animation-fill-mode: backwards;
+}
+.fill-both {
+  animation-fill-mode: both;
 }

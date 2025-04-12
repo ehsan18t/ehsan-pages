@@ -113,39 +113,3 @@ body {
   grid-template-rows: auto 1fr auto;
   height: 100vh;
 }
-
-/* Maintained for backward compatibility */
-.fade-in {
-  animation: fadeIn 2s forwards;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-.appear {
-  opacity: 0;
-  transform: translateY(100px);
-  animation: fadeInUp 0.5s forwards;
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes custom-spin {
-  from {
-    transform: rotate(var(--initial-rotation, 0deg));
-  }
-  to {
-    transform: rotate(calc(var(--initial-rotation, 0deg) + 360deg));
-  }
-}
