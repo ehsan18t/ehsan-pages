@@ -60,7 +60,7 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
     dragFree: false,
     containScroll: "trimSnaps",
     dragThreshold: 5,
-    duration: 30,
+    duration: 20,
     direction: "ltr",
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -111,21 +111,17 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
           </div>
         </div>
 
-        <div className="testimonial-navigation">
-          <button
-            className="testimonial-button testimonial-prev-button"
+        <div className="absolute inset-0 pointer-events-none z-10">
+          <MdChevronLeft
             onClick={scrollPrev}
             aria-label="Previous testimonial"
-          >
-            <MdChevronLeft className="testimonial-button-icon" />
-          </button>
-          <button
-            className="testimonial-button testimonial-next-button"
+            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+          />
+          <MdChevronRight
             onClick={scrollNext}
             aria-label="Next testimonial"
-          >
-            <MdChevronRight className="testimonial-button-icon" />
-          </button>
+            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 right-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+          />
         </div>
       </div>
 
