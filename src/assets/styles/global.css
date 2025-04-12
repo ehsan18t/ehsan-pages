@@ -67,6 +67,8 @@
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
   --font-doto: "Doto", sans-serif;
+
+  --animate-*: initial;
 }
 
 body {

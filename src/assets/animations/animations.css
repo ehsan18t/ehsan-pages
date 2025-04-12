@@ -309,131 +309,131 @@
 }
 
 /* Composite animation classes with hardware acceleration hints */
-.animated {
+@utility animated {
   backface-visibility: hidden;
   transform-style: preserve-3d;
   contain: paint layout; /* Improves performance by limiting repaints */
 }
 
 /* Performance-optimized animation utility classes */
-.animate-fade-in {
+@utility animate-fade-in {
   animation: var(--anim-fade-in);
   will-change: opacity;
 }
 
-.animate-fade-out {
+@utility animate-fade-out {
   animation: var(--anim-fade-out);
   will-change: opacity;
 }
 
-.animate-fade-up {
+@utility animate-fade-up {
   animation: var(--anim-fade-up);
   will-change: transform, opacity;
 }
 
-.animate-fade-down {
+@utility animate-fade-down {
   animation: var(--anim-fade-down);
   will-change: transform, opacity;
 }
 
-.animate-slide-in {
+@utility animate-slide-in {
   animation: var(--anim-slide-in);
   will-change: transform;
 }
 
-.animate-slide-out {
+@utility animate-slide-out {
   animation: var(--anim-slide-out);
   will-change: transform;
 }
 
-.animate-scale-up {
+@utility animate-scale-up {
   animation: var(--anim-scale-up);
   will-change: transform;
 }
 
-.animate-scale-down {
+@utility animate-scale-down {
   animation: var(--anim-scale-down);
   will-change: transform;
 }
 
-.animate-rotate {
+@utility animate-rotate {
   animation: var(--anim-rotate);
   will-change: transform;
 }
 
-.animate-flip {
+@utility animate-flip {
   animation: var(--anim-flip);
   backface-visibility: hidden;
   will-change: transform;
 }
 
-.animate-bounce {
+@utility animate-bounce {
   animation: var(--anim-bounce);
   will-change: transform;
 }
 
-.animate-pulse {
+@utility animate-pulse {
   animation: var(--anim-pulse);
   will-change: transform;
 }
 
-.animate-special {
+@utility animate-special {
   animation: var(--anim-special);
   will-change: transform, opacity;
 }
 
-.animate-wiggle {
+@utility animate-wiggle {
   animation: var(--anim-wiggle);
   will-change: transform;
 }
 
-.animate-slide-in-right {
+@utility animate-slide-in-right {
   animation: var(--anim-slide-in-right);
   will-change: transform;
 }
 
-.animate-slide-in-bottom {
+@utility animate-slide-in-bottom {
   animation: var(--anim-slide-in-bottom);
   will-change: transform;
 }
 
-.animate-slide-in-top {
+@utility animate-slide-in-top {
   animation: var(--anim-slide-in-top);
   will-change: transform;
 }
 
-.animate-shake {
+@utility animate-shake {
   animation: var(--anim-shake);
   will-change: transform;
 }
 
-.animate-flash {
+@utility animate-flash {
   animation: var(--anim-flash);
   will-change: opacity;
 }
 
-.animate-zoom-in {
+@utility animate-zoom-in {
   animation: var(--anim-zoom-in);
   will-change: transform, opacity;
 }
 
-.animate-zoom-out {
+@utility animate-zoom-out {
   animation: var(--anim-zoom-out);
   will-change: transform, opacity;
 }
 
-.animate-blur-in {
+@utility animate-blur-in {
   animation: var(--anim-blur-in);
   will-change: opacity, filter;
 }
 
-.animate-swing {
+@utility animate-swing {
   transform-origin: top center;
   animation: var(--anim-swing);
   will-change: transform;
 }
 
-.animate-typing {
+@utility animate-typing {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
@@ -441,13 +441,7 @@
   width: 0;
 }
 
-.animate-fade-in {
-  animation: var(--anim-fade-in);
-  animation-fill-mode: forwards;
-  will-change: opacity;
-}
-
-.animate-appear {
+@utility animate-appear {
   opacity: 0;
   transform: translate3d(0, 100px, 0);
   animation: var(--anim-fade-up);
@@ -455,70 +449,102 @@
   will-change: transform, opacity;
 }
 
-.animate-spin {
+@utility animate-spin {
   animation: var(--anim-spin);
   will-change: transform;
 }
 
 /* Performance utilities for scroll optimization */
-.scroll-active {
+@utility scroll-active {
   animation-play-state: paused !important;
   will-change: auto !important; /* Reset will-change during scroll */
 }
 
 /* Animation delay utilities */
-.delay-100 {
+@utility delay-100 {
   animation-delay: 100ms;
 }
-.delay-200 {
+@utility delay-200 {
   animation-delay: 200ms;
 }
-.delay-300 {
+@utility delay-300 {
   animation-delay: 300ms;
 }
-.delay-500 {
+@utility delay-500 {
   animation-delay: 500ms;
 }
 
 /* Animation duration utilities */
-.animation-duration-100 {
+@utility animation-duration-100 {
   animation-duration: 100ms;
 }
-.animation-duration-200 {
+@utility animation-duration-200 {
   animation-duration: 200ms;
 }
-.animation-duration-300 {
+@utility animation-duration-300 {
   animation-duration: 300ms;
 }
-.animation-duration-500 {
+@utility animation-duration-500 {
   animation-duration: 500ms;
 }
-.animation-duration-700 {
+@utility animation-duration-700 {
   animation-duration: 700ms;
 }
-.animation-duration-1000 {
+@utility animation-duration-1000 {
   animation-duration: 1000ms;
 }
-.animation-duration-1500 {
+@utility animation-duration-1500 {
   animation-duration: 1500ms;
 }
-.animation-duration-2000 {
+@utility animation-duration-2000 {
   animation-duration: 2s;
 }
-.animation-duration-3000 {
+@utility animation-duration-3000 {
   animation-duration: 3s;
 }
-.animation-duration-5000 {
+@utility animation-duration-5000 {
   animation-duration: 5s;
 }
-.animation-duration-10000 {
+@utility animation-duration-10000 {
   animation-duration: 10s;
 }
-.animation-duration-infinite {
+@utility animation-duration-infinite {
   animation-duration: infinite;
 }
-.animation-duration-0 {
+@utility animation-duration-0 {
   animation-duration: 0ms;
+}
+
+/* Fixed element rendering optimization */
+@utility gpu-accelerated {
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+@utility fill-forwards {
+  animation-fill-mode: forwards;
+}
+@utility fill-backwards {
+  animation-fill-mode: backwards;
+}
+@utility fill-both {
+  animation-fill-mode: both;
+}
+
+/* Animation play state utility classes */
+@utility animation-paused {
+  animation-play-state: paused !important;
+}
+
+@utility animation-running {
+  animation-play-state: running !important;
+}
+
+/* For elements that should animate only once when they appear */
+@utility animate-once {
+  animation-iteration-count: 1 !important;
 }
 
 /* Improved accessibility - respect user preference for reduced motion */
@@ -531,85 +557,57 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
 
-  .reduced-motion {
-    animation: none !important;
-    transition: none !important;
-  }
+@utility reduced-motion {
+  animation: none !important;
+  transition: none !important;
 }
 
 /* Fixed element rendering optimization */
-.gpu-accelerated {
+@utility gpu-accelerated {
   transform: translateZ(0); /* Force GPU acceleration */
   backface-visibility: hidden;
   perspective: 1000px;
   transform-style: preserve-3d;
 }
 
-.fill-forwards {
+@utility fill-forwards {
   animation-fill-mode: forwards;
 }
-.fill-backwards {
+@utility fill-backwards {
   animation-fill-mode: backwards;
 }
-.fill-both {
+@utility fill-both {
   animation-fill-mode: both;
 }
 
 /* Intersection Observer Animation Support */
 /* Base class for elements that will animate when in view */
-.animate-when-visible {
+@utility animate-when-visible {
   opacity: 0; /* Start invisible */
   will-change: transform, opacity;
   visibility: visible; /* Keep element in layout */
-  transition: opacity 0.2s ease-out;
-}
-
-/* Applied by JS when element comes into view */
-.animate-when-visible.is-visible {
-  opacity: 1;
-  animation-play-state: running;
-}
-
-/* Override existing animation classes to be paused initially */
-.animate-when-visible.animate-fade-in,
-.animate-when-visible.animate-fade-out,
-.animate-when-visible.animate-fade-up,
-.animate-when-visible.animate-fade-down,
-.animate-when-visible.animate-slide-in,
-.animate-when-visible.animate-slide-out,
-.animate-when-visible.animate-scale-up,
-.animate-when-visible.animate-scale-down,
-.animate-when-visible.animate-rotate,
-.animate-when-visible.animate-flip,
-.animate-when-visible.animate-bounce,
-.animate-when-visible.animate-pulse,
-.animate-when-visible.animate-special,
-.animate-when-visible.animate-wiggle,
-.animate-when-visible.animate-slide-in-right,
-.animate-when-visible.animate-slide-in-bottom,
-.animate-when-visible.animate-slide-in-top,
-.animate-when-visible.animate-shake,
-.animate-when-visible.animate-flash,
-.animate-when-visible.animate-zoom-in,
-.animate-when-visible.animate-zoom-out,
-.animate-when-visible.animate-blur-in,
-.animate-when-visible.animate-swing,
-.animate-when-visible.animate-typing {
-  animation-play-state: paused;
+  animation-play-state: paused !important;
   animation-fill-mode: both; /* Ensures animation stays at final state */
 }
 
+/* Applied by JS when element comes into view */
+@utility is-visible {
+  opacity: 1;
+  animation-play-state: running !important;
+}
+
 /* Animation play state utility classes */
-.animation-paused {
+@utility animation-paused {
   animation-play-state: paused !important;
 }
 
-.animation-running {
+@utility animation-running {
   animation-play-state: running !important;
 }
 
 /* For elements that should animate only once when they appear */
-.animate-once {
+@utility animate-once {
   animation-iteration-count: 1 !important;
 }
