@@ -27,7 +27,10 @@
   --anim-spin: custom-spin 1.5s linear infinite;
 }
 
-/* Hardware-Accelerated Keyframes */
+/* ---------------------------------- */
+/* ------------ KeyFrames ----------- */
+/* - Hardware-Accelerated Keyframes - */
+/* ---------------------------------- */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -104,7 +107,6 @@
   }
 }
 
-/* Optimized 3D transforms for better GPU acceleration */
 @keyframes rotate {
   from {
     transform: rotate3d(0, 0, 1, 0deg);
@@ -125,7 +127,6 @@
   }
 }
 
-/* Physics-based animations with smoother transitions */
 @keyframes bounce {
   0%,
   20%,
@@ -177,7 +178,6 @@
   }
 }
 
-/* Additional slide direction animations */
 @keyframes slide-in-right {
   from {
     transform: translate3d(100%, 0, 0);
@@ -308,14 +308,26 @@
   }
 }
 
-/* Composite animation classes with hardware acceleration hints */
+/* ------------------------------- */
+/* ----- Performance Utility ----- */
+/* ------------------------------- */
+
+/* Base class for all animated elements that applies core performance optimizations. */
 @utility animated {
   backface-visibility: hidden;
   transform-style: preserve-3d;
   contain: paint layout; /* Improves performance by limiting repaints */
 }
 
-/* Performance-optimized animation utility classes */
+/* --------------------------------- */
+/* ------ Animation Classes -------- */
+/* -- Composite animation classes -- */
+/* ------------ with ---------------  */
+/* -- hardware acceleration hints -- */
+/* --------------------------------- */
+
+/* ----- Simple Animations ----- */
+/* Optimized for minimal GPU usage on simple transitions */
 @utility animate-fade-in {
   animation: var(--anim-fade-in);
   will-change: opacity;
@@ -326,6 +338,13 @@
   will-change: opacity;
 }
 
+@utility animate-flash {
+  animation: var(--anim-flash);
+  will-change: opacity;
+}
+
+/* ----- Transform Animations ----- */
+/* Only use will-change for the specific properties being animated */
 @utility animate-fade-up {
   animation: var(--anim-fade-up);
   will-change: transform, opacity;
@@ -346,6 +365,21 @@
   will-change: transform;
 }
 
+@utility animate-slide-in-right {
+  animation: var(--anim-slide-in-right);
+  will-change: transform;
+}
+
+@utility animate-slide-in-bottom {
+  animation: var(--anim-slide-in-bottom);
+  will-change: transform;
+}
+
+@utility animate-slide-in-top {
+  animation: var(--anim-slide-in-top);
+  will-change: transform;
+}
+
 @utility animate-scale-up {
   animation: var(--anim-scale-up);
   will-change: transform;
@@ -356,15 +390,24 @@
   will-change: transform;
 }
 
-@utility animate-rotate {
-  animation: var(--anim-rotate);
+@utility animate-shake {
+  animation: var(--anim-shake);
   will-change: transform;
 }
 
+/* ----- Complex Animations ----- */
+/* Apply GPU acceleration hints for complex animations that benefit from it */
 @utility animate-flip {
   animation: var(--anim-flip);
   backface-visibility: hidden;
   will-change: transform;
+  transform: translateZ(0);
+}
+
+@utility animate-rotate {
+  animation: var(--anim-rotate);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 @utility animate-bounce {
@@ -385,31 +428,6 @@
 @utility animate-wiggle {
   animation: var(--anim-wiggle);
   will-change: transform;
-}
-
-@utility animate-slide-in-right {
-  animation: var(--anim-slide-in-right);
-  will-change: transform;
-}
-
-@utility animate-slide-in-bottom {
-  animation: var(--anim-slide-in-bottom);
-  will-change: transform;
-}
-
-@utility animate-slide-in-top {
-  animation: var(--anim-slide-in-top);
-  will-change: transform;
-}
-
-@utility animate-shake {
-  animation: var(--anim-shake);
-  will-change: transform;
-}
-
-@utility animate-flash {
-  animation: var(--anim-flash);
-  will-change: opacity;
 }
 
 @utility animate-zoom-in {
@@ -452,6 +470,7 @@
 @utility animate-spin {
   animation: var(--anim-spin);
   will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Performance utilities for scroll optimization */
@@ -461,68 +480,22 @@
 }
 
 /* Animation delay utilities */
-@utility delay-100 {
-  animation-delay: 100ms;
-}
-@utility delay-200 {
-  animation-delay: 200ms;
-}
-@utility delay-300 {
-  animation-delay: 300ms;
-}
-@utility delay-500 {
-  animation-delay: 500ms;
+@utility animation-delay-* {
+  /* prettier-ignore */
+  animation-delay: --value(integer)ms;
 }
 
 /* Animation duration utilities */
-@utility animation-duration-100 {
-  animation-duration: 100ms;
+@utility animation-duration-* {
+  /* prettier-ignore */
+  animation-duration: --value(integer)ms;
 }
-@utility animation-duration-200 {
-  animation-duration: 200ms;
-}
-@utility animation-duration-300 {
-  animation-duration: 300ms;
-}
-@utility animation-duration-500 {
-  animation-duration: 500ms;
-}
-@utility animation-duration-700 {
-  animation-duration: 700ms;
-}
-@utility animation-duration-1000 {
-  animation-duration: 1000ms;
-}
-@utility animation-duration-1500 {
-  animation-duration: 1500ms;
-}
-@utility animation-duration-2000 {
-  animation-duration: 2s;
-}
-@utility animation-duration-3000 {
-  animation-duration: 3s;
-}
-@utility animation-duration-5000 {
-  animation-duration: 5s;
-}
-@utility animation-duration-10000 {
-  animation-duration: 10s;
-}
+
 @utility animation-duration-infinite {
   animation-duration: infinite;
 }
-@utility animation-duration-0 {
-  animation-duration: 0ms;
-}
 
-/* Fixed element rendering optimization */
-@utility gpu-accelerated {
-  transform: translateZ(0); /* Force GPU acceleration */
-  backface-visibility: hidden;
-  perspective: 1000px;
-  transform-style: preserve-3d;
-}
-
+/* Animation fill mode utilities */
 @utility fill-forwards {
   animation-fill-mode: forwards;
 }
@@ -564,24 +537,6 @@
   transition: none !important;
 }
 
-/* Fixed element rendering optimization */
-@utility gpu-accelerated {
-  transform: translateZ(0); /* Force GPU acceleration */
-  backface-visibility: hidden;
-  perspective: 1000px;
-  transform-style: preserve-3d;
-}
-
-@utility fill-forwards {
-  animation-fill-mode: forwards;
-}
-@utility fill-backwards {
-  animation-fill-mode: backwards;
-}
-@utility fill-both {
-  animation-fill-mode: both;
-}
-
 /* Intersection Observer Animation Support */
 /* Base class for elements that will animate when in view */
 @utility animate-when-visible {
@@ -596,18 +551,4 @@
 @utility is-visible {
   opacity: 1;
   animation-play-state: running !important;
-}
-
-/* Animation play state utility classes */
-@utility animation-paused {
-  animation-play-state: paused !important;
-}
-
-@utility animation-running {
-  animation-play-state: running !important;
-}
-
-/* For elements that should animate only once when they appear */
-@utility animate-once {
-  animation-iteration-count: 1 !important;
 }
