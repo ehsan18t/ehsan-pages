@@ -59,7 +59,6 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
     align: "center",
     dragFree: false,
     containScroll: "trimSnaps",
-    draggable: true,
     dragThreshold: 5,
     duration: 30,
     direction: "ltr",
@@ -88,44 +87,13 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
     };
   }, [emblaApi, onSelect]);
 
-  // Touch performance optimization
-  useEffect(() => {
-    if (!emblaApi) return;
-    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
-      const handlePointerDown = () => {
-        document.documentElement.style.setProperty(
-          "--testimonial-duration-normal",
-          "0ms",
-        );
-        containerRef.current?.classList.add("touch-dragging");
-      };
-      const handlePointerUp = () => {
-        setTimeout(() => {
-          document.documentElement.style.setProperty(
-            "--testimonial-duration-normal",
-            "400ms",
-          );
-          containerRef.current?.classList.remove("touch-dragging");
-        }, 100);
-      };
-
-      emblaApi.on("pointerDown", handlePointerDown);
-      emblaApi.on("pointerUp", handlePointerUp);
-
-      return () => {
-        emblaApi.off("pointerDown", handlePointerDown);
-        emblaApi.off("pointerUp", handlePointerUp);
-      };
-    }
-  }, [emblaApi]);
-
   return (
     <div className="testimonial-section" ref={containerRef}>
-      <h2 className="text-4xl md:text-5xl font-doto font-bold mb-4 text-center testimonial-heading">
+      <h2 className="text-4xl md:text-5xl font-doto font-bold mb-4 text-center">
         <span className="text-[oklch(var(--accent-title))]">Client</span>{" "}
         Testimonials
       </h2>
-      <p className="text-foreground-muted text-center max-w-2xl mx-auto mb-16 testimonial-description">
+      <p className="text-foreground-muted text-center max-w-2xl mx-auto mb-16">
         Don't just take my word for it - here's what clients have to say about
         working with me.
       </p>

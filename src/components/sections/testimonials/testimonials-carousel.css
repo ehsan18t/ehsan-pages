@@ -20,20 +20,6 @@
 }
 
 /* Testimonial Heading Animations - Using animations.css */
-.testimonial-heading {
-  animation: var(--anim-fade-up);
-  animation-duration: 600ms;
-  animation-fill-mode: forwards;
-}
-
-.testimonial-description {
-  animation: var(--anim-fade-up);
-  animation-duration: 600ms;
-  animation-delay: 200ms;
-  animation-fill-mode: forwards;
-}
-
-/* Carousel Container - Improved touch handling */
 .testimonial-carousel-container {
   position: relative;
   overflow: visible;
@@ -54,8 +40,6 @@
   overflow: hidden;
   will-change: transform;
   border-radius: 1rem;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x; /* or 'pan-y' if vertical */
 }
 
 /* Carousel Container */
@@ -93,28 +77,16 @@
   position: relative;
   overflow: hidden;
   opacity: 0.4;
-  transform: translateY(30px);
-  transition: all var(--testimonial-duration-normal)
-    var(--testimonial-timing-function);
-  transform-style: preserve-3d; /* 3D acceleration */
-  transform: translateZ(0); /* Force GPU rendering */
-  -webkit-backface-visibility: hidden; /* Prevent flickering */
-  backface-visibility: hidden;
 }
 
 /* Use a single animation for the entire card when visible */
 .slide-visible .testimonial-card {
-  opacity: 1;
-  transform: translateY(0);
+  @apply animate-fade-in animation-duration-300 fill-forwards opacity-100;
   box-shadow: var(--testimonial-shadow-normal);
-  animation: var(--anim-scale-up);
-  animation-duration: 500ms;
-  animation-fill-mode: forwards;
 }
 
 .testimonial-card:hover {
   box-shadow: var(--testimonial-shadow-hover);
-  transform: translateY(-2px) translateZ(0);
 }
 
 /* Top accent border - simplified for performance */
@@ -201,11 +173,9 @@
   z-index: 5;
 }
 
-/* Navigation Buttons - FIXED: Prevent movement on hover */
 .testimonial-button {
   position: absolute;
   top: 50%;
-  /* IMPORTANT: Set transform-origin to center to prevent movement on hover */
   transform: translateY(-50%);
   transform-origin: center center;
   width: 2.5rem;
@@ -282,10 +252,7 @@
   justify-content: center;
   margin-top: 2rem;
   gap: 0.5rem;
-  animation: var(--anim-fade-up);
-  animation-duration: 500ms;
-  animation-delay: 300ms;
-  animation-fill-mode: forwards;
+  @apply animate-fade-up animation-duration-500 fill-forwards animation-delay-300;
 }
 
 .testimonial-dot {
