@@ -59,7 +59,6 @@
 .embla:hover .slider-controls,
 .slider-controls.visible {
   @apply opacity-100 bg-black/5;
-  backdrop-filter: blur(3px);
 }
 
 /* Enable pointer events for controls */
