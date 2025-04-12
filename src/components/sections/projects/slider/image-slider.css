@@ -1,16 +1,13 @@
 @reference "@/assets/styles/global.css";
 
-/* Core Embla Styles (Minimal required) */
+/* --- Core Embla Styles --- */
 .embla {
   @apply relative w-full overflow-hidden;
-  /* Apply your original slider base styles */
   aspect-ratio: 16/10;
-  border-radius: 0.75rem 0.75rem 0 0; /* Keep only top radius? */
-  /* border-radius: 0.75rem; */ /* Or full radius? */
+  border-radius: 0.75rem 0.75rem 0 0;
   background-color: #f0f0f0;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   transition: box-shadow 0.5s cubic-bezier(0.2, 0, 0.2, 1);
-  /* Add user-select none to prevent text selection during swipe */
   user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
@@ -21,43 +18,20 @@
 }
 
 .embla__viewport {
-  @apply h-full w-full overflow-hidden; /* This is crucial for Embla */
+  @apply h-full w-full overflow-hidden;
 }
 
 .embla__container {
-  @apply flex h-full; /* Embla handles width calculation */
-  /* Your original track transition - Embla handles movement, maybe remove this? */
-  /* transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); */
-  will-change: transform; /* Still potentially useful */
+  @apply flex h-full;
+  will-change: transform;
 }
 
 .embla__slide {
-  @apply relative h-full overflow-hidden flex-[0_0_100%]; /* Crucial: Each slide takes 100% */
-  /* Your original slide transition */
+  @apply relative h-full overflow-hidden flex-[0_0_100%];
   transition: opacity 0.4s ease-out;
 }
 
-/* --- Keep all your original styles below, adjusting selectors if needed --- */
-
-/* Loading state for images - applied to embla__slide */
-.embla__slide::before {
-  content: "";
-  @apply absolute inset-0 z-[1];
-  background: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
-  background-size: 200% 100%;
-  animation: loading 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  transition: opacity 0.3s ease-out;
-  /* Ensure pointer events none so image can be interacted with */
-  pointer-events: none;
-}
-
-/* Add a class for loading state if you implement JS logic for it */
-.embla__slide.is-loading::before {
-  opacity: 1;
-}
-
-/* Images - applied to slider-image inside embla__slide */
+/* --- Images --- */
 .slider-image {
   @apply block h-full w-full;
   transition: all 0.8s cubic-bezier(0.2, 0, 0.2, 1);
@@ -65,13 +39,12 @@
   will-change: transform, filter;
 }
 
-/* Image hover effect */
 .embla__slide:has(.slider-image:hover) .slider-image {
   transform: scale(1.05);
   filter: brightness(1.05) contrast(1.05);
 }
 
-/* Controls visibility - applied relative to .embla */
+/* --- Controls --- */
 .slider-controls {
   @apply absolute inset-0 pointer-events-none;
   opacity: 0;
@@ -80,22 +53,20 @@
     backdrop-filter 0.5s cubic-bezier(0.2, 0, 0.2, 1);
   backdrop-filter: blur(0px);
   background-color: rgba(0, 0, 0, 0);
-  z-index: 1; /* Ensure controls are above slides */
+  z-index: 1;
 }
 
-/* Make visible when parent .embla is hovered */
 .embla:hover .slider-controls {
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Ensure .visible class still works for explicit control */
 .slider-controls.visible {
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Pointer events for buttons and pagination */
+/* Enable pointer events for controls */
 .slider-button,
 .slider-pagination,
 .slider-counter,
@@ -103,9 +74,7 @@
   pointer-events: auto;
 }
 
-/* --- Keep ALL your other styles for buttons, pagination, counter, fullscreen, lightbox etc. --- */
-/* --- They should work as before, as their structure hasn't changed significantly --- */
-
+/* --- Navigation Buttons --- */
 .slider-button {
   @apply absolute top-1/2 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
   transform: translateY(-50%) translateZ(0);
@@ -126,13 +95,11 @@
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Use Embla's disabled state */
 .slider-button:disabled {
-  @apply opacity-30 cursor-not-allowed pointer-events-none; /* Ensure pointer-events */
+  @apply opacity-30 cursor-not-allowed pointer-events-none;
 }
 
 .slider-button:active:not(:disabled) {
-  /* Only apply active state if not disabled */
   transform: translateY(-50%) scale(0.92);
   transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1);
 }
@@ -155,9 +122,9 @@
   transform: scale(1.15);
 }
 
-/* Pagination dots */
+/* --- Pagination Dots --- */
 .slider-pagination {
-  @apply absolute bottom-6 left-1/2 flex pointer-events-auto z-[5]; /* Ensure z-index */
+  @apply absolute bottom-6 left-1/2 flex pointer-events-auto z-[5];
   transform: translateX(-50%) translateZ(0);
   gap: 0.6rem;
   padding: 0.5rem 1rem;
@@ -168,7 +135,7 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   transition:
     transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.4s ease; /* Added transition */
+    box-shadow 0.4s ease;
 }
 
 .slider-pagination:hover {
@@ -197,9 +164,9 @@
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
 }
 
-/* Counter */
+/* --- Counter --- */
 .slider-counter {
-  @apply absolute bottom-6 right-6 text-white pointer-events-auto z-[5]; /* Ensure z-index */
+  @apply absolute bottom-6 right-6 text-white pointer-events-auto z-[5];
   background-color: rgba(0, 0, 0, 0.45);
   padding: 0.5rem 1rem;
   border-radius: 1.5rem;
@@ -220,7 +187,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
-/* Fullscreen button */
+/* --- Fullscreen Button --- */
 .slider-fullscreen {
   @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
   background-color: rgba(0, 0, 0, 0.45);
@@ -251,7 +218,7 @@
   transform: scale(1.12);
 }
 
-/* Slide indicator using CSS variables set in the component */
+/* --- Slide Progress Indicator --- */
 .embla::after {
   content: "";
   @apply absolute bottom-0 left-0 z-[6];
@@ -263,34 +230,27 @@
   width: calc(100% / var(--slider-image-count, 1));
   transform: translateX(calc(var(--current-index, 0) * 100%));
   box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
-  pointer-events: none; /* Don't interfere with clicks/touch */
+  pointer-events: none;
 }
 
-/* Lightbox styles */
+/* --- Lightbox --- */
 .slider-lightbox {
   @apply fixed inset-0 z-[9999] flex items-center justify-center;
-  width: 100vw; /* Use vw/vh for consistency */
+  width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.95);
   animation: fade-in 0.5s cubic-bezier(0.2, 0, 0.2, 1);
   backdrop-filter: blur(12px);
-  /* overflow-y: auto; */ /* Let content handle overflow */
 }
 
-/* Classes for managing body scroll/layout shift */
+/* Body scroll management */
 html.lightbox-open {
-  overflow: hidden !important; /* Force override */
+  overflow: hidden !important;
   margin-right: var(--scrollbar-width, 0px);
 }
 
-html.lightbox-closing {
-  /* Smoothly remove margin */
-  transition: margin-right 0.3s ease-out;
-  margin-right: 0;
-}
-
 body.lightbox-open {
-  overflow: hidden !important; /* Ensure body doesn't scroll */
+  overflow: hidden !important;
 }
 
 .slider-lightbox-content {
@@ -300,15 +260,15 @@ body.lightbox-open {
 
 .slider-lightbox-image {
   @apply rounded;
-  max-width: 90vw; /* Use viewport units */
-  max-height: 85vh; /* Use viewport units */
+  max-width: 90vw;
+  max-height: 85vh;
   object-fit: contain;
   animation: zoom-in-3d 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
   will-change: transform, opacity;
 }
 
-/* Lightbox close button */
+/* Lightbox Close Button */
 .slider-lightbox-close {
   @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer z-10 text-white rounded-full;
   width: 2.5rem;
@@ -335,9 +295,9 @@ body.lightbox-open {
   transform: rotate(90deg);
 }
 
-/* Lightbox navigation */
+/* Lightbox Navigation */
 .slider-lightbox-nav {
-  @apply absolute top-1/2 flex items-center justify-center cursor-pointer text-white rounded-full z-[15]; /* Ensure above image */
+  @apply absolute top-1/2 flex items-center justify-center cursor-pointer text-white rounded-full z-[15];
   transform: translateY(-50%) translateZ(0);
   width: 3rem;
   height: 3rem;
@@ -348,7 +308,6 @@ body.lightbox-open {
   will-change: transform, background-color;
 }
 
-/* Ensure disabled state is styled */
 .slider-lightbox-nav:disabled {
   opacity: 0.3;
   cursor: not-allowed;
@@ -375,9 +334,9 @@ body.lightbox-open {
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Lightbox counter */
+/* Lightbox Counter */
 .slider-lightbox-counter {
-  @apply absolute bottom-6 left-1/2 text-white z-[10]; /* Ensure above image */
+  @apply absolute bottom-6 left-1/2 text-white z-[10];
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.6);
   padding: 0.6rem 1.2rem;
@@ -391,18 +350,7 @@ body.lightbox-open {
   animation: slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* --- Keep ALL your animations (@keyframes) --- */
-
-/* Add responsive styles for the counter */
-@media (max-width: 768px) {
-  .slider-lightbox-counter {
-    bottom: 2rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-
-/* Animations - keeping all original animations */
+/* --- Animations --- */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -436,21 +384,8 @@ body.lightbox-open {
   }
 }
 
-@keyframes loading {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* --- Keep ALL your responsive styles (@media) --- */
+/* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
-  /* Adjust lightbox nav positions etc. if needed */
   .slider-lightbox-nav.slider-prev {
     left: 1rem;
   }
@@ -472,11 +407,17 @@ body.lightbox-open {
   }
 }
 
-/* Keep accessibility/reduced motion styles */
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  /* Apply to Embla elements too if needed */
   .embla__container,
-  .embla__slide {
+  .embla__slide,
+  .slider-image,
+  .slider-button,
+  .slider-dot,
+  .slider-fullscreen,
+  .slider-lightbox-image,
+  .slider-lightbox-nav,
+  .slider-lightbox-close {
     transition: none;
     animation: none;
   }
