@@ -19,7 +19,7 @@ const AUTOPLAY_INTERVAL = 5000;
 const TestimonialSlide = React.memo(
   ({ testimonial }: { testimonial: Testimonial }) => (
     <div className="flex-[0_0_100%] min-w-0 px-4 md:px-8">
-      <div className="testimonial-card bg-gradient-to-br from-[oklch(var(--accent-bg)/0.08)] to-[oklch(var(--accent-bg)/0.03)] backdrop-blur-md border border-[oklch(var(--accent-bg)/0.15)] rounded-2xl p-8 shadow-lg min-h-[350px] flex flex-col relative overflow-hidden select-none transform-gpu">
+      <div className="bg-gradient-to-br from-[oklch(var(--accent-bg)/0.08)] to-[oklch(var(--accent-bg)/0.03)] backdrop-blur-md border border-[oklch(var(--accent-bg)/0.15)] rounded-2xl p-8 shadow-lg min-h-[350px] flex flex-col relative overflow-hidden select-none transform-gpu">
         {/* Top accent border */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[oklch(var(--accent-text)/0.7)] to-[oklch(var(--accent-title))] rounded-t-md"></div>
 
