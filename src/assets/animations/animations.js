@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const elementsToAnimate = document.querySelectorAll(".animate-when-visible");
 
-  // Configure the observer
   const observerOptions = {
     root: null,
     rootMargin: "0px",
@@ -13,10 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (entry.isIntersecting) {
         entry.target.classList.add("is-visible");
 
-        // Optional: Stop observing after animation is triggered
-        // Uncomment if you want animations to happen only once
-        // observer.unobserve(entry.target);
-      } else {
+        // Stop observing after animation is triggered
+        // for "animate-once" elements
+        if (entry.target.classList.contains("animate-once")) {
+          observer.unobserve(entry.target);
+        }
+      } else if (!entry.target.classList.contains("animate-once")) {
+        // Only remove the class if it's not an "animate-once" element
         entry.target.classList.remove("is-visible");
       }
     });
