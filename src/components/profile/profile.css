@@ -18,7 +18,7 @@
 }
 
 .gradient-border {
-  @apply absolute top-0 left-0 w-full h-full rounded-full p-5 z-10;
+  @apply animated animate-spin animation-duration-5000 absolute top-0 left-0 w-full h-full rounded-full p-5 z-10;
   background: conic-gradient(
     from 0deg,
     rgb(var(--background)),
@@ -28,19 +28,9 @@
     oklch(var(--accent-500)),
     oklch(var(--accent-300))
   );
-  animation: rotate-gradient 5s linear infinite;
 }
 
 .profile-picture {
   @apply rounded-full z-20 object-cover bg-background;
   @apply h-[calc(var(--sm-pp-size)-var(--sm-pp-b-size))] w-[calc(var(--sm-pp-size)-var(--sm-pp-b-size))] md:h-[calc(var(--md-pp-size)-var(--md-pp-b-size))] md:w-[calc(var(--md-pp-size)-var(--md-pp-b-size))] lg:h-[calc(var(--lg-pp-size)-var(--lg-pp-b-size))] lg:w-[calc(var(--lg-pp-size)-var(--lg-pp-b-size))];
-}
-
-@keyframes rotate-gradient {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }

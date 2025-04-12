@@ -15,8 +15,8 @@ const { size, duration = 10, rotation = 0, opacity = 100, starOnly = false, clas
 
 {
   Astro.slots.has("default") && (
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-      <div style={`animation: custom-spin ${duration}s linear infinite; width: ${size}rem; height: ${size}rem; transform: rotate(${rotation}deg); --initial-rotation: ${rotation}deg;`}>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-when-visible">
+      <div class="animate-when-visible" style={`animation: custom-spin ${duration}s linear infinite; width: ${size}rem; height: ${size}rem; transform: rotate(${rotation}deg); --initial-rotation: ${rotation}deg;`}>
         <slot />
       </div>
     </div>
