@@ -311,8 +311,17 @@
 /* ------------------------------- */
 /* ----- Performance Utility ----- */
 /* ------------------------------- */
+/* Forces rendering to be handled by the GPU rather than the CPU. Use only for complex animations. */
+/* Use for fixed elements or custom animations not covered by existing classes */
+@utility gpu-accelerated {
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
 
 /* Base class for all animated elements that applies core performance optimizations. */
+/* Apply to parent containers with multiple animations inside */
 @utility animated {
   backface-visibility: hidden;
   transform-style: preserve-3d;
@@ -541,6 +550,7 @@
 /* Base class for elements that will animate when in view */
 @utility animate-when-visible {
   opacity: 0; /* Start invisible */
+  transition: opacity 0.2s ease-out;
   will-change: transform, opacity;
   visibility: visible; /* Keep element in layout */
   animation-play-state: paused !important;

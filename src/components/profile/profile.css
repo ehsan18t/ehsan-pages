@@ -18,7 +18,7 @@
 }
 
 .gradient-border {
-  @apply animated animate-spin animation-duration-5000 absolute top-0 left-0 w-full h-full rounded-full p-5 z-10;
+  @apply animate-spin animation-duration-5000 absolute top-0 left-0 w-full h-full rounded-full p-5 z-10;
   background: conic-gradient(
     from 0deg,
     rgb(var(--background)),
