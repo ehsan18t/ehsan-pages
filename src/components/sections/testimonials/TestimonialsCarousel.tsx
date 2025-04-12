@@ -19,7 +19,7 @@ const AUTOPLAY_INTERVAL = 5000;
 
 const TestimonialSlide = React.memo(
   ({ testimonial }: { testimonial: Testimonial }) => (
-    <div className="flex-[0_0_100%] min-w-0 px-4 md:px-8">
+    <div className="flex-[0_0_100%] min-w-0 px-4 md:px-8 will-change-transform">
       <div className="bg-gradient-to-br from-[oklch(var(--accent-bg)/0.08)] to-[oklch(var(--accent-bg)/0.03)] backdrop-blur-md border border-[oklch(var(--accent-bg)/0.15)] rounded-2xl p-8 shadow-lg min-h-[350px] flex flex-col relative overflow-hidden select-none transform-gpu">
         {/* Top accent border */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[oklch(var(--accent-text)/0.7)] to-[oklch(var(--accent-title))] rounded-t-md"></div>
@@ -58,7 +58,16 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
   testimonials,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  // Fixed options with correct properties
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "start",
+    dragFree: false,
+    containScroll: "trimSnaps",
+    dragThreshold: 20,
+    duration: 15, // Using correct property 'duration' instead of 'speed'
+    inViewThreshold: 0.3, // Improves touch performance
+  });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
   const [autoplayActive, setAutoplayActive] = useState(false);
@@ -112,7 +121,7 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  // Set up embla carousel
+  // Set up embla carousel with reinitialization for reliability
   useEffect(() => {
     if (!emblaApi) return;
 
@@ -120,7 +129,23 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
     setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
 
+    // Proper initialization sequence for better performance
+    const timer = setTimeout(() => {
+      emblaApi.reInit();
+      // Additional initialization for touch performance
+      if ("ontouchstart" in window) {
+        emblaApi.on("pointerDown", () => {
+          // Improves touch response by removing transitions on touch
+          const slides = document.querySelectorAll(".flex-[0_0_100%]");
+          slides.forEach((slide) => {
+            slide.classList.add("touch-action-pan-y");
+          });
+        });
+      }
+    }, 50);
+
     return () => {
+      clearTimeout(timer);
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
@@ -136,11 +161,11 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
         working with me.
       </p>
 
-      {/* Carousel wrapper with padding for buttons */}
-      <div className="px-0 relative">
-        {/* Carousel */}
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex">
+      {/* Improved carousel wrapper with better touch behavior */}
+      <div className="px-0 relative touch-pan-y">
+        {/* Carousel with GPU acceleration */}
+        <div className="overflow-hidden will-change-transform" ref={emblaRef}>
+          <div className="flex transform-gpu will-change-transform touch-pan-y">
             {testimonials?.map((testimonial) => (
               <TestimonialSlide
                 key={testimonial.id}
@@ -150,35 +175,35 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
           </div>
         </div>
 
-        {/* Navigation arrows - now positioned outside the overflow:hidden container */}
+        {/* Simplified navigation arrows for better touch response */}
         <div className="navigation-container absolute inset-0 pointer-events-none">
-          <MdChevronLeft
-            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+          <button
+            className="pointer-events-auto  cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)] transform-gpu"
             onClick={scrollPrev}
             aria-label="Previous testimonial"
-            onMouseEnter={() => setAutoplayActive(false)}
-            onMouseLeave={() => setAutoplayActive(true)}
-          />
+          >
+            <MdChevronLeft className="w-7 h-7" />
+          </button>
 
-          <MdChevronRight
-            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 right-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+          <button
+            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 right-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)] transform-gpu"
             onClick={scrollNext}
             aria-label="Next testimonial"
-            onMouseEnter={() => setAutoplayActive(false)}
-            onMouseLeave={() => setAutoplayActive(true)}
-          />
+          >
+            <MdChevronRight className="w-7 h-7" />
+          </button>
         </div>
       </div>
 
-      {/* Dots navigation */}
+      {/* Streamlined dot navigation */}
       <div className="flex justify-center mt-8 space-x-2">
         {scrollSnaps.map((_, index) => (
           <button
             key={index}
-            className={`h-3 transition-all duration-300 rounded-full ${
+            className={`h-3 rounded-full transform-gpu ${
               index === selectedIndex
                 ? "w-8 bg-[oklch(var(--accent-text))]"
-                : "w-3 bg-[oklch(var(--accent-text)/0.3)] hover:bg-[oklch(var(--accent-text)/0.5)]"
+                : "w-3 bg-[oklch(var(--accent-text)/0.3)]"
             }`}
             onClick={() => scrollTo(index)}
             aria-label={`View testimonial ${index + 1}`}
