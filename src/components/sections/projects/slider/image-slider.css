@@ -62,40 +62,35 @@
   backdrop-filter: blur(3px);
 }
 
-/* Control elements share pointer events */
-.slider-control {
+/* Enable pointer events for controls */
+.slider-button,
+.slider-pagination,
+.slider-counter,
+.slider-fullscreen {
   pointer-events: auto;
-}
-
-/* --- Shared Control Styles --- */
-.slider-btn {
-  @apply bg-black/45 border border-white/15 flex items-center justify-center cursor-pointer text-white gpu-accelerated;
-  box-shadow: var(--slider-shadow-normal);
-  transition:
-    background-color var(--slider-duration-normal) ease,
-    transform var(--slider-duration-normal) var(--slider-timing-function),
-    border-color var(--slider-duration-normal) ease;
-  will-change: transform, background-color;
-}
-
-.slider-btn:hover:not(:disabled) {
-  background-color: var(--slider-bg-hover);
-  box-shadow: var(--slider-shadow-hover);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-.slider-btn:disabled {
-  @apply opacity-30 cursor-not-allowed pointer-events-none;
 }
 
 /* --- Navigation Buttons --- */
 .slider-button {
-  @apply slider-btn absolute h-11 w-11 rounded-[50%] top-1/2 z-[5];
+  @apply absolute h-11 w-11 bg-black/50 border border-white/20 rounded-[50%] top-1/2 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white gpu-accelerated;
   transform: translateY(-50%);
+  transition:
+    background-color var(--slider-duration-normal) ease,
+    transform var(--slider-duration-normal) var(--slider-timing-function),
+    border-color var(--slider-duration-normal) ease;
+  box-shadow: var(--slider-shadow-normal);
+  will-change: transform, background-color;
 }
 
 .slider-button:hover {
+  background-color: var(--slider-bg-hover);
   transform: translateY(-50%) scale(1.08);
+  box-shadow: var(--slider-shadow-hover);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.slider-button:disabled {
+  @apply opacity-30 cursor-not-allowed pointer-events-none;
 }
 
 .slider-button:active:not(:disabled) {
@@ -122,7 +117,7 @@
 
 /* --- Pagination Dots --- */
 .slider-pagination {
-  @apply absolute bg-black/45 py-2 px-4 border border-white/15 rounded-4xl backdrop-blur-xs bottom-6 left-1/2 flex gap-2.5 z-[5] slider-control;
+  @apply absolute bg-black/45 py-2 px-4 border border-white/15 rounded-4xl backdrop-blur-xs bottom-6 left-1/2 flex gap-2.5 pointer-events-auto z-[5];
   transform: translateX(-50%);
   box-shadow: var(--slider-shadow-normal);
   transition: transform var(--slider-duration-normal)
@@ -152,25 +147,29 @@
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
 }
 
-/* --- Counter & Text Elements --- */
-.slider-text {
-  @apply backdrop-blur-xs border border-white/15 text-white;
-  box-shadow: var(--slider-shadow-normal);
-}
-
+/* --- Counter --- */
 .slider-counter {
-  @apply absolute bg-black/45 py-1.5 px-3 text-sm rounded-3xl bottom-6 right-6 font-semibold z-[5] animate-fade-up fill-forwards slider-control slider-text;
+  @apply absolute bg-black/45 border border-white/15 font-semibold backdrop-blur-xs py-1.5 px-3 text-sm rounded-3xl bottom-6 right-6 text-white pointer-events-auto z-[5] animate-fade-up fill-forwards;
+  box-shadow: var(--slider-shadow-normal);
   letter-spacing: 0.6px;
 }
 
 /* --- Fullscreen Button --- */
 .slider-fullscreen {
-  @apply slider-btn rounded-[50%] w-8 h-8 top-6 right-6 absolute z-[5];
+  @apply absolute bg-black/45 rounded-[50%] border border-white/15 w-8 h-8 top-6 right-6 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
+  transition:
+    transform var(--slider-duration-normal) var(--slider-timing-function),
+    background-color var(--slider-duration-normal) ease;
+  box-shadow: var(--slider-shadow-normal);
   backdrop-filter: blur(6px);
+  will-change: transform, background-color;
 }
 
 .slider-fullscreen:hover {
+  background-color: var(--slider-bg-hover);
   transform: scale(1.18);
+  box-shadow: var(--slider-shadow-hover);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .slider-fullscreen svg {
@@ -206,13 +205,13 @@
 }
 
 /* Body scroll management */
-html.lightbox-open,
-body.lightbox-open {
+html.lightbox-open {
   overflow: hidden !important;
+  margin-right: var(--scrollbar-width, 0px);
 }
 
-html.lightbox-open {
-  margin-right: var(--scrollbar-width, 0px);
+body.lightbox-open {
+  overflow: hidden !important;
 }
 
 .slider-lightbox-content {
@@ -230,17 +229,16 @@ html.lightbox-open {
 
 /* Lightbox Close Button */
 .slider-lightbox-close {
-  @apply slider-btn top-6 right-6 absolute z-10 rounded-full animate-fade-in fill-forwards gpu-accelerated;
+  @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer z-10 text-white rounded-full animate-fade-in fill-forwards gpu-accelerated;
   width: 2.5rem;
   height: 2.5rem;
   border: none;
   background-color: rgba(255, 30, 30, 0.6);
-}
-
-.slider-lightbox-close:hover {
-  background-color: rgba(255, 30, 30, 0.9);
-  transform: scale(1.15);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition:
+    background-color var(--slider-duration-normal) ease,
+    transform var(--slider-duration-normal) var(--slider-timing-function),
+    box-shadow var(--slider-duration-normal) ease;
+  box-shadow: var(--slider-shadow-normal);
 }
 
 .slider-lightbox-close svg {
@@ -249,20 +247,37 @@ html.lightbox-open {
   transition: transform var(--slider-duration-short) ease;
 }
 
+.slider-lightbox-close:hover {
+  background-color: rgba(255, 30, 30, 0.9);
+  transform: scale(1.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
 .slider-lightbox-close:hover svg {
   transform: rotate(90deg);
 }
 
 /* Lightbox Navigation */
 .slider-lightbox-nav {
-  @apply slider-btn absolute top-1/2 rounded-full z-[15] animate-fade-in fill-forwards gpu-accelerated;
+  @apply absolute top-1/2 flex items-center justify-center cursor-pointer text-white rounded-full z-[15] animate-fade-in fill-forwards gpu-accelerated;
   transform: translateY(-50%);
   width: 3rem;
   height: 3rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition:
+    background-color var(--slider-duration-normal) ease,
+    transform var(--slider-duration-normal) var(--slider-timing-function),
+    box-shadow var(--slider-duration-normal) ease,
+    border-color var(--slider-duration-normal) ease;
+  box-shadow: var(--slider-shadow-normal);
+  will-change: transform, background-color;
 }
 
-.slider-lightbox-nav:hover:not(:disabled) {
-  transform: translateY(-50%) scale(1.08);
+.slider-lightbox-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .slider-lightbox-nav.slider-prev {
@@ -278,14 +293,24 @@ html.lightbox-open {
   height: 1.8rem;
 }
 
+.slider-lightbox-nav:hover:not(:disabled) {
+  background-color: var(--slider-bg-hover);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: var(--slider-shadow-hover);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
 /* Lightbox Counter */
 .slider-lightbox-counter {
-  @apply absolute bottom-6 left-1/2 z-[10] animate-fade-up fill-forwards gpu-accelerated slider-text;
+  @apply absolute bottom-6 left-1/2 text-white z-[10] animate-fade-up fill-forwards gpu-accelerated;
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.6);
   padding: 0.6rem 1.2rem;
   border-radius: 2rem;
   font-size: 1rem;
+  box-shadow: var(--slider-shadow-normal);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   font-weight: 600;
   letter-spacing: 0.6px;
 }
@@ -298,8 +323,7 @@ html.lightbox-open {
   .slider-lightbox-nav.slider-next {
     right: 1rem;
   }
-  .slider-lightbox-close,
-  .slider-lightbox-counter {
+  .slider-lightbox-close {
     top: 1rem;
     right: 1rem;
   }
@@ -319,9 +343,12 @@ html.lightbox-open {
   .embla__container,
   .embla__slide,
   .slider-image,
-  .slider-btn,
+  .slider-button,
   .slider-dot,
-  .slider-lightbox-image {
+  .slider-fullscreen,
+  .slider-lightbox-image,
+  .slider-lightbox-nav,
+  .slider-lightbox-close {
     @apply reduced-motion;
   }
 }
