@@ -28,31 +28,30 @@ const testimonials = [
 
 <section class="testimonial-section" id="testimonials">
   <!-- Background Elements -->
+  <h2 class="text-4xl md:text-5xl font-doto font-bold mb-4 text-center">
+    <span class="text-[oklch(var(--accent-title))]">Client</span>{" "}
+    Testimonials
+  </h2>
+  <p class="text-foreground-muted text-center max-w-2xl mx-auto mb-16">Don't just take my word for it - here's what clients have to say about working with me.</p>
+  <div class="testimonial-carousel-container relative">
+    <!-- Left Navigation Arrow -->
+    <div class="absolute inset-0 pointer-events-none z-10">
+      <button class="testimonial-btn-base testimonial-prev" aria-label="Previous testimonial">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
+        </svg>
+      </button>
 
-  <div class="max-w-6xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-doto font-bold mb-4 text-center">
-      <span class="text-[oklch(var(--accent-title))]">Client</span>{" "}
-      Testimonials
-    </h2>
-    <p class="text-foreground-muted text-center max-w-2xl mx-auto mb-16">Don't just take my word for it - here's what clients have to say about working with me.</p>
-    <div class="testimonial-carousel-container relative">
-      <!-- Left Navigation Arrow -->
-      <div class="absolute inset-0 pointer-events-none z-10">
-        <button class="testimonial-btn-base testimonial-prev" aria-label="Previous testimonial">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
-          </svg>
-        </button>
+      <!-- Right Navigation Arrow -->
+      <button class="testimonial-btn-base testimonial-next" aria-label="Next testimonial">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+        </svg>
+      </button>
+    </div>
 
-        <!-- Right Navigation Arrow -->
-        <button class="testimonial-btn-base testimonial-next" aria-label="Next testimonial">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
-          </svg>
-        </button>
-      </div>
-
-      <div class="testimonial-carousel relative min-h-[370px]">
+    <div class="testimonial-carousel-container">
+      <div class="testimonial-carousel-viewport">
         {
           testimonials.map((testimonial, index) => (
             <div class={`testimonial-slide ${index === 0 ? "slide-visible" : ""}`} data-index={index}>
@@ -78,11 +77,11 @@ const testimonials = [
           ))
         }
       </div>
+    </div>
 
-      <!-- Navigation Dots -->
-      <div class="testimonial-pagination">
-        {testimonials.map((_, index) => <button class={`testimonial-dot ${index === 0 ? "testimonial-dot-active" : "testimonial-dot-inactive"}`} data-index={index} aria-label={`View testimonial ${index + 1}`} />)}
-      </div>
+    <!-- Navigation Dots -->
+    <div class="testimonial-pagination">
+      {testimonials.map((_, index) => <button class={`testimonial-dot ${index === 0 ? "testimonial-dot-active" : "testimonial-dot-inactive"}`} data-index={index} aria-label={`View testimonial ${index + 1}`} />)}
     </div>
   </div>
 </section>
@@ -121,7 +120,7 @@ const testimonials = [
       }
     });
 
-    function showTestimonial(index: number): void {
+    function showTestimonial(index: number, reverseAnimation = false): void {
       if (isAnimating || index === currentIndex) return;
       isAnimating = true;
 
@@ -141,11 +140,12 @@ const testimonials = [
       });
 
       // Hide current slide
-      currentSlide.classList.add("leaving");
+      const animationClass = reverseAnimation ? "entering" : "leaving";
+      currentSlide.classList.add(animationClass);
 
       // Wait for animation to finish
       setTimeout(() => {
-        currentSlide.classList.remove("leaving", "slide-visible");
+        currentSlide.classList.remove(animationClass, "slide-visible");
         currentSlide.style.display = "none";
 
         // Show next slide
@@ -171,7 +171,7 @@ const testimonials = [
 
     function prevTestimonial(): void {
       const newIndex = (currentIndex - 1 + slides.length) % slides.length;
-      showTestimonial(newIndex);
+      showTestimonial(newIndex, true);
     }
 
     function startAutoplay(): void {

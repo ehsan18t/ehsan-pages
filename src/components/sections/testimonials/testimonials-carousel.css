@@ -17,18 +17,13 @@
 
 /* Testimonial Heading Animations - Using animations.css */
 .testimonial-carousel-container {
-  @apply relative overflow-visible select-none cursor-grab;
+  @apply relative min-h-90 overflow-visible select-none cursor-grab;
 }
 
 /* Carousel Viewport */
 .testimonial-carousel-viewport {
   overflow: hidden;
   border-radius: 1rem;
-}
-
-/* Carousel Container */
-.testimonial-carousel-slides {
-  display: flex;
 }
 
 /* Individual Slide */
@@ -49,12 +44,11 @@
 }
 
 .testimonial-slide.entering {
-  @apply animate-fade-in animation-duration-500 fill-forwards;
+  @apply animate-fade-out-up animation-duration-500 fill-forwards;
 }
 
 .testimonial-slide.leaving {
-  opacity: 0;
-  transition: opacity 0.5s var(--testimonial-timing-function);
+  @apply animate-fade-out-down animation-duration-500 fill-forwards;
 }
 
 /* Card Design - Single animation for better performance */
