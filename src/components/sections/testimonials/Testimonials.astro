@@ -307,13 +307,13 @@ const testimonials = [
     const nextBtn = document.querySelector(".testimonial-nav-next");
 
     let currentIndex = 0;
-    let interval;
+    let interval: any;
     let isAnimating = false;
     const intervalTime = 5000; // 5 seconds
     const intervalTimeWithUserInteraction = 10000; // 10 seconds
     const animationDuration = 500; // Match the CSS duration
 
-    function showTestimonial(index) {
+    function showTestimonial(index: number) {
       if (isAnimating || index === currentIndex) return;
       isAnimating = true;
 
@@ -332,13 +332,13 @@ const testimonials = [
       }
 
       // Set up next item to enter
-      nextItem.style.display = "block";
+      (nextItem as HTMLElement).style.display = "block";
 
       // Wait for exit animation to finish before starting entrance
       setTimeout(() => {
         if (currentItem) {
           currentItem.classList.remove("leaving");
-          currentItem.style.display = "none";
+          (currentItem as HTMLElement).style.display = "none";
         }
 
         nextItem.classList.add("active", "entering");
