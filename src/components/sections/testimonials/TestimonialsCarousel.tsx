@@ -56,7 +56,7 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
     loop: true,
     containScroll: "trimSnaps",
     skipSnaps: true,
-    duration: 25,
+    duration: 15,
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
