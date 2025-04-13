@@ -168,7 +168,7 @@ const testimonials = [
       }
     });
 
-    function showTestimonial(index: number, reverseAnimation = false): void {
+    function showTestimonial(index: number, reverseDirection = false): void {
       if (isAnimating || index === currentIndex) return;
       isAnimating = true;
 
@@ -187,29 +187,40 @@ const testimonials = [
         }
       });
 
-      // Hide current slide
-      const animationClass = reverseAnimation ? "entering" : "leaving";
-      currentSlide.classList.add(animationClass);
+      // Make sure next slide is ready for animation
+      nextSlide.style.display = "block";
+
+      // Position the next slide correctly based on direction
+      if (reverseDirection) {
+        nextSlide.classList.add("position-left");
+      } else {
+        nextSlide.classList.add("position-right");
+      }
+
+      // Force a reflow before animations start
+      void nextSlide.offsetHeight;
+
+      // Start animations
+      if (reverseDirection) {
+        currentSlide.classList.add("slide-exit-right");
+        nextSlide.classList.add("slide-enter-from-left");
+      } else {
+        currentSlide.classList.add("slide-exit-left");
+        nextSlide.classList.add("slide-enter-from-right");
+      }
 
       // Wait for animation to finish
       setTimeout(() => {
-        currentSlide.classList.remove(animationClass, "slide-visible");
+        // Remove animation classes and reset slide states
+        currentSlide.classList.remove("slide-visible", "slide-exit-left", "slide-exit-right");
+        nextSlide.classList.remove("position-left", "position-right", "slide-enter-from-left", "slide-enter-from-right");
+
         currentSlide.style.display = "none";
-
-        // Show next slide
-        nextSlide.style.display = "block";
-
-        // Force a reflow to make sure display:block is applied before adding animation class
-        void nextSlide.offsetHeight;
-
         nextSlide.classList.add("slide-visible");
 
-        setTimeout(() => {
-          isAnimating = false;
-        }, 500);
-      }, 500);
-
-      currentIndex = index;
+        isAnimating = false;
+        currentIndex = index;
+      }, 500); // Match this with the CSS animation duration
     }
 
     function nextTestimonial(): void {
@@ -241,11 +252,6 @@ const testimonials = [
         slide.classList.remove("slide-visible");
       }
     });
-
-    // Set default cursor style for carousel container
-    if (carouselContainer) {
-      carouselContainer.style.cursor = "grab";
-    }
 
     // Set up event listeners
     dots.forEach((dot, index) => {

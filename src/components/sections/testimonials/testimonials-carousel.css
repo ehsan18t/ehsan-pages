@@ -26,7 +26,7 @@
   border-radius: 1rem;
 }
 
-/* Individual Slide */
+/* Slide Animation Classes */
 .testimonial-slide {
   @apply min-w-0 py-0 px-4 select-none contain-style gpu-accelerated;
   flex: 0 0 100%;
@@ -35,20 +35,89 @@
   left: 0;
   top: 0;
   opacity: 0;
-  transition: opacity 0.5s var(--testimonial-timing-function);
+  transition:
+    opacity 0.5s var(--testimonial-timing-function),
+    transform 0.5s var(--testimonial-timing-function);
 }
 
 .slide-visible {
   opacity: 1;
   z-index: 1;
+  transform: translateX(0);
 }
 
-.testimonial-slide.entering {
-  @apply animate-fade-out-up animation-duration-500 fill-forwards;
+/* Position slides before animation */
+.position-left {
+  transform: translateX(-50%);
+  opacity: 0;
 }
 
-.testimonial-slide.leaving {
-  @apply animate-fade-out-down animation-duration-500 fill-forwards;
+.position-right {
+  transform: translateX(50%);
+  opacity: 0;
+}
+
+/* Slide entrance animations */
+.slide-enter-from-left {
+  animation: slide-in-left 0.5s var(--testimonial-timing-function) forwards;
+}
+
+.slide-enter-from-right {
+  animation: slide-in-right 0.5s var(--testimonial-timing-function) forwards;
+}
+
+/* Slide exit animations */
+.slide-exit-left {
+  animation: slide-out-left 0.5s var(--testimonial-timing-function) forwards;
+}
+
+.slide-exit-right {
+  animation: slide-out-right 0.5s var(--testimonial-timing-function) forwards;
+}
+
+/* Define keyframe animations */
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-left {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(50%);
+    opacity: 0;
+  }
 }
 
 /* Card Design - Single animation for better performance */
@@ -120,7 +189,7 @@
 
 /* Next/Prev Button */
 .testimonial-btn-base {
-  @apply pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
+  @apply pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
 }
 
 .testimonial-next {
