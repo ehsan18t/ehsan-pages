@@ -2,8 +2,8 @@
 
 /* Testimonial Carousel Animation Variables */
 :root {
-  --testimonial-duration-normal: 400ms;
-  --testimonial-duration-short: 250ms;
+  --testimonial-duration-normal: 300ms;
+  --testimonial-duration-short: 200ms;
   --testimonial-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   --testimonial-timing-function-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --testimonial-shadow-normal: 0 4px 14px rgba(0, 0, 0, 0.08);
@@ -35,6 +35,26 @@
 .testimonial-slide {
   @apply min-w-0 py-0 px-4 select-none contain-style gpu-accelerated;
   flex: 0 0 100%;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.5s var(--testimonial-timing-function);
+}
+
+.slide-visible {
+  opacity: 1;
+  z-index: 1;
+}
+
+.testimonial-slide.entering {
+  @apply animate-fade-in animation-duration-500 fill-forwards;
+}
+
+.testimonial-slide.leaving {
+  opacity: 0;
+  transition: opacity 0.5s var(--testimonial-timing-function);
 }
 
 /* Card Design - Single animation for better performance */
@@ -102,6 +122,19 @@
 
 .testimonial-author-role {
   @apply text-accent-text/70 text-sm;
+}
+
+/* Next/Prev Button */
+.testimonial-btn-base {
+  @apply pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
+}
+
+.testimonial-next {
+  @apply right-0;
+}
+
+.testimonial-prev {
+  @apply left-0;
 }
 
 /* Pagination Dots with animations */
