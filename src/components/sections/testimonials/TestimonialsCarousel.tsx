@@ -25,11 +25,9 @@ const TestimonialSlide = React.memo(
     isVisible: boolean;
   }) => (
     <div className={`testimonial-slide ${isVisible ? "slide-visible" : ""}`}>
-      <div className="testimonial-card gpu-accelerated">
+      <div className="testimonial-card gap-6 gpu-accelerated">
         <div className="testimonial-accent"></div>
-        <div className="testimonial-quote">
-          <FaQuoteLeft className="quote-icon" />
-        </div>
+        <FaQuoteLeft className="quote-icon" />
         <p className="testimonial-content">{testimonial.content}</p>
         <div className="testimonial-author-container">
           <div className="testimonial-author-avatar">
