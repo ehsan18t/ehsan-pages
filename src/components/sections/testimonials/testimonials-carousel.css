@@ -33,24 +33,27 @@
 
 /* Individual Slide */
 .testimonial-slide {
-  @apply min-w-0 py-0 px-4 select-none contain-style;
+  @apply min-w-0 py-0 px-4 select-none contain-style gpu-accelerated;
   flex: 0 0 100%;
 }
 
 /* Card Design - Single animation for better performance */
 .testimonial-card {
-  @apply relative backdrop-blur-md contain-content rounded-2xl border border-accent-bg/15 p-8 flex flex-col min-h-87 overflow-hidden opacity-40;
+  @apply relative backdrop-blur-md contain-content rounded-2xl border border-accent-bg/15 p-8 flex flex-col min-h-87 overflow-hidden opacity-40 gpu-accelerated;
   background: linear-gradient(
     135deg,
     oklch(var(--accent-bg) / 0.08),
     oklch(var(--accent-bg) / 0.03)
   );
   box-shadow: var(--testimonial-shadow-normal);
+  transition:
+    opacity 0.2s ease,
+    box-shadow 0.3s ease;
 }
 
 /* Use a single animation for the entire card when visible */
 .slide-visible .testimonial-card {
-  @apply opacity-100 transition-opacity duration-200 shadow-lg;
+  @apply opacity-100 transition-opacity duration-200 shadow-lg will-change-[opacity, box-shadow];
 }
 
 .testimonial-card:hover {
@@ -103,13 +106,13 @@
 
 /* Pagination Dots with animations */
 .testimonial-pagination {
-  @apply flex justify-center mt-8 gap-2 animate-fade-up animation-duration-500 fill-forwards animation-delay-300 gpu-accelerated;
+  @apply flex justify-center mt-8 gap-2   animate-fade-up   animation-duration-500 fill-forwards   animation-delay-300 gpu-accelerated;
 }
 
 .testimonial-dot {
   @apply h-3 w-3 rounded-full cursor-pointer bg-accent-text/30;
   transform-origin: center;
-  will-change: width background-color;
+  will-change: width, background-color;
   transition:
     width 0.3s var(--testimonial-timing-function-spring),
     background-color 0.3s ease;

@@ -54,12 +54,9 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "center",
-    dragFree: false,
     containScroll: "trimSnaps",
-    dragThreshold: 5,
-    duration: 20,
-    direction: "ltr",
+    skipSnaps: true,
+    duration: 25,
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
