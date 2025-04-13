@@ -103,6 +103,10 @@ const testimonials = [
     let startX = 0;
     const swipeThreshold = 50;
 
+    // Mouse drag variables
+    let isDragging = false;
+    let mouseStartX = 0;
+
     // Touch handling
     carouselContainer?.addEventListener("touchstart", (e: TouchEvent) => {
       startX = e.touches[0].clientX;
@@ -117,6 +121,50 @@ const testimonials = [
         } else {
           prevTestimonial(); // swipe right
         }
+      }
+    });
+
+    // Mouse drag handling
+    carouselContainer?.addEventListener("mousedown", (e: MouseEvent) => {
+      isDragging = true;
+      mouseStartX = e.clientX;
+      carouselContainer.style.cursor = "grabbing";
+      stopAutoplay();
+
+      // Prevent default to avoid text selection during drag
+      e.preventDefault();
+    });
+
+    window.addEventListener("mousemove", (e: MouseEvent) => {
+      if (!isDragging) return;
+      e.preventDefault();
+    });
+
+    window.addEventListener("mouseup", (e: MouseEvent) => {
+      if (!isDragging) return;
+
+      const endX = e.clientX;
+      const diff = endX - mouseStartX;
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff < 0) {
+          nextTestimonial(); // drag left
+        } else {
+          prevTestimonial(); // drag right
+        }
+      }
+
+      isDragging = false;
+      carouselContainer!.style.cursor = "grab";
+      setTimeout(startAutoplay, 10000);
+    });
+
+    // Add mouseleave to handle the case when the mouse leaves the window
+    window.addEventListener("mouseleave", () => {
+      if (isDragging) {
+        isDragging = false;
+        carouselContainer!.style.cursor = "grab";
+        setTimeout(startAutoplay, 10000);
       }
     });
 
@@ -194,6 +242,11 @@ const testimonials = [
       }
     });
 
+    // Set default cursor style for carousel container
+    if (carouselContainer) {
+      carouselContainer.style.cursor = "grab";
+    }
+
     // Set up event listeners
     dots.forEach((dot, index) => {
       dot.addEventListener("click", () => {
@@ -217,7 +270,12 @@ const testimonials = [
 
     // Hover control
     carouselContainer?.addEventListener("mouseenter", stopAutoplay);
-    carouselContainer?.addEventListener("mouseleave", startAutoplay);
+    carouselContainer?.addEventListener("mouseleave", () => {
+      // Only start autoplay if not currently dragging
+      if (!isDragging) {
+        startAutoplay();
+      }
+    });
 
     startAutoplay();
   }
