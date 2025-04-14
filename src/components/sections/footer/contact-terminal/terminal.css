@@ -26,13 +26,19 @@
   border-radius: 4px;
 }
 
-.terminal-cursor {
+/* Base cursor styles (shared between static and blinking) */
+.terminal-cursor-static,
+.terminal-cursor-blink {
   display: inline-block;
   width: 8px;
   height: 15px;
+  vertical-align: middle;
+}
+
+/* Only blinking cursor gets animation */
+.terminal-cursor-blink {
   background-color: #adbac7;
   animation: blink 1.2s step-start infinite;
-  vertical-align: middle;
 }
 
 .command-input {

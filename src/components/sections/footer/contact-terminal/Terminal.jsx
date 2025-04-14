@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./terminal.css";
 
 function Directory({ user, host, path }) {
@@ -33,7 +33,6 @@ export default function Terminal() {
   const focusInput = () => {
     if (inputRef.current) {
       inputRef.current.focus();
-      setIsFocused(true);
     }
   };
 
@@ -376,10 +375,12 @@ Type 'help' to see available commands.`,
         {/* Current command line with cursor */}
         <div className="flex gap-1 items-center">
           <Directory user="hacker" host="linux" path="portfolio" />
-          <span className="ml-1">{currentInput}</span>
+          <span>{currentInput}</span>
           {!isLoading && (
             <span
-              className={`terminal-cursor ${isFocused ? "terminal-cursor-blink" : ""}`}
+              className={
+                isFocused ? "terminal-cursor-blink" : "terminal-cursor-static"
+              }
               aria-hidden="true"
             ></span>
           )}
