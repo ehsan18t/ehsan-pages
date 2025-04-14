@@ -58,7 +58,7 @@ const testimonials = [
     <div class="testimonial-carousel-viewport" aria-live="polite">
       {
         testimonials.map((testimonial, index) => (
-          <div class={`testimonial-slide ${index === 0 ? "slide-visible" : ""}`} data-index={index} role="tabpanel" aria-roledescription="slide" aria-label={`Testimonial from ${testimonial.name}`} aria-hidden={index !== 0}>
+          <div class={`testimonial-slide animate-when-visible ${index === 0 ? "slide-visible" : ""}`} data-index={index} role="tabpanel" aria-roledescription="slide" aria-label={`Testimonial from ${testimonial.name}`} aria-hidden={index !== 0}>
             <div class="testimonial-card">
               <div class="testimonial-accent" aria-hidden="true" />
               <svg class="quote-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -99,20 +99,47 @@ const testimonials = [
     const prevBtn = document.querySelector<HTMLButtonElement>(".testimonial-prev");
     const nextBtn = document.querySelector<HTMLButtonElement>(".testimonial-next");
     const carouselContainer = document.querySelector<HTMLElement>(".testimonial-carousel-container");
+    const testimonialSection = document.querySelector<HTMLElement>(".testimonial-section");
+
+    const autoplayDelay = 5000; // 5 seconds
+    const autoplayDelayAfterInterruption = 10000; // 10 seconds
 
     let currentIndex = 0;
     let interval: number;
     let isAnimating = false;
     let startX = 0;
     const swipeThreshold = 50;
+    let isInViewport = false;
 
     // Mouse drag variables
     let isDragging = false;
     let mouseStartX = 0;
 
+    // Setup Intersection Observer to detect when carousel is in viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isInViewport = entry.isIntersecting;
+
+          if (isInViewport) {
+            startAutoplay();
+          } else {
+            stopAutoplay();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    // Start observing the carousel section
+    if (testimonialSection) {
+      observer.observe(testimonialSection);
+    }
+
     // Touch handling
     carouselContainer?.addEventListener("touchstart", (e: TouchEvent) => {
       startX = e.touches[0].clientX;
+      stopAutoplay();
     });
 
     carouselContainer?.addEventListener("touchend", (e: TouchEvent) => {
@@ -124,6 +151,10 @@ const testimonials = [
         } else {
           prevTestimonial(); // swipe right
         }
+      }
+
+      if (isInViewport) {
+        setTimeout(startAutoplay, autoplayDelayAfterInterruption);
       }
     });
 
@@ -159,7 +190,10 @@ const testimonials = [
 
       isDragging = false;
       carouselContainer!.style.cursor = "grab";
-      setTimeout(startAutoplay, 10000);
+
+      if (isInViewport) {
+        setTimeout(startAutoplay, autoplayDelayAfterInterruption);
+      }
     });
 
     // Add mouseleave to handle the case when the mouse leaves the window
@@ -167,7 +201,10 @@ const testimonials = [
       if (isDragging) {
         isDragging = false;
         carouselContainer!.style.cursor = "grab";
-        setTimeout(startAutoplay, 10000);
+
+        if (isInViewport) {
+          setTimeout(startAutoplay, autoplayDelayAfterInterruption);
+        }
       }
     });
 
@@ -227,7 +264,7 @@ const testimonials = [
 
     function startAutoplay(): void {
       clearInterval(interval);
-      interval = window.setInterval(nextTestimonial, 5000);
+      interval = window.setInterval(nextTestimonial, autoplayDelay);
     }
 
     function stopAutoplay(): void {
@@ -255,31 +292,48 @@ const testimonials = [
       dot.addEventListener("click", () => {
         stopAutoplay();
         showTestimonial(index);
-        setTimeout(startAutoplay, 10000);
+
+        if (isInViewport) {
+          setTimeout(startAutoplay, autoplayDelayAfterInterruption);
+        }
       });
     });
 
     prevBtn?.addEventListener("click", () => {
       stopAutoplay();
       prevTestimonial();
-      setTimeout(startAutoplay, 10000);
+
+      if (isInViewport) {
+        setTimeout(startAutoplay, autoplayDelayAfterInterruption);
+      }
     });
 
     nextBtn?.addEventListener("click", () => {
       stopAutoplay();
       nextTestimonial();
-      setTimeout(startAutoplay, 10000);
+
+      if (isInViewport) {
+        setTimeout(startAutoplay, autoplayDelayAfterInterruption);
+      }
     });
 
     // Hover control
     carouselContainer?.addEventListener("mouseenter", stopAutoplay);
     carouselContainer?.addEventListener("mouseleave", () => {
-      // Only start autoplay if not currently dragging
-      if (!isDragging) {
-        startAutoplay();
+      // Only start autoplay if not currently dragging and in viewport
+      if (!isDragging && isInViewport) {
+        setTimeout(startAutoplay, autoplayDelay);
       }
     });
 
-    startAutoplay();
+    // Cleanup function to disconnect observer when needed
+    document.addEventListener("astro:before-swap", () => {
+      observer.disconnect();
+      stopAutoplay();
+    });
+
+    if (isInViewport) {
+      startAutoplay();
+    }
   }
 </script>
