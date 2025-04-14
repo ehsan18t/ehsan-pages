@@ -86,7 +86,7 @@
 
 /* Content - no animation */
 .testimonial-content {
-  font-size: 1.125rem;
+  @apply text-center py-8 text-sm lg:text-lg font-semibold italic;
   line-height: 1.7;
   color: var(--foreground);
   flex-grow: 1;
