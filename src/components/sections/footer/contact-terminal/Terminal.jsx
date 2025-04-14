@@ -69,13 +69,30 @@ export default function Terminal() {
         // Send message via API
         setIsLoading(true);
         try {
-          // Simulating API call
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          const response = await fetch("/api/send-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              to: "ehsan18t@gmail.com",
+              subject: `Contact Form: ${email}`,
+              html: `
+                <h1>New contact form submission</h1>
+                <p><strong>From:</strong> ${email}</p>
+                <p><strong>Message:</strong></p>
+                <p>${message}</p>
+              `,
+              text: `New contact form submission\nFrom: ${email}\nMessage: ${message}`,
+            }),
+          });
+
+          const data = await response.json();
 
           setIsLoading(false);
           return {
             type: "success",
-            content: `Message sent successfully to ${email}`,
+            content: `Message sent successfully to Ehsan`,
           };
         } catch (error) {
           setIsLoading(false);
