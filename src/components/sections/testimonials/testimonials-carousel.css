@@ -82,9 +82,8 @@
 
 /* Content - no animation */
 .testimonial-content {
-  @apply text-center py-8 text-sm lg:text-lg font-semibold italic;
+  @apply text-center text-foreground py-8 text-sm lg:text-lg font-semibold italic;
   line-height: 1.7;
-  color: var(--foreground);
   flex-grow: 1;
 }
 
@@ -116,8 +115,8 @@
 
 /* Next/Prev Button */
 .testimonial-btn-base {
-  @apply pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70;
-  @apply hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
+  @apply pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-accent-bg/0.1 text-accent-text backdrop-blur-md border border-accent-text/0.15 opacity-70;
+  @apply hover:opacity-100 hover:bg-accent-bg/0.2 hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
   transition:
     opacity var(--testimonial-duration-normal) ease,
     background-color var(--testimonial-duration-normal) ease,

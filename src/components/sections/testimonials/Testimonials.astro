@@ -1,29 +1,7 @@
 ---
 import "./testimonials-carousel.css";
 
-const testimonials = [
-  {
-    id: 1,
-    content: "Ehsan delivered our e-commerce platform with exceptional attention to detail. The site's performance metrics improved by 35% and our conversion rate jumped significantly. His expertise in modern web development was exactly what we needed.",
-    name: "Sarah Johnson",
-    role: "CTO, TechRetail",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-  },
-  {
-    id: 2,
-    content: "Working with Ehsan was a game-changer for our startup. He built our entire web application from scratch, implementing complex features like real-time data visualization and authentication that worked flawlessly. His problem-solving skills saved us countless hours.",
-    name: "Michael Chen",
-    role: "Founder, DataSync",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-  },
-  {
-    id: 3,
-    content: "I was impressed by Ehsan's ability to translate our design concepts into functional, responsive websites. His knowledge of modern CSS and animation techniques brought our brand to life online, and the custom CMS he built makes updates incredibly easy.",
-    name: "Priya Patel",
-    role: "Marketing Director, CreativeWorks",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-  },
-];
+const { testimonials } = Astro.props;
 ---
 
 <section class="testimonial-section" id="testimonials" aria-labelledby="testimonials-heading">
@@ -33,7 +11,7 @@ const testimonials = [
       <span class="text-accent-title">Client</span>{" "}
       Testimonials
     </h2>
-    <div class="w-24 h-1 bg-gradient-to-r from-[oklch(var(--accent-500))] to-[oklch(var(--accent-900))] mx-auto rounded-full"></div>
+    <div class="w-24 h-1 bg-gradient-to-r from-accent-500 to-accent-900 mx-auto rounded-full"></div>
     <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">Don't just take my word for it - here's what clients have to say about working with me.</p>
   </div>
 
@@ -57,7 +35,7 @@ const testimonials = [
     <!-- Viewport for slides with live region for accessibility -->
     <div class="testimonial-carousel-viewport" aria-live="polite">
       {
-        testimonials.map((testimonial, index) => (
+        testimonials.map((testimonial: any, index: number) => (
           <div class={`testimonial-slide animate-when-visible ${index === 0 ? "slide-visible" : ""}`} data-index={index} role="tabpanel" aria-roledescription="slide" aria-label={`Testimonial from ${testimonial.name}`} aria-hidden={index !== 0}>
             <div class="testimonial-card">
               <div class="testimonial-accent" aria-hidden="true" />
@@ -84,7 +62,7 @@ const testimonials = [
 
     <!-- Pagination dots inside carousel container -->
     <div class="testimonial-pagination" role="tablist">
-      {testimonials.map((testimonial, index) => <button class={`testimonial-dot ${index === 0 ? "testimonial-dot-active" : "testimonial-dot-inactive"}`} data-index={index} aria-label={`View testimonial from ${testimonial.name}`} role="tab" aria-selected={index === 0} type="button" />)}
+      {testimonials.map((testimonial: any, index: number) => <button class={`testimonial-dot ${index === 0 ? "testimonial-dot-active" : "testimonial-dot-inactive"}`} data-index={index} aria-label={`View testimonial from ${testimonial.name}`} role="tab" aria-selected={index === 0} type="button" />)}
     </div>
   </div>
 </section>
