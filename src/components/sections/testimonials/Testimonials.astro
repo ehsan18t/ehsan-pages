@@ -79,40 +79,6 @@ const { testimonials } = Astro.props;
     const carouselContainer = document.querySelector<HTMLElement>(".testimonial-carousel-container");
     const testimonialSection = document.querySelector<HTMLElement>(".testimonial-section");
 
-    // Add this new function to equalize card heights
-    function equalizeCardHeights(): void {
-      // Measure all cards
-      let maxHeight = 0;
-      slides.forEach((slide) => {
-        const card = slide.querySelector(".testimonial-card");
-        if (card) {
-          const cardHeight = card.getBoundingClientRect().height;
-          maxHeight = Math.max(maxHeight, cardHeight);
-        }
-      });
-
-      // Set the max height on all cards and restore visibility
-      slides.forEach((slide, index) => {
-        const card = slide.querySelector<HTMLElement>(".testimonial-card");
-        if (card) {
-          card.style.minHeight = `${maxHeight}px`;
-        }
-
-        // Restore original display settings
-        slide.style.position = "";
-        slide.style.visibility = "";
-
-        if (index === currentIndex) {
-          slide.style.display = "block";
-          slide.classList.add("slide-visible");
-          slide.style.opacity = ""; // Let CSS handle opacity
-        } else {
-          slide.style.display = "none";
-          slide.classList.remove("slide-visible");
-        }
-      });
-    }
-
     const autoplayDelay = 5000; // 5 seconds
     const autoplayDelayAfterInterruption = 10000; // 10 seconds
 
@@ -126,12 +92,6 @@ const { testimonials } = Astro.props;
     // Mouse drag variables
     let isDragging = false;
     let mouseStartX = 0;
-    // Add these lines after initializing variables but before setting up event handlers
-    // Call equalizeCardHeights at the beginning
-    equalizeCardHeights();
-
-    // Re-equalize on window resize
-    window.addEventListener("resize", equalizeCardHeights);
 
     // Setup Intersection Observer to detect when carousel is in viewport
     const observer = new IntersectionObserver(
@@ -348,7 +308,6 @@ const { testimonials } = Astro.props;
     document.addEventListener("astro:before-swap", () => {
       observer.disconnect();
       stopAutoplay();
-      window.removeEventListener("resize", equalizeCardHeights);
     });
 
     if (isInViewport) {
