@@ -9,7 +9,7 @@
   margin: 2rem auto;
   font-family:
     "JetBrains Mono", "Fira Code", "Menlo", "Monaco", "Consolas", monospace;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
 }
 
 /* Terminal Header */
@@ -66,10 +66,10 @@
 .terminal-content {
   background-color: #1a1b26;
   padding: 1rem 1.2rem;
-  height: 420px;
+  height: 465px;
   overflow-y: auto;
   line-height: 1.5;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   position: relative;
   color: #c0caf5;
   scrollbar-width: thin;
@@ -97,6 +97,67 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+}
+
+/* Active prompt line with input */
+.active-prompt-line {
+  position: relative;
+  min-height: 1.5rem;
+  margin-top: 0.5rem;
+  display: flex;
+  width: 100%;
+}
+
+.active-prompt-line.loading {
+  margin-top: 1rem;
+}
+
+.prompt-container {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+}
+
+/* Visible Terminal Input */
+.terminal-input {
+  background: transparent;
+  border: none;
+  color: #c0caf5;
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
+  padding: 0 0 0 8px; /* This gets adjusted by JS */
+  outline: none;
+  caret-color: #7aa2f7;
+  margin-bottom: 10px;
+}
+
+.terminal-input::selection {
+  background-color: rgba(150, 170, 220, 0.4);
+}
+
+/* Loading animation */
+.loading-line {
+  display: flex;
+  align-items: center;
+  color: #bb9af7;
+}
+
+.loading-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid transparent;
+  border-top-color: #bb9af7;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+.loading-text {
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 /* Message types */
@@ -131,27 +192,6 @@
   border-left: 2px solid #e0af68;
 }
 
-.processing-indicator {
-  color: #bb9af7;
-  opacity: 0.8;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-/* Cursor styles */
-.terminal-cursor-static,
-.terminal-cursor-blink {
-  display: inline-block;
-  width: 0.5rem;
-  height: 1rem;
-  vertical-align: middle;
-  border-radius: 1px;
-}
-
-.terminal-cursor-blink {
-  background-color: #7aa2f7;
-  animation: blink 1.2s step-start infinite;
-}
-
 /* Terminal hints bar */
 .terminal-hint {
   background-color: #1e2030;
@@ -165,35 +205,32 @@
 /* Command input animation */
 .command-input {
   position: relative;
-  animation: typing 0.75s steps(20);
+  animation: typing 0.4s ease-out;
 }
 
 /* Animations */
 @keyframes typing {
   from {
-    width: 0;
     opacity: 0.5;
   }
   to {
-    width: 100%;
     opacity: 1;
   }
 }
 
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  50% {
-    opacity: 0;
+  100% {
+    transform: rotate(360deg);
   }
 }
 
 @keyframes pulse {
   0%,
   100% {
-    opacity: 0.6;
+    opacity: 0.7;
   }
   50% {
     opacity: 1;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./terminal.css";
 
 // Terminal directory display component
@@ -29,12 +29,13 @@ export default function Terminal() {
 
   const terminalRef = useRef(null);
   const inputRef = useRef(null);
+  const promptRef = useRef(null);
 
   // Command definitions
   const COMMANDS = [
     {
       name: "send",
-      description: "Sends an email message to the specified address",
+      description: "Sends an email message to Ehsan Khan",
       usage: "send <email> <message>",
       handler: async (args) => {
         if (args.length < 2) {
@@ -118,7 +119,7 @@ DESCRIPTION:
 ${
   command.name === "send"
     ? `PARAMETERS:
-  <email>    - The recipient's email address (required)
+  <email>    - Your email address (required)
   <message>  - The message content (required)
   
 EXAMPLES:
@@ -167,12 +168,25 @@ EXAMPLES:
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
-  }, [commandHistory]);
+  }, [commandHistory, isLoading]);
 
   // Run the default 'man send' command on initial render
   useEffect(() => {
     executeCommand("man send", false);
   }, []);
+
+  // Adjust the position of the visible input
+  useEffect(() => {
+    adjustInputPosition();
+  }, [currentInput, isLoading]);
+
+  // Adjust the position of the visible input element
+  const adjustInputPosition = () => {
+    if (promptRef.current && inputRef.current) {
+      const promptWidth = promptRef.current.offsetWidth;
+      inputRef.current.style.paddingLeft = `${promptWidth + 8}px`; // 8px for margin
+    }
+  };
 
   const addToCommandBuffer = useCallback(
     (command) => {
@@ -189,10 +203,16 @@ EXAMPLES:
 
   const handleKeyPress = useCallback(
     (e) => {
+      // Prevent terminal scrolling on spacebar
+      if (e.key === " " && e.target === inputRef.current) {
+        e.stopPropagation();
+      }
+
       if (e.key === "Enter" && currentInput.trim()) {
-        executeCommand(currentInput, true);
+        e.preventDefault();
+        executeCommand(currentInput.trim(), true);
         setCurrentInput("");
-      } else if (e.key === "ArrowUp") {
+      } else if (e.key === "ArrowUp" && !e.ctrlKey) {
         e.preventDefault();
         if (commandBuffer.length > 0) {
           const newPosition = Math.min(
@@ -201,8 +221,16 @@ EXAMPLES:
           );
           setBufferPosition(newPosition);
           setCurrentInput(commandBuffer[newPosition]);
+
+          // Move cursor to end of input after delay
+          setTimeout(() => {
+            if (inputRef.current) {
+              inputRef.current.selectionStart = inputRef.current.value.length;
+              inputRef.current.selectionEnd = inputRef.current.value.length;
+            }
+          }, 0);
         }
-      } else if (e.key === "ArrowDown") {
+      } else if (e.key === "ArrowDown" && !e.ctrlKey) {
         e.preventDefault();
         if (bufferPosition > 0) {
           const newPosition = bufferPosition - 1;
@@ -225,9 +253,26 @@ EXAMPLES:
         } else if (input === "man ") {
           setCurrentInput("man send");
         }
+      } else if (e.key === "c" && e.ctrlKey) {
+        e.preventDefault();
+        if (isLoading) {
+          setIsLoading(false);
+          setCommandHistory((prev) => [
+            ...prev,
+            {
+              type: "error",
+              content: "Operation canceled by user.",
+            },
+          ]);
+        } else {
+          setCurrentInput("");
+        }
+      } else if (e.key === "l" && e.ctrlKey) {
+        e.preventDefault();
+        setCommandHistory([]);
       }
     },
-    [currentInput, commandBuffer, bufferPosition],
+    [currentInput, commandBuffer, bufferPosition, isLoading],
   );
 
   const executeCommand = useCallback(
@@ -281,7 +326,7 @@ Type 'help' to see available commands.`,
           <div className="terminal-btn terminal-minimize"></div>
           <div className="terminal-btn terminal-maximize"></div>
         </div>
-        <div className="terminal-title">hacker@portfolio: ~/contact</div>
+        <div className="terminal-title">user@mac: ~/contact</div>
         <div className="terminal-menu">⌘</div>
       </div>
 
@@ -292,7 +337,7 @@ Type 'help' to see available commands.`,
           <div key={index}>
             {entry.type === "command" && (
               <div className="mb-2 flex gap-1 items-center prompt-line">
-                <Directory user="hacker" host="portfolio" path="contact" />
+                <Directory user="user" host="mac" path="contact" />
                 <span className="ml-1 command-input">{entry.content}</span>
               </div>
             )}
@@ -323,35 +368,34 @@ Type 'help' to see available commands.`,
           </div>
         ))}
 
-        {/* Current command line with cursor */}
-        <div className="flex gap-1 items-center prompt-line">
-          <Directory user="hacker" host="portfolio" path="contact" />
-          <span className="ml-1">{currentInput}</span>
-          {!isLoading && (
-            <span
-              className={
-                isFocused ? "terminal-cursor-blink" : "terminal-cursor-static"
-              }
-              aria-hidden="true"
-            ></span>
-          )}
-          {isLoading && (
-            <span className="processing-indicator">Processing...</span>
+        {/* Active prompt line with visible input */}
+        <div className={`active-prompt-line ${isLoading ? "loading" : ""}`}>
+          {isLoading ? (
+            <>
+              <div className="loading-line">
+                <div className="loading-spinner"></div>
+                <span className="loading-text">Processing command...</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="prompt-container" ref={promptRef}>
+                <Directory user="user" host="mac" path="contact" />
+              </div>
+              <input
+                ref={inputRef}
+                type="text"
+                className="terminal-input"
+                value={currentInput}
+                onChange={(e) => setCurrentInput(e.target.value)}
+                onKeyDown={handleKeyPress}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                aria-label="Terminal input"
+              />
+            </>
           )}
         </div>
-
-        {/* Hidden input field to capture keyboard events */}
-        <input
-          ref={inputRef}
-          type="text"
-          className="opacity-0 absolute top-0 left-0 h-1 w-1"
-          value={currentInput}
-          onChange={(e) => setCurrentInput(e.target.value)}
-          onKeyDown={handleKeyPress}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          aria-label="Terminal input"
-        />
       </div>
 
       {/* Terminal hint */}
