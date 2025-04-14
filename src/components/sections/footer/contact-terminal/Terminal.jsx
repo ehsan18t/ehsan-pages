@@ -399,7 +399,7 @@ Type 'help' to see available commands.`,
       </div>
 
       {/* Terminal hint */}
-      <div className="terminal-hint">
+      <div className="terminal-hint hidden md:block">
         Click to focus • Use ↑↓ to navigate history • Tab to autocomplete • Type
         'help' for commands
       </div>
