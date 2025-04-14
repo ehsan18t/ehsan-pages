@@ -26,39 +26,42 @@ const testimonials = [
 ];
 ---
 
-<section class="testimonial-section" id="testimonials">
-  <!-- Background Elements -->
-  <h2 class="text-4xl md:text-5xl font-doto font-bold mb-4 text-center">
-    <span class="text-[oklch(var(--accent-title))]">Client</span>{" "}
-    Testimonials
-  </h2>
-  <p class="text-foreground-muted text-center max-w-2xl mx-auto mb-16">Don't just take my word for it - here's what clients have to say about working with me.</p>
+<section class="testimonial-section" id="testimonials" aria-labelledby="testimonials-heading">
+  <!-- Heading Elements -->
+  <div class="px-4 text-center mb-12 md:mb-16">
+    <h2 id="testimonials-heading" class="text-4xl md:text-5xl font-doto font-bold mb-4">
+      <span class="text-accent-title">Client</span>{" "}
+      Testimonials
+    </h2>
+    <div class="w-24 h-1 bg-gradient-to-r from-[oklch(var(--accent-500))] to-[oklch(var(--accent-900))] mx-auto rounded-full"></div>
+    <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">Don't just take my word for it - here's what clients have to say about working with me.</p>
+  </div>
 
-  <!-- Main carousel container -->
-  <div class="testimonial-carousel-container">
-    <!-- Left/Right Navigation Arrows -->
-    <div class="absolute inset-0 pointer-events-none z-10">
-      <button class="testimonial-btn-base testimonial-prev" aria-label="Previous testimonial">
+  <!-- Main carousel container with proper ARIA role -->
+  <div class="testimonial-carousel-container" role="region" aria-roledescription="carousel" aria-label="Client testimonials carousel">
+    <!-- Navigation Controls -->
+    <div class="testimonial-controls">
+      <button class="testimonial-btn-base testimonial-prev" aria-label="Previous testimonial" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
         </svg>
       </button>
 
-      <button class="testimonial-btn-base testimonial-next" aria-label="Next testimonial">
+      <button class="testimonial-btn-base testimonial-next" aria-label="Next testimonial" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
         </svg>
       </button>
     </div>
 
-    <!-- Viewport for slides - no nesting needed -->
-    <div class="testimonial-carousel-viewport">
+    <!-- Viewport for slides with live region for accessibility -->
+    <div class="testimonial-carousel-viewport" aria-live="polite">
       {
         testimonials.map((testimonial, index) => (
-          <div class={`testimonial-slide ${index === 0 ? "slide-visible" : ""}`} data-index={index}>
+          <div class={`testimonial-slide ${index === 0 ? "slide-visible" : ""}`} data-index={index} role="tabpanel" aria-roledescription="slide" aria-label={`Testimonial from ${testimonial.name}`} aria-hidden={index !== 0}>
             <div class="testimonial-card">
-              <div class="testimonial-accent" />
-              <svg class="quote-icon" fill="currentColor" viewBox="0 0 24 24">
+              <div class="testimonial-accent" aria-hidden="true" />
+              <svg class="quote-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
               </svg>
 
@@ -66,7 +69,7 @@ const testimonials = [
 
               <div class="testimonial-author-container">
                 <div class="testimonial-author-avatar">
-                  <img src={testimonial.image} class="testimonial-author-image" alt={testimonial.name} loading="lazy" />
+                  <img src={testimonial.image} class="testimonial-author-image" alt={`${testimonial.name}, ${testimonial.role}`} loading="lazy" />
                 </div>
                 <div class="testimonial-author-details">
                   <h4 class="testimonial-author-name">{testimonial.name}</h4>
@@ -78,10 +81,11 @@ const testimonials = [
         ))
       }
     </div>
-  </div>
-  <!-- Pagination dots - OUTSIDE the carousel container -->
-  <div class="testimonial-pagination">
-    {testimonials.map((_, index) => <button class={`testimonial-dot ${index === 0 ? "testimonial-dot-active" : "testimonial-dot-inactive"}`} data-index={index} aria-label={`View testimonial ${index + 1}`} />)}
+
+    <!-- Pagination dots inside carousel container -->
+    <div class="testimonial-pagination" role="tablist">
+      {testimonials.map((testimonial, index) => <button class={`testimonial-dot ${index === 0 ? "testimonial-dot-active" : "testimonial-dot-inactive"}`} data-index={index} aria-label={`View testimonial from ${testimonial.name}`} role="tab" aria-selected={index === 0} type="button" />)}
+    </div>
   </div>
 </section>
 

@@ -28,14 +28,10 @@
 
 /* Individual Slide */
 .testimonial-slide {
-  @apply min-w-0 py-0 px-4 select-none contain-style gpu-accelerated;
   flex: 0 0 100%;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-  opacity: 0;
+  @apply min-w-0 w-full opacity-0 p-4 select-none contain-style gpu-accelerated;
   transition: opacity 0.5s var(--testimonial-timing-function);
+  will-change: opacity;
 }
 
 .slide-visible {
