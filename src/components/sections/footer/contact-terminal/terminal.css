@@ -1,16 +1,79 @@
-/* Enhanced terminal styling */
+/* Modern Terminal Styling */
 .terminal-container {
+  background: linear-gradient(to bottom, #1a1b26, #16161e);
+  border: 1px solid rgba(82, 82, 119, 0.3);
   box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.3),
-    0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    0 20px 40px -15px rgba(0, 0, 0, 0.5),
+    0 0 50px -5px rgba(50, 50, 80, 0.15) inset;
+  color: #c9d1d9;
+  margin: 2rem auto;
+  font-family:
+    "JetBrains Mono", "Fira Code", "Menlo", "Monaco", "Consolas", monospace;
+  font-size: 0.85rem;
 }
 
+/* Terminal Header */
+.terminal-header {
+  background: linear-gradient(to right, #24283b, #1e2030);
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(100, 100, 150, 0.2);
+}
+
+.terminal-title {
+  color: #a9b1d6;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  flex: 1;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.terminal-menu {
+  color: #787c99;
+  font-size: 0.75rem;
+}
+
+.terminal-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  position: relative;
+}
+
+.terminal-close {
+  background-color: #ff5f57;
+  border: 1px solid #ec4c48;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+.terminal-minimize {
+  background-color: #febc2e;
+  border: 1px solid #e1aa25;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+.terminal-maximize {
+  background-color: #28c840;
+  border: 1px solid #1db334;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+/* Terminal Content */
 .terminal-content {
-  font-family: "Menlo", "Monaco", "Consolas", monospace;
-  height: 320px;
+  background-color: #1a1b26;
+  padding: 1rem 1.2rem;
+  height: 420px;
+  overflow-y: auto;
+  line-height: 1.5;
+  font-size: 0.75rem;
+  position: relative;
+  color: #c0caf5;
   scrollbar-width: thin;
-  scrollbar-color: #4a4a4a #2a2a2a;
-  line-height: 1.4;
+  scrollbar-color: #414868 #1a1b26;
 }
 
 .terminal-content::-webkit-scrollbar {
@@ -18,38 +81,98 @@
 }
 
 .terminal-content::-webkit-scrollbar-track {
-  background: #2a2a2a;
-}
-
-.terminal-content::-webkit-scrollbar-thumb {
-  background-color: #4a4a4a;
+  background: #1a1b26;
   border-radius: 4px;
 }
 
-/* Base cursor styles (shared between static and blinking) */
+.terminal-content::-webkit-scrollbar-thumb {
+  background-color: #414868;
+  border-radius: 4px;
+  border: 2px solid #1a1b26;
+}
+
+/* Terminal prompt line */
+.prompt-line {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Message types */
+.terminal-message {
+  padding: 0.25rem 0.5rem;
+  margin: 0.25rem 0 1rem 0;
+  border-radius: 4px;
+  white-space: pre-line;
+}
+
+.error-message {
+  color: #f7768e;
+  background-color: rgba(247, 118, 142, 0.08);
+  border-left: 2px solid #f7768e;
+}
+
+.success-message {
+  color: #9ece6a;
+  background-color: rgba(158, 206, 106, 0.08);
+  border-left: 2px solid #9ece6a;
+}
+
+.info-message {
+  color: #7aa2f7;
+  background-color: rgba(122, 162, 247, 0.08);
+  border-left: 2px solid #7aa2f7;
+}
+
+.manual-message {
+  color: #e0af68;
+  background-color: rgba(224, 175, 104, 0.08);
+  border-left: 2px solid #e0af68;
+}
+
+.processing-indicator {
+  color: #bb9af7;
+  opacity: 0.8;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Cursor styles */
 .terminal-cursor-static,
 .terminal-cursor-blink {
   display: inline-block;
-  width: 8px;
-  height: 15px;
+  width: 0.5rem;
+  height: 1rem;
   vertical-align: middle;
+  border-radius: 1px;
 }
 
-/* Only blinking cursor gets animation */
 .terminal-cursor-blink {
-  background-color: #adbac7;
+  background-color: #7aa2f7;
   animation: blink 1.2s step-start infinite;
 }
 
-.command-input {
-  position: relative;
-  animation: typing 1s steps(15);
+/* Terminal hints bar */
+.terminal-hint {
+  background-color: #1e2030;
+  color: #565f89;
+  font-size: 0.7rem;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  border-top: 1px solid rgba(100, 100, 150, 0.15);
 }
 
+/* Command input animation */
+.command-input {
+  position: relative;
+  animation: typing 0.75s steps(20);
+}
+
+/* Animations */
 @keyframes typing {
   from {
     width: 0;
-    opacity: 0;
+    opacity: 0.5;
   }
   to {
     width: 100%;
@@ -64,5 +187,15 @@
   }
   50% {
     opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
   }
 }

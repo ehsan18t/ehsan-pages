@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import "./terminal.css";
 
 // Terminal directory display component
@@ -6,13 +6,13 @@ function Directory({ user, host, path }) {
   return (
     <>
       <span className="flex">
-        <span className="text-[#33d790]">{user}</span>
+        <span className="text-emerald-400">{user}</span>
         <span className="text-gray-400">@</span>
-        <span className="text-[#78b9fa]">{host}</span>
+        <span className="text-sky-400">{host}</span>
         <span className="text-gray-400">:</span>
       </span>
       <span className="flex">
-        <span className="text-[#c792ea]">~/{path}</span>
+        <span className="text-fuchsia-400">~/{path}</span>
         <span className="text-gray-400">$</span>
       </span>
     </>
@@ -176,12 +176,11 @@ EXAMPLES:
 
   const addToCommandBuffer = useCallback(
     (command) => {
-      // Only add non-empty commands and avoid duplicates at the end
       if (
         command.trim() &&
         (commandBuffer.length === 0 || commandBuffer[0] !== command)
       ) {
-        setCommandBuffer((prev) => [command, ...prev.slice(0, 19)]); // Keep last 20 commands
+        setCommandBuffer((prev) => [command, ...prev.slice(0, 19)]);
       }
       setBufferPosition(-1);
     },
@@ -195,7 +194,6 @@ EXAMPLES:
         setCurrentInput("");
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        // Navigate command history upward
         if (commandBuffer.length > 0) {
           const newPosition = Math.min(
             bufferPosition + 1,
@@ -206,7 +204,6 @@ EXAMPLES:
         }
       } else if (e.key === "ArrowDown") {
         e.preventDefault();
-        // Navigate command history downward
         if (bufferPosition > 0) {
           const newPosition = bufferPosition - 1;
           setBufferPosition(newPosition);
@@ -217,7 +214,6 @@ EXAMPLES:
         }
       } else if (e.key === "Tab") {
         e.preventDefault();
-        // Simple command completion
         const input = currentInput.toLowerCase();
         if (!input) return;
 
@@ -236,12 +232,10 @@ EXAMPLES:
 
   const executeCommand = useCallback(
     async (commandInput, addToBuffer = true) => {
-      // Add command to buffer if it's a user command
       if (addToBuffer) {
         addToCommandBuffer(commandInput);
       }
 
-      // Add command to history
       const newEntry = {
         type: "command",
         content: commandInput,
@@ -249,12 +243,10 @@ EXAMPLES:
 
       setCommandHistory((prev) => [...prev, newEntry]);
 
-      // Parse the command
       const parts = commandInput.trim().split(" ");
       const cmd = parts[0].toLowerCase();
       const args = parts.slice(1);
 
-      // Find and execute command
       const command = COMMANDS.find((c) => c.name === cmd);
       if (command) {
         const result = await command.handler(args);
@@ -277,75 +269,63 @@ Type 'help' to see available commands.`,
 
   return (
     <div
-      className="mx-auto max-w-[650px] rounded-lg overflow-hidden bg-[#1e1e1e] border border-gray-800 shadow-lg my-8 terminal-container"
+      className="mx-auto max-w-[680px] rounded-lg overflow-hidden terminal-container"
       onClick={focusInput}
       aria-label="Interactive terminal"
       role="region"
     >
       {/* Terminal Header */}
-      <div className="flex items-center px-3 py-1.5 bg-[#323233] border-b border-gray-800 justify-between">
+      <div className="terminal-header">
         <div className="flex items-center">
-          <div className="w-3 h-3 rounded-full bg-[#ff5f56] mr-2 select-none cursor-pointer"></div>
-          <div className="w-3 h-3 rounded-full bg-[#ffbd2e] mr-2 select-none cursor-pointer"></div>
-          <div className="w-3 h-3 rounded-full bg-[#27c93f] select-none cursor-pointer"></div>
+          <div className="terminal-btn terminal-close"></div>
+          <div className="terminal-btn terminal-minimize"></div>
+          <div className="terminal-btn terminal-maximize"></div>
         </div>
-        <div className="text-xs text-gray-400 flex-1 text-center font-sans select-none">
-          bash ~ hacker@linux
-        </div>
-        <div className="text-gray-500 text-xs">⌘</div>
+        <div className="terminal-title">hacker@portfolio: ~/contact</div>
+        <div className="terminal-menu">⌘</div>
       </div>
 
       {/* Terminal Content with Scrollbar */}
-      <div
-        ref={terminalRef}
-        className="p-2 md:p-4 font-mono text-xs leading-relaxed text-gray-300 terminal-content overflow-y-auto"
-        aria-live="polite"
-      >
+      <div ref={terminalRef} className="terminal-content" aria-live="polite">
         {/* Command history and responses */}
         {commandHistory.map((entry, index) => (
           <div key={index}>
             {entry.type === "command" && (
-              <div className="mb-1.5 flex gap-1 items-center">
-                <Directory user="hacker" host="linux" path="portfolio" />
+              <div className="mb-2 flex gap-1 items-center prompt-line">
+                <Directory user="hacker" host="portfolio" path="contact" />
                 <span className="ml-1 command-input">{entry.content}</span>
               </div>
             )}
 
             {entry.type === "error" && (
-              <div className="pl-0 mb-3 terminal-output">
-                <div className="text-red-400 whitespace-pre-line">
-                  {entry.content}
-                </div>
+              <div className="terminal-message error-message">
+                <div className="whitespace-pre-line">{entry.content}</div>
               </div>
             )}
 
             {entry.type === "success" && (
-              <div className="pl-0 mb-3 terminal-output">
-                <div className="text-green-400">{entry.content}</div>
+              <div className="terminal-message success-message">
+                <div>{entry.content}</div>
               </div>
             )}
 
             {entry.type === "info" && (
-              <div className="pl-0 mb-3 terminal-output">
-                <div className="text-blue-400 whitespace-pre-line">
-                  {entry.content}
-                </div>
+              <div className="terminal-message info-message">
+                <div className="whitespace-pre-line">{entry.content}</div>
               </div>
             )}
 
             {entry.type === "manual" && (
-              <div className="pl-0 mb-3 terminal-output">
-                <div className="text-yellow-300 whitespace-pre-line">
-                  {entry.content}
-                </div>
+              <div className="terminal-message manual-message">
+                <div className="whitespace-pre-line">{entry.content}</div>
               </div>
             )}
           </div>
         ))}
 
         {/* Current command line with cursor */}
-        <div className="flex gap-1 items-center">
-          <Directory user="hacker" host="linux" path="portfolio" />
+        <div className="flex gap-1 items-center prompt-line">
+          <Directory user="hacker" host="portfolio" path="contact" />
           <span className="ml-1">{currentInput}</span>
           {!isLoading && (
             <span
@@ -355,7 +335,9 @@ Type 'help' to see available commands.`,
               aria-hidden="true"
             ></span>
           )}
-          {isLoading && <span className="text-gray-400">Processing...</span>}
+          {isLoading && (
+            <span className="processing-indicator">Processing...</span>
+          )}
         </div>
 
         {/* Hidden input field to capture keyboard events */}
@@ -373,9 +355,9 @@ Type 'help' to see available commands.`,
       </div>
 
       {/* Terminal hint */}
-      <div className="px-4 py-2 text-xs text-gray-500 border-t border-gray-800">
+      <div className="terminal-hint">
         Click to focus • Use ↑↓ to navigate history • Tab to autocomplete • Type
-        'help' for available commands
+        'help' for commands
       </div>
     </div>
   );
