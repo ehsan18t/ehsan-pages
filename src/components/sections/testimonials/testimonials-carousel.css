@@ -48,7 +48,7 @@
 
 /* Card Design - Single animation for better performance */
 .testimonial-card {
-  @apply relative backdrop-blur-md contain-content rounded-2xl border border-accent-bg/15 p-8 flex flex-col min-h-87 overflow-hidden opacity-40 gpu-accelerated;
+  @apply relative backdrop-blur-md contain-content rounded-2xl border border-accent-bg/15 p-8 flex flex-col overflow-hidden opacity-40 gpu-accelerated;
   background: linear-gradient(
     135deg,
     oklch(var(--accent-bg) / 0.08),
