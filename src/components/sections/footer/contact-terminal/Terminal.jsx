@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./terminal.css";
 
+// Terminal directory display component
 function Directory({ user, host, path }) {
   return (
     <>
@@ -28,6 +29,131 @@ export default function Terminal() {
 
   const terminalRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Command definitions
+  const COMMANDS = [
+    {
+      name: "send",
+      description: "Sends an email message to the specified address",
+      usage: "send <email> <message>",
+      handler: async (args) => {
+        if (args.length < 2) {
+          return {
+            type: "error",
+            content:
+              "Error: 'send' command requires both email and message arguments.\nUsage: send <email> <message>",
+          };
+        }
+
+        const email = args[0];
+        const message = args.slice(1).join(" ").trim();
+
+        // Message validation
+        if (!message) {
+          return {
+            type: "error",
+            content: "Error: Message cannot be empty.",
+          };
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          return {
+            type: "error",
+            content: `Error: Invalid email format '${email}'`,
+          };
+        }
+
+        // Send message via API
+        setIsLoading(true);
+        try {
+          // Simulating API call
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          setIsLoading(false);
+          return {
+            type: "success",
+            content: `Message sent successfully to ${email}`,
+          };
+        } catch (error) {
+          setIsLoading(false);
+          return {
+            type: "error",
+            content: `Error sending message: ${error.message || "Network error"}`,
+          };
+        }
+      },
+    },
+    {
+      name: "man",
+      description: "Display manual for a command",
+      usage: "man <command>",
+      handler: (args) => {
+        const commandName = args[0]?.toLowerCase();
+
+        if (!commandName) {
+          return {
+            type: "error",
+            content: "What manual page do you want?\nFor example: 'man send'",
+          };
+        }
+
+        const command = COMMANDS.find((cmd) => cmd.name === commandName);
+
+        if (!command) {
+          return {
+            type: "error",
+            content: `No manual entry for '${commandName}'\n\nSupported commands: ${COMMANDS.map((c) => c.name).join(", ")}`,
+          };
+        }
+
+        return {
+          type: "manual",
+          content: `COMMAND: ${command.name}
+USAGE: ${command.usage}
+DESCRIPTION: 
+  ${command.description}
+  
+${
+  command.name === "send"
+    ? `PARAMETERS:
+  <email>    - The recipient's email address (required)
+  <message>  - The message content (required)
+  
+EXAMPLES:
+  send user@example.com Hello, I'd like to hire you for a project.
+  send contact@domain.com I'd like to discuss a project opportunity.`
+    : ""
+}`,
+        };
+      },
+    },
+    {
+      name: "clear",
+      description: "Clears the terminal screen",
+      usage: "clear",
+      handler: () => {
+        setCommandHistory([]);
+        return null; // No response needed
+      },
+    },
+    {
+      name: "help",
+      description: "Displays available commands and basic usage information",
+      usage: "help",
+      handler: () => {
+        return {
+          type: "info",
+          content: `Available commands:\n\n${COMMANDS.map(
+            (cmd) => `${cmd.name.padEnd(10)} - ${cmd.description}`,
+          ).join(
+            "\n",
+          )}\n\nType 'man <command>' for more detailed information about a command.`,
+        };
+      },
+    },
+  ];
 
   // Focus the input when terminal is clicked
   const focusInput = () => {
@@ -95,16 +221,13 @@ export default function Terminal() {
         const input = currentInput.toLowerCase();
         if (!input) return;
 
-        if ("man".startsWith(input)) {
-          setCurrentInput("man ");
-        } else if ("send".startsWith(input)) {
-          setCurrentInput("send ");
+        const matchingCommand = COMMANDS.find((cmd) =>
+          cmd.name.startsWith(input),
+        );
+        if (matchingCommand) {
+          setCurrentInput(matchingCommand.name + " ");
         } else if (input === "man ") {
           setCurrentInput("man send");
-        } else if ("clear".startsWith(input)) {
-          setCurrentInput("clear");
-        } else if ("help".startsWith(input)) {
-          setCurrentInput("help");
         }
       }
     },
@@ -129,176 +252,24 @@ export default function Terminal() {
       // Parse the command
       const parts = commandInput.trim().split(" ");
       const cmd = parts[0].toLowerCase();
+      const args = parts.slice(1);
 
-      switch (cmd) {
-        case "send": {
-          if (parts.length < 3) {
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "error",
-                content:
-                  "Error: 'send' command requires both email and message arguments.\nUsage: send <email> <message>",
-              },
-            ]);
-            return;
-          }
-
-          const email = parts[1];
-          const message = parts.slice(2).join(" ").trim();
-
-          // Message validation
-          if (!message) {
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "error",
-                content: "Error: Message cannot be empty.",
-              },
-            ]);
-            return;
-          }
-
-          // Email validation
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(email)) {
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "error",
-                content: `Error: Invalid email format '${email}'`,
-              },
-            ]);
-            return;
-          }
-
-          // Send message via API
-          setIsLoading(true);
-          try {
-            // Replace with actual API call
-            // const response = await fetch('/api/contact', {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify({ email, message })
-            // });
-            //
-            // if (!response.ok) {
-            //   throw new Error(`Server returned ${response.status}: ${response.statusText}`);
-            // }
-
-            // Simulating API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "success",
-                content: `Message sent successfully to ${email}`,
-              },
-            ]);
-          } catch (error) {
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "error",
-                content: `Error sending message: ${error.message || "Network error"}`,
-              },
-            ]);
-          } finally {
-            setIsLoading(false);
-          }
-          break;
+      // Find and execute command
+      const command = COMMANDS.find((c) => c.name === cmd);
+      if (command) {
+        const result = await command.handler(args);
+        if (result) {
+          setCommandHistory((prev) => [...prev, result]);
         }
-
-        case "man": {
-          if (parts[1]?.toLowerCase() === "send") {
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "manual",
-                content: `COMMAND: send
-USAGE: send <email> <message>
-DESCRIPTION: 
-  Sends an email message to the specified address.
-  
-PARAMETERS:
-  <email>    - The recipient's email address (required)
-  <message>  - The message content (required)
-  
-EXAMPLES:
-  send user@example.com Hello, how are you?
-  send contact@domain.com I'd like to discuss a project opportunity.`,
-              },
-            ]);
-          } else if (parts[1]?.toLowerCase() === "clear") {
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "manual",
-                content: `COMMAND: clear
-USAGE: clear
-DESCRIPTION: 
-  Clears the terminal screen.`,
-              },
-            ]);
-          } else if (parts[1]?.toLowerCase() === "help") {
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "manual",
-                content: `COMMAND: help
-USAGE: help
-DESCRIPTION: 
-  Displays available commands and basic usage information.`,
-              },
-            ]);
-          } else {
-            setCommandHistory((prev) => [
-              ...prev,
-              {
-                type: "error",
-                content: `No manual entry for '${parts[1] || ""}'
-              
-Supported commands: send, clear, help`,
-              },
-            ]);
-          }
-          break;
-        }
-
-        case "clear": {
-          setCommandHistory([]);
-          break;
-        }
-
-        case "help": {
-          setCommandHistory((prev) => [
-            ...prev,
-            {
-              type: "info",
-              content: `Available commands:
-  
-send <email> <message> - Send a message to provided email
-man <command>         - Display manual for the specified command
-clear                 - Clear terminal history
-help                  - Display this help message
-
-Type 'man <command>' for more detailed information about a command.`,
-            },
-          ]);
-          break;
-        }
-
-        default:
-          setCommandHistory((prev) => [
-            ...prev,
-            {
-              type: "error",
-              content: `Command not found: ${cmd}
-            
+      } else {
+        setCommandHistory((prev) => [
+          ...prev,
+          {
+            type: "error",
+            content: `Command not found: ${cmd}\n            
 Type 'help' to see available commands.`,
-            },
-          ]);
+          },
+        ]);
       }
     },
     [addToCommandBuffer],
@@ -375,7 +346,7 @@ Type 'help' to see available commands.`,
         {/* Current command line with cursor */}
         <div className="flex gap-1 items-center">
           <Directory user="hacker" host="linux" path="portfolio" />
-          <span>{currentInput}</span>
+          <span className="ml-1">{currentInput}</span>
           {!isLoading && (
             <span
               className={
