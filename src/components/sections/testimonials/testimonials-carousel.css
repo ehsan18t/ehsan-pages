@@ -124,11 +124,11 @@
 }
 
 .testimonial-next {
-  @apply right-0;
+  @apply right-2 md:right-0;
 }
 
 .testimonial-prev {
-  @apply left-0;
+  @apply left-2 md:left-0;
 }
 
 /* Pagination Dots with animations */
