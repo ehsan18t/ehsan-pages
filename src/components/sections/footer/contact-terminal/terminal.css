@@ -1,0 +1,62 @@
+/* Enhanced terminal styling */
+.terminal-container {
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.3),
+    0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+.terminal-content {
+  font-family: "Menlo", "Monaco", "Consolas", monospace;
+  height: 320px;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2a2a2a;
+  line-height: 1.4;
+}
+
+.terminal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-content::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+.terminal-content::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a;
+  border-radius: 4px;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background-color: #adbac7;
+  animation: blink 1.2s step-start infinite;
+  vertical-align: middle;
+}
+
+.command-input {
+  position: relative;
+  animation: typing 1s steps(15);
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
