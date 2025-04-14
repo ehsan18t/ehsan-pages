@@ -93,6 +93,30 @@ const { testimonials } = Astro.props;
     let isDragging = false;
     let mouseStartX = 0;
 
+    // Testimonial Slide Card Resize
+    function setConsistentHeight() {
+      const allCards = document.querySelectorAll(".testimonial-slide");
+
+      // Find maximum natural height
+      let maxHeight = 0;
+      allCards.forEach((card: any) => {
+        card.style.minHeight = "";
+        const height = card.scrollHeight;
+        maxHeight = Math.max(maxHeight, height);
+      });
+
+      // Apply maximum height to all cards
+      allCards.forEach((card: any) => {
+        card.style.minHeight = `${maxHeight}px`;
+      });
+    }
+
+    // Execute once on load
+    setConsistentHeight();
+
+    // Re-calculate whenever window size changes
+    window.addEventListener("resize", setConsistentHeight);
+
     // Setup Intersection Observer to detect when carousel is in viewport
     const observer = new IntersectionObserver(
       (entries) => {
@@ -308,6 +332,7 @@ const { testimonials } = Astro.props;
     document.addEventListener("astro:before-swap", () => {
       observer.disconnect();
       stopAutoplay();
+      window.removeEventListener("resize", setConsistentHeight);
     });
 
     if (isInViewport) {
