@@ -120,7 +120,14 @@
 
 /* Next/Prev Button */
 .testimonial-btn-base {
-  @apply pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
+  @apply pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70;
+  @apply hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
+  transition:
+    opacity var(--testimonial-duration-normal) ease,
+    background-color var(--testimonial-duration-normal) ease,
+    transform var(--testimonial-duration-normal) ease,
+    box-shadow var(--testimonial-duration-normal) ease;
+  will-change: opacity, background-color, transform, box-shadow;
 }
 
 .testimonial-next {
@@ -133,7 +140,7 @@
 
 /* Pagination Dots with animations */
 .testimonial-pagination {
-  @apply flex justify-center mt-8 gap-2   animate-fade-up   animation-duration-500 fill-forwards   animation-delay-300 gpu-accelerated;
+  @apply flex justify-center mt-8 gap-2;
 }
 
 .testimonial-dot {
@@ -146,7 +153,7 @@
 }
 
 .testimonial-dot-active {
-  @apply w-8 bg-accent-text animate-pulse animation-duration-2000 animate-once;
+  @apply w-8 bg-accent-text;
 }
 
 .testimonial-dot-inactive {
