@@ -1,41 +1,154 @@
 ---
-// src/components/AnimateOnScroll.astro
-const { animation = "fade", delay = "0ms", threshold = 0.2 } = Astro.props;
+const { animation = "fade", delay = "0ms", threshold = 0.2, duration = "0.6s", distance = "30px", once = true, stagger = "0ms", root = null, rootMargin = "0px", easing = "cubic-bezier(0.16, 1, 0.3, 1)" } = Astro.props;
 ---
 
-<div class={`animate-on-scroll ${animation}`} style={`--delay: ${delay}`} data-animate data-threshold={threshold}>
+<div class={`animate-on-scroll ${animation}`} style={`--delay: ${delay}; --duration: ${duration}; --distance: ${distance}; --easing: ${easing};`} data-animate data-threshold={threshold} data-once={once} data-stagger={stagger} data-root={root} data-root-margin={rootMargin}>
   <slot />
 </div>
 
 <script is:inline>
   document.addEventListener("DOMContentLoaded", () => {
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Cache the observers by their configuration parameters
+    const observerCache = new Map();
     const elements = document.querySelectorAll("[data-animate]");
 
-    elements.forEach((el) => {
+    // Track elements for potential cleanup
+    const trackedElements = new WeakMap();
+
+    // Create staggered groups
+    const staggerGroups = new Map();
+
+    elements.forEach((el, index) => {
+      // Skip initialization if user prefers reduced motion
+      if (prefersReducedMotion) {
+        el.classList.add("animate-in", "motion-reduced");
+        return;
+      }
+
+      // Get configuration from data attributes
       const threshold = parseFloat(el.dataset.threshold) || 0.2;
+      const once = el.dataset.once !== "false";
+      const root = el.dataset.root ? document.querySelector(el.dataset.root) : null;
+      const rootMargin = el.dataset.rootMargin || "0px";
+      const stagger = el.dataset.stagger ? parseInt(el.dataset.stagger, 10) : 0;
+
+      // Create a unique key for this observer configuration
+      const observerKey = `${threshold}-${rootMargin}-${root?.id || "null"}`;
+
+      // Group elements by stagger if needed
+      if (stagger > 0) {
+        if (!staggerGroups.has(observerKey)) {
+          staggerGroups.set(observerKey, []);
+        }
+        staggerGroups.get(observerKey).push({ element: el, index });
+        return; // Will be handled after grouping
+      }
+
+      // Get or create observer with these settings
+      let observer;
+      if (observerCache.has(observerKey)) {
+        observer = observerCache.get(observerKey);
+      } else {
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("animate-in");
+                if (once) {
+                  observer.unobserve(entry.target);
+                  trackedElements.delete(entry.target);
+                }
+              } else if (!once) {
+                entry.target.classList.remove("animate-in");
+              }
+            });
+          },
+          { threshold, root, rootMargin }
+        );
+        observerCache.set(observerKey, observer);
+      }
+
+      // Start observing this element
+      observer.observe(el);
+      trackedElements.set(el, observer);
+    });
+
+    // Handle staggered animations
+    staggerGroups.forEach((elements, observerKey) => {
+      const [threshold, rootMargin, rootId] = observerKey.split("-");
+      const root = rootId !== "null" ? document.getElementById(rootId) : null;
+      const once = elements[0].element.dataset.once !== "false";
+      const staggerDelay = parseInt(elements[0].element.dataset.stagger, 10);
 
       const observer = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("animate-in");
-              observer.unobserve(entry.target);
+          const visible = entries.filter((entry) => entry.isIntersecting);
+
+          visible.forEach((entry) => {
+            const index = elements.findIndex((e) => e.element === entry.target);
+            if (index !== -1) {
+              const delay = staggerDelay * index;
+              entry.target.style.setProperty("--computed-delay", `${delay}ms`);
+
+              // Use requestAnimationFrame to ensure style is applied before adding class
+              requestAnimationFrame(() => {
+                entry.target.classList.add("animate-in");
+              });
+
+              if (once) {
+                observer.unobserve(entry.target);
+                trackedElements.delete(entry.target);
+              }
             }
           });
+
+          // Remove class when element is no longer visible (only if once is false)
+          if (!once) {
+            entries
+              .filter((entry) => !entry.isIntersecting)
+              .forEach((entry) => {
+                entry.target.classList.remove("animate-in");
+              });
+          }
         },
-        { threshold }
+        { threshold: parseFloat(threshold), root, rootMargin }
       );
 
-      observer.observe(el);
+      elements.forEach(({ element }) => {
+        observer.observe(element);
+        trackedElements.set(element, observer);
+      });
+
+      observerCache.set(observerKey + "-stagger", observer);
     });
+
+    // Clean up observers when navigating away
+    const cleanup = () => {
+      observerCache.forEach((observer) => observer.disconnect());
+      observerCache.clear();
+    };
+
+    // Add cleanup to page navigation events
+    document.addEventListener("astro:before-swap", cleanup);
+    window.addEventListener("beforeunload", cleanup);
   });
 </script>
 
 <style>
   .animate-on-scroll {
     opacity: 0;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: var(--delay);
+    visibility: visible;
+    will-change: transform, opacity;
+    transition-property: transform, opacity;
+    transition-duration: var(--duration);
+    transition-timing-function: var(--easing);
+    transition-delay: calc(var(--delay) + var(--computed-delay, 0ms));
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
   }
 
   /* Animation Types */
@@ -44,26 +157,78 @@ const { animation = "fade", delay = "0ms", threshold = 0.2 } = Astro.props;
   }
 
   .slide-up {
-    transform: translateY(30px);
+    transform: translate3d(0, var(--distance), 0);
   }
   .slide-up.animate-in {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  .slide-down {
+    transform: translate3d(0, calc(var(--distance) * -1), 0);
+  }
+  .slide-down.animate-in {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 
   .slide-left {
-    transform: translateX(30px);
+    transform: translate3d(var(--distance), 0, 0);
   }
   .slide-left.animate-in {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  .slide-right {
+    transform: translate3d(calc(var(--distance) * -1), 0, 0);
+  }
+  .slide-right.animate-in {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 
   .zoom {
-    transform: scale(0.95);
+    transform: scale3d(0.95, 0.95, 1);
   }
   .zoom.animate-in {
     opacity: 1;
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  .zoom-out {
+    transform: scale3d(1.05, 1.05, 1);
+  }
+  .zoom-out.animate-in {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+
+  .flip-x {
+    transform: perspective(400px) rotateX(10deg);
+  }
+  .flip-x.animate-in {
+    opacity: 1;
+    transform: perspective(400px) rotateX(0);
+  }
+
+  .flip-y {
+    transform: perspective(400px) rotateY(10deg);
+  }
+  .flip-y.animate-in {
+    opacity: 1;
+    transform: perspective(400px) rotateY(0);
+  }
+
+  /* Respect user's reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll,
+    .motion-reduced {
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+      will-change: auto !important;
+      visibility: visible !important;
+    }
   }
 </style>

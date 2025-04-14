@@ -22,13 +22,21 @@ import info from "@/data";
 
       <img src={background.src} alt="" id="background" fetchpriority="high" />
       <div class="relative z-1 bg-gradient-to-b from-background via-background/80 to-transparent">
-        <AnimateOnScroll animation="slide-up" delay="300ms">
+        <AnimateOnScroll animation="slide-up" delay="200ms">
           <Skills />
         </AnimateOnScroll>
       </div>
-      <ProjectShowcase />
-      <TestimonialsCarousel testimonials={info.testimonials} />
-      <Footer />
+      <AnimateOnScroll animation="slide-up" delay="200ms">
+        <ProjectShowcase />
+      </AnimateOnScroll>
+
+      <AnimateOnScroll animation="slide-up" delay="200ms">
+        <TestimonialsCarousel testimonials={info.testimonials} />
+      </AnimateOnScroll>
+
+      <AnimateOnScroll animation="slide-up" delay="200ms">
+        <Footer />
+      </AnimateOnScroll>
     </div>
 
     <script is:inline>
