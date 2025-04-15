@@ -25,7 +25,6 @@ export default function Terminal() {
   const [isLoading, setIsLoading] = useState(false);
   const [commandBuffer, setCommandBuffer] = useState([]);
   const [bufferPosition, setBufferPosition] = useState(-1);
-  const [isFocused, setIsFocused] = useState(false);
 
   const terminalRef = useRef(null);
   const inputRef = useRef(null);
@@ -406,8 +405,6 @@ Type 'help' to see available commands.`,
                 value={currentInput}
                 onChange={(e) => setCurrentInput(e.target.value)}
                 onKeyDown={handleKeyPress}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
                 aria-label="Terminal input"
               />
             </>

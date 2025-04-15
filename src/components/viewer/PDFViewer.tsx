@@ -23,13 +23,13 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
     setError(null);
 
     try {
-      const response = await fetch("/api/fetch-pdf", {
+      const response = await fetch("/api/get-file-as-blob", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Cache-Buster": Date.now().toString(), // Prevent stale cache
         },
-        body: JSON.stringify({ pdfUrl: url.trim() }),
+        body: JSON.stringify({ fileUrl: url.trim() }),
       });
 
       if (!response.ok)

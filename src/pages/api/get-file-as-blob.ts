@@ -4,14 +4,14 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request, url }) => {
   interface RequestBody {
-    pdfUrl: string;
+    fileUrl: string;
   }
 
   try {
-    const { pdfUrl } = (await request.json()) as RequestBody;
+    const { fileUrl } = (await request.json()) as RequestBody;
 
     // Validate input
-    if (!pdfUrl?.trim()) {
+    if (!fileUrl?.trim()) {
       return new Response(JSON.stringify({ error: "PDF URL is required" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -19,9 +19,9 @@ export const POST: APIRoute = async ({ request, url }) => {
     }
 
     // Convert to absolute URL
-    const finalUrl = pdfUrl.startsWith("/")
-      ? new URL(pdfUrl, url.origin).toString()
-      : pdfUrl;
+    const finalUrl = fileUrl.startsWith("/")
+      ? new URL(fileUrl, url.origin).toString()
+      : fileUrl;
 
     // Validate URL format
     try {
