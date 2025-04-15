@@ -9,14 +9,24 @@
 /* Styling for the ripple effect */
 .ripple {
   @apply absolute pointer-events-none rounded-full;
-  transform: scale(0);
-  animation: ripple 600ms linear;
-  background: rgba(255, 255, 255, 0.6);
+
+  --ripple-color: rgba(255, 255, 255, 0.6);
+  --ripple-scale: 4;
+  --ripple-duration: 600ms;
+
+  background: var(--ripple-color);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  animation: ripple var(--ripple-duration) ease-out forwards;
 }
 
 @keyframes ripple {
+  from {
+    transform: scale3d(0, 0, 0);
+    opacity: 0.8;
+  }
   to {
-    transform: scale(4);
+    transform: scale3d(var(--ripple-scale), var(--ripple-scale), 1);
     opacity: 0;
   }
 }
