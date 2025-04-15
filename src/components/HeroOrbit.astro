@@ -11,7 +11,7 @@ export interface HeroOrbitProps {
 const { size, duration = 10, rotation = 0, opacity = 100, starOnly = false, class: className } = Astro.props as HeroOrbitProps;
 ---
 
-{!starOnly && <div class="hero-ring" style={`width: ${size}rem; height: ${size}rem; opacity: ${opacity}%;`} />}
+{!starOnly && <div class="absolute border-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-emerald-300/5 shadow-[0_0_80px_inset] shadow-emerald-300/5" style={`width: ${size}rem; height: ${size}rem; opacity: ${opacity}%;`} />}
 
 {
   Astro.slots.has("default") && (
