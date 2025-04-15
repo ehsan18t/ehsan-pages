@@ -85,8 +85,7 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
   return (
     <div className="testimonial-section" ref={containerRef}>
       <h2 className="text-4xl md:text-5xl font-doto font-bold mb-4 text-center">
-        <span className="text-[oklch(var(--accent-title))]">Client</span>{" "}
-        Testimonials
+        <span className="text-accent-title">Client</span> Testimonials
       </h2>
       <p className="text-foreground-muted text-center max-w-2xl mx-auto mb-16">
         Don't just take my word for it - here's what clients have to say about
@@ -110,12 +109,12 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
           <MdChevronLeft
             onClick={scrollPrev}
             aria-label="Previous testimonial"
-            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-accent-bg/10 text-accent-text backdrop-blur-md border border-accent-text/15 opacity-70 transition-all hover:opacity-100 hover:bg-accent-bg/20 hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
           />
           <MdChevronRight
             onClick={scrollNext}
             aria-label="Next testimonial"
-            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 right-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-[oklch(var(--accent-bg)/0.1)] text-[oklch(var(--accent-text))] backdrop-blur-md border border-[oklch(var(--accent-text)/0.15)] opacity-70 transition-all hover:opacity-100 hover:bg-[oklch(var(--accent-bg)/0.2)] hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 right-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-accent-bg/10 text-accent-text backdrop-blur-md border border-accent-text/15 opacity-70 transition-all hover:opacity-100 hover:bg-accent-bg/20 hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
           />
         </div>
       </div>
