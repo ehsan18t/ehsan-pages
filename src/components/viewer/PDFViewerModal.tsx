@@ -34,11 +34,11 @@ const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex justify-between items-center px-6 py-3 border-b border-white/10">
+        <div className="select-none flex justify-between items-center px-6 py-3 border-b border-white/10">
           <Button link={cvPDF}>Download CV</Button>
           <button
             onClick={() => setIsModalOpen(false)}
-            className="text-gray-300 hover:text-white text-6xl leading-none px-2 transition-colors cursor-pointer"
+            className="select-none text-gray-300 hover:text-white text-6xl leading-none px-2 transition-colors cursor-pointer"
             aria-label="Close"
           >
             &times;
@@ -54,7 +54,7 @@ const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
   );
 
   return (
-    <div className="w-full flex items-center justify-center md:justify-start">
+    <div className="w-full flex items-center justify-center md:justify-start select-none">
       <Button onClick={() => setIsModalOpen(true)} className="w-3xs font-bold">
         View CV
       </Button>

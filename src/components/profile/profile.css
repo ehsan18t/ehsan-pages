@@ -9,7 +9,7 @@
   --md-pp-b-size: 0.4rem; /* 6px */
   --lg-pp-b-size: 0.438rem; /* 7px */
 
-  @apply flex justify-center items-center p-5;
+  @apply flex justify-center items-center p-5 select-none;
 }
 
 .border-wrapper {
