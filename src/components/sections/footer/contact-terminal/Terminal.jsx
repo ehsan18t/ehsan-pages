@@ -34,7 +34,7 @@ export default function Terminal() {
   const COMMANDS = [
     {
       name: "send",
-      description: "Sends an quick email to Ehsan",
+      description: "Sends a quick email to Ehsan",
       usage: "send <email> <message>",
       handler: async (args) => {
         if (args.length < 2) {
