@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+export default function initObservation() {
   const elementsToAnimate = document.querySelectorAll(".animate-when-visible");
 
   const observerOptions = {
@@ -29,4 +29,4 @@ document.addEventListener("DOMContentLoaded", () => {
   elementsToAnimate.forEach((element) => {
     observer.observe(element);
   });
-});
+}

@@ -89,29 +89,44 @@ import info from "@/data";
 </section>
 
 <script>
-  // Debounce utility function with TypeScript
-  const debounce = <T extends (...args: any[]) => void>(func: T, timeout: number = 100): ((...args: Parameters<T>) => void) => {
-    let timer: ReturnType<typeof setTimeout>;
-    return (...args: Parameters<T>) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func(...args);
-      }, timeout);
+  function initHeroSize() {
+    // Debounce utility function with TypeScript
+    const debounce = <T extends (...args: any[]) => void>(func: T, timeout: number = 100): ((...args: Parameters<T>) => void) => {
+      let timer: ReturnType<typeof setTimeout>;
+      return (...args: Parameters<T>) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          func(...args);
+        }, timeout);
+      };
     };
+
+    // Set hero height (mobile-only)
+    const setHeroHeight = (): void => {
+      const hero = document.querySelector<HTMLElement>("#hero");
+      if (!hero) return;
+
+      // Apply fixed height only on mobile (breakpoint: 768px)
+      if (window.innerWidth < 768) {
+        hero.style.height = `${window.innerHeight}px`;
+      }
+    };
+
+    // Initialize and handle orientation changes (no resize listener)
+    setHeroHeight();
+    window.addEventListener("orientationchange", debounce(setHeroHeight));
+  }
+
+  document.addEventListener("DOMContentLoaded", initHeroSize);
+  document.addEventListener("astro:page:load", initHeroSize);
+
+  // Cleanup function to remove event listeners
+  const cleanup = () => {
+    document.removeEventListener("DOMContentLoaded", initHeroSize);
+    document.removeEventListener("astro:page:load", initHeroSize);
   };
 
-  // Set hero height (mobile-only)
-  const setHeroHeight = (): void => {
-    const hero = document.querySelector<HTMLElement>("#hero");
-    if (!hero) return;
-
-    // Apply fixed height only on mobile (breakpoint: 768px)
-    if (window.innerWidth < 768) {
-      hero.style.height = `${window.innerHeight}px`;
-    }
-  };
-
-  // Initialize and handle orientation changes (no resize listener)
-  setHeroHeight();
-  window.addEventListener("orientationchange", debounce(setHeroHeight));
+  // Add cleanup to page navigation events
+  document.addEventListener("astro:before-swap", cleanup);
+  window.addEventListener("beforeunload", cleanup);
 </script>

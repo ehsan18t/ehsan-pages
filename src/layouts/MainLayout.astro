@@ -26,5 +26,20 @@ import "@/assets/styles/global.css";
     <slot />
   </body>
 
-  <script src="@/assets/animations/animations.js"></script>
+  <script>
+    import initObservation from "@/assets/animations/animations";
+
+    document.addEventListener("DOMContentLoaded", initObservation);
+    document.addEventListener("astro:page:load", initObservation);
+
+    // Cleanup function to remove event listeners
+    const cleanup = () => {
+      document.removeEventListener("DOMContentLoaded", initObservation);
+      document.removeEventListener("astro:page:load", initObservation);
+    };
+
+    // Add cleanup to page navigation events
+    document.addEventListener("astro:before-swap", cleanup);
+    window.addEventListener("beforeunload", cleanup);
+  </script>
 </html>
