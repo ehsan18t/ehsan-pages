@@ -4,7 +4,7 @@
   --gold-color: #ffd700;
   --gold-glow: rgba(255, 215, 0, 0.3);
   --circle-dash: 440;
-  --letter-dash: 300;
+  --letter-dash: 320;
   --base-delay: 0.6s;
   --delay-increment: 0.05s;
 }
