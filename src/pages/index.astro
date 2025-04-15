@@ -53,7 +53,7 @@ import info from "@/data";
             Promise.all(
               Array.from(loader.getElementsByClassName("logo-circle"))
                 .concat(Array.from(loader.getElementsByClassName("letter")), Array.from(loader.getElementsByClassName("name-char")), Array.from(loader.getElementsByClassName("particle")))
-                .map((el) => new Promise((res) => el.addEventListener("animationend", res, { once: true })))
+                .map((el) => new Promise((res) => el.addEventListener("animationend", res, { once: true }))),
             ).then(() => {
               // Remove loader after all animations finish
               loader.remove();
