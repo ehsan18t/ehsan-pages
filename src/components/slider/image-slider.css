@@ -196,7 +196,7 @@
 
 /* --- Lightbox --- */
 .slider-lightbox {
-  @apply fixed inset-0 z-[9999] flex items-center justify-center animated animate-lightbox-open;
+  @apply fixed inset-0 z-[9999] flex items-center justify-center animated animate-lightbox-open select-none;
   width: 100vw;
   height: 100vh;
   backdrop-filter: blur(0); /* Start with no blur for transition effect */
