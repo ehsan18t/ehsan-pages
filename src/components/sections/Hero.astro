@@ -9,83 +9,109 @@ import PDFViewerModal from "@/components/viewer/PDFViewerModal";
 import info from "@/data";
 ---
 
-<section id="hero" class="h-screen relative z-0 overflow-hidden">
-  <div class="h-dvh flex flex-col items-center justify-center">
-    <!-- Fade out bottom -->
-    <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
-      <!-- Grain Effect -->
-      <div class="absolute inset-0 -z-30 opacity-5" style={`background-image: url(${grain.src});`}></div>
-      <!-- Rings -->
-      <!-- Ring-1: Inner Ring with Smaller Stars -->
-      <HeroOrbit size={18} duration={30} rotation={-14}>
-        <Star size={2} duration={28} opacity={20} />
-      </HeroOrbit>
-      <HeroOrbit size={18} duration={30} rotation={79} starOnly>
-        <Star size={1.25} duration={16} opacity={20} />
-      </HeroOrbit>
-      <HeroOrbit size={18} duration={30} rotation={179} starOnly>
-        <Star size={1.25} duration={16} opacity={70} />
-      </HeroOrbit>
+<section id="hero" class="h-screen relative z-0 overflow-hidden flex flex-col items-center justify-center">
+  <!-- Fade out bottom -->
+  <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
+    <!-- Grain Effect -->
+    <div class="absolute inset-0 -z-30 opacity-5" style={`background-image: url(${grain.src});`}></div>
+    <!-- Rings -->
+    <!-- Ring-1: Inner Ring with Smaller Stars -->
+    <HeroOrbit size={18} duration={30} rotation={-14}>
+      <Star size={2} duration={28} opacity={20} />
+    </HeroOrbit>
+    <HeroOrbit size={18} duration={30} rotation={79} starOnly>
+      <Star size={1.25} duration={16} opacity={20} />
+    </HeroOrbit>
+    <HeroOrbit size={18} duration={30} rotation={179} starOnly>
+      <Star size={1.25} duration={16} opacity={70} />
+    </HeroOrbit>
 
-      <!-- Ring-2: Adding More Stars for Increased Density -->
-      <HeroOrbit size={28} duration={42} rotation={178}>
-        <Star size={2.5} duration={20} opacity={20} />
-      </HeroOrbit>
-      <HeroOrbit size={28} duration={42} rotation={98} starOnly>
-        <Star size={2} duration={18} />
-      </HeroOrbit>
-      <HeroOrbit size={28} duration={42} rotation={20} starOnly>
-        <Star size={3} duration={18} />
-      </HeroOrbit>
-      <HeroOrbit size={28} duration={42} rotation={250} starOnly>
-        <Star size={1.5} duration={18} />
-      </HeroOrbit>
+    <!-- Ring-2: Adding More Stars for Increased Density -->
+    <HeroOrbit size={28} duration={42} rotation={178}>
+      <Star size={2.5} duration={20} opacity={20} />
+    </HeroOrbit>
+    <HeroOrbit size={28} duration={42} rotation={98} starOnly>
+      <Star size={2} duration={18} />
+    </HeroOrbit>
+    <HeroOrbit size={28} duration={42} rotation={20} starOnly>
+      <Star size={3} duration={18} />
+    </HeroOrbit>
+    <HeroOrbit size={28} duration={42} rotation={250} starOnly>
+      <Star size={1.5} duration={18} />
+    </HeroOrbit>
 
-      <!-- Ring-3: Intermediate Ring with Medium Stars -->
-      <HeroOrbit size={38} duration={46} rotation={144}>
-        <Star size={3.5} duration={22} opacity={20} />
-      </HeroOrbit>
-      <HeroOrbit size={38} duration={42} rotation={85} starOnly>
-        <Star size={0.75} duration={20} opacity={20} />
-      </HeroOrbit>
-      <HeroOrbit size={38} duration={40} starOnly>
-        <Star size={2.3} duration={20} opacity={70} />
-      </HeroOrbit>
-      <HeroOrbit size={38} duration={37} rotation={200} starOnly>
-        <Star size={2.7} duration={20} opacity={75} />
-      </HeroOrbit>
-      <HeroOrbit size={38} duration={35} rotation={270} starOnly>
-        <Star size={2.9} duration={18} />
-      </HeroOrbit>
+    <!-- Ring-3: Intermediate Ring with Medium Stars -->
+    <HeroOrbit size={38} duration={46} rotation={144}>
+      <Star size={3.5} duration={22} opacity={20} />
+    </HeroOrbit>
+    <HeroOrbit size={38} duration={42} rotation={85} starOnly>
+      <Star size={0.75} duration={20} opacity={20} />
+    </HeroOrbit>
+    <HeroOrbit size={38} duration={40} starOnly>
+      <Star size={2.3} duration={20} opacity={70} />
+    </HeroOrbit>
+    <HeroOrbit size={38} duration={37} rotation={200} starOnly>
+      <Star size={2.7} duration={20} opacity={75} />
+    </HeroOrbit>
+    <HeroOrbit size={38} duration={35} rotation={270} starOnly>
+      <Star size={2.9} duration={18} />
+    </HeroOrbit>
 
-      <!-- Ring-4: Larger Ring with Varied Star Sizes -->
-      <HeroOrbit size={50} duration={80} rotation={-72}>
-        <Star size={7} duration={25} />
-      </HeroOrbit>
+    <!-- Ring-4: Larger Ring with Varied Star Sizes -->
+    <HeroOrbit size={50} duration={80} rotation={-72}>
+      <Star size={7} duration={25} />
+    </HeroOrbit>
 
-      <!-- Final Larger Orbits for Background Depth -->
-      <HeroOrbit size={62} opacity={60} />
-      <HeroOrbit size={74} opacity={50} />
-      <HeroOrbit size={86} opacity={40} />
-      <HeroOrbit size={98} opacity={30} />
-      <HeroOrbit size={110} opacity={20} />
+    <!-- Final Larger Orbits for Background Depth -->
+    <HeroOrbit size={62} opacity={60} />
+    <HeroOrbit size={74} opacity={50} />
+    <HeroOrbit size={86} opacity={40} />
+    <HeroOrbit size={98} opacity={30} />
+    <HeroOrbit size={110} opacity={20} />
+  </div>
+  <!-- Content -->
+  <div class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3">
+    <div>
+      <Profile />
     </div>
-    <!-- Content -->
-    <div class="fade-in flex flex-col md:flex-row items-center justify-center md:px-10 lg:w-2/3">
-      <div>
-        <Profile />
+    <div class="flex flex-col gap-2 px-5 md:px-10">
+      <GlitchText text={info.name} class="text-4xl font-bold text-center md:text-left" />
+      <h2 class="text-2xl text-center md:text-left text-secondary">
+        {info.title}
+      </h2>
+      <p class="md:text-lg text-justify">{info.description}</p>
+      <div class="pt-6 pb-3">
+        <PDFViewerModal cvPDF={info.resume} client:load />
       </div>
-      <div class="flex flex-col gap-2 px-5 md:px-10">
-        <GlitchText text={info.name} class="text-4xl font-bold text-center md:text-left" />
-        <h2 class="text-2xl text-center md:text-left text-secondary">
-          {info.title}
-        </h2>
-        <p class="md:text-lg text-justify">{info.description}</p>
-        <div class="pt-6 pb-3">
-          <PDFViewerModal cvPDF={info.resume} client:load />
-        </div>
-        <SocialBar />
-      </div>
+      <SocialBar />
     </div>
   </div>
 </section>
+
+<script>
+  // Debounce utility function with TypeScript
+  const debounce = <T extends (...args: any[]) => void>(func: T, timeout: number = 100): ((...args: Parameters<T>) => void) => {
+    let timer: ReturnType<typeof setTimeout>;
+    return (...args: Parameters<T>) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func(...args);
+      }, timeout);
+    };
+  };
+
+  // Set hero height (mobile-only)
+  const setHeroHeight = (): void => {
+    const hero = document.querySelector<HTMLElement>("#hero");
+    if (!hero) return;
+
+    // Apply fixed height only on mobile (breakpoint: 768px)
+    if (window.innerWidth < 768) {
+      hero.style.height = `${window.innerHeight}px`;
+    }
+  };
+
+  // Initialize and handle orientation changes (no resize listener)
+  setHeroHeight();
+  window.addEventListener("orientationchange", debounce(setHeroHeight));
+</script>
