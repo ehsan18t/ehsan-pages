@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cazzert Cakes - Elegance Baked Fresh Since 2021</title>
+    <meta
+      name="description"
+      content="Discover exquisite custom cakes by Cazzert, macarons, and sweet treats baked with passion since 2021."
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+    <style type="text/tailwindcss">
+      /* Define CSS Variables (Custom Properties) */
+      :root {
+        /* Light Theme Palette (Default) */
+        --color-bg: #fff8f5;
+        --color-bg-alt: #ffffff;
+        --color-bg-footer: #f0e5e9;
+        --color-bg-feature-card: #ffffff;
+        --color-bg-cta: #fce3eb;
+        --color-bg-cta-end: #f9dbe7;
+        --color-bg-overlay: rgba(0, 0, 0, 0.5);
+        --color-text-base: #4a4a4a;
+        --color-text-muted: #6b5a5f;
+        --color-text-subtle: #a08c93;
+        --color-text-light: #ffffff;
+        --color-text-price: #383838;
+        --color-primary: #d18ea4;
+        --color-primary-light: #e5a9bd;
+        --color-primary-dark: #b7788f;
+        --color-accent-gold: #b18a5a;
+        --color-accent-gold-bg: #f5e8d7;
+        --color-accent-grey: #5f5f5f;
+        --color-accent-grey-bg: #e0e0e0;
+        --color-border: #e5a9bd;
+        --color-border-light: #e2e8f0;
+        --font-primary: "Lato", sans-serif;
+        --font-secondary: "Playfair Display", serif;
+        --border-radius-base: 0.5rem;
+        --border-radius-lg: 0.75rem;
+        --border-radius-full: 9999px;
+      }
+
+      /* Dark Theme Variables - Applied when html has .dark class */
+      html.dark {
+        --color-bg: #2d2a2e;
+        --color-bg-alt: #3a363b;
+        --color-bg-footer: #252226;
+        --color-bg-feature-card: #3a363b;
+        --color-bg-cta: #4a3a40;
+        --color-bg-cta-end: #5c4a51;
+        --color-bg-overlay: rgba(0, 0, 0, 0.7);
+        --color-text-base: #f0e5e9;
+        --color-text-muted: #c0b2b7;
+        --color-text-subtle: #a08c93;
+        --color-text-light: #2d2a2e; /* Used on primary buttons */
+        --color-text-price: #ffffff;
+        --color-primary: #e5a9bd; /* Lighter primary */
+        --color-primary-light: #f0cdd7;
+        --color-primary-dark: #d18ea4;
+        --color-accent-gold: #c4a27a;
+        --color-accent-gold-bg: #4a4136;
+        --color-accent-grey: #a0a0a0;
+        --color-accent-grey-bg: #505050;
+        --color-border: #5f5a60;
+        --color-border-light: #4f4a50;
+      }
+
+      /* Base Styles */
+      body {
+        font-family: var(--font-primary);
+        color: var(--color-text-base);
+        background-color: var(--color-bg);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition: background-color 0.3s ease, color 0.3s ease; /* Added transitions */
+      }
+      body.sidebar-open {
+        overflow: hidden;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      .font-serif {
+        font-family: var(--font-secondary);
+        color: var(--color-text-base);
+      }
+
+      /* Component Styles (Card, Sidebar, Nav etc. - Apply transitions where needed) */
+      .cake-card {
+        background-color: var(--color-bg-feature-card);
+        border-radius: var(--border-radius-lg);
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease-in-out; /* Includes background, border, shadow */
+        border: 1px solid var(--color-border-light);
+      }
+      html.dark .cake-card {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      .cake-card:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        transform: translateY(-5px);
+      }
+      html.dark .cake-card:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+      /* ... (other card styles remain mostly the same) ... */
+      .cake-card-image-link {
+        display: block;
+        overflow: hidden;
+      }
+      .cake-card img {
+        width: 100%;
+        height: 16rem;
+        object-fit: cover;
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+      .cake-card:hover img {
+        transform: scale(1.08);
+      }
+      .cake-card-content {
+        padding: 1rem 1.25rem;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+      @media (min-width: 768px) {
+        .cake-card-content {
+          padding: 1.25rem;
+        }
+      }
+      .cake-card-title {
+        font-size: 1.125rem;
+        font-family: var(--font-secondary);
+        font-weight: 600;
+        margin-bottom: 0.375rem;
+        color: var(--color-text-base);
+      }
+      .cake-card-desc {
+        color: var(--color-text-muted);
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+        min-height: 3rem;
+        line-height: 1.5;
+        flex-grow: 1;
+      }
+      .cake-card-price {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--color-text-price);
+        margin-bottom: 0.75rem;
+      }
+      .add-to-cart-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.625rem 1rem;
+        border-radius: var(--border-radius-base);
+        background-color: var(--color-primary-light);
+        color: var(--color-text-light);
+        transition: background-color 0.2s ease-in-out;
+        border: none;
+        cursor: pointer;
+      }
+      .add-to-cart-btn:hover {
+        background-color: var(--color-primary);
+      }
+      .add-to-cart-btn svg {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+      }
+
+      .sidebar,
+      .mobile-bottom-nav,
+      #main-header,
+      footer {
+        background-color: var(
+          --color-bg-alt
+        ); /* Ensure backgrounds transition */
+        transition: background-color 0.3s ease;
+      }
+      footer {
+        background-color: var(--color-bg-footer);
+      } /* Specific footer bg */
+
+      #main-header {
+        background-color: var(--color-bg-alt) / 90;
+        backdrop-filter: blur(4px); /* backdrop-blur-sm */
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+      }
+      html.dark #main-header {
+        background-color: var(--color-bg-alt) / 95;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      #main-header.shadow-lg {
+        /* JS adds this on scroll */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      html.dark #main-header.shadow-lg {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+          0 4px 6px -2px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 18rem;
+        max-width: 80%;
+        z-index: 100;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out, background-color 0.3s ease;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      html.dark .sidebar {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--color-border-light);
+        transition: border-color 0.3s ease;
+      }
+      .sidebar-close-btn {
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        margin: -0.5rem;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+      .sidebar-close-btn:hover {
+        color: var(--color-primary);
+      }
+      .sidebar-close-btn svg {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+      .sidebar-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+      }
+      .sidebar-heading {
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-subtle);
+        margin-bottom: 1rem;
+      }
+      .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .sidebar-nav li a,
+      .sidebar-nav li button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.75rem 0;
+        font-size: 1rem;
+        color: var(--color-text-muted);
+        transition: color 0.2s ease-in-out, border-color 0.3s ease;
+        border-bottom: 1px solid var(--color-border-light);
+        background: none;
+        border-left: none;
+        border-right: none;
+        cursor: pointer;
+      }
+      .sidebar-nav li:last-child a,
+      .sidebar-nav li:last-child button {
+        border-bottom: none;
+      }
+      .sidebar-nav li a:hover,
+      .sidebar-nav li button:hover {
+        color: var(--color-primary);
+      }
+      .sidebar-nav li button svg {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 0.5rem;
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+      .sidebar-divider {
+        height: 1px;
+        background-color: var(--color-border-light);
+        margin: 1.5rem 0;
+        transition: background-color 0.3s ease;
+      }
+      .sidebar-footer {
+        padding: 1.5rem;
+        margin-top: auto;
+      }
+
+      /* Sidebar Overlay */
+      .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: var(--color-bg-overlay);
+        z-index: 90;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out, background-color 0.3s ease;
+        visibility: hidden;
+      }
+      .sidebar-overlay.open {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Mobile Bottom Nav */
+      .mobile-bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        height: 4.5rem;
+        border-top: 1px solid var(--color-border-light);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.06);
+        transition: background-color 0.3s ease, border-color 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      html.dark .mobile-bottom-nav {
+        box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.2);
+      }
+      @media (min-width: 768px) {
+        .mobile-bottom-nav {
+          display: none;
+        }
+      }
+      .mobile-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        padding-top: 0.5rem;
+        padding-bottom: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        transition: color 0.2s ease-in-out;
+        position: relative;
+        -webkit-tap-highlight-color: transparent;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .mobile-nav-item:hover {
+        color: var(--color-primary);
+      }
+      .mobile-nav-item svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-bottom: 0.125rem;
+      }
+      .mobile-nav-item.active {
+        color: var(--color-primary);
+        font-weight: 600;
+      }
+      .mobile-nav-item.active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30%;
+        height: 2px;
+        background-color: var(--color-primary);
+        border-radius: 0 0 2px 2px;
+      }
+
+      /* Cart Badge */
+      .cart-badge {
+        position: absolute;
+        top: -0.35rem;
+        right: -0.6rem;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        font-size: 0.65rem;
+        font-weight: 700;
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: var(--border-radius-full);
+        display: none; /* Initially hidden */
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        border: 1px solid var(--color-bg-alt);
+        transition: border-color 0.3s ease;
+      }
+      html.dark .cart-badge {
+        border-color: var(--color-bg-alt);
+      }
+
+      /* About Section Feature */
+      .about-feature {
+        display: flex;
+        align-items: flex-start;
+        column-gap: 0.75rem;
+        padding: 1rem;
+        background-color: var(--color-bg);
+        border-radius: var(--border-radius-base);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        border-left-width: 4px;
+        border-color: var(--color-primary-light);
+        transition: background-color 0.3s, border-color 0.3s;
+      }
+      .about-feature svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        color: var(--color-primary-light);
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+      }
+      .about-feature h4 {
+        font-weight: 600;
+        color: var(--color-text-base);
+        margin-bottom: 0.25rem;
+      }
+      .about-feature p {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+      }
+
+      /* Theme Toggle Button */
+      .theme-toggle {
+        background: none;
+        border: none;
+        padding: 0.5rem; /* p-2 */
+        color: var(--color-text-muted);
+        cursor: pointer;
+        transition: color 0.2s ease-in-out;
+        line-height: 0; /* Ensure icon aligns well */
+      }
+      .theme-toggle:hover {
+        color: var(--color-primary);
+      }
+      .theme-toggle svg {
+        width: 1.5rem; /* w-6 */
+        height: 1.5rem; /* h-6 */
+      }
+      /* Hide one icon based on theme */
+      .theme-toggle .sun-icon {
+        display: none;
+      }
+      html.dark .theme-toggle .sun-icon {
+        display: block;
+      }
+      html.dark .theme-toggle .moon-icon {
+        display: none;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[var(--color-bg)] text-[var(--color-text-base)] font-[var(--font-primary)]"
+  >
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <aside
+      id="sidebar-menu"
+      class="sidebar"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sidebar-title"
+    >
+      <div class="sidebar-header">
+        <a href="#home" class="text-center group flex-shrink-0 sidebar-link">
+          <span
+            class="text-2xl font-[var(--font-secondary)] font-bold text-[var(--color-primary)] tracking-tight block leading-none"
+            >Cazzert</span
+          >
+          <span
+            class="text-xs text-[var(--color-text-subtle)] tracking-wider uppercase block -mt-1"
+            >Since 2021</span
+          >
+        </a>
+        <button
+          id="sidebar-close-button"
+          class="sidebar-close-btn"
+          aria-label="Close menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="sidebar-content">
+        <nav class="sidebar-nav">
+          <h3 id="sidebar-title" class="sidebar-heading">Categories</h3>
+          <ul>
+            <li>
+              <a href="#featured" class="sidebar-link">Signature Cakes</a>
+            </li>
+            <li>
+              <a href="/category/birthday" class="sidebar-link"
+                >Birthday Cakes</a
+              >
+            </li>
+            <li>
+              <a href="/category/wedding" class="sidebar-link">Wedding Cakes</a>
+            </li>
+            <li>
+              <a href="/category/macarons" class="sidebar-link"
+                >Macarons & Treats</a
+              >
+            </li>
+            <li><a href="#order" class="sidebar-link">Custom Orders</a></li>
+          </ul>
+        </nav>
+        <hr class="sidebar-divider" />
+        <nav class="sidebar-nav">
+          <h3 class="sidebar-heading">Navigation</h3>
+          <ul>
+            <li><a href="#home" class="sidebar-link">Home</a></li>
+            <li><a href="#about" class="sidebar-link">Our Story</a></li>
+            <li><a href="#contact" class="sidebar-link">Contact</a></li>
+            <li><a href="/faq" class="sidebar-link">FAQ</a></li>
+            <li>
+              <button
+                id="theme-toggle-mobile"
+                class="sidebar-link theme-toggle w-full text-left"
+              >
+                <svg
+                  class="sun-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 block dark:hidden"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <svg
+                  class="moon-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 hidden dark:block"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+                  ></path>
+                </svg>
+                <span class="theme-toggle-text">Toggle Theme</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <a
+          href="#order"
+          class="btn block text-center w-full bg-[var(--color-primary-light)] hover:bg-[var(--color-primary)] text-[var(--color-text-light)] sidebar-link py-2.5 px-4 rounded-[var(--border-radius-base)] font-semibold transition-colors"
+        >
+          Place an Order
+        </a>
+      </div>
+    </aside>
+
+    <header
+      id="main-header"
+      class="sticky top-0 z-30 transition-all duration-300"
+    >
+      <nav
+        class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center"
+      >
+        <a href="#home" class="text-center group flex-shrink-0">
+          <span
+            class="text-3xl font-[var(--font-secondary)] font-bold text-[var(--color-primary)] tracking-tight block leading-none"
+            >Cazzert</span
+          >
+          <span
+            class="text-xs text-[var(--color-text-subtle)] tracking-wider uppercase block -mt-1"
+            >Since 2021</span
+          >
+        </a>
+
+        <ul
+          class="hidden md:flex items-center space-x-6 lg:space-x-8 text-base mx-auto"
+        >
+          <li>
+            <a
+              href="#home"
+              class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors duration-300 pb-1 border-b-2 border-transparent hover:border-[var(--color-primary-light)]"
+              >Home</a
+            >
+          </li>
+          <li class="relative group">
+            <button
+              class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors duration-300 pb-1 border-b-2 border-transparent hover:border-[var(--color-primary-light)] flex items-center group-hover:text-[var(--color-primary)]"
+            >
+              Categories
+              <svg
+                class="w-4 h-4 ml-1 fill-current text-[var(--color-text-subtle)] group-hover:text-[var(--color-primary)] transition-colors"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.27a.75.75 0 01.02-1.06z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <ul
+              class="absolute left-0 mt-2 w-48 bg-[var(--color-bg-alt)] rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-40 border border-[var(--color-border-light)]"
+            >
+              <li>
+                <a
+                  href="#featured"
+                  class="block px-4 py-2 text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-primary-light)]/10 hover:text-[var(--color-primary)] transition-colors"
+                  >Signature Cakes</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/category/birthday"
+                  class="block px-4 py-2 text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-primary-light)]/10 hover:text-[var(--color-primary)] transition-colors"
+                  >Birthday Cakes</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/category/wedding"
+                  class="block px-4 py-2 text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-primary-light)]/10 hover:text-[var(--color-primary)] transition-colors"
+                  >Wedding Cakes</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/category/macarons"
+                  class="block px-4 py-2 text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-primary-light)]/10 hover:text-[var(--color-primary)] transition-colors"
+                  >Macarons & Treats</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#order"
+                  class="block px-4 py-2 text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-primary-light)]/10 hover:text-[var(--color-primary)] transition-colors"
+                  >Custom Orders</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a
+              href="#about"
+              class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors duration-300 pb-1 border-b-2 border-transparent hover:border-[var(--color-primary-light)]"
+              >Our Story</a
+            >
+          </li>
+          <li>
+            <a
+              href="#contact"
+              class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors duration-300 pb-1 border-b-2 border-transparent hover:border-[var(--color-primary-light)]"
+              >Contact</a
+            >
+          </li>
+        </ul>
+
+        <div class="flex items-center space-x-2">
+          <button
+            id="theme-toggle-desktop"
+            class="theme-toggle hidden md:block"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+              />
+            </svg>
+          </button>
+
+          <a
+            href="/cart"
+            class="hidden md:block relative text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors duration-300 p-2"
+            aria-label="Shopping Cart"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke-width="1.5"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+              ></path>
+            </svg>
+            <span id="cart-count-desktop" class="cart-badge">0</span>
+          </a>
+
+          <button
+            id="sidebar-open-button"
+            class="md:hidden theme-toggle"
+            aria-label="Open menu"
+            aria-controls="sidebar-menu"
+          >
+            <svg
+              class="w-7 h-7"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section
+        id="home"
+        class="container mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-20 flex flex-col lg:flex-row items-center overflow-hidden"
+      >
+        <div class="lg:w-1/2 text-center lg:text-left mb-10 lg:mb-0 lg:pr-12">
+          <h1
+            class="text-4xl md:text-5xl xl:text-6xl font-[var(--font-secondary)] font-bold mb-5 leading-tight"
+          >
+            Crafting
+            <span class="text-[var(--color-primary)]">Sweet Moments</span>, One
+            Cake at a Time.
+          </h1>
+          <p
+            class="text-lg text-[var(--color-text-muted)] mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0"
+          >
+            Experience artisanal cakes from Cazzert, baked with the finest
+            ingredients since 2021. Designed with elegance, perfect for every
+            celebration.
+          </p>
+          <div
+            class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+          >
+            <a
+              href="#featured"
+              class="btn inline-block text-lg py-3 px-8 bg-[var(--color-primary-light)] hover:bg-[var(--color-primary)] text-[var(--color-text-light)] shadow-md hover:shadow-lg transform transition duration-300 hover:-translate-y-1 rounded-[var(--border-radius-base)] font-semibold"
+              >Explore Creations</a
+            >
+            <a
+              href="#order"
+              class="btn inline-block text-lg py-3 px-8 bg-transparent border-2 border-[var(--color-border)] hover:bg-[var(--color-primary-light)]/20 text-[var(--color-primary)] shadow-sm hover:shadow-md transition duration-300 rounded-[var(--border-radius-base)] font-semibold"
+              >Custom Order</a
+            >
+          </div>
+        </div>
+        <div class="lg:w-1/2 relative flex justify-center mt-8 lg:mt-0">
+          <img
+            src="https://scontent.fdac24-4.fna.fbcdn.net/v/t39.30808-6/490202547_122128251512804036_8948549882980674523_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeF6rlXc0xvLzrpib5-TkZNJa6ZwG9jqNpprpnAb2Oo2mpx4t6Zv-78Njdr0ttGBi4z46m2q3KGkruo2uIz04DMf&_nc_ohc=zLdd5Y_0f74Q7kNvwFB2mcS&_nc_oc=AdnlJn-IX6_oRktbk86tRgO5Nq8bsQATw-p4i8ZCAuhojfYPi3qczDQLVRI9i9ZHELw&_nc_zt=23&_nc_ht=scontent.fdac24-4.fna&_nc_gid=EybEKWDnxUJ9dKNrms3whA&oh=00_AfGpd6XJZzmdNxJ-hBlvHtaWz2GzY-pdp4M1GsiFrMNONA&oe=6808778E"
+            alt="Elegant pink and white Cazzert drip cake with macarons"
+            class="rounded-lg shadow-xl w-full h-auto max-w-sm sm:max-w-md lg:max-w-lg mx-auto z-10 transform hover:scale-105 transition-transform duration-500"
+          />
+          <div
+            class="absolute -bottom-8 -right-8 w-32 h-32 bg-gradient-to-br from-[var(--color-primary-light)]/30 to-[var(--color-primary)]/30 rounded-full -z-0 hidden lg:block opacity-60 animate-pulse"
+            style="animation-duration: 4s"
+          ></div>
+          <div
+            class="absolute -top-8 -left-8 w-24 h-24 border-2 border-[var(--color-border)]/50 rounded-full -z-0 hidden lg:block"
+          ></div>
+        </div>
+      </section>
+
+      <section
+        id="featured"
+        class="py-16 md:py-24 bg-[var(--color-bg)] transition-colors duration-300"
+      >
+        <div class="container mx-auto px-6 text-center">
+          <h2
+            class="text-3xl md:text-4xl font-[var(--font-secondary)] font-semibold mb-4"
+          >
+            Our Signature Cakes
+          </h2>
+          <p
+            class="text-lg text-[var(--color-text-muted)] mb-12 max-w-2xl mx-auto"
+          >
+            Handpicked favorites, showcasing our passion for flavor and design.
+          </p>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+          >
+            <div class="cake-card flex flex-col">
+              <a href="#" class="cake-card-image-link"
+                ><img
+                  src="https://scontent.fdac24-3.fna.fbcdn.net/v/t39.30808-6/491621807_122129609666804036_7012314062107207754_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHbsu_xEtjAJOJzOS6ukXj0plgrOiTvq3GmWCs6JO-rcSmFeLKLmJvA9j1yBhYDCytBdqewllqxpnq-bQxIBG-F&_nc_ohc=_FfCjKsKeEEQ7kNvwHAm-dS&_nc_oc=AdmS2-_D_rcbAfGMJH6z7ScDCmWJl2h_5PFtj1Dc4RD8XlThvQu0AcyWzDCD_fySxGc&_nc_zt=23&_nc_ht=scontent.fdac24-3.fna&_nc_gid=PnAzHnheeszIWrgBkSfoIQ&oh=00_AfEJdexvfO0pWvFBwtB6nphTcGCEG6D-riBzhE2cRPznWg&oe=68089241"
+                  alt="Lychee Rose Delight Cake"
+              /></a>
+              <div class="cake-card-content">
+                <h3 class="cake-card-title">Lychee Rose Delight</h3>
+                <p class="cake-card-price">$65.00</p>
+                <p class="cake-card-desc">
+                  Delicate rose sponge, lychee cream, signature pink drip,
+                  macarons, and gold leaf accents.
+                </p>
+                <button
+                  class="add-to-cart-btn mt-auto"
+                  data-product-id="lychee-rose"
+                  data-product-price="65.00"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    /></svg
+                  >Add to Cart
+                </button>
+              </div>
+            </div>
+            <div class="cake-card flex flex-col">
+              <a href="#" class="cake-card-image-link"
+                ><img
+                  src="https://scontent.fdac24-4.fna.fbcdn.net/v/t39.30808-6/490444861_122128210268804036_65883423493136592_n.jpg?stp=dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeED014fTEzJ12doYt48c5iizwF1hIKSlITPAXWEgpKUhAEIAIxMIKKh6KAO4b5XvlDZ9jPpBJXNH2ol9Uc07mmU&_nc_ohc=8PTJnKfmIeUQ7kNvwFDi_Oh&_nc_oc=AdltrxB5cdEtKGhGShegmH7oBzcNzTYjw5iyhrTQJSabsyXBY681rlUJCi4qG6akMMI&_nc_zt=23&_nc_ht=scontent.fdac24-4.fna&_nc_gid=qXc3IeX-VxreEj1TDMLsqg&oh=00_AfGGqPd6JwIkJcqMjxDehedAjNEGFrd3wn1W-4S_T4bsGQ&oe=680880EC"
+                  alt="Decadent Chocolate Fudge Cake"
+              /></a>
+              <div class="cake-card-content">
+                <h3 class="cake-card-title">Chocolate Fudge Dream</h3>
+                <p class="cake-card-price">$55.00</p>
+                <p class="cake-card-desc">
+                  Rich dark chocolate layers, smooth fudge frosting, chocolate
+                  curls and gold dust.
+                </p>
+                <button
+                  class="add-to-cart-btn mt-auto"
+                  data-product-id="choco-fudge"
+                  data-product-price="55.00"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    /></svg
+                  >Add to Cart
+                </button>
+              </div>
+            </div>
+            <div class="cake-card flex flex-col">
+              <a href="#" class="cake-card-image-link"
+                ><img
+                  src="https://scontent.fdac24-3.fna.fbcdn.net/v/t39.30808-6/490194714_122127860168804036_9088518774069585699_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFEkkdi-clepdRZVpn0OMYZ4J2F7LNuO_fgnYXss24796RkyAdR1wwtBhmbGDI8_AUdIGZ4wwifmob_RwGCP2S_&_nc_ohc=GLl731xOwIMQ7kNvwGAg57G&_nc_oc=AdnLXkvj0twJvlFj1YDz_hSGHS_OkMno3dkp-k_LcVlLS2-ezIB45taj858SB8eiCTA&_nc_zt=23&_nc_ht=scontent.fdac24-3.fna&_nc_gid=qXc3IeX-VxreEj1TDMLsqg&oh=00_AfGPDIURoFS5QKTd_T_t94hdgWyBKKeGfKQ83Kv25qiBKw&oe=680875D2"
+                  alt="Classic Vanilla Bean Cake"
+              /></a>
+              <div class="cake-card-content">
+                <h3 class="cake-card-title">Classic Vanilla Bean</h3>
+                <p class="cake-card-price">$50.00</p>
+                <p class="cake-card-desc">
+                  Fluffy Madagascan vanilla bean sponge with silky Swiss
+                  meringue buttercream.
+                </p>
+                <button
+                  class="add-to-cart-btn mt-auto"
+                  data-product-id="vanilla-bean"
+                  data-product-price="50.00"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    /></svg
+                  >Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+          <a
+            href="#all-cakes"
+            class="btn inline-block mt-12 border-2 border-[var(--color-border)] hover:bg-[var(--color-primary-light)]/10 text-[var(--color-primary)] py-3 px-8 rounded-[var(--border-radius-base)] font-semibold transition duration-300"
+            >Browse All Cakes</a
+          >
+        </div>
+      </section>
+
+      <section
+        id="about"
+        class="py-16 md:py-24 bg-[var(--color-bg-alt)] transition-colors duration-300"
+      >
+        <div
+          class="container mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-16"
+        >
+          <div class="lg:w-1/2 order-2 lg:order-1">
+            <h2
+              class="text-3xl md:text-4xl font-[var(--font-secondary)] font-semibold mb-4 text-center lg:text-left"
+            >
+              Baked with Passion
+              <span class="text-[var(--color-primary)]">&</span> Precision
+            </h2>
+            <p
+              class="text-lg text-[var(--color-text-muted)] mb-8 leading-relaxed text-center lg:text-left"
+            >
+              Since 2021, Cazzert has believed every cake tells a story... We
+              use only the finest, freshest ingredients and pour our hearts into
+              every creation.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+              <div class="about-feature">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                  />
+                </svg>
+                <div>
+                  <h4 class="font-semibold text-[var(--color-text-base)]">
+                    Finest Ingredients
+                  </h4>
+                  <p class="text-sm text-[var(--color-text-muted)]">
+                    Only the best, locally sourced when possible.
+                  </p>
+                </div>
+              </div>
+              <div class="about-feature">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L1.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.25 12l2.846.813a4.5 4.5 0 0 1 3.09 3.09L21.75 18l-2.846.813a4.5 4.5 0 0 1-3.09 3.09L15 21.75l-.813-2.846a4.5 4.5 0 0 1-3.09-3.09L7.25 12l2.846-.813a4.5 4.5 0 0 1 3.09-3.09L15 5.25l.813 2.846a4.5 4.5 0 0 1 3.09 3.09L21.75 12Z"
+                  />
+                </svg>
+                <div>
+                  <h4 class="font-semibold text-[var(--color-text-base)]">
+                    Custom Designs
+                  </h4>
+                  <p class="text-sm text-[var(--color-text-muted)]">
+                    Bringing your unique cake vision to life.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:w-1/2 order-1 lg:order-2 flex justify-center">
+            <img
+              src="https://media.istockphoto.com/id/921788748/photo/portrait-of-confectioner-decorating-cake-in-restaurant-kitchen.jpg?s=612x612&w=0&k=20&c=SFVHFQz-gy2SOkS4rIlMObUtgk1bVPHZWPFKNBGtThg="
+              alt="Baker decorating a cake with care"
+              class="rounded-lg shadow-lg w-full h-auto max-w-md lg:max-w-lg mx-auto transform transition-transform duration-500 hover:rotate-1"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="contact"
+        class="py-16 md:py-24 bg-gradient-to-br from-[var(--color-bg-cta)]/70 to-[var(--color-bg-cta-end)]/70 transition-colors duration-300"
+      >
+        <div class="container mx-auto px-6 text-center">
+          <h2
+            class="text-3xl md:text-4xl font-[var(--font-secondary)] font-semibold mb-4"
+          >
+            Ready for Your Sweet Creation?
+          </h2>
+          <p
+            class="text-lg text-[var(--color-text-muted)] mb-8 max-w-xl mx-auto"
+          >
+            Let's discuss your dream cake for your next event. Get in touch for
+            a consultation or place a custom order.
+          </p>
+          <a
+            href="#order"
+            class="btn inline-block text-lg py-3 px-10 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-[var(--color-text-light)] shadow-lg hover:shadow-xl transform transition duration-300 hover:-translate-y-1 rounded-[var(--border-radius-base)] font-semibold"
+            >Contact Us Today</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <footer class="py-10 transition-colors duration-300">
+      <div class="container mx-auto px-6 text-center">
+        <div class="mb-4">
+          <a href="#home" class="text-center group inline-block">
+            <span
+              class="text-2xl font-[var(--font-secondary)] font-bold text-[var(--color-primary)] tracking-tight block leading-none"
+              >Cazzert</span
+            >
+            <span
+              class="text-xs text-[var(--color-text-subtle)] tracking-wider uppercase block -mt-1"
+              >Since 2021</span
+            >
+          </a>
+        </div>
+        <nav class="mb-6">
+          <ul
+            class="flex justify-center flex-wrap gap-x-4 gap-y-2 sm:gap-x-6 text-sm"
+          >
+            <li>
+              <a
+                href="#featured"
+                class="hover:text-[var(--color-primary)] transition-colors"
+                >Cakes</a
+              >
+            </li>
+            <li>
+              <a
+                href="#about"
+                class="hover:text-[var(--color-primary)] transition-colors"
+                >About</a
+              >
+            </li>
+            <li>
+              <a
+                href="/faq"
+                class="hover:text-[var(--color-primary)] transition-colors"
+                >FAQ</a
+              >
+            </li>
+            <li>
+              <a
+                href="/privacy"
+                class="hover:text-[var(--color-primary)] transition-colors"
+                >Privacy Policy</a
+              >
+            </li>
+            <li>
+              <a
+                href="#contact"
+                class="hover:text-[var(--color-primary)] transition-colors"
+                >Contact</a
+              >
+            </li>
+          </ul>
+        </nav>
+        <div class="flex justify-center space-x-5 mb-6">
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[var(--color-text-subtle)] hover:text-[var(--color-primary)] transition-colors"
+            aria-label="Facebook"
+            ><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                fill-rule="evenodd"
+                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z"
+                clip-rule="evenodd"
+              /></svg
+          ></a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[var(--color-text-subtle)] hover:text-[var(--color-primary)] transition-colors"
+            aria-label="Instagram"
+            ><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 1.27.058 2.15.242 2.91.548.78.308 1.45.704 2.12 1.375.67.67 1.06 1.34 1.37 2.12.3.76.49 1.64.55 2.91.06 1.26.07 1.64.07 4.85s-.01 3.59-.07 4.85c-.06 1.27-.24 2.15-.55 2.91-.31.78-.7 1.45-1.37 2.12-.67.67-1.34 1.06-2.12 1.37-.76.3-1.64.49-2.91.55-1.26.06-1.64.07-4.85.07s-3.59-.01-4.85-.07c-1.27-.06-2.15-.24-2.91-.55-.78-.31-1.45-.7-2.12-1.37-.67-.67-1.06-1.34-1.37-2.12-.3-.76-.49-1.64-.55-2.91-.06-1.26-.07-1.64-.07-4.85s.01-3.59.07-4.85c.06-1.27.24-2.15.55-2.91.31-.78.7-1.45 1.37-2.12.67-.67 1.34-1.06 2.12-1.37.76-.3 1.64-.49 2.91-.55 1.26-.06 1.64-.07 4.85-.07M12 0C8.74 0 8.33.015 7.05.072 5.77.13 4.9.33 4.13.63c-.8.3-1.53.73-2.21 1.41C1.24 2.73.8 3.47.5 4.27.2 5.04 0 5.92 0 7.2v9.6c0 1.28.2 2.16.5 2.93.3.8.73 1.53 1.41 2.21.68.68 1.41 1.11 2.21 1.41.77.3 1.65.5 2.93.56 1.28.057 1.69.07 4.85.07s3.57-.015 4.85-.072c1.28-.058 2.16-.26 2.93-.56.8-.3 1.53-.73 2.21-1.41.68-.68 1.11-1.41 1.41-2.21.3-.77.5-1.65.56-2.93.057-1.28.07-1.69.07-4.85V7.2c0-1.28-.2-2.16-.5-2.93-.3-.8-.73-1.53-1.41-2.21-.68-.68-1.41-1.11-2.21-1.41-.77-.3-1.65-.5-2.93-.56C15.67.015 15.26 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"
+              ></path></svg
+          ></a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[var(--color-text-subtle)] hover:text-[var(--color-primary)] transition-colors"
+            aria-label="Pinterest"
+            ><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.198-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.605 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.56-5.409 5.199 0 1.033.394 2.143.889 2.726a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.49-.691-2.424-2.876-2.424-4.627 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.627-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12.017 24c6.623 0 11.971-5.347 11.971-11.983C23.988 5.368 18.64 0 12.017 0z"
+              ></path></svg
+          ></a>
+        </div>
+        <p class="text-sm text-[var(--color-text-subtle)]">
+          &copy; <span id="current-year"></span> Cazzert Cakes. All Rights
+          Reserved. <br class="sm:hidden" />
+          Website designed with
+          <span class="text-[var(--color-primary)]">&hearts;</span>
+        </p>
+      </div>
+    </footer>
+
+    <nav class="mobile-bottom-nav">
+      <a href="#home" class="mobile-nav-item active" aria-label="Home">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+          />
+        </svg>
+        Home
+      </a>
+      <a href="#featured" class="mobile-nav-item" aria-label="Cakes">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-8.25M12 4.875A3.375 3.375 0 0 0 9.375 1.5H14.625A3.375 3.375 0 0 0 12 4.875Zm0 0a1.5 1.5 0 0 1-1.5 1.5h-3a1.5 1.5 0 0 1-1.5-1.5M12 4.875c0-.873.151-1.698.419-2.449A3.375 3.375 0 0 1 14.625 1.5h.003c.456 0 .89.106 1.274.291.384.185.72.432 1 .724.28.292.508.62.684.975.176.355.278.744.278 1.152v.002c0 .408-.102.797-.278 1.152-.176.355-.404.683-.684.975-.28.292-.616.539-1 .724-.384.185-.818.291-1.274.291h-.003A3.375 3.375 0 0 1 12 4.875Z"
+          />
+        </svg>
+        Cakes
+      </a>
+      <a
+        href="/cart"
+        class="mobile-nav-item relative"
+        aria-label="Shopping Cart"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+          ></path>
+        </svg>
+        <span id="cart-count-mobile" class="cart-badge">0</span>
+        Cart
+      </a>
+      <button
+        id="mobile-sidebar-trigger"
+        class="mobile-nav-item"
+        aria-label="Open menu"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+          />
+        </svg>
+        Menu
+      </button>
+    </nav>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- Elements ---
+        const sidebar = document.getElementById("sidebar-menu");
+        const sidebarOpenBtn = document.getElementById("sidebar-open-button");
+        const sidebarCloseBtn = document.getElementById("sidebar-close-button");
+        const sidebarOverlay = document.getElementById("sidebar-overlay");
+        const mobileSidebarTrigger = document.getElementById(
+          "mobile-sidebar-trigger"
+        );
+        const sidebarLinks = sidebar.querySelectorAll(".sidebar-link"); // Includes theme toggle now
+        const header = document.getElementById("main-header");
+        const yearSpan = document.getElementById("current-year");
+        const mobileBottomNav = document.querySelector(".mobile-bottom-nav");
+        const mobileNavItems = document.querySelectorAll(".mobile-nav-item");
+        const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
+        const cartCountDesktop = document.getElementById("cart-count-desktop");
+        const cartCountMobile = document.getElementById("cart-count-mobile");
+        const themeToggleDesktop = document.getElementById(
+          "theme-toggle-desktop"
+        );
+        const themeToggleMobile = document.getElementById(
+          "theme-toggle-mobile"
+        );
+        const htmlElement = document.documentElement; // Target <html> for class
+
+        // --- Theme Switcher Logic ---
+        const themeToggleButtons = [themeToggleDesktop, themeToggleMobile];
+
+        // Function to apply theme and update icons
+        function applyTheme(theme) {
+          if (theme === "dark") {
+            htmlElement.classList.add("dark");
+          } else {
+            htmlElement.classList.remove("dark");
+          }
+          // Update text in mobile toggle if needed (optional)
+          const mobileToggleText =
+            themeToggleMobile?.querySelector(".theme-toggle-text");
+          if (mobileToggleText) {
+            mobileToggleText.textContent =
+              theme === "dark" ? "Switch to Light" : "Switch to Dark";
+          }
+          localStorage.setItem("theme", theme);
+        }
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        const currentTheme = savedTheme || (prefersDark ? "dark" : "light");
+        applyTheme(currentTheme);
+
+        // Add event listeners to both toggles
+        themeToggleButtons.forEach((button) => {
+          if (button) {
+            button.addEventListener("click", () => {
+              const newTheme = htmlElement.classList.contains("dark")
+                ? "light"
+                : "dark";
+              applyTheme(newTheme);
+            });
+          }
+        });
+
+        // --- Sidebar Logic ---
+        const openSidebar = () => {
+          /* ... (same as before) ... */
+          if (!sidebar || !sidebarOverlay) return;
+          sidebar.classList.add("open");
+          sidebarOverlay.classList.add("open");
+          document.body.classList.add("sidebar-open");
+          const firstFocusableElement = sidebar.querySelector(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
+          if (firstFocusableElement) {
+            firstFocusableElement.focus();
+          }
+        };
+        const closeSidebar = () => {
+          /* ... (same as before) ... */
+          if (!sidebar || !sidebarOverlay) return;
+          sidebar.classList.remove("open");
+          sidebarOverlay.classList.remove("open");
+          document.body.classList.remove("sidebar-open");
+          if (
+            sidebarOpenBtn &&
+            window.getComputedStyle(sidebarOpenBtn).display !== "none"
+          ) {
+            if (sidebar.contains(document.activeElement)) {
+              sidebarOpenBtn.focus();
+            }
+          } else if (
+            mobileSidebarTrigger &&
+            window.getComputedStyle(mobileSidebarTrigger).display !== "none"
+          ) {
+            if (sidebar.contains(document.activeElement)) {
+              mobileSidebarTrigger.focus();
+            }
+          }
+        };
+        if (sidebarOpenBtn)
+          sidebarOpenBtn.addEventListener("click", openSidebar);
+        if (mobileSidebarTrigger)
+          mobileSidebarTrigger.addEventListener("click", openSidebar);
+        if (sidebarCloseBtn)
+          sidebarCloseBtn.addEventListener("click", closeSidebar);
+        if (sidebarOverlay)
+          sidebarOverlay.addEventListener("click", closeSidebar);
+        sidebarLinks.forEach((link) => {
+          // Now targets buttons too
+          // Close only if it's a nav link, not the theme toggle
+          if (
+            link.tagName === "A" &&
+            link.getAttribute("href") &&
+            link.getAttribute("href") !== "#"
+          ) {
+            link.addEventListener("click", closeSidebar);
+          }
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && sidebar.classList.contains("open")) {
+            closeSidebar();
+          }
+        });
+
+        // --- Copyright Year ---
+        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+        // --- Header Scroll Effect ---
+        let lastScrollTop = 0;
+        if (header) {
+          const handleScroll = () => {
+            const scrollTop =
+              window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 50) {
+              header.classList.add("shadow-lg");
+              header.classList.remove("shadow-sm");
+            } else {
+              header.classList.remove("shadow-lg");
+              header.classList.add("shadow-sm");
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+          };
+          window.addEventListener("scroll", handleScroll, { passive: true });
+          handleScroll();
+        }
+
+        // --- Body Padding for Mobile Nav ---
+        function adjustBodyPadding() {
+          /* ... (same as before) ... */ if (
+            mobileBottomNav &&
+            window.getComputedStyle(mobileBottomNav).display !== "none"
+          ) {
+            document.body.style.paddingBottom = `${mobileBottomNav.offsetHeight}px`;
+          } else {
+            document.body.style.paddingBottom = "0";
+          }
+        }
+        adjustBodyPadding();
+        window.addEventListener("resize", adjustBodyPadding);
+        window.addEventListener("orientationchange", adjustBodyPadding);
+
+        // --- Cart Count & Add To Cart Simulation ---
+        let currentCartItems = 0;
+        function updateCartCount(count) {
+          /* ... (same as before) ... */ if (cartCountDesktop) {
+            cartCountDesktop.textContent = count;
+            cartCountDesktop.style.display = count > 0 ? "flex" : "none";
+          }
+          if (cartCountMobile) {
+            cartCountMobile.textContent = count;
+            cartCountMobile.style.display = count > 0 ? "flex" : "none";
+          }
+        }
+        function handleAddToCart(event) {
+          /* ... (same as before, includes visual feedback) ... */ const button =
+            event.currentTarget;
+          const productId = button.dataset.productId;
+          const productPrice = button.dataset.productPrice;
+          console.log(`Adding to cart: ID=${productId}, Price=${productPrice}`);
+          currentCartItems++;
+          updateCartCount(currentCartItems);
+          button.innerHTML = `<svg class="w-4 h-4 mr-2 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg>Adding...`;
+          button.disabled = true;
+          setTimeout(() => {
+            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Added!`;
+          }, 1000);
+        }
+        addToCartButtons.forEach((button) =>
+          button.addEventListener("click", handleAddToCart)
+        );
+        updateCartCount(currentCartItems);
+
+        // --- Mobile Bottom Nav Active State & Smooth Scrolling ---
+        function setActiveNavItem(targetId) {
+          /* ... (same as before) ... */ if (!targetId) targetId = "home";
+          mobileNavItems.forEach((item) => {
+            item.classList.remove("active");
+            const href = item.getAttribute("href");
+            if (href && href.endsWith(`#${targetId}`)) {
+              item.classList.add("active");
+            } else if (targetId === "home" && href === "#home") {
+              item.classList.add("active");
+            }
+          });
+        }
+        function handleNavigation() {
+          /* ... (same smooth scrolling logic as before) ... */ const hash =
+            window.location.hash;
+          if (hash) {
+            const targetElement = document.querySelector(hash);
+            if (targetElement) {
+              const headerOffset = header ? header.offsetHeight : 0;
+              const elementPosition = targetElement.getBoundingClientRect().top;
+              const offsetPosition =
+                elementPosition + window.pageYOffset - headerOffset;
+              window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+            }
+            setActiveNavItem(hash.substring(1));
+          } else {
+            setActiveNavItem("home");
+          }
+        }
+        handleNavigation(); // Initial check
+        window.addEventListener("hashchange", handleNavigation);
+        mobileNavItems.forEach((item) => {
+          // Listener for smooth scroll from nav
+          item.addEventListener("click", function (e) {
+            const href = this.getAttribute("href");
+            if (href && href.startsWith("#")) {
+              e.preventDefault();
+              window.location.hash = href;
+            } // handleNavigation called by hashchange
+          });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          // Listener for all other internal links
+          anchor.addEventListener("click", function (e) {
+            const href = this.getAttribute("href");
+            if (href && href !== "#" && document.querySelector(href)) {
+              e.preventDefault();
+              window.location.hash = href;
+            } // handleNavigation called by hashchange
+          });
+        });
+      }); // End DOMContentLoaded
+    </script>
+  </body>
+</html>
