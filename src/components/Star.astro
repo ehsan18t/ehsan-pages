@@ -10,4 +10,4 @@ export interface StarProps {
 const { size, duration = 10, opacity = 100 } = Astro.props as StarProps;
 ---
 
-<Icon class="text-emerald-300 animate-when-visible animate-spin absolute z-0" style={`width: ${size}rem; height: ${size}rem; animation-duration: ${duration}s; opacity: ${opacity}%;`} name="star" />
+<Icon class="animate-when-visible absolute z-0 animate-spin text-emerald-300" style={`width: ${size}rem; height: ${size}rem; animation-duration: ${duration}s; opacity: ${opacity}%;`} name="star" />

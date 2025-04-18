@@ -13,7 +13,7 @@
 
 /* --- Core Embla Styles --- */
 .embla {
-  @apply relative w-full select-none overflow-hidden aspect-[16/10] rounded-t-xl bg-[#f0f0f0] animated;
+  @apply animated relative aspect-[16/10] w-full overflow-hidden rounded-t-xl bg-[#f0f0f0] select-none;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   transition: box-shadow 0.5s ease;
 }
@@ -27,11 +27,11 @@
 }
 
 .embla__container {
-  @apply flex h-full will-change-transform gpu-accelerated;
+  @apply gpu-accelerated flex h-full will-change-transform;
 }
 
 .embla__slide {
-  @apply relative h-full overflow-hidden flex-[0_0_100%] transition-opacity duration-300 ease-out;
+  @apply relative h-full flex-[0_0_100%] overflow-hidden transition-opacity duration-300 ease-out;
 }
 
 /* --- Images --- */
@@ -51,14 +51,14 @@
 
 /* --- Controls --- */
 .slider-controls {
-  @apply absolute inset-0 pointer-events-none opacity-0 z-[1] bg-black/0 animated;
+  @apply animated pointer-events-none absolute inset-0 z-[1] bg-black/0 opacity-0;
   transition: opacity 0.5s ease;
   will-change: opacity;
 }
 
 .embla:hover .slider-controls,
 .slider-controls.visible {
-  @apply opacity-100 bg-black/5;
+  @apply bg-black/5 opacity-100;
 }
 
 /* Enable pointer events for controls */
@@ -71,7 +71,7 @@
 
 /* --- Navigation Buttons --- */
 .slider-button {
-  @apply absolute h-11 w-11 bg-black/50 border border-white/20 rounded-[50%] top-1/2 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white gpu-accelerated;
+  @apply gpu-accelerated pointer-events-auto absolute top-1/2 z-[5] flex h-11 w-11 cursor-pointer items-center justify-center rounded-[50%] border border-white/20 bg-black/50 text-white;
   transform: translateY(-50%);
   transition:
     background-color var(--slider-duration-normal) ease,
@@ -89,7 +89,7 @@
 }
 
 .slider-button:disabled {
-  @apply opacity-30 cursor-not-allowed pointer-events-none;
+  @apply pointer-events-none cursor-not-allowed opacity-30;
 }
 
 .slider-button:active:not(:disabled) {
@@ -116,7 +116,7 @@
 
 /* --- Pagination Dots --- */
 .slider-pagination {
-  @apply absolute bg-black/45 py-2 px-4 border border-white/15 rounded-4xl backdrop-blur-xs bottom-6 left-1/2 flex gap-2.5 pointer-events-auto z-[5];
+  @apply pointer-events-auto absolute bottom-6 left-1/2 z-[5] flex gap-2.5 rounded-4xl border border-white/15 bg-black/45 px-4 py-2 backdrop-blur-xs;
   transform: translateX(-50%);
   box-shadow: var(--slider-shadow-normal);
   transition: transform var(--slider-duration-normal)
@@ -129,7 +129,7 @@
 }
 
 .slider-dot {
-  @apply rounded-full w-[0.6rem] h-[0.6rem] cursor-pointer border-0 p-0 bg-white/50;
+  @apply h-[0.6rem] w-[0.6rem] cursor-pointer rounded-full border-0 bg-white/50 p-0;
   transition:
     background-color 0.3s ease,
     transform 0.3s var(--slider-timing-function);
@@ -148,14 +148,14 @@
 
 /* --- Counter --- */
 .slider-counter {
-  @apply absolute bg-black/45 border border-white/15 font-semibold backdrop-blur-xs py-1.5 px-3 text-sm rounded-3xl bottom-6 right-6 text-white pointer-events-auto z-[5] animate-fade-up fill-forwards;
+  @apply animate-fade-up fill-forwards pointer-events-auto absolute right-6 bottom-6 z-[5] rounded-3xl border border-white/15 bg-black/45 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur-xs;
   box-shadow: var(--slider-shadow-normal);
   letter-spacing: 0.6px;
 }
 
 /* --- Fullscreen Button --- */
 .slider-fullscreen {
-  @apply absolute bg-black/45 rounded-[50%] border border-white/15 w-8 h-8 top-6 right-6 flex items-center justify-center cursor-pointer pointer-events-auto z-[5] text-white;
+  @apply pointer-events-auto absolute top-6 right-6 z-[5] flex h-8 w-8 cursor-pointer items-center justify-center rounded-[50%] border border-white/15 bg-black/45 text-white;
   transition:
     transform var(--slider-duration-normal) var(--slider-timing-function),
     background-color var(--slider-duration-normal) ease;
@@ -184,7 +184,7 @@
 /* --- Slide Progress Indicator --- */
 .embla::after {
   content: "";
-  @apply absolute bottom-0 left-0 z-[6] gpu-accelerated;
+  @apply gpu-accelerated absolute bottom-0 left-0 z-[6];
   height: 4px;
   background: linear-gradient(to right, #3498db, #2ecc71);
   transition: transform 0.7s var(--slider-timing-function);
@@ -196,7 +196,7 @@
 
 /* --- Lightbox --- */
 .slider-lightbox {
-  @apply fixed inset-0 z-[9999] flex items-center justify-center animated animate-lightbox-open select-none;
+  @apply animated animate-lightbox-open fixed inset-0 z-[9999] flex items-center justify-center select-none;
   width: 100vw;
   height: 100vh;
   backdrop-filter: blur(0); /* Start with no blur for transition effect */
@@ -204,7 +204,7 @@
 
 /* Update image container for CSS-based transitions */
 .slider-lightbox-image-container {
-  @apply relative flex items-center justify-center animated;
+  @apply animated relative flex items-center justify-center;
   width: 100%;
   height: 100%;
 }
@@ -228,7 +228,7 @@
 
 /* Base image style - no animations by default */
 .slider-lightbox-image {
-  @apply absolute rounded gpu-accelerated;
+  @apply gpu-accelerated absolute rounded;
   max-width: 90vw;
   max-height: 85vh;
   object-fit: contain;
@@ -285,13 +285,13 @@ body.lightbox-open {
 }
 
 .slider-lightbox-content {
-  @apply relative flex h-full w-full items-center justify-center animated;
+  @apply animated relative flex h-full w-full items-center justify-center;
   perspective: 1000px;
 }
 
 /* Lightbox Close Button */
 .slider-lightbox-close {
-  @apply absolute top-6 right-6 flex items-center justify-center cursor-pointer z-10 text-white rounded-full animate-fade-in fill-forwards gpu-accelerated;
+  @apply animate-fade-in fill-forwards gpu-accelerated absolute top-6 right-6 z-10 flex cursor-pointer items-center justify-center rounded-full text-white;
   width: 2.5rem;
   height: 2.5rem;
   border: none;
@@ -321,7 +321,7 @@ body.lightbox-open {
 
 /* Lightbox Navigation */
 .slider-lightbox-nav {
-  @apply absolute top-1/2 flex items-center justify-center cursor-pointer text-white rounded-full z-[15] animate-fade-in fill-forwards gpu-accelerated;
+  @apply animate-fade-in fill-forwards gpu-accelerated absolute top-1/2 z-[15] flex cursor-pointer items-center justify-center rounded-full text-white;
   transform: translateY(-50%);
   width: 3rem;
   height: 3rem;
@@ -364,7 +364,7 @@ body.lightbox-open {
 
 /* Lightbox Counter */
 .slider-lightbox-counter {
-  @apply absolute bottom-6 left-1/2 text-white z-[10] animate-fade-up fill-forwards gpu-accelerated;
+  @apply animate-fade-up fill-forwards gpu-accelerated absolute bottom-6 left-1/2 z-[10] text-white;
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.6);
   padding: 0.6rem 1.2rem;

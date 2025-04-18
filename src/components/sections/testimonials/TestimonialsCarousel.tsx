@@ -25,7 +25,7 @@ const TestimonialSlide = React.memo(
     isVisible: boolean;
   }) => (
     <div className={`testimonial-slide ${isVisible ? "slide-visible" : ""}`}>
-      <div className="testimonial-card gap-6 gpu-accelerated">
+      <div className="testimonial-card gpu-accelerated gap-6">
         <div className="testimonial-accent"></div>
         <FaQuoteLeft className="quote-icon" />
         <p className="testimonial-content">{testimonial.content}</p>
@@ -84,10 +84,10 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
 
   return (
     <div className="testimonial-section" ref={containerRef}>
-      <h2 className="text-4xl md:text-5xl font-doto font-bold mb-4 text-center">
+      <h2 className="font-doto mb-4 text-center text-4xl font-bold md:text-5xl">
         <span className="text-accent-title">Client</span> Testimonials
       </h2>
-      <p className="text-foreground-muted text-center max-w-2xl mx-auto mb-16">
+      <p className="text-foreground-muted mx-auto mb-16 max-w-2xl text-center">
         Don't just take my word for it - here's what clients have to say about
         working with me.
       </p>
@@ -105,16 +105,16 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
           </div>
         </div>
 
-        <div className="absolute inset-0 pointer-events-none z-10">
+        <div className="pointer-events-none absolute inset-0 z-10">
           <MdChevronLeft
             onClick={scrollPrev}
             aria-label="Previous testimonial"
-            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-accent-bg/10 text-accent-text backdrop-blur-md border border-accent-text/15 opacity-70 transition-all hover:opacity-100 hover:bg-accent-bg/20 hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+            className="bg-accent-bg/10 text-accent-text border-accent-text/15 hover:bg-accent-bg/20 pointer-events-auto absolute top-1/2 left-0 z-10 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border opacity-70 backdrop-blur-md transition-all hover:scale-105 hover:opacity-100 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)] sm:h-12 sm:w-12"
           />
           <MdChevronRight
             onClick={scrollNext}
             aria-label="Next testimonial"
-            className="pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 right-0 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-accent-bg/10 text-accent-text backdrop-blur-md border border-accent-text/15 opacity-70 transition-all hover:opacity-100 hover:bg-accent-bg/20 hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)]"
+            className="bg-accent-bg/10 text-accent-text border-accent-text/15 hover:bg-accent-bg/20 pointer-events-auto absolute top-1/2 right-0 z-10 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border opacity-70 backdrop-blur-md transition-all hover:scale-105 hover:opacity-100 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)] sm:h-12 sm:w-12"
           />
         </div>
       </div>

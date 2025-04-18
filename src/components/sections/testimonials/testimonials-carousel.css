@@ -12,12 +12,12 @@
 
 /* Testimonial Container */
 .testimonial-section {
-  @apply relative max-w-288 w-full pb-8 my-0 mx-auto;
+  @apply relative mx-auto my-0 w-full max-w-288 pb-8;
 }
 
 /* Testimonial Heading Animations - Using animations.css */
 .testimonial-carousel-container {
-  @apply relative overflow-visible select-none cursor-grab;
+  @apply relative cursor-grab overflow-visible select-none;
 }
 
 /* Carousel Viewport */
@@ -28,7 +28,7 @@
 
 /* Individual Slide */
 .testimonial-slide {
-  @apply min-w-0 w-full opacity-0 p-4 select-none contain-style gpu-accelerated;
+  @apply gpu-accelerated w-full min-w-0 p-4 opacity-0 contain-style select-none;
   transition: opacity 0.5s var(--testimonial-timing-function);
   will-change: opacity;
 }
@@ -48,7 +48,7 @@
 
 /* Card Design - Single animation for better performance */
 .testimonial-card {
-  @apply relative backdrop-blur-md contain-content rounded-2xl border border-accent-bg/15 p-8 flex flex-col overflow-hidden opacity-40 gpu-accelerated;
+  @apply border-accent-bg/15 gpu-accelerated relative flex flex-col overflow-hidden rounded-2xl border p-8 opacity-40 backdrop-blur-md contain-content;
   background: linear-gradient(
     135deg,
     oklch(var(--accent-bg) / 0.08),
@@ -62,7 +62,7 @@
 
 /* Use a single animation for the entire card when visible */
 .slide-visible .testimonial-card {
-  @apply opacity-100 transition-opacity duration-200 shadow-lg will-change-[opacity_box-shadow];
+  @apply opacity-100 shadow-lg transition-opacity duration-200 will-change-[opacity_box-shadow];
 }
 
 .testimonial-card:hover {
@@ -71,28 +71,28 @@
 
 /* Top accent border - simplified for performance */
 .testimonial-accent {
-  @apply absolute top-0 left-0 w-full h-1 rounded-tl-md rounded-tr-md bg-gradient-to-r from-accent-text/70 to-accent-title;
+  @apply from-accent-text/70 to-accent-title absolute top-0 left-0 h-1 w-full rounded-tl-md rounded-tr-md bg-gradient-to-r;
 }
 
 /* Quote icon - no animation */
 .quote-icon {
-  @apply w-12 h-12 text-accent-text opacity-80;
+  @apply text-accent-text h-12 w-12 opacity-80;
 }
 
 /* Content - no animation */
 .testimonial-content {
-  @apply text-center text-foreground py-8 text-sm lg:text-lg font-semibold italic;
+  @apply text-foreground py-8 text-center text-sm font-semibold italic lg:text-lg;
   line-height: 1.7;
   flex-grow: 1;
 }
 
 /* Author info - no animation */
 .testimonial-author-container {
-  @apply flex items-center mt-auto pt-5 border-t border-accent-bg/15;
+  @apply border-accent-bg/15 mt-auto flex items-center border-t pt-5;
 }
 
 .testimonial-author-avatar {
-  @apply w-14 h-14 mr-4 rounded-full overflow-hidden border-2 border-accent-text/30 shadow-md;
+  @apply border-accent-text/30 mr-4 h-14 w-14 overflow-hidden rounded-full border-2 shadow-md;
   background: linear-gradient(
     135deg,
     oklch(var(--accent-bg) / 0.2),
@@ -101,11 +101,11 @@
 }
 
 .testimonial-author-image {
-  @apply w-full h-full rounded-full object-cover;
+  @apply h-full w-full rounded-full object-cover;
 }
 
 .testimonial-author-name {
-  @apply font-bold text-xl;
+  @apply text-xl font-bold;
 }
 
 .testimonial-author-role {
@@ -114,8 +114,8 @@
 
 /* Next/Prev Button */
 .testimonial-btn-base {
-  @apply pointer-events-auto cursor-pointer absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-accent-bg/10 text-accent-text backdrop-blur-md border border-accent-text/15 opacity-70;
-  @apply hover:opacity-100 hover:bg-accent-bg/20 hover:scale-105 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
+  @apply bg-accent-bg/10 text-accent-text border-accent-text/15 pointer-events-auto absolute top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border opacity-70 backdrop-blur-md sm:h-12 sm:w-12;
+  @apply hover:bg-accent-bg/20 hover:scale-105 hover:opacity-100 hover:shadow-[0_0_15px_oklch(var(--accent-text)/0.3)];
   transition:
     opacity var(--testimonial-duration-normal) ease,
     background-color var(--testimonial-duration-normal) ease,
@@ -134,11 +134,11 @@
 
 /* Pagination Dots with animations */
 .testimonial-pagination {
-  @apply flex justify-center mt-8 gap-2;
+  @apply mt-8 flex justify-center gap-2;
 }
 
 .testimonial-dot {
-  @apply h-3 w-3 rounded-full cursor-pointer bg-accent-text/30;
+  @apply bg-accent-text/30 h-3 w-3 cursor-pointer rounded-full;
   transform-origin: center;
   will-change: width, background-color;
   transition:
@@ -147,11 +147,11 @@
 }
 
 .testimonial-dot-active {
-  @apply w-8 bg-accent-text;
+  @apply bg-accent-text w-8;
 }
 
 .testimonial-dot-inactive {
-  @apply w-3 bg-accent-text/30;
+  @apply bg-accent-text/30 w-3;
 }
 
 /* Accessibility */

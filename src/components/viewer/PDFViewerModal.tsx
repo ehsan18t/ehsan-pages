@@ -24,21 +24,21 @@ const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
   // Modal content that will be rendered in the portal
   const modalContent = isModalOpen && (
     <div
-      className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-[999]"
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/30 p-4 backdrop-blur-sm"
       onClick={() => setIsModalOpen(false)}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="pb-3 bg-[rgb(var(--background))]/75 rounded-xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-white/20 shadow-2xl"
+        className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-xl border border-white/20 bg-[rgb(var(--background))]/75 pb-3 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="select-none flex justify-between items-center px-6 py-3 border-b border-white/10">
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-3 select-none">
           <Button link={cvPDF}>Download CV</Button>
           <button
             onClick={() => setIsModalOpen(false)}
-            className="select-none text-gray-300 hover:text-white text-6xl leading-none px-2 transition-colors cursor-pointer"
+            className="cursor-pointer px-2 text-6xl leading-none text-gray-300 transition-colors select-none hover:text-white"
             aria-label="Close"
           >
             &times;
@@ -46,7 +46,7 @@ const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
         </div>
 
         {/* Scrollable PDF Content */}
-        <div className="overflow-y-auto pb-4 px-1 md:px-2 lg:px-4 bg-[rgb(var(--background))]">
+        <div className="overflow-y-auto bg-[rgb(var(--background))] px-1 pb-4 md:px-2 lg:px-4">
           <PDFViewer cvPDF={cvPDF} />
         </div>
       </div>
@@ -54,7 +54,7 @@ const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
   );
 
   return (
-    <div className="w-full flex items-center justify-center md:justify-start select-none">
+    <div className="flex w-full items-center justify-center select-none md:justify-start">
       <Button onClick={() => setIsModalOpen(true)} className="w-3xs font-bold">
         View CV
       </Button>

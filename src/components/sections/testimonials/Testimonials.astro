@@ -6,13 +6,13 @@ const { testimonials } = Astro.props;
 
 <section class="testimonial-section" id="testimonials" aria-labelledby="testimonials-heading">
   <!-- Heading Elements -->
-  <div class="px-4 text-center mb-12 md:mb-16">
-    <h2 id="testimonials-heading" class="text-4xl md:text-5xl font-doto font-bold mb-4">
+  <div class="mb-12 px-4 text-center md:mb-16">
+    <h2 id="testimonials-heading" class="font-doto mb-4 text-4xl font-bold md:text-5xl">
       <span class="text-accent-title">Client</span>{" "}
       Testimonials
     </h2>
-    <div class="w-24 h-1 bg-gradient-to-r from-accent-500 to-accent-900 mx-auto rounded-full"></div>
-    <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">Don't just take my word for it - here's what clients have to say about working with me.</p>
+    <div class="from-accent-500 to-accent-900 mx-auto h-1 w-24 rounded-full bg-gradient-to-r"></div>
+    <p class="text-foreground-muted mx-auto mt-6 max-w-2xl text-lg">Don't just take my word for it - here's what clients have to say about working with me.</p>
   </div>
 
   <!-- Main carousel container with proper ARIA role -->
@@ -20,13 +20,13 @@ const { testimonials } = Astro.props;
     <!-- Navigation Controls -->
     <div class="testimonial-controls">
       <button class="testimonial-btn-base testimonial-prev" aria-label="Previous testimonial" type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-6 w-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
         </svg>
       </button>
 
       <button class="testimonial-btn-base testimonial-next" aria-label="Next testimonial" type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-6 w-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
         </svg>
       </button>

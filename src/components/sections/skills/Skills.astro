@@ -116,41 +116,41 @@ const folderCount = skillGroups.length;
 
 <section id="skills-editor-section" class="py-20 md:py-28">
   <div class="container mx-auto px-4">
-    <div class="text-center mb-12 md:mb-16">
-      <h2 class="text-4xl md:text-5xl font-bold mb-3 inline-block bg-gradient-to-r from-accent-300 to-accent-500 text-transparent bg-clip-text">My <span class="font-doto font-bold"> Toolkit</span></h2>
-      <div class="w-24 h-1 bg-gradient-to-r from-accent-500 to-accent-900 mx-auto rounded-full"></div>
-      <p class="text-foreground-muted max-w-2xl mx-auto mt-6 text-lg">An interactive overview of the technologies I use. Click on a file to learn more.</p>
+    <div class="mb-12 text-center md:mb-16">
+      <h2 class="from-accent-300 to-accent-500 mb-3 inline-block bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent md:text-5xl">My <span class="font-doto font-bold"> Toolkit</span></h2>
+      <div class="from-accent-500 to-accent-900 mx-auto h-1 w-24 rounded-full bg-gradient-to-r"></div>
+      <p class="text-foreground-muted mx-auto mt-6 max-w-2xl text-lg">An interactive overview of the technologies I use. Click on a file to learn more.</p>
     </div>
 
     {/* --- Code Editor Structure --- */}
-    <div class="code-editor bg-[color-mix(in_oklch,_rgb(var(--background)),_black_25%)] text-sm rounded-lg shadow-2xl border border-[rgba(var(--foreground)/0.1)] overflow-hidden max-w-5xl mx-auto min-h-[60vh] flex" data-skills={JSON.stringify(Object.fromEntries(skillsMap))}>
+    <div class="code-editor mx-auto flex min-h-[60vh] max-w-5xl overflow-hidden rounded-lg border border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_25%)] text-sm shadow-2xl" data-skills={JSON.stringify(Object.fromEntries(skillsMap))}>
       {/* Sidebar (File Tree) */}
-      <aside class="sidebar w-48 md:w-64 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)] border-r border-[rgba(var(--foreground)/0.1)] p-2 overflow-y-auto">
-        <div class="sidebar-header flex justify-between items-center text-xs text-foreground-muted uppercase mb-2 px-1">
+      <aside class="sidebar w-48 overflow-y-auto border-r border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)] p-2 md:w-64">
+        <div class="sidebar-header text-foreground-muted mb-2 flex items-center justify-between px-1 text-xs uppercase">
           <span>Explorer</span>
-          <button title="Collapse All" class="collapse-all-btn p-1 rounded hover:bg-accent-300/10">
-            <Icon name="mdi:chevron-double-up" class="w-3 h-3" />
+          <button title="Collapse All" class="collapse-all-btn hover:bg-accent-300/10 rounded p-1">
+            <Icon name="mdi:chevron-double-up" class="h-3 w-3" />
           </button>
         </div>
         <ul class="file-tree space-y-0.5">
           {
             skillGroups.map((group, index) => (
               <li class="folder-item" data-type="folder" data-expanded={index === 0 ? "true" : "false"} data-category={group.category}>
-                <div class="folder-header flex items-center p-1 rounded cursor-pointer hover:bg-accent-300/10" style={`--folder-color: ${group.color}`}>
+                <div class="folder-header hover:bg-accent-300/10 flex cursor-pointer items-center rounded p-1" style={`--folder-color: ${group.color}`}>
                   <span class="folder-arrow transition-transform duration-200">
-                    <Icon name="mdi:chevron-right" class="w-4 h-4" />
+                    <Icon name="mdi:chevron-right" class="h-4 w-4" />
                   </span>
-                  <Icon name={group.icon} class="w-4 h-4 mx-1 flex-shrink-0" />
-                  <span class="truncate font-medium text-xs">{group.category}</span>
+                  <Icon name={group.icon} class="mx-1 h-4 w-4 flex-shrink-0" />
+                  <span class="truncate text-xs font-medium">{group.category}</span>
                   <span class="ml-auto text-xs opacity-60">{group.skills.length}</span>
                 </div>
-                <ul class="skill-list pl-4 overflow-hidden transition-all duration-300 ease-in-out">
+                <ul class="skill-list overflow-hidden pl-4 transition-all duration-300 ease-in-out">
                   {group.skills.map((skill) => (
-                    <li class="file-item p-1 rounded cursor-pointer hover:bg-accent-500/10 text-foreground-muted hover:text-foreground" data-type="file" data-skill-name={skill.name} data-ext={skill.extension || ""}>
+                    <li class="file-item hover:bg-accent-500/10 text-foreground-muted hover:text-foreground cursor-pointer rounded p-1" data-type="file" data-skill-name={skill.name} data-ext={skill.extension || ""}>
                       <div class="flex items-center">
-                        <Icon name={skill.icon} class="w-4 h-4 mr-2 flex-shrink-0 opacity-80" style={`color: ${group.color};`} />
+                        <Icon name={skill.icon} class="mr-2 h-4 w-4 flex-shrink-0 opacity-80" style={`color: ${group.color};`} />
                         <span class="truncate text-xs">{skill.name}</span>
-                        {skill.extension && <span class="text-xs opacity-60 ml-1">{skill.extension}</span>}
+                        {skill.extension && <span class="ml-1 text-xs opacity-60">{skill.extension}</span>}
                       </div>
                     </li>
                   ))}
@@ -162,21 +162,21 @@ const folderCount = skillGroups.length;
       </aside>
 
       {/* Main Content */}
-      <main class="main-content flex-1 flex flex-col min-w-0">
+      <main class="main-content flex min-w-0 flex-1 flex-col">
         {/* Tab Bar */}
         <div class="tab-bar flex border-b border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)]">
-          <div id="editor-tab" class="tab active px-4 py-2 text-xs border-r border-[rgba(var(--foreground)/0.1)] flex items-center gap-2 max-w-[250px]">
+          <div id="editor-tab" class="tab active flex max-w-[250px] items-center gap-2 border-r border-[rgba(var(--foreground)/0.1)] px-4 py-2 text-xs">
             <span class="tab-icon opacity-80"></span>
             <span class="tab-name truncate"></span>
-            <button class="tab-close ml-2 opacity-0 hover:opacity-100 transition-opacity">
-              <Icon name="mdi:close" class="w-3 h-3" />
+            <button class="tab-close ml-2 opacity-0 transition-opacity hover:opacity-100">
+              <Icon name="mdi:close" class="h-3 w-3" />
             </button>
           </div>
           <div class="flex-1"></div>
         </div>
 
         {/* Editor Pane */}
-        <div id="editor-pane" class="editor-pane flex-1 p-4 md:p-6 overflow-y-auto font-mono text-xs md:text-sm leading-relaxed text-foreground-muted">
+        <div id="editor-pane" class="editor-pane text-foreground-muted flex-1 overflow-y-auto p-4 font-mono text-xs leading-relaxed md:p-6 md:text-sm">
           {/* Welcome message */}
           <div class="welcome-message">
             <p class="text-accent-300">/**</p>
@@ -192,13 +192,13 @@ const folderCount = skillGroups.length;
 
           {/* Skill content */}
           <div class="skill-content" style="display: none;">
-            <h3 id="skill-title" class="text-lg md:text-xl font-semibold text-foreground mb-4"></h3>
+            <h3 id="skill-title" class="text-foreground mb-4 text-lg font-semibold md:text-xl"></h3>
             <div id="skill-description" class="whitespace-pre-wrap"></div>
           </div>
         </div>
 
         {/* Status Bar */}
-        <footer class="status-bar text-xs px-3 py-1 bg-[color-mix(in_oklch,_rgb(var(--background)),_black_50%)] border-t border-[rgba(var(--foreground)/0.1)] text-foreground-muted flex justify-between">
+        <footer class="status-bar text-foreground-muted flex justify-between border-t border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_50%)] px-3 py-1 text-xs">
           <div class="flex gap-4">
             <span>{fileCount} Files, {folderCount} Folders</span>
             <span class="hidden md:block" id="file-type-indicator"></span>

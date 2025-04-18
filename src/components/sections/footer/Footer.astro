@@ -19,14 +19,14 @@ const tech = [
 ];
 ---
 
-<footer class="relative overflow-hidden pt-16 pb-10 mt-12 bg-gradient-to-t from-background via-background/90 to-transparent">
+<footer class="from-background via-background/90 relative mt-12 overflow-hidden bg-gradient-to-t to-transparent pt-16 pb-10">
   <!-- Main Footer Content -->
-  <div class="container mx-auto px-4 z-10 relative">
+  <div class="relative z-10 container mx-auto px-4">
     <!-- Interactive Logo -->
-    <div class="flex justify-center mb-8">
-      <h2 class="text-4xl font-bold font-doto transition-all duration-300">
+    <div class="mb-8 flex justify-center">
+      <h2 class="font-doto text-4xl font-bold transition-all duration-300">
         <span class="text-accent-title group-hover:text-accent-text transition-colors duration-300">Contact</span>
-        <span class="group-hover:tracking-wider transition-all duration-300">me</span>
+        <span class="transition-all duration-300 group-hover:tracking-wider">me</span>
       </h2>
     </div>
 
@@ -34,19 +34,19 @@ const tech = [
     <Terminal client:visible />
 
     <!-- Footer bottom -->
-    <div class="flex flex-col-reverse gap-1 md:flex-row justify-between items-center pt-4">
-      <p class="text-sm text-foreground-muted hover:text-foreground transition-colors duration-300">
+    <div class="flex flex-col-reverse items-center justify-between gap-1 pt-4 md:flex-row">
+      <p class="text-foreground-muted hover:text-foreground text-sm transition-colors duration-300">
         © <span class="text-foreground">{currentYear}</span> Ehsan Khan. All rights reserved.
       </p>
-      <div class="mt-4 md:mt-0 text-sm text-foreground-muted flex gap-1 items-center">
-        <span class="inline-block w-2 h-2 bg-accent-text rounded-full animate-pulse"></span>
-        <span class="flex gap-1 items-center">
+      <div class="text-foreground-muted mt-4 flex items-center gap-1 text-sm md:mt-0">
+        <span class="bg-accent-text inline-block h-2 w-2 animate-pulse rounded-full"></span>
+        <span class="flex items-center gap-1">
           Built with
-          <span class="flex items-center ml-2 gap-2.5">
+          <span class="ml-2 flex items-center gap-2.5">
             {
               tech.map((item) => (
                 <span
-                  class="tech-icon flex items-center justify-center h-7 w-7 rounded-md bg-accent-bg/20 p-1.5 transition-all duration-300 hover:-translate-y-0.5 hover:text-accent-300 hover:bg-accent-bg/30 hover:shadow-[0_4px_8px_-2px_oklch(var(--accent-bg)/0.5)] relative text-accent-text"
+                  class="tech-icon bg-accent-bg/20 hover:text-accent-300 hover:bg-accent-bg/30 text-accent-text relative flex h-7 w-7 items-center justify-center rounded-md p-1.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_8px_-2px_oklch(var(--accent-bg)/0.5)]"
                   title={item.name}
                 >
                   <Icon name={item.icon} width={20} height={20} />

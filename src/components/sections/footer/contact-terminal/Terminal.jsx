@@ -330,7 +330,7 @@ Type 'help' to see available commands.`,
 
   return (
     <div
-      className="mx-auto max-w-[680px] rounded-lg overflow-hidden terminal-container"
+      className="terminal-container mx-auto max-w-[680px] overflow-hidden rounded-lg"
       onClick={focusInput}
       aria-label="Interactive terminal"
       role="region"
@@ -352,9 +352,9 @@ Type 'help' to see available commands.`,
         {commandHistory.map((entry, index) => (
           <div key={index}>
             {entry.type === "command" && (
-              <div className="mb-2 flex gap-1 items-center prompt-line">
+              <div className="prompt-line mb-2 flex items-center gap-1">
                 <Directory user="user" host="mac" path="contact" />
-                <span className="ml-1 command-input">{entry.content}</span>
+                <span className="command-input ml-1">{entry.content}</span>
               </div>
             )}
 

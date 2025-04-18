@@ -9,16 +9,16 @@
   --md-pp-b-size: 0.4rem; /* 6px */
   --lg-pp-b-size: 0.438rem; /* 7px */
 
-  @apply flex justify-center items-center p-5 select-none;
+  @apply flex items-center justify-center p-5 select-none;
 }
 
 .border-wrapper {
-  @apply relative flex justify-center items-center;
+  @apply relative flex items-center justify-center;
   @apply h-[var(--sm-pp-size)] w-[var(--sm-pp-size)] md:h-[var(--md-pp-size)] md:w-[var(--md-pp-size)] lg:h-[var(--lg-pp-size)] lg:w-[var(--lg-pp-size)];
 }
 
 .gradient-border {
-  @apply animate-spin animation-duration-5000 absolute top-0 left-0 w-full h-full rounded-full p-5 z-10;
+  @apply animation-duration-5000 absolute top-0 left-0 z-10 h-full w-full animate-spin rounded-full p-5;
   background: conic-gradient(
     from 0deg,
     rgb(var(--background)),
@@ -31,6 +31,6 @@
 }
 
 .profile-picture {
-  @apply rounded-full z-20 object-cover bg-background;
+  @apply bg-background z-20 rounded-full object-cover;
   @apply h-[calc(var(--sm-pp-size)-var(--sm-pp-b-size))] w-[calc(var(--sm-pp-size)-var(--sm-pp-b-size))] md:h-[calc(var(--md-pp-size)-var(--md-pp-b-size))] md:w-[calc(var(--md-pp-size)-var(--md-pp-b-size))] lg:h-[calc(var(--lg-pp-size)-var(--lg-pp-b-size))] lg:w-[calc(var(--lg-pp-size)-var(--lg-pp-b-size))];
 }

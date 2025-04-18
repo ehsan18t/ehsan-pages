@@ -18,7 +18,7 @@ body {
 }
 
 .loader-container {
-  @apply fixed top-0 m-4 left-0 h-dvh w-dvw bg-background flex justify-center items-center z-[9999] overflow-hidden box-border;
+  @apply bg-background fixed top-0 left-0 z-[9999] m-4 box-border flex h-dvh w-dvw items-center justify-center overflow-hidden;
 }
 
 .loader-content {

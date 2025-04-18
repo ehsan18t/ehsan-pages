@@ -72,8 +72,8 @@
 }
 
 body {
-  @apply min-h-screen min-w-full grid grid-rows-[auto_1fr_auto] overflow-hidden;
-  @apply bg-background text-foreground font-Inter leading-6 scroll-smooth antialiased;
+  @apply grid min-h-screen min-w-full grid-rows-[auto_1fr_auto] overflow-hidden;
+  @apply bg-background text-foreground font-Inter scroll-smooth leading-6 antialiased;
 }
 
 /* Custom Scrollbar */
