@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth light">
+<!doctype html>
+<html lang="en" class="light scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +13,35 @@
     />
 
     <style type="text/tailwindcss">
+      @theme {
+        /* --- Primary Accent Colors --- */
+        --color-accent-50: var(--color-accent-50);
+        --color-accent-100: var(--color-accent-100);
+        --color-accent-300: var(--color-accent-300);
+        --color-accent-400: var(--color-accent-400);
+        --color-accent-500: var(--color-accent-500);
+        --color-accent-600: var(--color-accent-600);
+        --color-accent-700: var(--color-accent-700);
+        --color-accent-900: var(--color-accent-900);
+
+        /* --- Text Colors --- */
+        --color-content-base: var(--color-content-base);
+        --color-content-muted: var(--color-content-muted);
+        --color-content-strong: var(--color-content-strong);
+        --color-content-subtle: var(--color-content-subtle);
+        --color-content-inverted: var(--color-content-inverted);
+
+        /* --- Background Colors --- */
+        --color-background-base: var(--color-background-base);
+        --color-background-muted: var(--color-background-muted);
+        --color-background-strong: var(--color-background-strong);
+        --color-background-subtle: var(--color-background-subtle);
+
+        /* --- Border Colors --- */
+        --color-border-base: var(--color-border-base);
+        --color-border-muted: var(--color-border-muted);
+      }
+
       @custom-variant dark (&:where(.dark, .dark *));
     </style>
 
@@ -22,9 +51,10 @@
         font-family: "Inter", sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        line-height: 1.6;
-        letter-spacing: -0.011em;
+        line-height: 1.7;
+        letter-spacing: -0.008em;
       }
+
       /* Apply Playfair Display to headings with refined spacing */
       h1,
       h2,
@@ -33,27 +63,84 @@
       h5,
       h6 {
         font-family: "Playfair Display", serif;
-        letter-spacing: -0.021em;
-        line-height: 1.2;
+        letter-spacing: -0.018em;
+        line-height: 1.3;
       }
       html {
         scroll-behavior: smooth;
+
+        /* Light Theme - Sophisticated Green Palette */
+        --color-accent-50: #f2f7f4; /* softer than green-50 */
+        --color-accent-100: #e4efe8; /* muted light green */
+        --color-accent-200: #c5dcd0; /* subtle green */
+        --color-accent-300: #a3c5b4; /* muted medium green */
+        --color-accent-400: #729d89; /* professional medium green */
+        --color-accent-500: #4a7c64; /* sophisticated primary green */
+        --color-accent-600: #3c6550; /* deeper green */
+        --color-accent-700: #2e4d3d; /* rich dark green */
+        --color-accent-900: #1f352a; /* very dark green */
+
+        --color-accent-gold: #d4a040; /* refined gold */
+        --color-accent-gold-light: #e8c878; /* subtle gold */
+        --color-accent-gold-dark: #b78d30; /* deeper gold */
+
+        --color-content-base: #374151; /* gray-700 */
+        --color-content-muted: #6b7280; /* gray-500 */
+        --color-content-strong: #111827; /* gray-900 */
+        --color-content-subtle: #9ca3af; /* gray-400 */
+        --color-content-inverted: #ffffff; /* white */
+
+        --color-background-base: #ffffff; /* white */
+        --color-background-muted: #f9fafb; /* gray-50 */
+        --color-background-strong: #1f352a; /* very dark green */
+        --color-background-subtle: #f3f4f6; /* gray-100 */
+
+        --color-border-base: #e5e7eb; /* gray-200 */
+        --color-border-muted: #d1d5db; /* gray-300 */
       }
 
-      /* Preloader styles (using Tailwind colors directly is more robust here) */
+      html.dark {
+        /* Dark Theme - Sophisticated Green Palette */
+        --color-accent-50: #e4efe8; /* muted light green */
+        --color-accent-100: #c5dcd0; /* subtle light green */
+        --color-accent-200: #a3c5b4; /* muted medium light green */
+        --color-accent-300: #8ab5a2; /* softer medium green */
+        --color-accent-400: #5d8d74; /* balanced medium green */
+        --color-accent-500: #4a7c64; /* sophisticated green */
+        --color-accent-600: #3c6550; /* deeper green */
+        --color-accent-700: #2e4d3d; /* rich dark green */
+        --color-accent-900: #c5dcd0; /* subtle light green for text */
+
+        --color-accent-gold: #d4a040; /* refined gold */
+        --color-accent-gold-light: #e8c878; /* subtle gold */
+        --color-accent-gold-dark: #b78d30; /* deeper gold */
+
+        --color-content-base: #e2e8f0; /* slate-200 */
+        --color-content-muted: #94a3b8; /* slate-400 */
+        --color-content-strong: #f8fafc; /* slate-50 */
+        --color-content-subtle: #64748b; /* slate-500 */
+        --color-content-inverted: #0f172a; /* slate-900 */
+
+        --color-background-base: #0f172a; /* slate-900 */
+        --color-background-muted: #1e293b; /* slate-800 */
+        --color-background-strong: #0f172a; /* slate-900 */
+        --color-background-subtle: #1e293b; /* slate-800 */
+
+        --color-border-base: #334155; /* slate-700 */
+        --color-border-muted: #475569; /* slate-600 */
+      }
+
+      /* Preloader styles */
       #preloader {
         position: fixed;
         inset: 0;
-        background-color: #ffffff; /* white */
+        background-color: var(--color-background-base);
         z-index: 9999;
         display: flex;
         justify-content: center;
         align-items: center;
         opacity: 1;
         transition: opacity 0.4s ease-out 0.3s;
-      }
-      html.dark #preloader {
-        background-color: #020617; /* slate-950 */
       }
       #preloader.loaded {
         opacity: 0;
@@ -62,14 +149,14 @@
       #spinner {
         width: 36px;
         height: 36px;
-        border: 3px solid #e5e7eb; /* gray-200 */
-        border-top-color: #0ea5e9; /* sky-500 */
+        border: 3px solid var(--color-border-base);
+        border-top-color: var(--color-accent-500);
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
       html.dark #spinner {
-        border-color: #4b5563; /* gray-600 */
-        border-top-color: #38bdf8; /* sky-400 */
+        border-color: var(--color-border-muted);
+        border-top-color: var(--color-accent-400);
       }
 
       /* Default state - light text for dark background (hero section) */
@@ -80,7 +167,7 @@
 
       /* When scrolled - dark text for light background */
       #main-header.header-scrolled .nav-link {
-        color: #1e293b; /* slate-800 */
+        color: var(--color-content-strong);
         text-shadow: none;
       }
 
@@ -146,28 +233,45 @@
         display: block;
         width: 60px;
         height: 3px;
-        background: currentColor;
-        opacity: 0.4;
+        background: var(--color-accent-500);
+        opacity: 0.8;
         margin: 0 auto 2rem;
       }
 
       /* More professional card hover effects */
       .card-hover-effect {
         transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        position: relative;
       }
       .card-hover-effect:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
       }
+      .card-hover-effect::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        box-shadow: 0 10px 50px -15px rgba(0, 0, 0, 0.25);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        z-index: -1;
+      }
+      .card-hover-effect:hover::after {
+        opacity: 1;
+      }
 
       /* Focus styles (using Tailwind colors) */
       *:focus-visible {
-        outline: 2px solid #0ea5e9;
+        outline: 2px solid var(--color-accent-500);
         outline-offset: 2px;
         border-radius: 4px;
       }
       html.dark *:focus-visible {
-        outline-color: #38bdf8;
+        outline-color: var(--color-accent-400);
       }
     </style>
     <script>
@@ -194,79 +298,80 @@
 
       // Apply theme on initial load
       applyThemePreference();
-
       // Ensure the class is present or absent before the rest of the script runs
       // (This helps avoid race conditions with initial rendering)
       document.addEventListener("DOMContentLoaded", applyThemePreference);
     </script>
   </head>
   <body
-    class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased selection:bg-sky-100 dark:selection:bg-sky-900/50"
+    class="selection:bg-primary-100 dark:selection:bg-primary-900/50 bg-background-base text-content-base dark:bg-background-base dark:text-content-base antialiased"
   >
     <div id="preloader"><div id="spinner"></div></div>
 
     <header
-      class="fixed top-0 left-0 right-0 z-50 transition-shadow duration-300 ease-in-out"
+      class="fixed top-0 right-0 left-0 z-50 transition-shadow duration-300 ease-in-out"
       id="main-header"
     >
       <div
-        class="absolute inset-0 h-full w-full transition-opacity duration-300 opacity-0 bg-white dark:bg-slate-900 shadow-md"
+        class="absolute inset-0 h-full w-full bg-white opacity-0 shadow-md transition-opacity duration-300 dark:bg-slate-900"
         id="header-bg"
       ></div>
       <div class="relative container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
+        <div class="flex h-16 items-center justify-between">
           <a
             href="#"
-            class="text-xl font-bold font-serif nav-link relative z-10 tracking-tight drop-shadow-sm"
-            >Aethel Law</a
+            class="nav-link relative z-10 font-serif text-2xl font-bold tracking-tight drop-shadow-sm"
           >
-          <nav class="hidden lg:flex items-center space-x-6 relative z-10">
+            <span class="text-white dark:text-white">Aethel</span>
+            <span class="text-accent-gold">Law</span>
+          </a>
+          <nav class="relative z-10 hidden items-center space-x-6 lg:flex">
             <a
               href="#about"
-              class="text-sm font-medium nav-link hover:text-sky-400 transition"
+              class="nav-link hover:text-accent-400 text-sm font-medium transition"
               >About</a
             >
             <a
               href="#programs"
-              class="text-sm font-medium nav-link hover:text-sky-400 transition"
+              class="nav-link hover:text-accent-400 text-sm font-medium transition"
               >Programs</a
             >
             <a
               href="#events"
-              class="text-sm font-medium nav-link hover:text-sky-400 transition"
+              class="nav-link hover:text-accent-400 text-sm font-medium transition"
               >Events</a
             >
             <a
               href="#impact"
-              class="text-sm font-medium nav-link hover:text-sky-400 transition"
+              class="nav-link hover:text-accent-400 text-sm font-medium transition"
               >Impact</a
             >
             <a
               href="#involved"
-              class="text-sm font-medium nav-link hover:text-sky-400 transition"
+              class="nav-link hover:text-accent-400 text-sm font-medium transition"
               >Involved</a
             >
             <a
               href="#contact"
-              class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition"
+              class="hover:text-accent-600 dark:hover:text-accent-400 text-sm font-medium text-slate-600 transition dark:text-slate-400"
               >Contact</a
             >
           </nav>
-          <div class="flex items-center space-x-3 relative z-10">
+          <div class="relative z-10 flex items-center space-x-3">
             <a
               href="#involved"
-              class="hidden sm:inline-block bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-5 rounded-md text-sm shadow-sm transform transition duration-200 hover:scale-105"
+              class="bg-accent-500 hover:bg-accent-600 hidden transform rounded-md px-5 py-2 text-sm font-medium text-white shadow-sm transition duration-200 hover:scale-105 sm:inline-block"
             >
               Donate
             </a>
             <button
               onclick="switchTheme()"
               aria-label="Toggle Dark Mode"
-              class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition duration-150 p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700/50"
+              class="rounded-md p-1.5 text-slate-500 transition duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700/50 dark:hover:text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 hidden dark:block"
+                class="hidden h-5 w-5 dark:block"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -276,7 +381,7 @@
               </svg>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 block dark:hidden"
+                class="block h-5 w-5 dark:hidden"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -292,7 +397,7 @@
               aria-label="Open menu"
               aria-expanded="false"
               aria-controls="mobile-nav"
-              class="lg:hidden nav-link hover:text-sky-400 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 transition duration-150 p-1.5 rounded-md hover:bg-white/80 dark:hover:bg-slate-700/80 backdrop-blur-sm"
+              class="nav-link hover:text-accent-400 hover:text-accent-600 dark:hover:text-accent-400 rounded-md p-1.5 backdrop-blur-sm transition duration-150 hover:bg-white/80 lg:hidden dark:text-slate-200 dark:hover:bg-slate-700/80"
             >
               <svg
                 class="h-6 w-6"
@@ -314,62 +419,62 @@
       </div>
       <div
         id="mobile-menu-panel"
-        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden lg:hidden"
+        class="fixed inset-0 z-40 hidden bg-black/50 backdrop-blur-sm lg:hidden"
         aria-hidden="true"
       ></div>
       <nav
         id="mobile-nav"
-        class="fixed top-0 right-0 bottom-0 w-64 bg-white dark:bg-slate-800 shadow-xl z-[60] transform translate-x-full transition duration-300 ease-in-out lg:hidden"
+        class="fixed top-0 right-0 bottom-0 z-[60] w-64 translate-x-full transform bg-white shadow-xl transition duration-300 ease-in-out lg:hidden dark:bg-slate-800"
         aria-hidden="true"
       >
         <div
-          class="p-5 flex justify-between items-center border-b border-slate-200 dark:border-slate-700"
+          class="flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-700"
         >
-          <span class="font-bold font-serif text-slate-900 dark:text-white"
+          <span class="font-serif font-bold text-slate-900 dark:text-white"
             >Menu</span
           >
           <button
             id="close-mobile-menu"
             aria-label="Close menu"
-            class="text-slate-500 dark:text-slate-400 text-2xl leading-none hover:text-slate-900 dark:hover:text-white"
+            class="text-2xl leading-none text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
           >
             &times;
           </button>
         </div>
-        <div class="p-5 space-y-4">
+        <div class="space-y-4 p-5">
           <a
             href="#about"
-            class="block text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition"
+            class="hover:text-accent-600 dark:hover:text-accent-400 block text-slate-700 transition dark:text-slate-300"
             >About</a
           >
           <a
             href="#programs"
-            class="block text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition"
+            class="hover:text-accent-600 dark:hover:text-accent-400 block text-slate-700 transition dark:text-slate-300"
             >Programs</a
           >
           <a
             href="#events"
-            class="block text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition"
+            class="hover:text-accent-600 dark:hover:text-accent-400 block text-slate-700 transition dark:text-slate-300"
             >Events</a
           >
           <a
             href="#impact"
-            class="block text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition"
+            class="hover:text-accent-600 dark:hover:text-accent-400 block text-slate-700 transition dark:text-slate-300"
             >Impact</a
           >
           <a
             href="#involved"
-            class="block text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition"
+            class="hover:text-accent-600 dark:hover:text-accent-400 block text-slate-700 transition dark:text-slate-300"
             >Involved</a
           >
           <a
             href="#contact"
-            class="block text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition"
+            class="hover:text-accent-600 dark:hover:text-accent-400 block text-slate-700 transition dark:text-slate-300"
             >Contact</a
           >
           <a
             href="#involved"
-            class="block mt-6 text-center bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-5 rounded-md text-sm shadow-sm"
+            class="bg-accent-500 hover:bg-accent-600 mt-6 block rounded-md px-5 py-2 text-center text-sm font-medium text-white shadow-sm"
           >
             Donate
           </a>
@@ -380,36 +485,35 @@
     <main>
       <section
         id="hero"
-        class="relative min-h-[90vh] md:min-h-screen flex items-center justify-center text-white dark:text-white overflow-hidden bg-slate-900"
+        class="relative flex min-h-[90vh] items-center justify-center overflow-hidden bg-slate-900 text-white md:min-h-screen dark:text-white"
       >
         <div class="absolute inset-0 z-0">
           <img
             src="https://picsum.photos/seed/lawschool/1920/1080"
             alt="Modern university library interior looking towards bright windows"
-            class="w-full h-full object-cover filter brightness-[0.85]"
+            class="h-full w-full object-cover brightness-[0.85] filter"
           />
           <div
             class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-slate-900/50 dark:from-slate-950 dark:via-slate-950/85 dark:to-slate-950/65"
           ></div>
-          <!-- Add subtle grain texture overlay -->
           <div
             class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-30"
           ></div>
         </div>
         <div
-          class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center"
+          class="relative z-10 container mx-auto px-4 py-24 text-center sm:px-6 lg:px-8"
         >
           <h1
-            class="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold !leading-tight tracking-tight mb-8 animate-on-scroll hero-text"
+            class="animate-on-scroll hero-text mb-8 font-serif text-5xl !leading-tight font-bold tracking-tight sm:text-6xl lg:text-7xl"
             data-animation="fade-in-up"
             data-delay="0.1s"
           >
-            Elevating <span class="text-sky-400 italic">Legal Leaders</span
+            Elevating <span class="text-accent-400 italic">Legal Leaders</span
             ><br />
             Through Opportunity.
           </h1>
           <p
-            class="text-lg md:text-xl text-slate-100 dark:text-slate-200 mb-12 max-w-2xl mx-auto animate-on-scroll leading-relaxed"
+            class="animate-on-scroll mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl dark:text-slate-200"
             data-animation="fade-in-up"
             data-delay="0.3s"
           >
@@ -417,27 +521,26 @@
             and resources to promising law scholars from diverse backgrounds.
           </p>
           <div
-            class="flex flex-col sm:flex-row justify-center items-center gap-5 animate-on-scroll"
+            class="animate-on-scroll flex flex-col items-center justify-center gap-5 sm:flex-row"
             data-animation="fade-in-up"
             data-delay="0.5s"
           >
             <a
               href="#about"
-              class="inline-block bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3.5 px-8 rounded-lg text-base shadow-lg hover:shadow-xl transform transition duration-300 hover:scale-105 border border-sky-400/20"
+              class="bg-accent-500 hover:bg-accent-600 border-accent-400/20 inline-block transform rounded-lg border px-8 py-3.5 text-base font-semibold text-white shadow-lg transition duration-300 hover:scale-105 hover:shadow-xl"
             >
               Learn About Us
             </a>
             <a
               href="#programs"
-              class="inline-block border-2 border-white/30 hover:border-white hover:bg-white/10 text-slate-100 font-medium py-3.5 px-8 rounded-lg text-base transition duration-300"
+              class="inline-block rounded-lg border-2 border-white/30 px-8 py-3.5 text-base font-medium text-slate-100 transition duration-300 hover:border-white hover:bg-white/10"
             >
               Explore Programs
             </a>
           </div>
         </div>
-        <!-- Add decorative element -->
         <div
-          class="absolute bottom-10 left-0 right-0 flex justify-center animate-bounce opacity-70"
+          class="absolute right-0 bottom-10 left-0 flex animate-bounce justify-center opacity-70"
         >
           <a href="#about" class="text-white/70 hover:text-white">
             <svg
@@ -458,23 +561,23 @@
         </div>
       </section>
 
-      <section id="about" class="py-24 md:py-32 bg-white dark:bg-slate-900">
+      <section id="about" class="bg-white py-24 md:py-32 dark:bg-slate-900">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            class="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center"
+            class="grid grid-cols-1 items-center gap-12 md:gap-16 lg:grid-cols-2"
           >
             <div class="animate-on-scroll" data-animation="fade-in-up">
               <span
-                class="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2 block"
+                class="text-accent-600 dark:text-accent-400 mb-2 block text-sm font-semibold tracking-wider uppercase"
                 >Our Foundation</span
               >
               <h2
-                class="text-4xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white !leading-tight tracking-tight mb-6"
+                class="mb-6 font-serif text-4xl !leading-tight font-bold tracking-tight text-slate-900 md:text-5xl dark:text-white"
               >
                 Bridging Talent & Opportunity
               </h2>
               <p
-                class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-4"
+                class="mb-4 text-lg leading-relaxed text-slate-600 dark:text-slate-400"
               >
                 Aethel Law champions the principle that a diverse legal
                 profession enhances justice for all. We actively identify and
@@ -482,7 +585,7 @@
                 investing in their future.
               </p>
               <p
-                class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
+                class="text-lg leading-relaxed text-slate-600 dark:text-slate-400"
               >
                 Our holistic approach combines financial aid with crucial
                 mentorship and leadership development, empowering scholars to
@@ -495,12 +598,12 @@
               data-delay="0.2s"
             >
               <div
-                class="relative rounded-xl shadow-xl overflow-hidden aspect-[5/4] border border-slate-200 dark:border-slate-700"
+                class="relative aspect-[5/4] overflow-hidden rounded-xl border border-slate-200 shadow-xl dark:border-slate-700"
               >
                 <img
                   src="https://picsum.photos/seed/lawstudentsgroup/800/640"
                   alt="Diverse law students working together at a table"
-                  class="w-full h-full object-cover"
+                  class="h-full w-full object-cover"
                 />
               </div>
             </div>
@@ -510,19 +613,19 @@
 
       <section
         id="programs"
-        class="py-24 md:py-32 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700/50"
+        class="border-t border-slate-100 bg-slate-50 py-24 md:py-32 dark:border-slate-700/50 dark:bg-slate-800"
       >
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            class="max-w-3xl mx-auto text-center mb-16 md:mb-20 animate-on-scroll"
+            class="animate-on-scroll mx-auto mb-16 max-w-3xl text-center md:mb-20"
             data-animation="fade-in-up"
           >
             <span
-              class="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2 block"
+              class="text-accent-600 dark:text-accent-400 mb-2 block text-sm font-semibold tracking-wider uppercase"
               >Core Offerings</span
             >
             <h2
-              class="text-4xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white tracking-tight"
+              class="font-serif text-4xl font-bold tracking-tight text-slate-900 md:text-5xl dark:text-white"
             >
               A Holistic Support System
             </h2>
@@ -533,15 +636,15 @@
           </div>
 
           <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:grid-rows-2"
+            class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2"
           >
             <div
-              class="lg:col-span-2 lg:row-span-2 bg-white dark:bg-slate-900 p-8 rounded-xl shadow-lg hover:shadow-xl border border-slate-100 dark:border-slate-700/50 transition-all duration-300 flex flex-col justify-between animate-on-scroll card-hover-effect"
+              class="animate-on-scroll card-hover-effect flex flex-col justify-between rounded-xl border border-slate-100 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl lg:col-span-2 lg:row-span-2 dark:border-slate-700/50 dark:bg-slate-900"
               data-animation="fade-in-up"
               data-delay="0.1s"
             >
               <div>
-                <div class="mb-5 text-sky-500 dark:text-sky-400">
+                <div class="text-accent-500 dark:text-accent-400 mb-5">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-12 w-12"
@@ -558,12 +661,12 @@
                   </svg>
                 </div>
                 <h3
-                  class="text-2xl font-serif font-semibold text-slate-900 dark:text-white mb-3"
+                  class="mb-3 font-serif text-2xl font-semibold text-slate-900 dark:text-white"
                 >
                   Aethel Scholarships
                 </h3>
                 <p
-                  class="text-slate-600 dark:text-slate-400 text-base leading-relaxed mb-6"
+                  class="mb-6 text-base leading-relaxed text-slate-600 dark:text-slate-400"
                 >
                   Our flagship program provides substantial, multi-year
                   financial awards covering tuition, fees, and living expenses,
@@ -573,16 +676,16 @@
               </div>
               <a
                 href="#"
-                class="text-sm font-medium text-sky-600 dark:text-sky-400 hover:underline self-start mt-4"
+                class="text-accent-600 dark:text-accent-400 mt-4 self-start text-sm font-medium hover:underline"
                 >Learn about eligibility &rarr;</a
               >
             </div>
             <div
-              class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-lg hover:shadow-xl border border-slate-100 dark:border-slate-700/50 transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll card-hover-effect"
+              class="animate-on-scroll card-hover-effect transform rounded-xl border border-slate-100 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-700/50 dark:bg-slate-900"
               data-animation="fade-in-up"
               data-delay="0.2s"
             >
-              <div class="mb-4 text-sky-500 dark:text-sky-400">
+              <div class="text-accent-500 dark:text-accent-400 mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-8 w-8"
@@ -599,22 +702,22 @@
                 </svg>
               </div>
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+                class="mb-2 text-lg font-semibold text-slate-900 dark:text-white"
               >
                 Mentorship
               </h3>
               <p
-                class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed"
+                class="text-sm leading-relaxed text-slate-600 dark:text-slate-400"
               >
                 Personalized pairing with established legal professionals.
               </p>
             </div>
             <div
-              class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-lg hover:shadow-xl border border-slate-100 dark:border-slate-700/50 transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll card-hover-effect"
+              class="animate-on-scroll card-hover-effect transform rounded-xl border border-slate-100 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-700/50 dark:bg-slate-900"
               data-animation="fade-in-up"
               data-delay="0.3s"
             >
-              <div class="mb-4 text-sky-500 dark:text-sky-400">
+              <div class="text-accent-500 dark:text-accent-400 mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-8 w-8"
@@ -631,22 +734,22 @@
                 </svg>
               </div>
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+                class="mb-2 text-lg font-semibold text-slate-900 dark:text-white"
               >
                 Workshops
               </h3>
               <p
-                class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed"
+                class="text-sm leading-relaxed text-slate-600 dark:text-slate-400"
               >
                 Targeted skill development for career success.
               </p>
             </div>
             <div
-              class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-lg hover:shadow-xl border border-slate-100 dark:border-slate-700/50 transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll card-hover-effect"
+              class="animate-on-scroll card-hover-effect transform rounded-xl border border-slate-100 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-700/50 dark:bg-slate-900"
               data-animation="fade-in-up"
               data-delay="0.4s"
             >
-              <div class="mb-4 text-sky-500 dark:text-sky-400">
+              <div class="text-accent-500 dark:text-accent-400 mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-8 w-8"
@@ -663,22 +766,22 @@
                 </svg>
               </div>
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+                class="mb-2 text-lg font-semibold text-slate-900 dark:text-white"
               >
                 Career Fund
               </h3>
               <p
-                class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed"
+                class="text-sm leading-relaxed text-slate-600 dark:text-slate-400"
               >
                 Grants for bar prep, interviews, and travel.
               </p>
             </div>
             <div
-              class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-lg hover:shadow-xl border border-slate-100 dark:border-slate-700/50 transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll card-hover-effect"
+              class="animate-on-scroll card-hover-effect transform rounded-xl border border-slate-100 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-700/50 dark:bg-slate-900"
               data-animation="fade-in-up"
               data-delay="0.5s"
             >
-              <div class="mb-4 text-sky-500 dark:text-sky-400">
+              <div class="text-accent-500 dark:text-accent-400 mb-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-8 w-8"
@@ -695,12 +798,12 @@
                 </svg>
               </div>
               <h3
-                class="text-lg font-semibold text-slate-900 dark:text-white mb-2"
+                class="mb-2 text-lg font-semibold text-slate-900 dark:text-white"
               >
                 Community
               </h3>
               <p
-                class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed"
+                class="text-sm leading-relaxed text-slate-600 dark:text-slate-400"
               >
                 A lifelong network of peers and alumni.
               </p>
@@ -711,19 +814,19 @@
 
       <section
         id="events"
-        class="py-24 md:py-32 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800"
+        class="border-t border-slate-100 bg-white py-24 md:py-32 dark:border-slate-800 dark:bg-slate-900"
       >
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            class="max-w-3xl mx-auto text-center mb-16 md:mb-20 animate-on-scroll"
+            class="animate-on-scroll mx-auto mb-16 max-w-3xl text-center md:mb-20"
             data-animation="fade-in-up"
           >
             <span
-              class="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2 block"
+              class="text-accent-600 dark:text-accent-400 mb-2 block text-sm font-semibold tracking-wider uppercase"
               >Connect & Grow</span
             >
             <h2
-              class="text-4xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white tracking-tight"
+              class="font-serif text-4xl font-bold tracking-tight text-slate-900 md:text-5xl dark:text-white"
             >
               Upcoming Events
             </h2>
@@ -732,9 +835,9 @@
             </p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div
-              class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden animate-on-scroll"
+              class="animate-on-scroll flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800"
               data-animation="fade-in-up"
               data-delay="0.1s"
             >
@@ -742,34 +845,34 @@
                 <img
                   src="https://picsum.photos/seed/galaevent/800/450"
                   alt="Elegant gala event setting"
-                  class="object-cover w-full h-full"
+                  class="h-full w-full object-cover"
                 />
               </div>
-              <div class="p-6 flex flex-col flex-grow">
+              <div class="flex flex-grow flex-col p-6">
                 <p
-                  class="text-xs font-semibold text-sky-600 dark:text-sky-400 mb-1 uppercase tracking-wide"
+                  class="text-accent-600 dark:text-accent-400 mb-1 text-xs font-semibold tracking-wide uppercase"
                 >
                   MAY 15, 2025 | 6:00 PM EST
                 </p>
                 <h3
-                  class="font-semibold font-serif text-lg text-slate-900 dark:text-white mb-2 flex-grow"
+                  class="mb-2 flex-grow font-serif text-lg font-semibold text-slate-900 dark:text-white"
                 >
                   Annual Scholars Gala
                 </h3>
                 <p
-                  class="text-sm text-slate-600 dark:text-slate-400 mb-4 flex-grow"
+                  class="mb-4 flex-grow text-sm text-slate-600 dark:text-slate-400"
                 >
                   Celebrating scholar achievements. (New York City, NY)
                 </p>
                 <a
                   href="#"
-                  class="mt-auto text-sm font-medium text-sky-600 dark:text-sky-400 hover:underline self-start"
+                  class="text-accent-600 dark:text-accent-400 mt-auto self-start text-sm font-medium hover:underline"
                   >Details & RSVP &rarr;</a
                 >
               </div>
             </div>
             <div
-              class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden animate-on-scroll"
+              class="animate-on-scroll flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800"
               data-animation="fade-in-up"
               data-delay="0.2s"
             >
@@ -777,34 +880,34 @@
                 <img
                   src="https://picsum.photos/seed/legaltechworkshop/800/450"
                   alt="Laptop screen showing a virtual workshop interface"
-                  class="object-cover w-full h-full"
+                  class="h-full w-full object-cover"
                 />
               </div>
-              <div class="p-6 flex flex-col flex-grow">
+              <div class="flex flex-grow flex-col p-6">
                 <p
-                  class="text-xs font-semibold text-sky-600 dark:text-sky-400 mb-1 uppercase tracking-wide"
+                  class="text-accent-600 dark:text-accent-400 mb-1 text-xs font-semibold tracking-wide uppercase"
                 >
                   JUN 05, 2025 | 12:00 PM PST
                 </p>
                 <h3
-                  class="font-semibold font-serif text-lg text-slate-900 dark:text-white mb-2 flex-grow"
+                  class="mb-2 flex-grow font-serif text-lg font-semibold text-slate-900 dark:text-white"
                 >
                   Virtual Workshop: Navigating Legal Tech
                 </h3>
                 <p
-                  class="text-sm text-slate-600 dark:text-slate-400 mb-4 flex-grow"
+                  class="mb-4 flex-grow text-sm text-slate-600 dark:text-slate-400"
                 >
                   Understanding AI and innovation impacts on law. (Online)
                 </p>
                 <a
                   href="#"
-                  class="mt-auto text-sm font-medium text-sky-600 dark:text-sky-400 hover:underline self-start"
+                  class="text-accent-600 dark:text-accent-400 mt-auto self-start text-sm font-medium hover:underline"
                   >Register Here &rarr;</a
                 >
               </div>
             </div>
             <div
-              class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden animate-on-scroll"
+              class="animate-on-scroll flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800"
               data-animation="fade-in-up"
               data-delay="0.3s"
             >
@@ -812,28 +915,28 @@
                 <img
                   src="https://picsum.photos/seed/mentormixer/800/450"
                   alt="People networking casually at an event"
-                  class="object-cover w-full h-full"
+                  class="h-full w-full object-cover"
                 />
               </div>
-              <div class="p-6 flex flex-col flex-grow">
+              <div class="flex flex-grow flex-col p-6">
                 <p
-                  class="text-xs font-semibold text-sky-600 dark:text-sky-400 mb-1 uppercase tracking-wide"
+                  class="text-accent-600 dark:text-accent-400 mb-1 text-xs font-semibold tracking-wide uppercase"
                 >
                   JUL 10, 2025 | 5:30 PM CST
                 </p>
                 <h3
-                  class="font-semibold font-serif text-lg text-slate-900 dark:text-white mb-2 flex-grow"
+                  class="mb-2 flex-grow font-serif text-lg font-semibold text-slate-900 dark:text-white"
                 >
                   Summer Mentor Mixer
                 </h3>
                 <p
-                  class="text-sm text-slate-600 dark:text-slate-400 mb-4 flex-grow"
+                  class="mb-4 flex-grow text-sm text-slate-600 dark:text-slate-400"
                 >
                   Networking for current scholars and mentors. (Chicago, IL)
                 </p>
                 <a
                   href="#"
-                  class="mt-auto text-sm font-medium text-sky-600 dark:text-sky-400 hover:underline self-start"
+                  class="text-accent-600 dark:text-accent-400 mt-auto self-start text-sm font-medium hover:underline"
                   >More Info &rarr;</a
                 >
               </div>
@@ -844,25 +947,25 @@
 
       <section
         id="impact"
-        class="py-24 md:py-32 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700/50"
+        class="border-t border-slate-100 bg-slate-50 py-24 md:py-32 dark:border-slate-700/50 dark:bg-slate-800"
       >
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            class="max-w-3xl mx-auto text-center mb-16 md:mb-20 animate-on-scroll"
+            class="animate-on-scroll mx-auto mb-16 max-w-3xl text-center md:mb-20"
             data-animation="fade-in-up"
           >
             <span
-              class="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2 block"
+              class="text-accent-600 dark:text-accent-400 mb-2 block text-sm font-semibold tracking-wider uppercase"
               >Proven Outcomes</span
             >
             <h2
-              class="text-4xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white tracking-tight"
+              class="font-serif text-4xl font-bold tracking-tight text-slate-900 md:text-5xl dark:text-white"
             >
               Driving Measurable Change
             </h2>
           </div>
           <div
-            class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center mb-16 md:mb-20"
+            class="mb-16 grid grid-cols-1 gap-10 text-center md:mb-20 md:grid-cols-3"
           >
             <div
               class="animate-on-scroll"
@@ -870,11 +973,11 @@
               data-delay="0.1s"
             >
               <span
-                class="block text-5xl lg:text-6xl font-bold text-sky-600 dark:text-sky-400"
+                class="text-accent-600 dark:text-accent-400 block text-5xl font-bold lg:text-6xl"
                 >98%</span
               >
               <span
-                class="block mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide"
+                class="mt-2 block text-sm font-medium tracking-wide text-slate-500 dark:text-slate-400"
                 >Placement Rate</span
               >
             </div>
@@ -884,11 +987,11 @@
               data-delay="0.2s"
             >
               <span
-                class="block text-5xl lg:text-6xl font-bold text-sky-600 dark:text-sky-400"
+                class="text-accent-600 dark:text-accent-400 block text-5xl font-bold lg:text-6xl"
                 >150+</span
               >
               <span
-                class="block mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide"
+                class="mt-2 block text-sm font-medium tracking-wide text-slate-500 dark:text-slate-400"
                 >Active Mentors</span
               >
             </div>
@@ -898,37 +1001,39 @@
               data-delay="0.3s"
             >
               <span
-                class="block text-5xl lg:text-6xl font-bold text-sky-600 dark:text-sky-400"
+                class="text-accent-600 dark:text-accent-400 block text-5xl font-bold lg:text-6xl"
                 >$3M+</span
               >
               <span
-                class="block mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium tracking-wide"
+                class="mt-2 block text-sm font-medium tracking-wide text-slate-500 dark:text-slate-400"
                 >Scholarships Awarded</span
               >
             </div>
           </div>
           <div
-            class="max-w-3xl mx-auto animate-on-scroll"
+            class="animate-on-scroll mx-auto max-w-3xl"
             data-animation="fade-in-up"
             data-delay="0.4s"
           >
             <div
-              class="bg-white dark:bg-slate-900 p-8 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700/50 text-center flex flex-col sm:flex-row items-center gap-6 md:gap-8"
+              class="flex flex-col items-center gap-6 rounded-xl border border-slate-100 bg-white p-8 text-center shadow-xl sm:flex-row md:gap-8 dark:border-slate-700/50 dark:bg-slate-900"
             >
               <img
                 src="https://picsum.photos/seed/sarahchen/160/160"
                 alt="Portrait of Sarah Chen, Alumna"
-                class="w-24 h-24 rounded-full flex-shrink-0 border-4 border-sky-100 dark:border-sky-900 object-cover"
+                class="border-accent-100 dark:border-accent-900 h-24 w-24 flex-shrink-0 rounded-full border-4 object-cover"
               />
               <div class="text-center sm:text-left">
                 <blockquote
-                  class="text-lg italic text-slate-700 dark:text-slate-300 leading-relaxed mb-4"
+                  class="mb-4 text-lg leading-relaxed text-slate-700 italic dark:text-slate-300"
                 >
                   "The support network at Aethel Law is unparalleled. It gave me
                   the confidence and connections to pursue my dream career in
                   public interest law."
                 </blockquote>
-                <footer class="font-semibold text-sky-600 dark:text-sky-400">
+                <footer
+                  class="text-accent-600 dark:text-accent-400 font-semibold"
+                >
                   - Sarah Chen, Alumna '23
                 </footer>
               </div>
@@ -939,25 +1044,25 @@
 
       <section
         id="involved"
-        class="py-24 md:py-32 bg-gradient-to-br from-sky-50 to-white dark:from-slate-800 dark:to-slate-900 border-t border-slate-100 dark:border-slate-700/50"
+        class="from-accent-100/20 border-t border-slate-100 bg-gradient-to-br to-white py-24 md:py-32 dark:border-slate-700/50 dark:from-slate-800 dark:to-slate-900"
       >
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="container mx-auto px-4 text-center sm:px-6 lg:px-8">
           <div
-            class="max-w-2xl mx-auto animate-on-scroll"
+            class="animate-on-scroll mx-auto max-w-2xl"
             data-animation="fade-in-up"
           >
             <h2
-              class="text-4xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white mb-6 tracking-tight"
+              class="mb-6 font-serif text-4xl font-bold tracking-tight text-slate-900 md:text-5xl dark:text-white"
             >
               Become a Partner in Equity
             </h2>
-            <p class="text-lg text-slate-600 dark:text-slate-400 mb-10">
+            <p class="mb-10 text-lg text-slate-600 dark:text-slate-400">
               Your contribution directly empowers talented scholars. Help us
               build a more diverse and just legal future.
             </p>
             <a
               href="#contact"
-              class="inline-block bg-sky-500 hover:bg-sky-600 dark:bg-sky-500 dark:hover:bg-sky-600 text-white text-lg font-semibold py-3 px-10 rounded-lg shadow-md hover:shadow-lg transform transition duration-300 hover:scale-105"
+              class="bg-accent-500 hover:bg-accent-600 dark:bg-accent-500 dark:hover:bg-accent-600 inline-block transform rounded-lg px-10 py-3 text-lg font-semibold text-white shadow-md transition duration-300 hover:scale-105 hover:shadow-lg"
             >
               Donate or Get Involved
             </a>
@@ -967,33 +1072,33 @@
 
       <section
         id="contact"
-        class="py-24 md:py-32 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800"
+        class="border-t border-slate-100 bg-white py-24 md:py-32 dark:border-slate-800 dark:bg-slate-900"
       >
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            class="max-w-3xl mx-auto text-center mb-16 md:mb-20 animate-on-scroll"
+            class="animate-on-scroll mx-auto mb-16 max-w-3xl text-center md:mb-20"
             data-animation="fade-in-up"
           >
             <span
-              class="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2 block"
+              class="text-accent-600 dark:text-accent-400 mb-2 block text-sm font-semibold tracking-wider uppercase"
               >Contact Us</span
             >
             <h2
-              class="text-4xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white tracking-tight"
+              class="font-serif text-4xl font-bold tracking-tight text-slate-900 md:text-5xl dark:text-white"
             >
               We'd Love to Hear From You
             </h2>
           </div>
           <div
-            class="max-w-xl mx-auto bg-white dark:bg-slate-800 p-8 md:p-10 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 animate-on-scroll"
+            class="animate-on-scroll mx-auto max-w-xl rounded-xl border border-slate-100 bg-white p-8 shadow-xl md:p-10 dark:border-slate-700 dark:bg-slate-800"
             data-animation="fade-in-up"
             data-delay="0.2s"
           >
             <form action="#" method="POST" class="space-y-6">
-              <div class="relative group">
+              <div class="group relative">
                 <label
                   for="contact-name"
-                  class="absolute -top-2.5 left-2 inline-block bg-white dark:bg-slate-800 px-1 text-xs font-medium text-slate-500 dark:text-slate-400 group-focus-within:text-sky-600 dark:group-focus-within:text-sky-400 transition-colors"
+                  class="group-focus-within:text-accent-600 dark:group-focus-within:text-accent-400 absolute -top-2.5 left-2 inline-block bg-white px-1 text-xs font-medium text-slate-500 transition-colors dark:bg-slate-800 dark:text-slate-400"
                   >Name</label
                 >
                 <input
@@ -1001,13 +1106,13 @@
                   name="name"
                   id="contact-name"
                   required
-                  class="w-full px-4 py-3.5 border border-slate-300 dark:border-slate-600 bg-transparent rounded-md focus:ring-2 focus:ring-sky-500/50 dark:focus:ring-sky-400/50 focus:border-sky-500 dark:focus:border-sky-400 transition-all duration-200 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+                  class="focus:ring-accent-500/50 dark:focus:ring-accent-400/50 focus:border-accent-500 dark:focus:border-accent-400 w-full rounded-md border border-slate-300 bg-transparent px-4 py-3.5 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:ring-2 dark:border-slate-600 dark:text-white dark:placeholder-slate-500"
                 />
               </div>
-              <div class="relative group">
+              <div class="group relative">
                 <label
                   for="contact-email"
-                  class="absolute -top-2.5 left-2 inline-block bg-slate-50 dark:bg-slate-800 px-1 text-xs font-medium text-slate-500 dark:text-slate-400 group-focus-within:text-sky-600 dark:group-focus-within:text-sky-400 transition-colors"
+                  class="group-focus-within:text-accent-600 dark:group-focus-within:text-accent-400 absolute -top-2.5 left-2 inline-block bg-white px-1 text-xs font-medium text-slate-500 transition-colors dark:bg-slate-800 dark:text-slate-400"
                   >Email</label
                 >
                 <input
@@ -1015,13 +1120,13 @@
                   name="email"
                   id="contact-email"
                   required
-                  class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 bg-transparent rounded-md focus:ring-1 focus:ring-sky-500 dark:focus:ring-sky-400 focus:border-sky-500 dark:focus:border-sky-400 transition text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+                  class="focus:ring-accent-500 dark:focus:ring-accent-400 focus:border-accent-500 dark:focus:border-accent-400 w-full rounded-md border border-slate-300 bg-transparent px-4 py-3 text-slate-900 placeholder-slate-400 transition focus:ring-1 dark:border-slate-600 dark:text-white dark:placeholder-slate-500"
                 />
               </div>
-              <div class="relative group">
+              <div class="group relative">
                 <label
                   for="contact-message"
-                  class="absolute -top-2.5 left-2 inline-block bg-slate-50 dark:bg-slate-800 px-1 text-xs font-medium text-slate-500 dark:text-slate-400 group-focus-within:text-sky-600 dark:group-focus-within:text-sky-400 transition-colors"
+                  class="group-focus-within:text-accent-600 dark:group-focus-within:text-accent-400 absolute -top-2.5 left-2 inline-block bg-white px-1 text-xs font-medium text-slate-500 transition-colors dark:bg-slate-800 dark:text-slate-400"
                   >Message</label
                 >
                 <textarea
@@ -1029,24 +1134,24 @@
                   id="contact-message"
                   rows="5"
                   required
-                  class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 bg-transparent rounded-md focus:ring-1 focus:ring-sky-500 dark:focus:ring-sky-400 focus:border-sky-500 dark:focus:border-sky-400 transition text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+                  class="focus:ring-accent-500 dark:focus:ring-accent-400 focus:border-accent-500 dark:focus:border-accent-400 w-full rounded-md border border-slate-300 bg-transparent px-4 py-3 text-slate-900 placeholder-slate-400 transition focus:ring-1 dark:border-slate-600 dark:text-white dark:placeholder-slate-500"
                 ></textarea>
               </div>
-              <div class="text-center pt-6">
+              <div class="pt-6 text-center">
                 <button
                   type="submit"
-                  class="inline-block bg-sky-500 hover:bg-sky-600 dark:bg-sky-500 dark:hover:bg-sky-600 text-white font-medium py-3.5 px-10 rounded-lg shadow-sm hover:shadow-md transform transition duration-300 hover:scale-[1.03] relative overflow-hidden group"
+                  class="bg-accent-500 hover:bg-accent-600 dark:bg-accent-500 dark:hover:bg-accent-600 group relative inline-block transform overflow-hidden rounded-lg px-10 py-3.5 font-medium text-white shadow-sm transition duration-300 hover:scale-[1.03] hover:shadow-md"
                 >
                   <span class="relative z-10">Send Inquiry</span>
                   <span
-                    class="absolute inset-0 bg-gradient-to-r from-sky-400 to-sky-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    class="from-accent-400 to-accent-600 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   ></span>
                 </button>
               </div>
             </form>
           </div>
           <div
-            class="mt-12 text-center text-sm text-slate-600 dark:text-slate-400 animate-on-scroll"
+            class="animate-on-scroll mt-12 text-center text-sm text-slate-600 dark:text-slate-400"
             data-animation="fade-in-up"
             data-delay="0.4s"
           >
@@ -1054,13 +1159,13 @@
               Email:
               <a
                 href="mailto:info@aethellaw.org"
-                class="hover:text-sky-600 dark:hover:text-sky-400 underline transition"
+                class="hover:text-accent-600 dark:hover:text-accent-400 underline transition"
                 >info@aethellaw.org</a
               >
               | Phone:
               <a
                 href="tel:+15551112222"
-                class="hover:text-sky-600 dark:hover:text-sky-400 underline transition"
+                class="hover:text-accent-600 dark:hover:text-accent-400 underline transition"
                 >+1 (555) 111-2222</a
               >
             </p>
@@ -1073,25 +1178,25 @@
     </main>
 
     <footer
-      class="bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800"
+      class="border-t border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950"
     >
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div class="md:col-span-2 lg:col-span-1">
             <a
               href="#"
-              class="text-2xl font-bold font-serif text-slate-900 dark:text-white tracking-tight mb-2 inline-block"
+              class="mb-2 inline-block font-serif text-2xl font-bold tracking-tight text-slate-900 dark:text-white"
               >Aethel Law</a
             >
             <p
-              class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed"
+              class="text-sm leading-relaxed text-slate-500 dark:text-slate-400"
             >
               Empowering the next generation of diverse legal leaders.
             </p>
           </div>
           <div class="lg:col-start-3">
             <h4
-              class="text-sm font-semibold text-slate-900 dark:text-white tracking-wider uppercase mb-4"
+              class="mb-4 text-sm font-semibold tracking-wider text-slate-900 uppercase dark:text-white"
             >
               Quick Links
             </h4>
@@ -1099,28 +1204,28 @@
               <li>
                 <a
                   href="#about"
-                  class="text-sm text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  class="hover:text-accent-600 dark:hover:text-accent-400 text-sm text-slate-600 transition dark:text-slate-400"
                   >About Us</a
                 >
               </li>
               <li>
                 <a
                   href="#programs"
-                  class="text-sm text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  class="hover:text-accent-600 dark:hover:text-accent-400 text-sm text-slate-600 transition dark:text-slate-400"
                   >Programs</a
                 >
               </li>
               <li>
                 <a
                   href="#events"
-                  class="text-sm text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  class="hover:text-accent-600 dark:hover:text-accent-400 text-sm text-slate-600 transition dark:text-slate-400"
                   >Events</a
                 >
               </li>
               <li>
                 <a
                   href="#involved"
-                  class="text-sm text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  class="hover:text-accent-600 dark:hover:text-accent-400 text-sm text-slate-600 transition dark:text-slate-400"
                   >Get Involved</a
                 >
               </li>
@@ -1128,7 +1233,7 @@
           </div>
           <div>
             <h4
-              class="text-sm font-semibold text-slate-900 dark:text-white tracking-wider uppercase mb-4"
+              class="mb-4 text-sm font-semibold tracking-wider text-slate-900 uppercase dark:text-white"
             >
               Contact
             </h4>
@@ -1138,14 +1243,14 @@
               <li>
                 <a
                   href="mailto:info@aethellaw.org"
-                  class="hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  class="hover:text-accent-600 dark:hover:text-accent-400 transition"
                   >info@aethellaw.org</a
                 >
               </li>
               <li>
                 <a
                   href="tel:+15551112222"
-                  class="hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  class="hover:text-accent-600 dark:hover:text-accent-400 transition"
                   >+1 (555) 111-2222</a
                 >
               </li>
@@ -1153,16 +1258,16 @@
           </div>
         </div>
         <div
-          class="mt-12 border-t border-slate-200 dark:border-slate-700 pt-8 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left"
+          class="mt-12 flex flex-col items-center justify-between border-t border-slate-200 pt-8 text-center sm:flex-row sm:text-left dark:border-slate-700"
         >
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 sm:mb-0">
+          <p class="mb-4 text-xs text-slate-500 sm:mb-0 dark:text-slate-400">
             &copy; <span id="footer-year"></span> Aethel Law Initiative. A
             501(c)(3) Organization. All Rights Reserved.
           </p>
           <div class="flex space-x-5">
             <a
               href="#"
-              class="text-slate-400 hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-400 transition"
+              class="text-slate-400 transition hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-400"
             >
               <span class="sr-only">LinkedIn</span>
               <svg
@@ -1180,7 +1285,7 @@
             </a>
             <a
               href="#"
-              class="text-slate-400 hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-400 transition"
+              class="text-slate-400 transition hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-400"
             >
               <span class="sr-only">Twitter</span>
               <svg
@@ -1206,7 +1311,6 @@
           preloader.classList.add("loaded");
         }
       });
-
       document.getElementById("footer-year").textContent =
         new Date().getFullYear();
 
@@ -1270,10 +1374,10 @@
             const targetId = link.getAttribute("href");
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-              const headerOffset = 64;
+              const headerOffset = 64; // Adjust as needed for your fixed header height
               const elementPosition = targetElement.getBoundingClientRect().top;
               const offsetPosition =
-                elementPosition + window.pageYOffset - headerOffset - 24;
+                elementPosition + window.pageYOffset - headerOffset - 24; // Optional extra offset
               window.scrollTo({ top: offsetPosition, behavior: "smooth" });
             }
           }
@@ -1304,7 +1408,7 @@
             }
           });
         },
-        { threshold: 0.1 }
+        { threshold: 0.1 }, // Trigger when 10% of the element is visible
       );
       animatedElements.forEach((el) => {
         observer.observe(el);
@@ -1312,3 +1416,4 @@
     </script>
   </body>
 </html>
+`
