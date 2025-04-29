@@ -71,6 +71,9 @@
   --animate-*: initial;
 }
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant hover (&:hover);
+
 body {
   @apply grid min-h-screen min-w-full grid-rows-[auto_1fr_auto];
   @apply bg-background text-foreground font-Inter scroll-smooth leading-6 antialiased;
