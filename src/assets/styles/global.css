@@ -72,7 +72,7 @@
 }
 
 body {
-  @apply grid min-h-screen min-w-full grid-rows-[auto_1fr_auto] overflow-hidden;
+  @apply grid min-h-screen min-w-full grid-rows-[auto_1fr_auto];
   @apply bg-background text-foreground font-Inter scroll-smooth leading-6 antialiased;
 }
 
