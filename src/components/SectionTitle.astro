@@ -3,8 +3,8 @@ import { cn } from "@/utils/cn";
 const { p1, p2, subtitle, class: className } = Astro.props;
 ---
 
-<div class={`${cn("mb-12 px-4 text-center md:mb-16", className)}`}>
-  <h2 id="testimonials-heading" class="font-doto flex gap-3 justify-center mb-4 text-4xl font-bold md:text-5xl">
+<div class={`${cn("mb-12 text-center md:mb-16", className)}`}>
+  <h2 id="testimonials-heading" class="font-doto flex flex-wrap gap-3 justify-center mb-4 text-4xl font-bold md:text-5xl">
     <span class="text-accent-title">{p1}</span>
     <span>{p2}</span>
   </h2>
