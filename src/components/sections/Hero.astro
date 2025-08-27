@@ -9,7 +9,7 @@ import PDFViewerModal from "@/components/viewer/PDFViewerModal";
 import info from "@/data";
 ---
 
-<section id="hero" class="relative z-0 flex h-screen flex-col items-center justify-center overflow-hidden">
+<section id="hero" class="relative z-0 flex min-h-screen flex-col items-center justify-center overflow-hidden py-8">
   <!-- Fade out bottom -->
   <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
     <!-- Grain Effect -->
@@ -70,17 +70,17 @@ import info from "@/data";
     <HeroOrbit size={110} opacity={20} />
   </div>
   <!-- Content -->
-  <div class="fade-in flex flex-col items-center justify-center md:flex-row md:px-10 lg:w-2/3">
-    <div>
+  <div class="fade-in flex max-w-full flex-col items-center justify-center md:flex-row md:px-10 lg:w-2/3">
+    <div class="flex-shrink-0">
       <Profile />
     </div>
-    <div class="flex flex-col gap-2 px-5 md:px-10">
-      <GlitchText text={info.name} class="text-center text-4xl font-bold md:text-left" />
-      <h2 class="text-secondary text-center text-2xl md:text-left">
+    <div class="flex w-full flex-col gap-2 px-5 md:px-10">
+      <GlitchText text={info.name} class="text-center text-3xl font-bold sm:text-4xl md:text-left" />
+      <h2 class="text-secondary text-center text-xl sm:text-2xl md:text-left">
         {info.title}
       </h2>
-      <p class="text-justify md:text-lg">{info.description}</p>
-      <div class="pt-6 pb-3">
+      <p class="text-justify text-sm sm:text-base md:text-lg">{info.description}</p>
+      <div class="pt-4 pb-3 sm:pt-6">
         <PDFViewerModal cvPDF={info.resume} client:load />
       </div>
       <SocialBar />
@@ -90,7 +90,6 @@ import info from "@/data";
 
 <script>
   function initHeroSize() {
-    // Debounce utility function with TypeScript
     const debounce = <T extends (...args: any[]) => void>(func: T, timeout: number = 100): ((...args: Parameters<T>) => void) => {
       let timer: ReturnType<typeof setTimeout>;
       return (...args: Parameters<T>) => {
@@ -101,32 +100,59 @@ import info from "@/data";
       };
     };
 
-    // Set hero height (mobile-only)
     const setHeroHeight = (): void => {
       const hero = document.querySelector<HTMLElement>("#hero");
       if (!hero) return;
 
-      // Apply fixed height only on mobile (breakpoint: 768px)
+      // Use dynamic viewport height for better mobile support
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+
+      // Set minimum height but allow content to expand if needed
       if (window.innerWidth < 768) {
-        hero.style.height = `${window.innerHeight}px`;
+        hero.style.minHeight = `${window.innerHeight}px`;
+        hero.style.height = "auto";
+      } else {
+        hero.style.minHeight = "100vh";
+        hero.style.height = "auto";
       }
     };
 
-    // Initialize and handle orientation changes (no resize listener)
     setHeroHeight();
-    window.addEventListener("orientationchange", debounce(setHeroHeight));
+    window.addEventListener("orientationchange", debounce(setHeroHeight, 200));
+    window.addEventListener("resize", debounce(setHeroHeight, 100));
   }
 
   document.addEventListener("DOMContentLoaded", initHeroSize);
   document.addEventListener("astro:page:load", initHeroSize);
 
-  // Cleanup function to remove event listeners
   const cleanup = () => {
     document.removeEventListener("DOMContentLoaded", initHeroSize);
     document.removeEventListener("astro:page:load", initHeroSize);
   };
 
-  // Add cleanup to page navigation events
   document.addEventListener("astro:before-swap", cleanup);
   window.addEventListener("beforeunload", cleanup);
 </script>
+
+<style>
+  /* Custom CSS for better viewport handling */
+  #hero {
+    min-height: 100vh;
+    min-height: calc(var(--vh, 1vh) * 100);
+  }
+
+  @media (max-height: 600px) {
+    #hero {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+  }
+
+  @media (max-height: 500px) {
+    #hero {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
+</style>
