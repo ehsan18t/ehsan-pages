@@ -1,0 +1,15 @@
+---
+import { cn } from "@/utils/cn";
+const { p1, p2, subtitle, class: className } = Astro.props;
+---
+
+<div class={`${cn("mb-12 px-4 text-center md:mb-16", className)}`}>
+  <h2 id="testimonials-heading" class="font-doto mb-4 text-4xl font-bold md:text-5xl">
+    <span class="text-accent-title">{p1}</span>{" "}
+    {p2}
+  </h2>
+  {subtitle && (
+      <div class="from-accent-500 to-accent-900 mx-auto h-1 w-24 rounded-full bg-gradient-to-r"></div>
+      <p class="text-foreground-muted mx-auto mt-6 max-w-2xl text-lg">{subtitle}</p>
+  )}
+</div>
