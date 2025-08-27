@@ -1,5 +1,4 @@
 ---
-import SectionTitle from "@/components/SectionTitle.astro";
 import "./testimonials-carousel.css";
 
 const { testimonials } = Astro.props;
@@ -7,7 +6,14 @@ const { testimonials } = Astro.props;
 
 <section class="testimonial-section" id="testimonials" aria-labelledby="testimonials-heading">
   <!-- Heading Elements -->
-  <SectionTitle p1="Client" p2="Testimonials" subtitle="Don't just take my word for it - here's what clients have to say about working with me." />
+  <div class="mb-12 px-4 text-center md:mb-16">
+    <h2 id="testimonials-heading" class="font-doto mb-4 text-4xl font-bold md:text-5xl">
+      <span class="text-accent-title">Client</span>{" "}
+      Testimonials
+    </h2>
+    <div class="from-accent-500 to-accent-900 mx-auto h-1 w-24 rounded-full bg-gradient-to-r"></div>
+    <p class="text-foreground-muted mx-auto mt-6 max-w-2xl text-lg">Don't just take my word for it - here's what clients have to say about working with me.</p>
+  </div>
 
   <!-- Main carousel container with proper ARIA role -->
   <div class="testimonial-carousel-container" role="region" aria-roledescription="carousel" aria-label="Client testimonials carousel">

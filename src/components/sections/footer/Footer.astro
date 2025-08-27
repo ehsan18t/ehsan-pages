@@ -1,5 +1,4 @@
 ---
-import SectionTitle from "@/components/SectionTitle.astro";
 import { Icon } from "astro-icon/components";
 import Terminal from "./contact-terminal/Terminal";
 const currentYear = new Date().getFullYear();
@@ -24,7 +23,12 @@ const tech = [
   <!-- Main Footer Content -->
   <div class="relative z-10 container mx-auto px-4">
     <!-- Interactive Logo -->
-    <SectionTitle p1="Contact" p2="me" class="group mb-8 flex justify-center md:mb-8" />
+    <div class="mb-8 flex justify-center">
+      <h2 class="font-doto text-4xl font-bold transition-all duration-300">
+        <span class="text-accent-title group-hover:text-accent-text transition-colors duration-300">Contact</span>
+        <span class="transition-all duration-300 group-hover:tracking-wider">me</span>
+      </h2>
+    </div>
 
     <!-- Terminal Section -->
     <Terminal client:visible />
