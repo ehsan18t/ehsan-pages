@@ -1,0 +1,249 @@
+---
+import { Icon } from "astro-icon/components";
+
+const navItems = [
+  {
+    href: "#hero",
+    icon: "mdi:home",
+    label: "Home",
+    section: "hero",
+    offset: 0,
+  },
+  {
+    href: "#skills",
+    icon: "mdi:lightning-bolt",
+    label: "Skills",
+    section: "skills",
+    offset: -50,
+  },
+  {
+    href: "#projects",
+    icon: "mdi:folder-multiple",
+    label: "Projects",
+    section: "projects",
+    offset: -50,
+  },
+  {
+    href: "#testimonials",
+    icon: "mdi:account-heart",
+    label: "Testimonials",
+    section: "testimonials",
+    offset: 50,
+  },
+  {
+    href: "#contact",
+    icon: "mdi:email",
+    label: "Contact",
+    section: "contact",
+  },
+];
+---
+
+<nav id="floating-nav" class="floating-nav">
+  <div class="nav-container">
+    {
+      navItems.map((item, index) => (
+        <a href={item.href} class={`nav-item ${index === 0 ? "active" : ""}`} data-section={item.section} {...(item.offset !== undefined ? { "data-offset": item.offset } : {})} aria-label={item.label}>
+          <Icon name={item.icon} class="nav-icon" />
+          <span class="nav-label">{item.label}</span>
+        </a>
+      ))
+    }
+  </div>
+</nav>
+
+<style>
+  @reference "@/assets/styles/global.css";
+
+  .floating-nav {
+    @apply pointer-events-none fixed z-50 opacity-0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  /* Desktop and Tablet - Left side */
+  @media (min-width: 768px) {
+    .floating-nav {
+      @apply top-1/2 left-6;
+      transform: translateY(-50%);
+    }
+
+    .nav-container {
+      @apply flex flex-col rounded-xl border p-2;
+      gap: 0.25rem;
+      background: rgba(2, 21, 38, 0.85);
+      backdrop-filter: blur(16px);
+      border-color: rgba(224, 230, 237, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-item {
+      @apply relative flex cursor-pointer items-center overflow-hidden rounded-lg p-2;
+      text-decoration: none;
+      color: rgb(var(--foreground-muted));
+      transition: all 0.2s ease-in-out;
+    }
+
+    .nav-icon {
+      @apply h-6 w-6 flex-shrink-0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .nav-label {
+      @apply overflow-hidden text-sm font-medium whitespace-nowrap opacity-0;
+      max-width: 0;
+      margin-left: 0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .nav-container:hover .nav-label {
+      @apply opacity-100;
+      max-width: 200px;
+      margin-left: 0.375rem; /* 6px - equivalent to gap-1.5 */
+    }
+  }
+
+  /* Mobile - Bottom */
+  @media (max-width: 767px) {
+    .floating-nav {
+      @apply bottom-6 left-1/2;
+      transform: translateX(-50%);
+      width: calc(100% - 3rem);
+      max-width: 24rem;
+    }
+
+    .nav-container {
+      @apply flex items-center justify-around rounded-3xl border px-2 py-3;
+      background: rgba(2, 21, 38, 0.9);
+      backdrop-filter: blur(12px);
+      border-color: rgba(224, 230, 237, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-item {
+      @apply flex cursor-pointer flex-col items-center rounded-xl p-2;
+      gap: 0.25rem;
+      text-decoration: none;
+      color: rgb(var(--foreground-muted));
+      transition: all 0.2s ease-in-out;
+    }
+
+    .nav-icon {
+      @apply flex h-6 w-6;
+    }
+
+    .nav-label {
+      @apply text-xs font-medium opacity-80;
+    }
+  }
+
+  .nav-item:hover,
+  .nav-item.active {
+    color: oklch(var(--accent-text));
+    background: oklch(var(--accent-bg) / 0.2);
+  }
+
+  .nav-item.active {
+    background: oklch(var(--accent-bg) / 0.3);
+  }
+
+  .nav-item:hover .nav-icon,
+  .nav-item.active .nav-icon {
+    color: oklch(var(--accent-text));
+  }
+
+  /* Hide when loader is visible */
+  body:has(#hero-loader) .floating-nav {
+    @apply pointer-events-none opacity-0;
+  }
+
+  /* Hide on very small screens */
+  @media (max-width: 480px) {
+    .floating-nav {
+      @apply bottom-4;
+      width: calc(100% - 2rem);
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const nav = document.getElementById("floating-nav");
+    const navItems = nav?.querySelectorAll(".nav-item");
+    if (!nav || !navItems) return;
+
+    function getScrollContainer(el: HTMLElement) {
+      let node = el.parentElement;
+      while (node) {
+        const style = getComputedStyle(node);
+        if (/(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight) {
+          return node;
+        }
+        node = node.parentElement;
+      }
+      return document.scrollingElement || document.documentElement;
+    }
+
+    navItems.forEach((item) => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        const id = item.getAttribute("href")?.slice(1);
+        const target = id ? document.getElementById(id) : null;
+        if (!target) return;
+
+        const offsetAttr = item.getAttribute("data-offset");
+        const offset = offsetAttr !== null ? Number(offsetAttr) : NaN;
+
+        // Scroll container
+        const container = getScrollContainer(target);
+
+        if (!isNaN(offset)) {
+          const containerRect = container.getBoundingClientRect();
+          // element position relative to container scroll origin:
+          const targetRect = target.getBoundingClientRect();
+          const currentScrollTop = container.scrollTop;
+          const relativeTop = targetRect.top - containerRect.top;
+          // Semantics: positive offset means leave that gap above element.
+          const destination = currentScrollTop + relativeTop - offset;
+          container.scrollTo({ top: destination, behavior: "smooth" });
+        } else {
+          // Fallback (works for any scroll container)
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+
+    // Active section highlighting
+    const sections = Array.from(navItems)
+      .map((item) => {
+        const href = item.getAttribute("href")?.substring(1);
+        return document.getElementById(href || "");
+      })
+      .filter(Boolean);
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -60% 0px",
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navItems.forEach((item) => item.classList.remove("active"));
+          const activeItem = Array.from(navItems).find((item) => item.getAttribute("href")?.substring(1) === entry.target.id);
+          activeItem?.classList.add("active");
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach((section) => {
+      if (section) observer.observe(section);
+    });
+
+    // Show nav after loader completes
+    setTimeout(() => {
+      nav.style.opacity = "1";
+      nav.style.pointerEvents = "auto";
+    }, 2500);
+  });
+</script>

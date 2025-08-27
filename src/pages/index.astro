@@ -8,11 +8,13 @@ import AnimateOnScroll from "@/components/AnimateOnScroll.astro";
 import ProjectShowcase from "@/components/sections/projects/ProjectShowcase.astro";
 import TestimonialsCarousel from "@/components/sections/testimonials/Testimonials.astro";
 import Footer from "@/components/sections/footer/Footer.astro";
+import FloatingNav from "@/components/navigation/FloatingNav.astro";
 import info from "@/data";
 ---
 
 <MainLayout>
   <Loader />
+  <FloatingNav />
 
   <main id="main-content" style="opacity:0; pointer-events: none;">
     <div class="relative">
