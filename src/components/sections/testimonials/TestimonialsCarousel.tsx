@@ -9,7 +9,7 @@ interface Testimonial {
   content: string;
   name: string;
   role: string;
-  image: string;
+  image?: string;
 }
 
 interface TestimonialsCarouselProps {
@@ -120,20 +120,18 @@ const TestimonialsCarousel: React.FC<TestimonialsCarouselProps> = ({
       </div>
 
       <div className="testimonial-pagination">
-        {emblaApi
-          ?.scrollSnapList()
-          .map((_, i) => (
-            <button
-              key={i}
-              className={`testimonial-dot ${
-                i === selectedIndex
-                  ? "testimonial-dot-active"
-                  : "testimonial-dot-inactive"
-              }`}
-              onClick={() => scrollTo(i)}
-              aria-label={`View testimonial ${i + 1}`}
-            />
-          ))}
+        {emblaApi?.scrollSnapList().map((_, i) => (
+          <button
+            key={i}
+            className={`testimonial-dot ${
+              i === selectedIndex
+                ? "testimonial-dot-active"
+                : "testimonial-dot-inactive"
+            }`}
+            onClick={() => scrollTo(i)}
+            aria-label={`View testimonial ${i + 1}`}
+          />
+        ))}
       </div>
     </div>
   );

@@ -104,6 +104,17 @@
   @apply h-full w-full rounded-full object-cover;
 }
 
+/* Initials fallback styling */
+.testimonial-author-initials {
+  @apply text-accent-text flex h-full w-full items-center justify-center text-lg font-bold uppercase;
+  background: linear-gradient(
+    135deg,
+    oklch(var(--accent-text) / 0.15),
+    oklch(var(--accent-text) / 0.25)
+  );
+  letter-spacing: 0.025em;
+}
+
 .testimonial-author-name {
   @apply text-xl font-bold;
 }

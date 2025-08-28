@@ -3,6 +3,18 @@ import SectionTitle from "@/components/SectionTitle.astro";
 import "./testimonials-carousel.css";
 
 const { testimonials } = Astro.props;
+
+// Helper function to get initials from name
+const getInitials = (name: string): string => {
+  const words = name.trim().split(" ");
+  if (words.length === 1) {
+    return words[0].charAt(0).toUpperCase();
+  }
+  return words
+    .slice(0, 2)
+    .map((word) => word.charAt(0).toUpperCase())
+    .join("");
+};
 ---
 
 <section class="testimonial-section" id="testimonials" aria-labelledby="testimonials-heading">
@@ -40,9 +52,7 @@ const { testimonials } = Astro.props;
               <p class="testimonial-content">{testimonial.content}</p>
 
               <div class="testimonial-author-container">
-                <div class="testimonial-author-avatar">
-                  <img src={testimonial.image} class="testimonial-author-image" alt={`${testimonial.name}, ${testimonial.role}`} loading="lazy" />
-                </div>
+                <div class="testimonial-author-avatar">{testimonial.image ? <img src={testimonial.image} class="testimonial-author-image" alt={`${testimonial.name}, ${testimonial.role}`} loading="lazy" /> : <div class="testimonial-author-initials">{getInitials(testimonial.name)}</div>}</div>
                 <div class="testimonial-author-details">
                   <h4 class="testimonial-author-name">{testimonial.name}</h4>
                   <p class="testimonial-author-role">{testimonial.role}</p>
