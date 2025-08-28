@@ -24,7 +24,7 @@ const info = {
       content:
         "As a client, I can’t speak highly enough of Ehsan Khan and his programming expertise. He delivered exceptional work on my project, bringing innovative ideas that elevated every outcome. His reliability and clear communication made the process seamless. I wholeheartedly recommend his services.",
       name: "Rahat Ahsan",
-      role: "Senior QA tester, SM",
+      role: "QA tester, Chain Optimizer",
       image: "/images/testimonials/rahat.jpg",
     },
     {
