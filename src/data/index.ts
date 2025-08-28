@@ -87,7 +87,6 @@ const info = {
         "PostgreSQL",
       ],
       liveUrl: "https://cazzert.vercel.app/",
-      repoUrl: "https://github.com/ahsan40/cazzert-site",
       imageLayout: "cover",
     },
     {
@@ -110,7 +109,6 @@ const info = {
         "PostgreSQL",
       ],
       liveUrl: "https://bsil-site.vercel.app/",
-      repoUrl: "https://github.com/ahsan40/bsil-site",
       imageLayout: "cover",
     },
     {
