@@ -1,9 +1,10 @@
 ---
 import SectionTitle from "@/components/SectionTitle.astro";
 import ImageSlider from "@/components/slider/ImageSlider";
+import data from "@/data";
 import { Icon } from "astro-icon/components";
-import TechPill from "./TechPill.astro";
 import "./project-showcase.css";
+import TechPill from "./TechPill.astro";
 
 export interface Project {
   title: string;
@@ -17,47 +18,7 @@ export interface Project {
   layout?: string;
 }
 
-const projects: Project[] = [
-  {
-    title: "Portfolio Site V3",
-    shortDescription: "This portfolio, built with Astro, showcasing interactive components and design.",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      "https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1031&q=80",
-    ],
-    techStack: ["Astro", "TailwindCSS", "TypeScript", "Vercel"],
-    liveUrl: "#",
-    repoUrl: "https://github.com/yourusername/portfolio-v3",
-    imageLayout: "cover",
-  },
-  {
-    title: "E-Commerce Platform",
-    shortDescription: "Full-featured online store with user auth, cart, and checkout.",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      "https://images.unsplash.com/photo-1585194166760-6090e40f094e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    ],
-    techStack: ["React", "Next.js", "Firebase", "Stripe API", "TailwindCSS"],
-    liveUrl: "#",
-    repoUrl: "#",
-    imageLayout: "cover",
-  },
-  {
-    title: "Data Visualizer",
-    shortDescription: "Interactive dashboard displaying complex data using charts.",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80",
-    ],
-    techStack: ["SvelteKit", "D3.js", "Python", "FastAPI"],
-    liveUrl: "#",
-    repoUrl: "#",
-    imageLayout: "cover",
-  },
-];
+const projects = data.projects as Project[];
 ---
 
 <section id="projects" class="scroll-mt-20 py-20 md:py-28">
