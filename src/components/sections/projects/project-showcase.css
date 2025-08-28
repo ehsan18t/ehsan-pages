@@ -102,6 +102,17 @@
   height: 1rem;
 }
 
+.project-link.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.project-link.disabled:hover {
+  background-color: transparent;
+  color: var(--color-text-secondary);
+}
+
 .project-card:hover {
   transform: translateY(-8px) scale(1.01);
   box-shadow:

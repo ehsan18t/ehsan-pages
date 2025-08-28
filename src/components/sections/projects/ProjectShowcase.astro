@@ -58,13 +58,6 @@ const projects: Project[] = [
     imageLayout: "cover",
   },
 ];
-
-function techNameToSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/\+/g, "plus")
-    .replace(/[^a-z0-9]/g, "");
-}
 ---
 
 <section id="projects" class="scroll-mt-20 py-20 md:py-28">
@@ -84,24 +77,28 @@ function techNameToSlug(name: string): string {
               <div class="project-tech">
                 <div class="flex flex-wrap gap-1.5">
                   {project.techStack.map((tech) => (
-                    <TechPill name={tech} data-tech={techNameToSlug(tech)} />
+                    <TechPill name={tech} />
                   ))}
                 </div>
               </div>
 
               <div class="project-links">
-                {project.liveUrl && (
-                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" class="project-link" title="View live demo">
-                    <Icon name="mdi:open-in-new" />
-                    <span>View Project</span>
-                  </a>
-                )}
-                {project.repoUrl && (
-                  <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" class="project-link" title="View source code">
-                    <Icon name="mdi:github" />
-                    <span>Source Code</span>
-                  </a>
-                )}
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" class:list={["project-link", { disabled: !project.liveUrl }]} aria-disabled={!project.liveUrl} title={project.liveUrl ? "View live demo" : "Live demo not available"} onclick={!project.liveUrl ? "return false;" : ""}>
+                  <Icon name="mdi:open-in-new" />
+                  <span>View Live</span>
+                </a>
+                <a
+                  href={project.repoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class:list={["project-link", { disabled: !project.repoUrl }]}
+                  aria-disabled={!project.repoUrl}
+                  title={project.repoUrl ? "View source code" : "Source code not available"}
+                  onclick={!project.repoUrl ? "return false;" : ""}
+                >
+                  <Icon name="mdi:github" />
+                  <span>Source Code</span>
+                </a>
               </div>
             </div>
           </article>
