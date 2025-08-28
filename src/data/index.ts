@@ -132,6 +132,38 @@ const info = {
       repoUrl: "https://github.com/ehsan18t/CourseAssistant",
       imageLayout: "cover",
     },
+    {
+      title: "Certificate Generator",
+      shortDescription:
+        "A gold test certificate generator desktop app for a client. It has fully offline AI Image BG removal capabilities. This app is for generating gold test certificates and manage the database.",
+      imageUrls: [
+        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        "https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1031&q=80",
+      ],
+      techStack: [
+        "Tauri",
+        "Rust",
+        "React",
+        "TypeScript",
+        "TailwindCSS",
+        "SQLite",
+      ],
+      imageLayout: "cover",
+    },
+    {
+      title: "Portfolio",
+      shortDescription:
+        "A portfolio site for a ERASMUS MUNDUS SCHOLAR client. It has a custom CMS to manage content/info.",
+      imageUrls: [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80",
+      ],
+      techStack: ["React", "Firebase", "TypeScript", "TailwindCSS"],
+      liveUrl: "https://fahimabrarabid.com/",
+      imageLayout: "cover",
+    },
   ],
 };
 

@@ -30,13 +30,16 @@ const techIcons: Record<string, string> = {
   redux: "simple-icons:redux",
   tailwindcss: "mdi:tailwind",
   astro: "simple-icons:astro",
+  tauri: "simple-icons:tauri",
   django: "simple-icons:django",
   php: "mdi:language-php",
   sql: "mdi:database",
+  sqlite: "simple-icons:sqlite",
   postgresql: "simple-icons:postgresql",
   firebase: "mdi:firebase",
   python: "mdi:language-python",
   java: "mdi:language-java",
+  rust: "simple-icons:rust",
   cplusplus: "mdi:language-cpp",
   c: "mdi:language-c",
   csharp: "mdi:microsoft-dot-net",
@@ -348,6 +351,15 @@ const isInteractive = Tag === "button" || (Tag === "a" && href) || rest.onclick 
   }
   .tech-pill[data-tech="stripeapi"] {
     --pill-color: #635bff;
+  }
+  .tech-pill[data-tech="tauri"] {
+    --pill-color: #24c8b1;
+  }
+  .tech-pill[data-tech="rust"] {
+    --pill-color: #dea584;
+  }
+  .tech-pill[data-tech="sqlite"] {
+    --pill-color: #559ed5;
   }
 
   /* Add any extra tech-specific rules your site needs here... */
