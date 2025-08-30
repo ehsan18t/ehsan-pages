@@ -50,9 +50,11 @@ const info = {
       shortDescription:
         "An AI based CV screening application designed to simplify the recruitment process for HR professionals and enhance candidate experience. The system integrates Gemini 1.5 Pro for automated profile generation and CV summarization, offering significant improvements in efficiency and decision-making.",
       imageUrls: [
-        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1031&q=80",
+        "/images/projects/resume-ai/cover.png",
+        "/images/projects/resume-ai/1.png",
+        "/images/projects/resume-ai/2.png",
+        "/images/projects/resume-ai/3.png",
+        "/images/projects/resume-ai/4.png",
       ],
       techStack: [
         "NextJS",
@@ -72,9 +74,20 @@ const info = {
       shortDescription:
         "A fully responsive e-commerce site with vercel backend and custom CMS to control everything. Full warehouse managements, order tracking and everything built from scratch.",
       imageUrls: [
-        "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1585194166760-6090e40f094e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        "/images/projects/cazzert/cover.png",
+        "/images/projects/cazzert/1.png",
+        "/images/projects/cazzert/2.png",
+        "/images/projects/cazzert/3.png",
+        "/images/projects/cazzert/4.png",
+        "/images/projects/cazzert/5.png",
+        "/images/projects/cazzert/6.png",
+        "/images/projects/cazzert/7.png",
+        "/images/projects/cazzert/8.png",
+        "/images/projects/cazzert/9.png",
+        "/images/projects/cazzert/10.png",
+        "/images/projects/cazzert/11.png",
+        "/images/projects/cazzert/12.png",
+        "/images/projects/cazzert/13.png",
       ],
       techStack: [
         "Astro",
@@ -94,9 +107,13 @@ const info = {
       shortDescription:
         "A fully responsive agency site with vercel backend and custom CMS to control everything. Everything in the site can be managed from admin panel.",
       imageUrls: [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80",
+        "/images/projects/bsil/1.png",
+        "/images/projects/bsil/2.png",
+        "/images/projects/bsil/3.png",
+        "/images/projects/bsil/4.png",
+        "/images/projects/bsil/5.png",
+        "/images/projects/bsil/6.png",
+        "/images/projects/bsil/7.png",
       ],
       techStack: [
         "Astro",
@@ -115,11 +132,7 @@ const info = {
       title: "Course Assistant",
       shortDescription:
         "An allrounder helper for undergraduate student which solves real-life problems. It helps to track academic progress, share contents and group study etc. One of the highlight feature is, it can automatically create chat group with students of same section of same trimester.",
-      imageUrls: [
-        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1031&q=80",
-      ],
+      imageUrls: ["/no image.svg"],
       techStack: [
         "HTML",
         "CSS",
@@ -137,9 +150,17 @@ const info = {
       shortDescription:
         "A gold test certificate generator desktop app for a client. It has fully offline AI Image BG removal capabilities. This app is for generating gold test certificates and manage the database.",
       imageUrls: [
-        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1031&q=80",
+        "/images/projects/card-gen/cover.png",
+        "/images/projects/card-gen/1.png",
+        "/images/projects/card-gen/2.png",
+        "/images/projects/card-gen/3.png",
+        "/images/projects/card-gen/4.png",
+        "/images/projects/card-gen/5.png",
+        "/images/projects/card-gen/6.png",
+        "/images/projects/card-gen/7.png",
+        "/images/projects/card-gen/8.png",
+        "/images/projects/card-gen/9.png",
+        "/images/projects/card-gen/10.png",
       ],
       techStack: [
         "Tauri",
@@ -156,9 +177,9 @@ const info = {
       shortDescription:
         "A portfolio site for a ERASMUS MUNDUS SCHOLAR client. It has a custom CMS to manage content/info.",
       imageUrls: [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-        "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80",
+        "/images/projects/portfolio/1.png",
+        "/images/projects/portfolio/2.png",
+        "/images/projects/portfolio/3.png",
       ],
       techStack: ["React", "Firebase", "TypeScript", "TailwindCSS"],
       liveUrl: "https://fahimabrarabid.com/",
