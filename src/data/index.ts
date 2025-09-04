@@ -220,6 +220,7 @@ const info = {
       icon: "mdi:email",
       label: "Contact",
       section: "contact",
+      offset: 0,
     },
   ],
 };
