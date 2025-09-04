@@ -186,6 +186,42 @@ const info = {
       imageLayout: "cover",
     },
   ],
+  navItems: [
+    {
+      href: "#hero",
+      icon: "mdi:home",
+      label: "Home",
+      section: "hero",
+      offset: 0,
+    },
+    {
+      href: "#skills",
+      icon: "mdi:lightning-bolt",
+      label: "Skills",
+      section: "skills",
+      offset: -50,
+    },
+    {
+      href: "#projects",
+      icon: "mdi:folder-multiple",
+      label: "Projects",
+      section: "projects",
+      offset: -50,
+    },
+    {
+      href: "#testimonials",
+      icon: "mdi:account-heart",
+      label: "Testimonials",
+      section: "testimonials",
+      offset: 50,
+    },
+    {
+      href: "#contact",
+      icon: "mdi:email",
+      label: "Contact",
+      section: "contact",
+    },
+  ],
 };
 
 export default info;

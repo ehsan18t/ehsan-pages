@@ -1,0 +1,138 @@
+---
+import { Icon } from "astro-icon/components";
+import info from "@/data";
+
+const navItems = info.navItems;
+---
+
+<nav id="floating-nav-mobile" class="floating-nav-mobile">
+  <div class="nav-container">
+    {
+      navItems.map((item, index) => (
+        <a href={item.href} class={`nav-item ${index === 0 ? "active" : ""}`} data-section={item.section} {...(item.offset !== undefined ? { "data-offset": item.offset } : {})} aria-label={item.label}>
+          <Icon name={item.icon} class="nav-icon" />
+          <span class="nav-label">{item.label}</span>
+        </a>
+      ))
+    }
+  </div>
+</nav>
+
+<style>
+  @reference "@/assets/styles/global.css";
+
+  /* Hidden on >=768px */
+  .floating-nav-mobile {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .floating-nav-mobile {
+      @apply pointer-events-none fixed inset-x-4 bottom-4 z-50 block opacity-0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .nav-container {
+      @apply mx-auto flex w-full items-center justify-between gap-2 rounded-3xl border p-3;
+      background: rgba(2, 21, 38, 0.5);
+      backdrop-filter: blur(12px);
+      border-color: rgba(224, 230, 237, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .nav-item {
+      @apply flex cursor-pointer flex-col items-center rounded-xl p-2;
+      gap: 0.25rem;
+      text-decoration: none;
+      color: rgb(var(--foreground-muted));
+      transition: all 0.2s ease-in-out;
+    }
+    .nav-icon {
+      @apply flex h-6 w-6;
+    }
+    .nav-label {
+      @apply text-xs font-medium opacity-80;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: oklch(var(--accent-text));
+      background: oklch(var(--accent-bg) / 0.25);
+    }
+    .nav-item.active {
+      background: oklch(var(--accent-bg) / 0.35);
+    }
+    .nav-item:hover .nav-icon,
+    .nav-item.active .nav-icon {
+      color: oklch(var(--accent-text));
+    }
+
+    body:has(#hero-loader) .floating-nav-mobile {
+      @apply pointer-events-none opacity-0;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const nav = document.getElementById("floating-nav-mobile");
+    if (!nav) return;
+    const navItems = nav.querySelectorAll(".nav-item");
+
+    function getScrollContainer(el: any) {
+      let node = el.parentElement;
+      while (node) {
+        const style = getComputedStyle(node);
+        if (/(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight) return node;
+        node = node.parentElement;
+      }
+      return document.scrollingElement || document.documentElement;
+    }
+
+    navItems.forEach((item) => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        const id = item.getAttribute("href")?.slice(1);
+        const target = id ? document.getElementById(id) : null;
+        if (!target) return;
+
+        const offsetAttr = item.getAttribute("data-offset");
+        const offset = offsetAttr !== null ? Number(offsetAttr) : NaN;
+        const container = getScrollContainer(target);
+
+        if (!isNaN(offset)) {
+          const containerRect = container.getBoundingClientRect();
+          const targetRect = target.getBoundingClientRect();
+          const currentScrollTop = container.scrollTop;
+          const relativeTop = targetRect.top - containerRect.top;
+          const destination = currentScrollTop + relativeTop - offset;
+          container.scrollTo({ top: destination, behavior: "smooth" });
+        } else {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+
+    const sections = Array.from(navItems)
+      .map((item) => document.getElementById(item.getAttribute("href")?.substring(1) || ""))
+      .filter(Boolean);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navItems.forEach((i) => i.classList.remove("active"));
+            const activeItem = Array.from(navItems).find((i) => i.getAttribute("href")?.substring(1) === entry.target.id);
+            activeItem?.classList.add("active");
+          }
+        });
+      },
+      { root: null, rootMargin: "-20% 0px -60% 0px", threshold: 0 },
+    );
+
+    sections.forEach((section: any) => observer.observe(section));
+
+    setTimeout(() => {
+      nav.style.opacity = "1";
+      nav.style.pointerEvents = "auto";
+    }, 2500);
+  });
+</script>
