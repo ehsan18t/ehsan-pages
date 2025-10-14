@@ -31,7 +31,15 @@ const navItems = info.navItems;
   @media (max-width: 767px) {
     .floating-nav-mobile {
       @apply pointer-events-none fixed inset-x-4 bottom-4 z-50 block opacity-0 backdrop-blur-xs;
-      transition: opacity 0.4s cubic-bezier(0.4, 0.8, 0.2, 1);
+      transition:
+        opacity 0.4s cubic-bezier(0.4, 0.8, 0.2, 1),
+        transform 0.4s cubic-bezier(0.4, 0.8, 0.2, 1);
+    }
+
+    .floating-nav-mobile.is-hidden {
+      transform: translateY(100%);
+      opacity: 0;
+      pointer-events: none;
     }
 
     .nav-container {
@@ -179,6 +187,9 @@ const navItems = info.navItems;
     }
 
     function setActive(id: string) {
+      // Don't run if nav is meant to be hidden (at page bottom)
+      if (nav?.classList.contains("is-hidden")) return;
+
       let activeEl: any = null;
       links.forEach((a) => {
         const match = a.getAttribute("href")?.slice(1) === id;
@@ -235,6 +246,7 @@ const navItems = info.navItems;
 
     // Initial reveal + indicator sync
     requestAnimationFrame(() => {
+      nav.classList.remove("is-hidden"); // Ensure it's not hidden on load
       nav.style.opacity = "1";
       nav.style.pointerEvents = "auto";
       setTimeout(() => {
@@ -249,5 +261,23 @@ const navItems = info.navItems;
     }
     window.addEventListener("resize", handleResize);
     window.addEventListener("orientationchange", handleResize);
+
+    // Hide nav at the bottom of the page
+    function handleScroll() {
+      const scrollY = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      const isAtBottom = scrollY + clientHeight >= scrollHeight - 30; // 30px buffer
+
+      if (isAtBottom) {
+        nav?.classList.add("is-hidden");
+      } else {
+        nav?.classList.remove("is-hidden");
+      }
+
+      console.log({ scrollY, scrollHeight, clientHeight, isAtBottom });
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
   });
 </script>
