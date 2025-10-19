@@ -13,6 +13,7 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   const [error, setError] = useState<string | null>(null);
   const [viewerError, setViewerError] = useState<string | null>(null);
   const [pdfLib, setPdfLib] = useState<ReactPdfModule | null>(null);
+  const [isRendering, setIsRendering] = useState(false);
 
   // Load react-pdf lazily to avoid SSR-only DOM usage.
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   const fetchPdf = async (url: string) => {
     setIsLoading(true);
     setError(null);
+    setNumPages(undefined);
 
     try {
       const response = await fetch("/api/get-file-as-blob", {
@@ -65,6 +67,7 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
       const newBlobUrl = URL.createObjectURL(blob);
 
       if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl); // Cleanup
+      setIsRendering(true);
       setPdfBlobUrl(newBlobUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -103,36 +106,64 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   const DocumentComponent = pdfLib?.Document;
   const PageComponent = pdfLib?.Page;
 
+  const renderStatus = (message: string, showRetry = false) => (
+    <div className="flex h-full w-full items-center justify-center text-center">
+      <div className="space-y-4">
+        <p>{message}</p>
+        {showRetry && (
+          <button
+            className="rounded-md border border-white/20 px-3 py-2 text-sm transition-colors hover:border-white/40"
+            onClick={() => fetchPdf(cvPDF)}
+          >
+            Retry
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="max-w-4xl" ref={containerRef}>
+    <div className="flex h-full w-full max-w-4xl flex-col" ref={containerRef}>
       {viewerError ? (
-        <div className="pt-3">{viewerError}</div>
+        renderStatus(viewerError)
       ) : error ? (
-        <div className="pt-3">
-          Error loading PDF. Disable extensions like IDM and try again.
-          <button onClick={() => fetchPdf(cvPDF)}>Retry</button>
-        </div>
+        renderStatus(
+          "Error loading PDF. Disable extensions like IDM and try again.",
+          true,
+        )
       ) : !DocumentComponent || !PageComponent ? (
-        <div className="pt-3">Preparing viewer...</div>
+        renderStatus("Preparing viewer...")
       ) : isLoading && !pdfBlobUrl ? (
-        <div className="pt-3">Loading PDF...</div>
+        renderStatus("Loading PDF...")
       ) : (
-        <DocumentComponent
-          file={pdfBlobUrl}
-          onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-          loading={<div className="pt-3">Rendering PDF...</div>}
-          error={<div className="pt-3">Failed to render PDF</div>}
-        >
-          {Array.from({ length: numPages || 0 }, (_, i) => (
-            <PageComponent
-              className="mb-1"
-              key={`page_${i + 1}`}
-              pageNumber={i + 1}
-              width={Math.min(containerWidth, 900)}
-              loading={<div>Loading page {i + 1}...</div>}
-            />
-          ))}
-        </DocumentComponent>
+        <div className="relative flex-1 overflow-x-hidden overflow-y-auto">
+          {isRendering && (
+            <div className="absolute inset-0 z-10">
+              {renderStatus("Rendering PDF...")}
+            </div>
+          )}
+          <div className={isRendering ? "invisible" : "visible"}>
+            <DocumentComponent
+              file={pdfBlobUrl}
+              onLoadSuccess={({ numPages }) => {
+                setNumPages(numPages);
+                setIsRendering(false);
+              }}
+              onLoadError={() => setIsRendering(false)}
+              error={renderStatus("Failed to render PDF")}
+            >
+              {Array.from({ length: numPages || 0 }, (_, i) => (
+                <PageComponent
+                  className="mb-1"
+                  key={`page_${i + 1}`}
+                  pageNumber={i + 1}
+                  width={Math.min(containerWidth, 900)}
+                  loading={<div>Loading page {i + 1}...</div>}
+                />
+              ))}
+            </DocumentComponent>
+          </div>
+        </div>
       )}
     </div>
   );
