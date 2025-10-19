@@ -1,13 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 
-// Configure PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url,
-).toString();
+type ReactPdfModule = typeof import("react-pdf");
 
 export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   const [numPages, setNumPages] = useState<number>();
@@ -16,6 +11,37 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
   const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [viewerError, setViewerError] = useState<string | null>(null);
+  const [pdfLib, setPdfLib] = useState<ReactPdfModule | null>(null);
+
+  // Load react-pdf lazily to avoid SSR-only DOM usage.
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (typeof window === "undefined") return;
+
+    import("react-pdf")
+      .then((module) => {
+        if (isCancelled) return;
+        module.pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+          "pdfjs-dist/build/pdf.worker.min.mjs",
+          import.meta.url,
+        ).toString();
+        setPdfLib(module);
+      })
+      .catch((err) => {
+        if (isCancelled) return;
+        setViewerError(
+          err instanceof Error
+            ? `Failed to load PDF viewer: ${err.message}`
+            : "Failed to load PDF viewer",
+        );
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   // Improved fetch with cache busting
   const fetchPdf = async (url: string) => {
@@ -49,14 +75,20 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
 
   // Fetch on mount and URL change
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (cvPDF.trim()) fetchPdf(cvPDF);
-    return () => {
-      if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
-    };
   }, [cvPDF]);
+
+  useEffect(() => {
+    if (!pdfBlobUrl) return;
+    return () => {
+      URL.revokeObjectURL(pdfBlobUrl);
+    };
+  }, [pdfBlobUrl]);
 
   // Responsive width handling
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const handleResize = () => {
       if (containerRef.current) {
         setContainerWidth(containerRef.current.clientWidth);
@@ -68,24 +100,31 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const DocumentComponent = pdfLib?.Document;
+  const PageComponent = pdfLib?.Page;
+
   return (
     <div className="max-w-4xl" ref={containerRef}>
-      {isLoading && !pdfBlobUrl ? (
-        <div className="pt-3">Loading PDF...</div>
+      {viewerError ? (
+        <div className="pt-3">{viewerError}</div>
       ) : error ? (
         <div className="pt-3">
           Error loading PDF. Disable extensions like IDM and try again.
           <button onClick={() => fetchPdf(cvPDF)}>Retry</button>
         </div>
+      ) : !DocumentComponent || !PageComponent ? (
+        <div className="pt-3">Preparing viewer...</div>
+      ) : isLoading && !pdfBlobUrl ? (
+        <div className="pt-3">Loading PDF...</div>
       ) : (
-        <Document
+        <DocumentComponent
           file={pdfBlobUrl}
           onLoadSuccess={({ numPages }) => setNumPages(numPages)}
           loading={<div className="pt-3">Rendering PDF...</div>}
           error={<div className="pt-3">Failed to render PDF</div>}
         >
           {Array.from({ length: numPages || 0 }, (_, i) => (
-            <Page
+            <PageComponent
               className="mb-1"
               key={`page_${i + 1}`}
               pageNumber={i + 1}
@@ -93,7 +132,7 @@ export default function PDFViewer({ cvPDF }: { cvPDF: string }) {
               loading={<div>Loading page {i + 1}...</div>}
             />
           ))}
-        </Document>
+        </DocumentComponent>
       )}
     </div>
   );

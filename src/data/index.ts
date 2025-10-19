@@ -10,7 +10,7 @@ const info = {
     discord: "https://discord.com/users/xcarl3t",
   },
   image: "/me.png",
-  resume: "/CV.pdf",
+  resume: "/resume/Ehsan_Khan__FullStack.pdf",
   testimonials: [
     {
       id: 4,

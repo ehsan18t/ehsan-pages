@@ -54,7 +54,7 @@ const PDFViewerModal = ({ cvPDF }: { cvPDF: string }) => {
   );
 
   return (
-    <div className="flex w-full items-center justify-center select-none md:justify-start">
+    <div className="flex h-full w-full items-center justify-center select-none md:justify-start">
       <Button onClick={() => setIsModalOpen(true)} className="w-3xs font-bold">
         View CV
       </Button>
