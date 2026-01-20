@@ -2,7 +2,7 @@ import type { Experience } from "@/data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import ExperienceCard from "./ExperienceCard";
 import "./experience.css";
 
@@ -12,375 +12,245 @@ interface ExperienceGraphProps {
   experiences: Experience[];
 }
 
-// Lane configuration (uniform color)
-const LANES = {
-  frontend: { label: "Frontend", color: "oklch(var(--accent-500))", offset: 0 },
-  backend: { label: "Backend", color: "oklch(var(--accent-500))", offset: 1 },
-  fullstack: {
-    label: "Fullstack",
-    color: "oklch(var(--accent-500))",
-    offset: 0.5,
-  },
-};
+const NODE_COLOR = "oklch(var(--accent-500))";
 
 const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const glowRef = useRef<SVGPathElement>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const [activeExperience, setActiveExperience] = useState<Experience | null>(
     null,
   );
   const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
+  const [containerWidth, setContainerWidth] = useState(700);
 
-  // Generate SVG path for the commit line with wave effect
-  const generatePath = useCallback(() => {
+  // Layout config - all in pixels
+  const nodeSpacing = 180;
+  const startY = 60;
+  const leftXPercent = 30;
+  const rightXPercent = 70;
+
+  const getXPercent = (i: number) =>
+    i % 2 === 0 ? leftXPercent : rightXPercent;
+  const getXPixel = (i: number) => (getXPercent(i) / 100) * containerWidth;
+  const getY = (i: number) => startY + i * nodeSpacing;
+  const graphHeight = getY(experiences.length - 1) + 100;
+
+  // Update container width on resize
+  React.useEffect(() => {
+    const updateWidth = () => {
+      if (graphRef.current) {
+        setContainerWidth(graphRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // Generate SVG path with pixel coordinates
+  const generatePath = () => {
     if (!experiences.length) return "";
 
-    const nodeSpacing = 180;
-    const startX = 60;
-    const laneWidth = 100;
-    const waveAmplitude = 25; // Horizontal wave for visual interest
+    let d = `M ${getXPixel(0)} ${getY(0)}`;
 
-    let path = "";
-    let prevX = startX;
-    let prevY = 40;
+    for (let i = 1; i < experiences.length; i++) {
+      const px = getXPixel(i - 1),
+        py = getY(i - 1);
+      const cx = getXPixel(i),
+        cy = getY(i);
+      const midY = (py + cy) / 2;
+      d += ` C ${px} ${midY}, ${cx} ${midY}, ${cx} ${cy}`;
+    }
 
-    experiences.forEach((exp, index) => {
-      const laneOffset = LANES[exp.lane].offset;
-      const baseX = startX + laneOffset * laneWidth;
-      // Add subtle wave effect based on index for visual interest
-      const waveOffset = Math.sin(index * 0.8) * waveAmplitude;
-      const x = baseX + waveOffset;
-      const y = 40 + index * nodeSpacing;
+    return d;
+  };
 
-      if (index === 0) {
-        path = `M ${x} ${y}`;
-      } else {
-        // Create smooth bezier curves between nodes with more curve control
-        const midY = (prevY + y) / 2;
-        const controlX1 = prevX + (x - prevX) * 0.1;
-        const controlX2 = x - (x - prevX) * 0.1;
-        path += ` C ${controlX1} ${midY - 30}, ${controlX2} ${midY + 30}, ${x} ${y}`;
-      }
-
-      prevX = x;
-      prevY = y;
-    });
-
-    return path;
-  }, [experiences]);
-
-  const clearCloseTimeout = () => {
+  // Hover handlers
+  const clearClose = () => {
     if (closeTimeoutRef.current) {
-      window.clearTimeout(closeTimeoutRef.current);
+      clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
   };
 
   const scheduleClose = () => {
-    clearCloseTimeout();
-    closeTimeoutRef.current = window.setTimeout(() => {
-      setActiveExperience(null);
-    }, 140);
+    clearClose();
+    closeTimeoutRef.current = window.setTimeout(
+      () => setActiveExperience(null),
+      150,
+    );
   };
 
-  // Handle node hover - show card on mouse enter
-  const handleNodeHover = (
-    exp: Experience,
-    event: React.MouseEvent<HTMLDivElement>,
-  ) => {
-    clearCloseTimeout();
-    const rect = event.currentTarget.getBoundingClientRect();
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-    const cardWidth = 420;
-    const cardHeight = 480;
-    const gap = 20;
+  const handleHover = (exp: Experience, e: React.MouseEvent) => {
+    clearClose();
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const isLeft = experiences.indexOf(exp) % 2 === 0;
 
-    const prefersAbove = rect.bottom + cardHeight > window.innerHeight;
-    const preferredX = rect.right + gap + scrollX;
-    const preferredY = prefersAbove
-      ? rect.top - cardHeight - gap + scrollY
-      : rect.top - gap + scrollY;
+    let x = isLeft ? rect.right + 20 : rect.left - 400;
+    let y = rect.top - 50 + window.scrollY;
 
-    const maxX = scrollX + window.innerWidth - cardWidth;
-    const maxY = scrollY + window.innerHeight - cardHeight;
-    const clampedX = Math.min(Math.max(preferredX, scrollX + gap), maxX);
-    const clampedY = Math.min(Math.max(preferredY, scrollY + gap), maxY);
+    // Clamp to viewport
+    x = Math.max(20, Math.min(x + window.scrollX, window.innerWidth - 420));
+    y = Math.max(
+      window.scrollY + 20,
+      Math.min(y, window.scrollY + window.innerHeight - 500),
+    );
 
-    setCardPosition({
-      x: clampedX,
-      y: clampedY,
-    });
+    setCardPosition({ x, y });
     setActiveExperience(exp);
   };
 
-  // Handle mouse leave - close card
-  const handleNodeLeave = () => {
-    scheduleClose();
-  };
-
-  const handleCardEnter = () => {
-    clearCloseTimeout();
-  };
-
-  const handleCardLeave = () => {
-    scheduleClose();
-  };
-
-  // GSAP animations
+  // GSAP scroll animation
   useGSAP(
     () => {
-      if (!containerRef.current || !graphRef.current) return;
+      if (
+        !graphRef.current ||
+        !pathRef.current ||
+        !glowRef.current ||
+        containerWidth === 0
+      )
+        return;
 
-      const nodes = gsap.utils.toArray<HTMLElement>(".commit-node");
-      const yearMarkers = gsap.utils.toArray<HTMLElement>(".year-marker");
-      const branchLines = gsap.utils.toArray<HTMLElement>(".branch-line");
+      const len = pathRef.current.getTotalLength();
 
-      // Animate the main path drawing - adjusted end position for better sync
-      if (pathRef.current) {
-        const pathLength = pathRef.current.getTotalLength();
-        gsap.set(pathRef.current, {
-          strokeDasharray: pathLength,
-          strokeDashoffset: pathLength,
-        });
+      gsap.set([pathRef.current, glowRef.current], {
+        strokeDasharray: len,
+        strokeDashoffset: len,
+      });
 
-        gsap.to(pathRef.current, {
-          strokeDashoffset: 0,
-          duration: 2,
-          ease: "none",
-          scrollTrigger: {
-            trigger: graphRef.current,
-            start: "top 70%",
-            end: "bottom 50%",
-            scrub: 0.5,
-          },
-        });
-      }
+      gsap.to([pathRef.current, glowRef.current], {
+        strokeDashoffset: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: graphRef.current,
+          start: "top 75%",
+          end: "bottom 40%",
+          scrub: 0.5,
+        },
+      });
 
-      // Animate nodes sequentially with more lenient trigger
-      nodes.forEach((node, index) => {
+      gsap.utils.toArray<HTMLElement>(".commit-node").forEach((node, i) => {
         gsap.set(node, { scale: 0, opacity: 0 });
-
         gsap.to(node, {
           scale: 1,
           opacity: 1,
-          duration: 0.5,
+          duration: 0.4,
           ease: "back.out(1.7)",
           scrollTrigger: {
             trigger: graphRef.current,
-            start: `top+=${index * 120} 90%`,
+            start: `top+=${i * 120} 85%`,
             toggleActions: "play none none reverse",
           },
         });
       });
 
-      // Animate year markers
-      yearMarkers.forEach((marker, index) => {
-        gsap.set(marker, { opacity: 0, x: -20 });
-
-        gsap.to(marker, {
-          opacity: 1,
-          x: 0,
-          duration: 0.5,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: graphRef.current,
-            start: `top+=${index * 150} 90%`,
-            toggleActions: "play none none reverse",
-          },
-        });
-      });
-
-      // Animate branch lines
-      branchLines.forEach((line, index) => {
-        gsap.set(line, { scaleX: 0, transformOrigin: "left center" });
-
-        gsap.to(line, {
-          scaleX: 1,
-          duration: 0.4,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: graphRef.current,
-            start: `top+=${index * 150} 90%`,
-            toggleActions: "play none none reverse",
-          },
-        });
-      });
-
-      // Cleanup
-      return () => {
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      };
+      return () => ScrollTrigger.getAll().forEach((t) => t.kill());
     },
-    { scope: containerRef, dependencies: [experiences] },
+    { scope: containerRef, dependencies: [experiences, containerWidth] },
   );
-
-  // Group experiences by year for markers
-  const yearGroups = experiences.reduce(
-    (acc, exp, index) => {
-      const year = exp.startDate;
-      if (!acc[year]) {
-        acc[year] = { index, year };
-      }
-      return acc;
-    },
-    {} as Record<string, { index: number; year: string }>,
-  );
-
-  const nodeSpacing = 180;
-  const graphHeight = (experiences.length - 1) * nodeSpacing + 200; // Increased padding
 
   return (
     <div ref={containerRef} className="experience-graph-container">
-      {/* Main Graph */}
+      {/* Desktop Timeline */}
       <div
         ref={graphRef}
         className="experience-graph"
         style={{ height: graphHeight }}
       >
-        {/* SVG for connection lines */}
         <svg
           className="graph-svg"
-          viewBox={`0 0 300 ${graphHeight}`}
+          viewBox={`0 0 ${containerWidth} ${graphHeight}`}
           preserveAspectRatio="xMidYMid meet"
         >
-          {/* Glow filter */}
           <defs>
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <filter id="lineGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="blur" />
               <feMerge>
-                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
-            <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="oklch(var(--accent-500))" />
-              <stop offset="100%" stopColor="oklch(var(--accent-900))" />
-            </linearGradient>
           </defs>
 
-          {/* Main commit path */}
+          <path
+            ref={glowRef}
+            d={generatePath()}
+            fill="none"
+            stroke="oklch(var(--accent-500) / 0.3)"
+            strokeWidth="6"
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+          />
           <path
             ref={pathRef}
             d={generatePath()}
             fill="none"
-            stroke="url(#pathGradient)"
+            stroke="oklch(var(--accent-500))"
             strokeWidth="3"
             strokeLinecap="round"
-            filter="url(#glow)"
-            className="commit-path"
+            filter="url(#lineGlow)"
+            vectorEffect="non-scaling-stroke"
           />
-
-          {/* Branch connection lines for merge commits */}
-          {experiences.map((exp, index) => {
-            if (!exp.isMergeCommit) return null;
-            const y = 40 + index * nodeSpacing;
-            return (
-              <g key={`branch-${exp.id}`}>
-                <line
-                  x1="60"
-                  y1={y}
-                  x2="160"
-                  y2={y}
-                  stroke="oklch(var(--accent-500) / 0.3)"
-                  strokeWidth="2"
-                  strokeDasharray="4 4"
-                  className="branch-line"
-                />
-              </g>
-            );
-          })}
         </svg>
 
-        {/* Year Markers */}
-        {Object.entries(yearGroups).map(([year, { index }]) => (
+        {experiences.map((exp, i) => (
           <div
-            key={year}
-            className="year-marker"
-            style={{ top: 40 + index * nodeSpacing - 10 }}
+            key={exp.id}
+            className={`commit-node ${i % 2 === 0 ? "node-left" : "node-right"} ${activeExperience?.id === exp.id ? "active" : ""}`}
+            style={
+              {
+                left: `${getXPercent(i)}%`,
+                top: getY(i),
+                "--node-color": NODE_COLOR,
+              } as React.CSSProperties
+            }
+            onMouseEnter={(e) => handleHover(exp, e)}
+            onMouseLeave={scheduleClose}
+            tabIndex={0}
+            role="button"
+            aria-label={`${exp.role} at ${exp.company}`}
           >
-            {year}
+            <div className="node-inner" />
+            <div className="node-label">
+              <span className="node-date">{exp.startDate}</span>
+              <span className="node-role">{exp.role}</span>
+              <span className="node-company">{exp.company}</span>
+            </div>
           </div>
         ))}
-
-        {/* Commit Nodes */}
-        {experiences.map((exp, index) => {
-          const laneOffset = LANES[exp.lane].offset;
-          const baseX = 60 + laneOffset * 100;
-          // Match the wave effect from path generation
-          const waveOffset = Math.sin(index * 0.8) * 25;
-          const x = baseX + waveOffset;
-          const y = 40 + index * nodeSpacing;
-
-          return (
-            <div
-              key={exp.id}
-              className={`commit-node ${exp.isMergeCommit ? "merge-commit" : ""} ${
-                activeExperience?.id === exp.id ? "active" : ""
-              }`}
-              style={
-                {
-                  left: x,
-                  top: y,
-                  "--node-color": LANES[exp.lane].color,
-                } as React.CSSProperties
-              }
-              onMouseEnter={(e) => handleNodeHover(exp, e)}
-              onMouseLeave={handleNodeLeave}
-              onFocus={(e) =>
-                handleNodeHover(
-                  exp,
-                  e as unknown as React.MouseEvent<HTMLDivElement>,
-                )
-              }
-              onBlur={handleNodeLeave}
-              tabIndex={0}
-              role="button"
-              aria-label={`${exp.role} at ${exp.company}`}
-            >
-              <div className="node-inner">
-                {exp.isMergeCommit && <div className="merge-indicator" />}
-              </div>
-            </div>
-          );
-        })}
       </div>
 
-      {/* Mobile Experience List - Outside the hidden graph */}
+      {/* Mobile List */}
       <div className="mobile-experience-list">
-        {experiences.map((exp, index) => (
+        {experiences.map((exp, i) => (
           <div
             key={exp.id}
             className="mobile-experience-item"
             style={
               {
-                "--node-color": LANES[exp.lane].color,
-                "--delay": `${index * 0.1}s`,
+                "--node-color": NODE_COLOR,
+                "--delay": `${i * 0.1}s`,
               } as React.CSSProperties
             }
           >
             <div className="mobile-node-line">
-              <div
-                className={`mobile-node ${exp.isMergeCommit ? "merge" : ""}`}
-              />
-              {index < experiences.length - 1 && (
+              <div className="mobile-node" />
+              {i < experiences.length - 1 && (
                 <div className="mobile-connector" />
               )}
             </div>
             <div className="mobile-content">
-              <div className="mobile-header">
-                <span className="mobile-date">
-                  {exp.startDate} — {exp.endDate}
-                </span>
-                <span className="mobile-lane-badge">{exp.lane}</span>
-              </div>
+              <span className="mobile-date">
+                {exp.startDate} — {exp.endDate}
+              </span>
               <h4 className="mobile-role">{exp.role}</h4>
               <p className="mobile-company">{exp.company}</p>
               <ul className="mobile-description-list">
-                {exp.description.map((item, itemIndex) => (
-                  <li key={`${exp.id}-desc-${itemIndex}`}>{item}</li>
+                {exp.description.map((item, j) => (
+                  <li key={j}>{item}</li>
                 ))}
               </ul>
               <div className="mobile-tech-stack">
@@ -395,14 +265,13 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
         ))}
       </div>
 
-      {/* Experience Card (Desktop) */}
       {activeExperience && (
         <ExperienceCard
           experience={activeExperience}
           position={cardPosition}
-          laneColor={LANES[activeExperience.lane].color}
-          onMouseEnter={handleCardEnter}
-          onMouseLeave={handleCardLeave}
+          laneColor={NODE_COLOR}
+          onMouseEnter={clearClose}
+          onMouseLeave={scheduleClose}
         />
       )}
     </div>
