@@ -12,13 +12,13 @@ interface ExperienceGraphProps {
   experiences: Experience[];
 }
 
-// Lane configuration
+// Lane configuration (uniform color)
 const LANES = {
-  frontend: { label: "Frontend", color: "var(--lane-frontend)", offset: 0 },
-  backend: { label: "Backend", color: "var(--lane-backend)", offset: 1 },
+  frontend: { label: "Frontend", color: "oklch(var(--accent-500))", offset: 0 },
+  backend: { label: "Backend", color: "oklch(var(--accent-500))", offset: 1 },
   fullstack: {
     label: "Fullstack",
-    color: "var(--lane-fullstack)",
+    color: "oklch(var(--accent-500))",
     offset: 0.5,
   },
 };
@@ -234,20 +234,6 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
 
   return (
     <div ref={containerRef} className="experience-graph-container">
-      {/* Lane Labels - Desktop */}
-      <div className="lane-labels">
-        {Object.entries(LANES).map(([key, lane]) => (
-          <div
-            key={key}
-            className="lane-label"
-            style={{ "--lane-color": lane.color } as React.CSSProperties}
-          >
-            <span className="lane-dot" />
-            {lane.label}
-          </div>
-        ))}
-      </div>
-
       {/* Main Graph */}
       <div
         ref={graphRef}
@@ -398,16 +384,11 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
                 ))}
               </ul>
               <div className="mobile-tech-stack">
-                {exp.techStack.slice(0, 4).map((tech) => (
+                {exp.techStack.map((tech) => (
                   <span key={tech} className="mobile-tech-pill">
                     {tech}
                   </span>
                 ))}
-                {exp.techStack.length > 4 && (
-                  <span className="mobile-tech-pill more">
-                    +{exp.techStack.length - 4}
-                  </span>
-                )}
               </div>
             </div>
           </div>

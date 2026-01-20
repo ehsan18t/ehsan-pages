@@ -4,10 +4,6 @@
 
 /* CSS Custom Properties for theming */
 .experience-graph-container {
-  --lane-frontend: oklch(0.75 0.18 250); /* Blue-ish */
-  --lane-backend: oklch(0.75 0.18 145); /* Green-ish */
-  --lane-fullstack: oklch(0.75 0.18 310); /* Purple-ish */
-
   position: relative;
   width: 100%;
   padding: 2rem 0;
@@ -16,47 +12,6 @@
 /* ====================================
    Lane Labels (Desktop)
    ==================================== */
-.lane-labels {
-  display: none;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  padding: 1rem 2rem;
-  background: color-mix(in oklch, rgb(var(--background)), black 20%);
-  border-radius: 9999px;
-  width: fit-content;
-  margin-inline: auto;
-  border: 1px solid rgba(var(--foreground), 0.1);
-}
-
-@media (min-width: 768px) {
-  .lane-labels {
-    display: flex;
-  }
-}
-
-.lane-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: rgb(var(--foreground-muted));
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.lane-label:hover {
-  color: rgb(var(--foreground));
-}
-
-.lane-label .lane-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--lane-color);
-  box-shadow: 0 0 10px var(--lane-color);
-}
-
 /* ====================================
    Main Graph Container
    ==================================== */
@@ -599,15 +554,9 @@ a.card-company:hover {
   font-weight: 500;
   color: oklch(var(--accent-300));
   background: oklch(var(--accent-900) / 0.2);
-  padding: 0.2rem 0.5rem;
+  padding: 0.1rem 0.5rem;
   border-radius: 9999px;
   border: 1px solid oklch(var(--accent-500) / 0.3);
-}
-
-.mobile-tech-pill.more {
-  background: rgba(var(--foreground), 0.1);
-  border-color: rgba(var(--foreground), 0.2);
-  color: rgb(var(--foreground-muted));
 }
 
 /* ====================================
