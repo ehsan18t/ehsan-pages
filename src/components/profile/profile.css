@@ -14,7 +14,7 @@
 
 .border-wrapper {
   @apply relative flex items-center justify-center;
-  @apply h-[var(--sm-pp-size)] w-[var(--sm-pp-size)] md:h-[var(--md-pp-size)] md:w-[var(--md-pp-size)] lg:h-[var(--lg-pp-size)] lg:w-[var(--lg-pp-size)];
+  @apply h-(--sm-pp-size) w-(--sm-pp-size) md:h-(--md-pp-size) md:w-(--md-pp-size) lg:h-(--lg-pp-size) lg:w-(--lg-pp-size);
 }
 
 .gradient-border {
