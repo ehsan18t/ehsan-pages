@@ -1,3 +1,21 @@
+export interface Experience {
+  id: string;
+  role: string;
+  company: string;
+  companyUrl?: string;
+  startDate: string;
+  endDate: string;
+  description: string[];
+  techStack: string[];
+  lane: "frontend" | "backend" | "fullstack";
+  impact: {
+    label: string;
+    value: string;
+    type: "addition" | "deletion" | "modification";
+  }[];
+  isMergeCommit?: boolean;
+}
+
 const info = {
   name: "Ehsan Khan",
   title: "Web Developer",
@@ -11,6 +29,152 @@ const info = {
   },
   image: "/me.png",
   resume: "/resume/Ehsan_Khan__FullStack.pdf",
+  experiences: [
+    {
+      id: "exp-1",
+      role: "Assistant Software Engineer",
+      company: "ECB Technologies",
+      companyUrl: "https://ecb-site.vercel.app",
+      startDate: "Nov 2025",
+      endDate: "Present",
+      description: [
+        "Building an MIS system to streamline internal processes.",
+        "Built scalable backend modules including Notification System for automated SMS/Email alerts.",
+        "Rebuilt company website using Next.js with high SEO/Performance scores, GSAP animations, and optimized caching.",
+      ],
+      techStack: [
+        "Next.js",
+        "Django",
+        "GSAP",
+        "TailwindCSS",
+        "PostgreSQL",
+        "TypeScript",
+      ],
+      lane: "fullstack",
+      impact: [
+        { label: "SEO Score", value: "98+", type: "addition" },
+        { label: "Performance", value: "95+", type: "modification" },
+        { label: "Notifications", value: "SMS+Email", type: "addition" },
+      ],
+      isMergeCommit: true,
+    },
+    {
+      id: "exp-2",
+      role: "Full Stack Developer",
+      company: "BSIL",
+      companyUrl: "https://bdsil.org",
+      startDate: "Feb 2025",
+      endDate: "Nov 2025",
+      description: [
+        "Developed BSIL's main website, blog, and journal.",
+        "Rebuilt agency site from Astro to Next.js + Payload CMS for dynamic content management.",
+        "Implemented ISR and Cloudflare caching, reducing load times by 60%+.",
+        "Achieved perfect Lighthouse scores across all metrics.",
+      ],
+      techStack: [
+        "Next.js",
+        "Payload CMS",
+        "Cloudflare",
+        "Cloudinary",
+        "TypeScript",
+        "TailwindCSS",
+      ],
+      lane: "fullstack",
+      impact: [
+        { label: "Load time", value: "-60%", type: "deletion" },
+        { label: "Lighthouse", value: "100", type: "modification" },
+        { label: "Sites deployed", value: "+3", type: "addition" },
+      ],
+      isMergeCommit: true,
+    },
+    {
+      id: "exp-3",
+      role: "Full Stack Developer",
+      company: "Cazzert",
+      companyUrl: "https://cazzert.com",
+      startDate: "Nov 2024",
+      endDate: "Jan 2025",
+      description: [
+        "Designed and built scalable e-commerce platform with product catalog, authentication, cart, and order management.",
+        "Developed RESTful APIs and optimized database schema for performance.",
+        "Implemented custom CMS for warehouse management and role-based access control.",
+      ],
+      techStack: ["Astro", "React", "TypeScript", "TailwindCSS", "PostgreSQL"],
+      lane: "fullstack",
+      impact: [
+        { label: "Features", value: "+85", type: "addition" },
+        { label: "API endpoints", value: "+40", type: "addition" },
+        { label: "Page load", value: "-48%", type: "deletion" },
+      ],
+      isMergeCommit: true,
+    },
+    {
+      id: "exp-4",
+      role: "Software Developer",
+      company: "Swapnil Gold Testing",
+      startDate: "Apr 2024",
+      endDate: "Oct 2024",
+      description: [
+        "Built offline desktop app using Tauri + React for generating and managing digital gold test certificates.",
+        "Integrated AI-based background removal and image editing tools, improving workflow efficiency.",
+        "Delivered reliable, user-friendly interface for daily certificate generation.",
+      ],
+      techStack: ["Tauri", "Rust", "React", "TypeScript", "SQLite", "AI/ML"],
+      lane: "fullstack",
+      impact: [
+        { label: "Processing", value: "-70%", type: "deletion" },
+        { label: "Offline AI", value: "+1", type: "addition" },
+        { label: "Daily certs", value: "50+", type: "modification" },
+      ],
+      isMergeCommit: true,
+    },
+    {
+      id: "exp-5",
+      role: "Full Stack Developer",
+      company: "Freelance",
+      startDate: "2022",
+      endDate: "Nov 2025",
+      description: [
+        "Delivered 15+ production-grade apps for agencies and businesses using React, Next.js, Django, and Astro.",
+        "Collaborated with international clients to define requirements and optimize delivery.",
+        "Integrated CI/CD, GitHub Actions, and Docker for automated deployments.",
+      ],
+      techStack: [
+        "React",
+        "Next.js",
+        "Django",
+        "Docker",
+        "GitHub Actions",
+        "PostgreSQL",
+      ],
+      lane: "fullstack",
+      impact: [
+        { label: "Projects", value: "15+", type: "addition" },
+        { label: "Performance", value: "90+", type: "modification" },
+        { label: "Client rating", value: "100%", type: "addition" },
+      ],
+      isMergeCommit: true,
+    },
+    {
+      id: "exp-6",
+      role: "Web Developer",
+      company: "Erasmus Scholar Portfolio",
+      startDate: "Apr 2022",
+      endDate: "May 2022",
+      description: [
+        "Developed personal academic portfolio website for an Erasmus Mundus Scholar using React, TailwindCSS, and Firebase.",
+        "Focused on performance, accessibility, and responsive design.",
+        "Contributed to client's successful scholarship application.",
+      ],
+      techStack: ["React", "TailwindCSS", "Firebase", "TypeScript"],
+      lane: "frontend",
+      impact: [
+        { label: "Scholarship", value: "Success", type: "addition" },
+        { label: "Mobile score", value: "98", type: "modification" },
+        { label: "Load time", value: "<1.5s", type: "modification" },
+      ],
+    },
+  ] as Experience[],
   testimonials: [
     {
       id: 4,
@@ -199,6 +363,13 @@ const info = {
       icon: "mdi:lightning-bolt",
       label: "Skills",
       section: "skills",
+      offset: -50,
+    },
+    {
+      href: "#experience",
+      icon: "mdi:source-branch",
+      label: "Experience",
+      section: "experience",
       offset: -50,
     },
     {
