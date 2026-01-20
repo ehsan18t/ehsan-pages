@@ -100,10 +100,13 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
       style={
         {
           "--card-accent": laneColor,
-          position: "absolute",
+          position: "fixed",
           left: position.x,
           top: position.y,
           pointerEvents: "auto",
+          zIndex: 9999,
+          maxHeight: "calc(100vh - 32px)",
+          overflowY: "auto",
         } as React.CSSProperties
       }
       onMouseEnter={onMouseEnter}

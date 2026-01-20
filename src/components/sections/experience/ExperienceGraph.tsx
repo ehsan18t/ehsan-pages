@@ -89,16 +89,41 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const isLeft = experiences.indexOf(exp) % 2 === 0;
 
-    let x = isLeft ? rect.right + 20 : rect.left - 400;
-    let y = rect.top - 50 + window.scrollY;
+    const cardWidth = 400;
+    const cardHeight = 520;
+    const gap = 16;
 
-    // Clamp to viewport
-    x = Math.max(20, Math.min(x + window.scrollX, window.innerWidth - 420));
-    y = Math.max(
-      window.scrollY + 20,
-      Math.min(y, window.scrollY + window.innerHeight - 500),
-    );
+    let x: number;
+    let y: number;
 
+    // Position card on opposite side of label
+    if (isLeft) {
+      x = rect.right + gap;
+    } else {
+      x = rect.left - cardWidth - gap;
+    }
+
+    // Vertical: try to align top with node
+    y = rect.top - 20;
+
+    // Clamp X to viewport
+    if (x + cardWidth > window.innerWidth - gap) {
+      x = rect.left - cardWidth - gap;
+    }
+    if (x < gap) {
+      x = gap;
+    }
+
+    // Clamp Y to viewport - this is the key fix
+    const maxY = window.innerHeight - cardHeight - gap;
+    if (y > maxY) {
+      y = maxY;
+    }
+    if (y < gap) {
+      y = gap;
+    }
+
+    // Use fixed positioning (no scroll offset needed)
     setCardPosition({ x, y });
     setActiveExperience(exp);
   };
