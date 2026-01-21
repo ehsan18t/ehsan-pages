@@ -89,8 +89,7 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const isLeft = experiences.indexOf(exp) % 2 === 0;
 
-    const cardWidth = 400;
-    const cardHeight = 520;
+    const cardWidth = 380;
     const gap = 16;
 
     let x: number;
@@ -106,21 +105,12 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
     // Vertical: try to align top with node
     y = rect.top - 20;
 
-    // Clamp X to viewport
+    // Clamp X roughly; final clamp happens in the card component.
     if (x + cardWidth > window.innerWidth - gap) {
       x = rect.left - cardWidth - gap;
     }
     if (x < gap) {
       x = gap;
-    }
-
-    // Clamp Y to viewport - this is the key fix
-    const maxY = window.innerHeight - cardHeight - gap;
-    if (y > maxY) {
-      y = maxY;
-    }
-    if (y < gap) {
-      y = gap;
     }
 
     // Use fixed positioning (no scroll offset needed)

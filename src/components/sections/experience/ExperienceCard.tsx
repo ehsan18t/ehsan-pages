@@ -1,7 +1,7 @@
 import type { Experience } from "@/data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import React, { useRef } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface ExperienceCardProps {
@@ -20,6 +20,57 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
   onMouseLeave,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [clampedPosition, setClampedPosition] = useState(position);
+  const [isPositioned, setIsPositioned] = useState(false);
+
+  // Keep the card within the viewport using its actual size.
+  useLayoutEffect(() => {
+    if (!cardRef.current || typeof window === "undefined") return;
+
+    const padding = 16;
+
+    const clampToViewport = () => {
+      if (!cardRef.current) return;
+
+      const rect = cardRef.current.getBoundingClientRect();
+      const transform = window.getComputedStyle(cardRef.current).transform;
+      let scaleX = 1;
+      let scaleY = 1;
+
+      if (transform && transform !== "none") {
+        const matrix = new DOMMatrixReadOnly(transform);
+        scaleX = matrix.a || 1;
+        scaleY = matrix.d || 1;
+      }
+
+      const width = rect.width / scaleX;
+      const height = rect.height / scaleY;
+      const maxX = Math.max(padding, window.innerWidth - width - padding);
+      const maxY = Math.max(padding, window.innerHeight - height - padding);
+
+      const nextX = Math.min(Math.max(position.x, padding), maxX);
+      const nextY = Math.min(Math.max(position.y, padding), maxY);
+
+      if (nextX !== clampedPosition.x || nextY !== clampedPosition.y) {
+        setClampedPosition({ x: nextX, y: nextY });
+      }
+
+      if (!isPositioned) {
+        setIsPositioned(true);
+      }
+    };
+
+    clampToViewport();
+    const frameId = window.requestAnimationFrame(clampToViewport);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [
+    position.x,
+    position.y,
+    clampedPosition.x,
+    clampedPosition.y,
+    isPositioned,
+  ]);
 
   // Entrance animation
   useGSAP(
@@ -101,12 +152,14 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
         {
           "--card-accent": laneColor,
           position: "fixed",
-          left: position.x,
-          top: position.y,
+          left: clampedPosition.x,
+          top: clampedPosition.y,
           pointerEvents: "auto",
           zIndex: 9999,
           maxHeight: "calc(100vh - 32px)",
           overflowY: "auto",
+          visibility: isPositioned ? "visible" : "hidden",
+          opacity: isPositioned ? 1 : 0,
         } as React.CSSProperties
       }
       onMouseEnter={onMouseEnter}
