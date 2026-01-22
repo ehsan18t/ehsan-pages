@@ -1,17 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-
-	interface CommandEntry {
-		type: 'command' | 'error' | 'success' | 'info' | 'manual';
-		content: string;
-	}
-
-	interface Command {
-		name: string;
-		description: string;
-		usage: string;
-		handler: (args: string[]) => Promise<CommandEntry | null> | CommandEntry | null;
-	}
+	import {
+		createTerminalCommands,
+		findMatchingCommand,
+		type CommandEntry,
+		type Command
+	} from '$data';
 
 	let commandHistory = $state<CommandEntry[]>([]);
 	let currentInput = $state('');
@@ -23,140 +17,21 @@
 	let inputRef = $state<HTMLInputElement | null>(null);
 	let promptRef = $state<HTMLDivElement | null>(null);
 
-	// Command definitions
-	const COMMANDS: Command[] = [
-		{
-			name: 'send',
-			description: 'Sends a quick email to Ehsan',
-			usage: 'send <email> <message>',
-			handler: async (args) => {
-				if (args.length < 2) {
-					return {
-						type: 'error',
-						content:
-							"Error: 'send' command requires both email and message arguments.\nUsage: send <email> <message>"
-					};
-				}
+	// Create commands with context
+	const COMMANDS: Command[] = createTerminalCommands();
 
-				const email = args[0];
-				const message = args.slice(1).join(' ').trim();
-
-				if (!message) {
-					return {
-						type: 'error',
-						content: 'Error: Message cannot be empty.'
-					};
-				}
-
-				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-				if (!emailRegex.test(email)) {
-					return {
-						type: 'error',
-						content: `Error: Invalid email format '${email}'`
-					};
-				}
-
-				isLoading = true;
-				try {
-					const response = await fetch('/api/send-email', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify({
-							to: 'ehsan18t@gmail.com',
-							subject: `Contact Form: ${email}`,
-							html: `
-                <h1>New contact form submission</h1>
-                <p><strong>From:</strong> ${email}</p>
-                <p><strong>Message:</strong></p>
-                <p>${message}</p>
-              `,
-							text: `New contact form submission\nFrom: ${email}\nMessage: ${message}`
-						})
-					});
-
-					await response.json();
-
-					isLoading = false;
-					return {
-						type: 'success',
-						content: `Message sent successfully to Ehsan`
-					};
-				} catch (error) {
-					isLoading = false;
-					return {
-						type: 'error',
-						content: `Error sending message: ${error instanceof Error ? error.message : 'Network error'}`
-					};
-				}
-			}
-		},
-		{
-			name: 'man',
-			description: 'Display manual for a command',
-			usage: 'man <command>',
-			handler: (args) => {
-				const commandName = args[0]?.toLowerCase();
-
-				if (!commandName) {
-					return {
-						type: 'error',
-						content: "What manual page do you want?\nFor example: 'man send'"
-					};
-				}
-
-				const command = COMMANDS.find((cmd) => cmd.name === commandName);
-
-				if (!command) {
-					return {
-						type: 'error',
-						content: `No manual entry for '${commandName}'\n\nSupported commands: ${COMMANDS.map((c) => c.name).join(', ')}`
-					};
-				}
-
-				return {
-					type: 'manual',
-					content: `COMMAND: ${command.name}
-USAGE: ${command.usage}
-DESCRIPTION: 
-  ${command.description}
-  
-${
-	command.name === 'send'
-		? `PARAMETERS:
-  <email>    - Your email address (required)
-  <message>  - The message content (required)
-  
-EXAMPLES:
-  send user@example.com Hello, I'd like to hire you for a project.
-  send contact@domain.com I'd like to discuss a project opportunity.`
-		: ''
-}`
-				};
-			}
-		},
-		{
-			name: 'clear',
-			description: 'Clears the terminal screen',
-			usage: 'clear',
-			handler: () => {
+	// Command context for handlers
+	function getCommandContext() {
+		return {
+			setLoading: (loading: boolean) => {
+				isLoading = loading;
+			},
+			clearHistory: () => {
 				commandHistory = [];
-				return null;
-			}
-		},
-		{
-			name: 'help',
-			description: 'Displays available commands and basic usage information',
-			usage: 'help',
-			handler: () => {
-				return {
-					type: 'info',
-					content: `Available commands:\n\n${COMMANDS.map((cmd) => `${cmd.name.padEnd(10)} - ${cmd.description}`).join('\n')}\n\nType 'man <command>' for more detailed information about a command.`
-				};
-			}
-		}
-	];
+			},
+			commands: COMMANDS
+		};
+	}
 
 	function focusInput() {
 		inputRef?.focus();
@@ -194,7 +69,7 @@ EXAMPLES:
 
 		const command = COMMANDS.find((c) => c.name === cmd);
 		if (command) {
-			const result = await command.handler(args);
+			const result = await command.handler(args, getCommandContext());
 			if (result) {
 				commandHistory = [...commandHistory, result];
 			}
@@ -249,7 +124,7 @@ Type 'help' to see available commands.`
 			const input = currentInput.toLowerCase();
 			if (!input) return;
 
-			const matchingCommand = COMMANDS.find((cmd) => cmd.name.startsWith(input));
+			const matchingCommand = findMatchingCommand(input, COMMANDS);
 			if (matchingCommand) {
 				currentInput = matchingCommand.name + ' ';
 			} else if (input === 'man ') {

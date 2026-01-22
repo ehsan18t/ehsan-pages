@@ -9,7 +9,8 @@ const config = {
 			$assets: 'src/lib/assets',
 			$data: 'src/lib/data',
 			$utils: 'src/lib/utils',
-			$icons: 'src/lib/icons'
+			$icons: 'src/lib/icons',
+			$hooks: 'src/lib/hooks'
 		}
 	}
 };
