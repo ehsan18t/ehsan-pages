@@ -74,8 +74,6 @@
 </div>
 
 <style>
-	@reference "../../routes/layout.css";
-
 	:root {
 		--gold-color: #ffd700;
 		--gold-glow: rgba(255, 215, 0, 0.3);
