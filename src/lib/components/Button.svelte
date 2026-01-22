@@ -39,7 +39,13 @@
 	}
 </script>
 
-<button {id} class="ripple-button {className}" onclick={handleClick}>
+<button
+	{id}
+	class="relative cursor-pointer overflow-hidden rounded-lg border-2 border-accent-500 bg-accent-bg/30
+		px-5 py-3.5 font-bold leading-tight text-accent-text transition duration-300 ease-in-out
+		hover:bg-accent-bg/60 {className}"
+	onclick={handleClick}
+>
 	{#if children}
 		{@render children()}
 	{:else}
@@ -48,22 +54,15 @@
 </button>
 
 <style>
-	@reference "../../routes/layout.css";
-
-	/* Styling for the button */
-	.ripple-button {
-		@apply relative cursor-pointer overflow-hidden rounded-lg border-0 px-5 py-3.5 font-bold leading-tight transition duration-300 ease-in-out;
-		@apply border-2 border-accent-500 bg-accent-bg/30 text-accent-text hover:bg-accent-bg/60;
-	}
-
-	/* Styling for the ripple effect */
+	/* Ripple effect styling - must be global to target dynamically created elements */
 	:global(.ripple) {
-		@apply pointer-events-none absolute rounded-full;
-
-		--ripple-color: rgba(255, 255, 255, 0.6);
+		--ripple-color: oklch(100% 0 0 / 0.6);
 		--ripple-scale: 4;
 		--ripple-duration: 600ms;
 
+		position: absolute;
+		pointer-events: none;
+		border-radius: 9999px;
 		background: var(--ripple-color);
 		will-change: transform, opacity;
 		backface-visibility: hidden;
