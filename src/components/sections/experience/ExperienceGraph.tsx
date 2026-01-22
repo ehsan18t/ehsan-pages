@@ -134,10 +134,12 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
       gsap.set([pathRef.current, glowRef.current], {
         strokeDasharray: len,
         strokeDashoffset: len,
+        opacity: 0,
       });
 
       gsap.to([pathRef.current, glowRef.current], {
         strokeDashoffset: 0,
+        opacity: 1,
         ease: "none",
         scrollTrigger: {
           trigger: graphRef.current,
@@ -192,6 +194,7 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
 
           <path
             ref={glowRef}
+            className="graph-path graph-path--glow"
             d={generatePath()}
             fill="none"
             stroke="oklch(var(--accent-500) / 0.3)"
@@ -201,6 +204,7 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
           />
           <path
             ref={pathRef}
+            className="graph-path graph-path--main"
             d={generatePath()}
             fill="none"
             stroke="oklch(var(--accent-500))"

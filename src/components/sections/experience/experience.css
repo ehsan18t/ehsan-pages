@@ -48,6 +48,11 @@
   stroke: oklch(var(--accent-500));
 }
 
+/* Hide graph paths before GSAP initializes (pre-hydration) */
+.graph-path {
+  opacity: 0;
+}
+
 /* ====================================
    Year Markers - Hidden, date shown in labels
    ==================================== */
