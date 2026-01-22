@@ -1,5 +1,10 @@
 {
 	"files.associations": {
 		"*.css": "tailwindcss"
-	}
+	},
+	"css.lint.unknownAtRules": "ignore",
+	"editor.quickSuggestions": {
+		"strings": true
+	},
+	"svelte.plugin.css.diagnostics.enable": true
 }
