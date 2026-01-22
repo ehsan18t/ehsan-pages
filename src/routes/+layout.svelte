@@ -1,6 +1,6 @@
 <script lang="ts">
 	import initObservation from '$assets/animations';
-	import FloatingNav from '$components/FloatingNav.svelte';
+	import FloatingNav from '$components/layout/FloatingNav.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import { onDestroy, onMount } from 'svelte';
 	import './layout.css';

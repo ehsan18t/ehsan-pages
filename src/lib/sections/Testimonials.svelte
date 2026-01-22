@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import SectionTitle from '$components/SectionTitle.svelte';
+	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import { testimonials } from '$data';
 	import { onDestroy, onMount } from 'svelte';
 

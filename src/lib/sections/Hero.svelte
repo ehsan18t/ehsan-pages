@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import grain from '$assets/images/grain.jpg';
-	import GlitchText from '$components/GlitchText.svelte';
-	import HeroOrbit from '$components/HeroOrbit.svelte';
-	import PDFViewerModal from '$components/PDFViewerModal.svelte';
-	import Profile from '$components/Profile.svelte';
-	import SocialBar from '$components/SocialBar.svelte';
-	import Star from '$components/Star.svelte';
+	import HeroOrbit from '$components/hero/HeroOrbit.svelte';
+	import Profile from '$components/hero/Profile.svelte';
+	import SocialBar from '$components/hero/SocialBar.svelte';
+	import Star from '$components/hero/Star.svelte';
+	import PDFViewerModal from '$components/media/PDFViewerModal.svelte';
+	import GlitchText from '$components/ui/GlitchText.svelte';
 	import info from '$data';
 	import { onDestroy, onMount } from 'svelte';
 

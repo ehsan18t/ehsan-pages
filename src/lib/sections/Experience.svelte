@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ExperienceGraph from '$components/ExperienceGraph.svelte';
-	import SectionTitle from '$components/SectionTitle.svelte';
+	import ExperienceGraph from '$components/experience/ExperienceGraph.svelte';
+	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import { experiences } from '$data';
 </script>
 

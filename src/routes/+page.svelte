@@ -1,6 +1,6 @@
 <script lang="ts">
 	import background from '$assets/images/background.svg';
-	import Loader from '$components/Loader.svelte';
+	import Loader from '$components/layout/Loader.svelte';
 	import { animateOnScroll } from '$lib/actions/animateOnScroll';
 	import Experience from '$lib/sections/Experience.svelte';
 	import Footer from '$lib/sections/Footer.svelte';

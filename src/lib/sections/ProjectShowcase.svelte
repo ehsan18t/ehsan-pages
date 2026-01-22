@@ -1,7 +1,7 @@
 <script lang="ts">
-	import ImageSlider from '$components/ImageSlider.svelte';
-	import SectionTitle from '$components/SectionTitle.svelte';
-	import TechPill from '$components/TechPill.svelte';
+	import ImageSlider from '$components/media/ImageSlider.svelte';
+	import SectionTitle from '$components/ui/SectionTitle.svelte';
+	import TechPill from '$components/ui/TechPill.svelte';
 	import { projects } from '$data';
 	import Icon from '@iconify/svelte';
 </script>

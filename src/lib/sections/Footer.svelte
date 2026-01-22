@@ -1,6 +1,6 @@
 <script lang="ts">
-	import SectionTitle from '$components/SectionTitle.svelte';
-	import Terminal from '$components/Terminal.svelte';
+	import Terminal from '$components/contact/Terminal.svelte';
+	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import Icon from '@iconify/svelte';
 
 	const currentYear = new Date().getFullYear();

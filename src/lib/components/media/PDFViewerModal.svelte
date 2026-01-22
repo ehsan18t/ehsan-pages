@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from './Button.svelte';
-	import Modal from './Modal.svelte';
+	import Button from '$components/ui/Button.svelte';
+	import Modal from '$components/ui/Modal.svelte';
 	import PDFViewer from './PDFViewer.svelte';
 
 	interface Props {
