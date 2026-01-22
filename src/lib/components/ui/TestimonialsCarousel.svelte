@@ -70,7 +70,7 @@
 			onemblaInit={onEmblaInit}
 		>
 			<div class="testimonial-carousel-slides">
-				{#each testimonials as testimonial, index}
+				{#each testimonials as testimonial, index (testimonial.name)}
 					<div class="testimonial-slide {selectedIndex === index ? 'slide-visible' : ''}">
 						<div class="testimonial-card gap-6">
 							<div class="testimonial-accent"></div>
@@ -125,7 +125,8 @@
 	</div>
 
 	<div class="testimonial-pagination">
-		{#each scrollSnaps as _, i}
+		<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+		{#each scrollSnaps as _, i (i)}
 			<button
 				class="testimonial-dot {i === selectedIndex
 					? 'testimonial-dot-active'

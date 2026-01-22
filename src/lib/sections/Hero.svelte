@@ -13,7 +13,7 @@
 	let heroRef = $state<HTMLElement | null>(null);
 
 	// Debounce utility
-	function debounce<T extends (...args: any[]) => void>(func: T, timeout: number = 100) {
+	function debounce<T extends (...args: unknown[]) => void>(func: T, timeout: number = 100) {
 		let timer: ReturnType<typeof setTimeout>;
 		return (...args: Parameters<T>) => {
 			clearTimeout(timer);
@@ -69,75 +69,49 @@
 		<!-- Rings -->
 		<!-- Ring-1: Inner Ring with Smaller Stars -->
 		<HeroOrbit size={18} duration={30} rotation={-14}>
-			{#snippet children()}
-				<Star size={2} duration={28} opacity={20} />
-			{/snippet}
+			<Star size={2} duration={28} opacity={20} />
 		</HeroOrbit>
 		<HeroOrbit size={18} duration={30} rotation={79} starOnly>
-			{#snippet children()}
-				<Star size={1.25} duration={16} opacity={20} />
-			{/snippet}
+			<Star size={1.25} duration={16} opacity={20} />
 		</HeroOrbit>
 		<HeroOrbit size={18} duration={30} rotation={179} starOnly>
-			{#snippet children()}
-				<Star size={1.25} duration={16} opacity={70} />
-			{/snippet}
+			<Star size={1.25} duration={16} opacity={70} />
 		</HeroOrbit>
 
 		<!-- Ring-2: Adding More Stars for Increased Density -->
 		<HeroOrbit size={28} duration={42} rotation={178}>
-			{#snippet children()}
-				<Star size={2.5} duration={20} opacity={20} />
-			{/snippet}
+			<Star size={2.5} duration={20} opacity={20} />
 		</HeroOrbit>
 		<HeroOrbit size={28} duration={42} rotation={98} starOnly>
-			{#snippet children()}
-				<Star size={2} duration={18} />
-			{/snippet}
+			<Star size={2} duration={18} />
 		</HeroOrbit>
 		<HeroOrbit size={28} duration={42} rotation={20} starOnly>
-			{#snippet children()}
-				<Star size={3} duration={18} />
-			{/snippet}
+			<Star size={3} duration={18} />
 		</HeroOrbit>
 		<HeroOrbit size={28} duration={42} rotation={250} starOnly>
-			{#snippet children()}
-				<Star size={1.5} duration={18} />
-			{/snippet}
+			<Star size={1.5} duration={18} />
 		</HeroOrbit>
 
 		<!-- Ring-3: Intermediate Ring with Medium Stars -->
 		<HeroOrbit size={38} duration={46} rotation={144}>
-			{#snippet children()}
-				<Star size={3.5} duration={22} opacity={20} />
-			{/snippet}
+			<Star size={3.5} duration={22} opacity={20} />
 		</HeroOrbit>
 		<HeroOrbit size={38} duration={42} rotation={85} starOnly>
-			{#snippet children()}
-				<Star size={0.75} duration={20} opacity={20} />
-			{/snippet}
+			<Star size={0.75} duration={20} opacity={20} />
 		</HeroOrbit>
 		<HeroOrbit size={38} duration={40} starOnly>
-			{#snippet children()}
-				<Star size={2.3} duration={20} opacity={70} />
-			{/snippet}
+			<Star size={2.3} duration={20} opacity={70} />
 		</HeroOrbit>
 		<HeroOrbit size={38} duration={37} rotation={200} starOnly>
-			{#snippet children()}
-				<Star size={2.7} duration={20} opacity={75} />
-			{/snippet}
+			<Star size={2.7} duration={20} opacity={75} />
 		</HeroOrbit>
 		<HeroOrbit size={38} duration={35} rotation={270} starOnly>
-			{#snippet children()}
-				<Star size={2.9} duration={18} />
-			{/snippet}
+			<Star size={2.9} duration={18} />
 		</HeroOrbit>
 
 		<!-- Ring-4: Larger Ring with Varied Star Sizes -->
 		<HeroOrbit size={50} duration={80} rotation={-72}>
-			{#snippet children()}
-				<Star size={7} duration={25} />
-			{/snippet}
+			<Star size={7} duration={25} />
 		</HeroOrbit>
 
 		<!-- Final Larger Orbits for Background Depth -->
@@ -156,8 +130,11 @@
 			<Profile />
 		</div>
 		<div class="flex w-full flex-col gap-2 px-5 md:px-10">
-			<GlitchText text={info.name} class="text-center text-3xl font-bold sm:text-4xl md:text-left" />
-			<h2 class="text-secondary text-center text-xl sm:text-2xl md:text-left">
+			<GlitchText
+				text={info.name}
+				class="text-center text-3xl font-bold sm:text-4xl md:text-left"
+			/>
+			<h2 class="text-center text-xl text-secondary sm:text-2xl md:text-left">
 				{info.title}
 			</h2>
 			<p class="text-justify text-sm sm:text-base md:text-lg">{info.description}</p>

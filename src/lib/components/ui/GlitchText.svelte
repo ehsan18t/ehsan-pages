@@ -7,22 +7,14 @@
 	let { text, class: className }: Props = $props();
 </script>
 
-<div class="stack {className}" style="--stacks: 3;">
-	<span style="--index: 0;">{text}</span>
-	<span style="--index: 1;">{text}</span>
-	<span style="--index: 2;">{text}</span>
+<div class="glitch-stack relative z-1 grid grid-cols-1 {className}" style="--stacks: 3;">
+	<span class="glitch-layer font-bold" style="--index: 0;">{text}</span>
+	<span class="glitch-layer font-bold" style="--index: 1;">{text}</span>
+	<span class="glitch-layer font-bold select-auto" style="--index: 2;">{text}</span>
 </div>
 
 <style>
-	.right {
-		text-align: right;
-		width: 100%;
-	}
-
-	.stack {
-		display: grid;
-		grid-template-columns: 1fr;
-		--stacks: 3;
+	.glitch-stack {
 		--glitch-duration: 2s;
 		--stack-animation-duration: 340ms;
 		--stack-delay-increment: 120ms;
@@ -30,13 +22,10 @@
 		--glitch-translate-even: -8px;
 		--glitch-color-1: red;
 		--glitch-color-2: blue;
-		position: relative;
-		z-index: 1;
 		transform-style: preserve-3d;
 	}
 
-	.stack span {
-		font-weight: bold;
+	.glitch-layer {
 		grid-row-start: 1;
 		grid-column-start: 1;
 		--stack-height: calc(100% / var(--stacks) - 1px);
@@ -54,14 +43,11 @@
 		user-select: none;
 	}
 
-	.stack span:last-child {
-		user-select: auto;
-	}
-
-	.stack span:nth-child(odd) {
+	.glitch-layer:nth-child(odd) {
 		--glitch-translate: var(--glitch-translate-odd);
 	}
-	.stack span:nth-child(even) {
+
+	.glitch-layer:nth-child(even) {
 		--glitch-translate: var(--glitch-translate-even);
 	}
 
@@ -109,9 +95,9 @@
 		}
 	}
 
-	/* Accessibility - respect user's reduced motion preferences */
+	/* Respect user's reduced motion preferences */
 	@media (prefers-reduced-motion: reduce) {
-		.stack span {
+		.glitch-layer {
 			animation: none;
 			opacity: 1;
 			clip-path: none;

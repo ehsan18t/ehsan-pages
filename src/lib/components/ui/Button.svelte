@@ -42,7 +42,7 @@
 <button
 	{id}
 	class="relative cursor-pointer overflow-hidden rounded-lg border-2 border-accent-500 bg-accent-bg/30
-		px-5 py-3.5 font-bold leading-tight text-accent-text transition duration-300 ease-in-out
+		px-5 py-3.5 leading-tight font-bold text-accent-text transition duration-300 ease-in-out
 		hover:bg-accent-bg/60 {className}"
 	onclick={handleClick}
 >

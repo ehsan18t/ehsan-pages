@@ -14,13 +14,13 @@
 <div class={cn('mb-12 text-center md:mb-16', className)}>
 	<h2
 		id="testimonials-heading"
-		class="font-doto mb-4 flex flex-wrap justify-center gap-3 text-4xl font-bold md:text-5xl"
+		class="mb-4 flex flex-wrap justify-center gap-3 font-doto text-4xl font-bold md:text-5xl"
 	>
 		<span class="text-accent-title">{p1}</span>
 		<span>{p2}</span>
 	</h2>
 	{#if subtitle}
-		<div class="from-accent-500 to-accent-900 mx-auto h-1 w-24 rounded-full bg-linear-to-r"></div>
-		<p class="text-foreground-muted mx-auto mt-6 max-w-2xl text-lg">{subtitle}</p>
+		<div class="mx-auto h-1 w-24 rounded-full bg-linear-to-r from-accent-500 to-accent-900"></div>
+		<p class="mx-auto mt-6 max-w-2xl text-lg text-foreground-muted">{subtitle}</p>
 	{/if}
 </div>

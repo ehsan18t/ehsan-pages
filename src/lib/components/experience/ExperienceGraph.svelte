@@ -169,7 +169,7 @@
 		scrollTriggers.push(pathTween);
 
 		const nodes = graphRef.querySelectorAll<HTMLElement>('.commit-node');
-		nodes.forEach((node, i) => {
+		nodes.forEach((node) => {
 			gsap.set(node, { scale: 0, opacity: 0 });
 			const nodeTween = gsap.to(node, {
 				scale: 1,
@@ -251,9 +251,12 @@
 			/>
 		</svg>
 
-		{#each experiences as exp, i}
+		{#each experiences as exp, i (exp.id)}
 			<div
-				class="commit-node {i % 2 === 0 ? 'node-left' : 'node-right'} {activeExperience?.id === exp.id ? 'active' : ''}"
+				class="commit-node {i % 2 === 0 ? 'node-left' : 'node-right'} {activeExperience?.id ===
+				exp.id
+					? 'active'
+					: ''}"
 				style:left="{getXPercent(i)}%"
 				style:top="{getY(i)}px"
 				style:--node-color={NODE_COLOR}
@@ -276,8 +279,12 @@
 
 	<!-- Mobile List -->
 	<div class="mobile-experience-list">
-		{#each experiences as exp, i}
-			<div class="mobile-experience-item" style:--node-color={NODE_COLOR} style:--delay="{i * 0.1}s">
+		{#each experiences as exp, i (exp.id)}
+			<div
+				class="mobile-experience-item"
+				style:--node-color={NODE_COLOR}
+				style:--delay="{i * 0.1}s"
+			>
 				<div class="mobile-node-line">
 					<div class="mobile-node"></div>
 					{#if i < experiences.length - 1}
@@ -289,12 +296,12 @@
 					<h4 class="mobile-role">{exp.role}</h4>
 					<p class="mobile-company">{exp.company}</p>
 					<ul class="mobile-description-list">
-						{#each exp.description as item}
+						{#each exp.description as item, itemIndex (`${exp.id}-desc-${itemIndex}`)}
 							<li>{item}</li>
 						{/each}
 					</ul>
 					<div class="mobile-tech-stack">
-						{#each exp.techStack as tech}
+						{#each exp.techStack as tech (`${exp.id}-tech-${tech}`)}
 							<span class="mobile-tech-pill">{tech}</span>
 						{/each}
 					</div>

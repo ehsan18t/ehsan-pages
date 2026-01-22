@@ -64,7 +64,7 @@
 
 	async function fetchPdf(url: string) {
 		if (!pdfjsLib) return;
-		
+
 		isLoading = true;
 		error = null;
 		numPages = 0;
@@ -111,7 +111,8 @@
 	async function renderAllPages() {
 		if (!pdfDocument || !pagesContainer) return;
 
-		// Clear existing pages
+		// Clear existing pages - intentional DOM manipulation for PDF canvas rendering
+		// eslint-disable-next-line svelte/no-dom-manipulating
 		pagesContainer.innerHTML = '';
 
 		for (let pageNum = 1; pageNum <= numPages; pageNum++) {
@@ -134,6 +135,8 @@
 				}).promise;
 			}
 
+			// Intentional DOM manipulation for PDF canvas rendering
+			// eslint-disable-next-line svelte/no-dom-manipulating
 			pagesContainer.appendChild(canvas);
 		}
 	}

@@ -1,13 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	// Terminal directory display
-	interface DirectoryProps {
-		user: string;
-		host: string;
-		path: string;
-	}
-
 	interface CommandEntry {
 		type: 'command' | 'error' | 'success' | 'info' | 'manual';
 		content: string;
@@ -292,8 +285,8 @@ Type 'help' to see available commands.`
 	// Adjust input position when input or loading changes
 	$effect(() => {
 		// Track dependencies
-		currentInput;
-		isLoading;
+		void currentInput;
+		void isLoading;
 		adjustInputPosition();
 	});
 
@@ -306,7 +299,7 @@ Type 'help' to see available commands.`
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
-	class="terminal-container mx-auto max-w-170 overflow-hidden rounded-lg"
+	class="terminal-container mx-auto my-8 max-w-170 overflow-hidden rounded-lg border border-terminal-border bg-linear-to-b from-terminal-bg to-terminal-bg-dark font-mono text-xs text-terminal-text shadow-terminal"
 	onclick={focusInput}
 	onkeydown={(e) => e.key === 'Enter' && focusInput()}
 	aria-label="Interactive terminal"
@@ -314,14 +307,24 @@ Type 'help' to see available commands.`
 	tabindex="0"
 >
 	<!-- Terminal Header -->
-	<div class="terminal-header">
-		<div class="flex items-center">
-			<div class="terminal-btn terminal-close"></div>
-			<div class="terminal-btn terminal-minimize"></div>
-			<div class="terminal-btn terminal-maximize"></div>
+	<div
+		class="flex items-center justify-between border-b border-terminal-header-border bg-linear-to-r from-terminal-header to-terminal-header-dark px-4 py-2.5"
+	>
+		<div class="flex items-center gap-2">
+			<div
+				class="size-3 rounded-full border border-[#ec4c48] bg-[#ff5f57] shadow-[inset_0_0_1px_rgba(255,255,255,0.2)]"
+			></div>
+			<div
+				class="size-3 rounded-full border border-[#e1aa25] bg-[#febc2e] shadow-[inset_0_0_1px_rgba(255,255,255,0.2)]"
+			></div>
+			<div
+				class="size-3 rounded-full border border-[#1db334] bg-[#28c840] shadow-[inset_0_0_1px_rgba(255,255,255,0.2)]"
+			></div>
 		</div>
-		<div class="terminal-title">user@mac: ~/contact</div>
-		<div class="terminal-menu">⌘</div>
+		<div class="flex-1 text-center text-xs font-medium text-terminal-title drop-shadow-sm">
+			user@mac: ~/contact
+		</div>
+		<div class="text-xs text-terminal-menu">⌘</div>
 	</div>
 
 	<!-- Terminal Content -->
@@ -329,33 +332,41 @@ Type 'help' to see available commands.`
 		{#each commandHistory as entry, index (index)}
 			<div>
 				{#if entry.type === 'command'}
-					<div class="prompt-line mb-2 flex items-center gap-1">
+					<div class="mb-2 flex flex-wrap items-center gap-1">
 						<span class="flex">
-							<span class="text-emerald-400">user</span>
-							<span class="text-gray-400">@</span>
-							<span class="text-sky-400">mac</span>
-							<span class="text-gray-400">:</span>
+							<span class="text-terminal-prompt-user">user</span>
+							<span class="text-terminal-prompt-sep">@</span>
+							<span class="text-terminal-prompt-host">mac</span>
+							<span class="text-terminal-prompt-sep">:</span>
 						</span>
 						<span class="flex">
-							<span class="text-fuchsia-400">~/contact</span>
-							<span class="text-gray-400">$</span>
+							<span class="text-terminal-prompt-path">~/contact</span>
+							<span class="text-terminal-prompt-sep">$</span>
 						</span>
 						<span class="command-input ml-1">{entry.content}</span>
 					</div>
 				{:else if entry.type === 'error'}
-					<div class="terminal-message error-message">
+					<div
+						class="terminal-message border-l-2 border-terminal-error bg-terminal-error/8 text-terminal-error"
+					>
 						<div class="whitespace-pre-line">{entry.content}</div>
 					</div>
 				{:else if entry.type === 'success'}
-					<div class="terminal-message success-message">
+					<div
+						class="terminal-message border-l-2 border-terminal-success bg-terminal-success/8 text-terminal-success"
+					>
 						<div>{entry.content}</div>
 					</div>
 				{:else if entry.type === 'info'}
-					<div class="terminal-message info-message">
+					<div
+						class="terminal-message border-l-2 border-terminal-info bg-terminal-info/8 text-terminal-info"
+					>
 						<div class="whitespace-pre-line">{entry.content}</div>
 					</div>
 				{:else if entry.type === 'manual'}
-					<div class="terminal-message manual-message">
+					<div
+						class="terminal-message border-l-2 border-terminal-warning bg-terminal-warning/8 text-terminal-warning"
+					>
 						<div class="whitespace-pre-line">{entry.content}</div>
 					</div>
 				{/if}
@@ -365,21 +376,23 @@ Type 'help' to see available commands.`
 		<!-- Active prompt line -->
 		<div class="active-prompt-line {isLoading ? 'loading' : ''}">
 			{#if isLoading}
-				<div class="loading-line">
-					<div class="loading-spinner"></div>
-					<span class="loading-text">Processing command...</span>
+				<div class="flex items-center text-terminal-loading">
+					<div
+						class="loading-spinner animate-spin mr-2 size-3.5 rounded-full border-2 border-transparent border-t-terminal-loading"
+					></div>
+					<span class="animate-pulse">Processing command...</span>
 				</div>
 			{:else}
 				<div class="prompt-container" bind:this={promptRef}>
 					<span class="flex">
-						<span class="text-emerald-400">user</span>
-						<span class="text-gray-400">@</span>
-						<span class="text-sky-400">mac</span>
-						<span class="text-gray-400">:</span>
+						<span class="text-terminal-prompt-user">user</span>
+						<span class="text-terminal-prompt-sep">@</span>
+						<span class="text-terminal-prompt-host">mac</span>
+						<span class="text-terminal-prompt-sep">:</span>
 					</span>
 					<span class="flex">
-						<span class="text-fuchsia-400">~/contact</span>
-						<span class="text-gray-400">$</span>
+						<span class="text-terminal-prompt-path">~/contact</span>
+						<span class="text-terminal-prompt-sep">$</span>
 					</span>
 				</div>
 				<input
@@ -395,93 +408,23 @@ Type 'help' to see available commands.`
 	</div>
 
 	<!-- Terminal hint -->
-	<div class="terminal-hint hidden md:block">
+	<div
+		class="hidden border-t border-terminal-hint-border bg-terminal-hint-bg px-4 py-2 text-center text-[0.7rem] text-terminal-hint md:block"
+	>
 		Click to focus • Use ↑↓ to navigate history • Tab to autocomplete • Type 'help' for commands
 	</div>
 </div>
 
 <style>
-	/* Modern Terminal Styling */
-	.terminal-container {
-		background: linear-gradient(to bottom, #1a1b26, #16161e);
-		border: 1px solid rgba(82, 82, 119, 0.3);
-		box-shadow:
-			0 20px 40px -15px rgba(0, 0, 0, 0.5),
-			0 0 50px -5px rgba(50, 50, 80, 0.15) inset;
-		color: #c9d1d9;
-		margin: 2rem auto;
-		font-family:
-			'JetBrains Mono',
-			'Fira Code',
-			'Menlo',
-			'Monaco',
-			'Consolas',
-			monospace;
-		font-size: 0.75rem;
-	}
+	@reference "../../../routes/layout.css";
 
-	/* Terminal Header */
-	.terminal-header {
-		background: linear-gradient(to right, #24283b, #1e2030);
-		padding: 0.6rem 1rem;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		border-bottom: 1px solid rgba(100, 100, 150, 0.2);
-	}
-
-	.terminal-title {
-		color: #a9b1d6;
-		font-size: 0.75rem;
-		font-weight: 500;
-		text-align: center;
-		flex: 1;
-		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-	}
-
-	.terminal-menu {
-		color: #787c99;
-		font-size: 0.75rem;
-	}
-
-	.terminal-btn {
-		width: 12px;
-		height: 12px;
-		border-radius: 50%;
-		margin-right: 8px;
-		position: relative;
-	}
-
-	.terminal-close {
-		background-color: #ff5f57;
-		border: 1px solid #ec4c48;
-		box-shadow: 0 0 1px rgba(255, 255, 255, 0.2) inset;
-	}
-
-	.terminal-minimize {
-		background-color: #febc2e;
-		border: 1px solid #e1aa25;
-		box-shadow: 0 0 1px rgba(255, 255, 255, 0.2) inset;
-	}
-
-	.terminal-maximize {
-		background-color: #28c840;
-		border: 1px solid #1db334;
-		box-shadow: 0 0 1px rgba(255, 255, 255, 0.2) inset;
-	}
-
-	/* Terminal Content */
+	/* Terminal Content with custom scrollbar */
 	.terminal-content {
-		background-color: #1a1b26;
-		padding: 1rem 1.2rem;
-		height: 465px;
-		overflow-y: auto;
-		line-height: 1.5;
-		font-size: 0.85rem;
-		position: relative;
-		color: #c0caf5;
+		@apply relative h-116.25 overflow-y-auto px-5 py-4 text-[0.85rem] leading-relaxed;
+		background-color: var(--terminal-bg);
+		color: var(--terminal-text);
 		scrollbar-width: thin;
-		scrollbar-color: #414868 #1a1b26;
+		scrollbar-color: var(--terminal-scrollbar) var(--terminal-bg);
 	}
 
 	.terminal-content::-webkit-scrollbar {
@@ -489,158 +432,57 @@ Type 'help' to see available commands.`
 	}
 
 	.terminal-content::-webkit-scrollbar-track {
-		background: #1a1b26;
+		background: var(--terminal-bg);
 		border-radius: 4px;
 	}
 
 	.terminal-content::-webkit-scrollbar-thumb {
-		background-color: #414868;
+		background-color: var(--terminal-scrollbar);
 		border-radius: 4px;
-		border: 2px solid #1a1b26;
+		border: 2px solid var(--terminal-bg);
 	}
 
-	/* Terminal prompt line */
-	.prompt-line {
-		margin-bottom: 0.5rem;
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-	}
-
-	/* Active prompt line with input */
+	/* Active prompt line positioning */
 	.active-prompt-line {
-		position: relative;
-		min-height: 1.5rem;
-		margin-top: 0.5rem;
-		display: flex;
-		width: 100%;
+		@apply relative mt-2 flex min-h-6 w-full;
 	}
 
 	.active-prompt-line.loading {
-		margin-top: 1rem;
+		@apply mt-4;
 	}
 
 	.prompt-container {
-		display: flex;
-		align-items: center;
-		position: absolute;
-		left: 0;
-		top: 0;
-		z-index: 2;
+		@apply absolute top-0 left-0 z-10 flex items-center;
 	}
 
-	/* Visible Terminal Input */
+	/* Terminal input styling */
 	.terminal-input {
-		background: transparent;
-		border: none;
-		color: #c0caf5;
-		font-family: inherit;
-		font-size: inherit;
-		width: 100%;
-		padding: 0 0 0 8px;
-		outline: none;
-		caret-color: #7aa2f7;
-		margin-bottom: 10px;
+		@apply mb-2.5 w-full border-none bg-transparent pl-2 outline-none;
+		font: inherit;
+		color: var(--terminal-text);
+		caret-color: var(--terminal-info);
 	}
 
 	.terminal-input::selection {
 		background-color: rgba(150, 170, 220, 0.4);
 	}
 
-	/* Loading animation */
-	.loading-line {
-		display: flex;
-		align-items: center;
-		color: #bb9af7;
-	}
-
-	.loading-spinner {
-		width: 14px;
-		height: 14px;
-		border: 2px solid transparent;
-		border-top-color: #bb9af7;
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
-		margin-right: 8px;
-	}
-
-	.loading-text {
-		animation: pulse 1.5s ease-in-out infinite;
-	}
-
-	/* Message types */
+	/* Message base styling */
 	.terminal-message {
-		padding: 0.25rem 0.5rem;
-		margin: 0.25rem 0 1rem 0;
-		border-radius: 4px;
-		white-space: pre-line;
+		@apply my-1 mb-4 rounded px-2 py-1 whitespace-pre-line;
 	}
 
-	.error-message {
-		color: #f7768e;
-		background-color: rgba(247, 118, 142, 0.08);
-		border-left: 2px solid #f7768e;
-	}
-
-	.success-message {
-		color: #9ece6a;
-		background-color: rgba(158, 206, 106, 0.08);
-		border-left: 2px solid #9ece6a;
-	}
-
-	.info-message {
-		color: #7aa2f7;
-		background-color: rgba(122, 162, 247, 0.08);
-		border-left: 2px solid #7aa2f7;
-	}
-
-	.manual-message {
-		color: #e0af68;
-		background-color: rgba(224, 175, 104, 0.08);
-		border-left: 2px solid #e0af68;
-	}
-
-	/* Terminal hints bar */
-	.terminal-hint {
-		background-color: #1e2030;
-		color: #565f89;
-		font-size: 0.7rem;
-		padding: 0.5rem 1rem;
-		text-align: center;
-		border-top: 1px solid rgba(100, 100, 150, 0.15);
-	}
-
-	/* Command input animation */
+	/* Command input typing animation */
 	.command-input {
-		position: relative;
+		@apply relative;
 		animation: typing 0.4s ease-out;
 	}
 
-	/* Animations */
 	@keyframes typing {
 		from {
 			opacity: 0.5;
 		}
 		to {
-			opacity: 1;
-		}
-	}
-
-	@keyframes spin {
-		0% {
-			transform: rotate(0deg);
-		}
-		100% {
-			transform: rotate(360deg);
-		}
-	}
-
-	@keyframes pulse {
-		0%,
-		100% {
-			opacity: 0.7;
-		}
-		50% {
 			opacity: 1;
 		}
 	}

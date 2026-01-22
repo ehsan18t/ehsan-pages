@@ -13,31 +13,23 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const newHeaders = new Headers(response.headers);
 
 	// Static assets - cache for 1 year (immutable for hashed assets)
-	if (
-		pathname.match(
-			/\.(js|css|woff2?|ttf|eot|ico|svg|png|jpe?g|gif|webp|avif|mp4|webm|pdf)$/i
-		)
-	) {
-		newHeaders.set(
-			'Cache-Control',
-			'public, max-age=31536000, s-maxage=31536000, immutable'
-		);
+	if (pathname.match(/\.(js|css|woff2?|ttf|eot|ico|svg|png|jpe?g|gif|webp|avif|mp4|webm|pdf)$/i)) {
+		newHeaders.set('Cache-Control', 'public, max-age=31536000, s-maxage=31536000, immutable');
 		newHeaders.set('CDN-Cache-Control', 'public, max-age=31536000, immutable');
 		newHeaders.set('Cloudflare-CDN-Cache-Control', 'public, max-age=31536000, immutable');
 	}
 	// HTML pages - shorter cache with revalidation
-	else if (
-		pathname === '/' ||
-		!pathname.includes('.') ||
-		pathname.endsWith('.html')
-	) {
+	else if (pathname === '/' || !pathname.includes('.') || pathname.endsWith('.html')) {
 		// Cache HTML for 1 hour, with stale-while-revalidate for 1 day
 		newHeaders.set(
 			'Cache-Control',
 			'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400'
 		);
 		newHeaders.set('CDN-Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
-		newHeaders.set('Cloudflare-CDN-Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
+		newHeaders.set(
+			'Cloudflare-CDN-Cache-Control',
+			'public, max-age=86400, stale-while-revalidate=86400'
+		);
 	}
 	// API routes and sitemap - moderate caching
 	else if (pathname.startsWith('/api/') || pathname === '/sitemap.xml') {

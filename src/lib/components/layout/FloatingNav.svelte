@@ -46,7 +46,7 @@
 
 	function updateIndicator() {
 		if (!indicatorRef || !mobileNavRef) return;
-		const links = mobileNavRef.querySelectorAll('.nav-item');
+		const links = mobileNavRef.querySelectorAll('.nav-item-mobile');
 		const activeEl = links[activeIndex] as HTMLElement;
 		if (activeEl) {
 			const width = activeEl.offsetWidth;
@@ -81,9 +81,7 @@
 			(entries) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
-						const idx = navItems.findIndex(
-							(item) => item.href.substring(1) === entry.target.id
-						);
+						const idx = navItems.findIndex((item) => item.href.substring(1) === entry.target.id);
 						if (idx >= 0) {
 							activeIndex = idx;
 						}
@@ -127,21 +125,26 @@
 <nav
 	bind:this={desktopNavRef}
 	id="floating-nav-desktop"
-	class="floating-nav-desktop"
+	class="floating-nav-desktop nav-glass pointer-events-none fixed top-1/2 left-6 z-50 hidden -translate-y-1/2 opacity-0 transition-opacity duration-300 md:block"
 	class:is-visible={isVisible}
 >
-	<div class="nav-container">
-		{#each navItems as item, index}
+	<div class="flex flex-col gap-1 p-2">
+		{#each navItems as item, index (item.section)}
 			<a
 				href={item.href}
-				class="nav-item"
+				data-sveltekit-preload-data="off"
+				class="nav-item-desktop nav-item-base overflow-hidden p-2"
 				class:active={index === activeIndex}
 				data-section={item.section}
 				aria-label={item.label}
 				onclick={(e) => scrollToSection(e, item.href, item.offset)}
 			>
-				<Icon icon={item.icon} class="nav-icon" />
-				<span class="nav-label">{item.label}</span>
+				<Icon icon={item.icon} class="nav-icon h-6 w-6 shrink-0 transition-all duration-300" />
+				<span
+					class="nav-label ml-0 max-w-0 overflow-hidden text-sm font-medium whitespace-nowrap opacity-0 transition-all duration-300"
+				>
+					{item.label}
+				</span>
 			</a>
 		{/each}
 	</div>
@@ -151,280 +154,100 @@
 <nav
 	bind:this={mobileNavRef}
 	id="floating-nav-mobile"
-	class="floating-nav-mobile"
+	class="floating-nav-mobile pointer-events-none fixed inset-x-4 bottom-4 z-50 block opacity-0 backdrop-blur-sm transition-all duration-400 ease-[cubic-bezier(0.4,0.8,0.2,1)] md:hidden"
 	class:is-visible={isVisible}
 	class:is-hidden={isHidden}
 	aria-label="Primary navigation"
 >
-	<div class="nav-container">
-		<div bind:this={indicatorRef} class="active-indicator" aria-hidden="true"></div>
-		{#each navItems as item, index}
+	<div
+		class="nav-container relative isolate flex w-full items-stretch justify-between gap-1 overflow-hidden rounded-3xl border border-white/12 p-2 saturate-150 backdrop-blur-xl"
+		style="background: linear-gradient(140deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 60%) border-box, rgba(10, 25, 45, 0.55);
+			   box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.4), 0 8px 28px -6px rgba(0, 0, 0, 0.45);"
+	>
+		<div
+			bind:this={indicatorRef}
+			class="active-indicator absolute top-1.5 left-0 z-0 h-[calc(100%-12px)] w-0 rounded-[18px] border border-accent-bg/50 transition-all duration-450 ease-[cubic-bezier(0.55,0.2,0.15,1)] will-change-[transform,width]"
+			style="background: linear-gradient(145deg, oklch(var(--accent-bg) / 0.55), oklch(var(--accent-bg) / 0.25));
+				   box-shadow: inset 0 0 0 1px oklch(var(--accent-bg) / 0.35), 0 4px 10px -2px oklch(var(--accent-bg) / 0.55);"
+			aria-hidden="true"
+		></div>
+		{#each navItems as item, index (item.section)}
 			<a
 				href={item.href}
-				class="nav-item"
+				data-sveltekit-preload-data="off"
+				class="nav-item-mobile relative z-1 flex min-w-15 flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-[11px] leading-none font-medium text-foreground-muted no-underline transition-colors duration-300 select-none"
 				class:active={index === activeIndex}
 				data-section={item.section}
 				aria-label={item.label}
 				aria-current={index === activeIndex ? 'page' : undefined}
 				onclick={(e) => scrollToSection(e, item.href, item.offset)}
+				style="-webkit-tap-highlight-color: transparent;"
 			>
-				<span class="icon-wrapper">
-					<Icon icon={item.icon} class="nav-icon" />
+				<span
+					class="icon-wrapper flex h-6.5 w-6.5 items-center justify-center rounded-[10px] transition-all duration-300"
+				>
+					<Icon icon={item.icon} class="nav-icon h-5 w-5 transition-all duration-350" />
 				</span>
-				<span class="nav-label">{item.label}</span>
+				<span class="nav-label tracking-wide opacity-85 transition-opacity duration-300">
+					{item.label}
+				</span>
 			</a>
 		{/each}
 	</div>
 </nav>
 
 <style>
-	/* ========================
-	   Desktop Navigation
-	   ======================== */
-	.floating-nav-desktop {
-		display: none;
+	@reference "../../../routes/layout.css";
+
+	/* Desktop Navigation */
+	.floating-nav-desktop.is-visible {
+		@apply pointer-events-auto opacity-100;
 	}
 
-	@media (min-width: 768px) {
-		.floating-nav-desktop {
-			position: fixed;
-			top: 50%;
-			left: 1.5rem;
-			z-index: 50;
-			display: block;
-			opacity: 0;
-			pointer-events: none;
-			transform: translateY(-50%);
-			transition: opacity 0.3s ease-in-out;
-		}
-
-		.floating-nav-desktop.is-visible {
-			opacity: 1;
-			pointer-events: auto;
-		}
-
-		.floating-nav-desktop .nav-container {
-			display: flex;
-			flex-direction: column;
-			gap: 0.25rem;
-			padding: 0.5rem;
-			border-radius: 0.75rem;
-			border: 1px solid rgba(224, 230, 237, 0.1);
-			background: rgba(2, 21, 38, 0.85);
-			backdrop-filter: blur(16px);
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-		}
-
-		.floating-nav-desktop .nav-item {
-			position: relative;
-			display: flex;
-			cursor: pointer;
-			align-items: center;
-			overflow: hidden;
-			border-radius: 0.5rem;
-			padding: 0.5rem;
-			text-decoration: none;
-			color: rgb(var(--foreground-muted));
-			transition: all 0.2s ease-in-out;
-		}
-
-		.floating-nav-desktop .nav-item :global(.nav-icon) {
-			height: 1.5rem;
-			width: 1.5rem;
-			flex-shrink: 0;
-			transition: all 0.3s ease-in-out;
-		}
-
-		.floating-nav-desktop .nav-label {
-			overflow: hidden;
-			font-size: 0.875rem;
-			font-weight: 500;
-			white-space: nowrap;
-			opacity: 0;
-			max-width: 0;
-			margin-left: 0;
-			transition: all 0.3s ease-in-out;
-		}
-
-		.floating-nav-desktop .nav-container:hover .nav-label {
-			opacity: 1;
-			max-width: 200px;
-			margin-left: 0.375rem;
-		}
-
-		.floating-nav-desktop .nav-item:hover,
-		.floating-nav-desktop .nav-item.active {
-			color: oklch(var(--accent-text));
-			background: oklch(var(--accent-bg) / 0.2);
-		}
-
-		.floating-nav-desktop .nav-item.active {
-			background: oklch(var(--accent-bg) / 0.3);
-		}
-
-		.floating-nav-desktop .nav-item:hover :global(.nav-icon),
-		.floating-nav-desktop .nav-item.active :global(.nav-icon) {
-			color: oklch(var(--accent-text));
-		}
+	.floating-nav-desktop .nav-item-desktop:hover .nav-label,
+	.floating-nav-desktop:hover .nav-label {
+		@apply ml-1.5 max-w-50 opacity-100;
 	}
 
-	/* ========================
-	   Mobile Navigation
-	   ======================== */
-	.floating-nav-mobile {
-		display: none;
+	.floating-nav-desktop .nav-item-desktop:hover :global(.nav-icon),
+	.floating-nav-desktop .nav-item-desktop.active :global(.nav-icon) {
+		@apply text-accent-text;
 	}
 
-	@media (max-width: 767px) {
-		.floating-nav-mobile {
-			position: fixed;
-			inset-inline: 1rem;
-			bottom: 1rem;
-			z-index: 50;
-			display: block;
-			opacity: 0;
-			pointer-events: none;
-			backdrop-filter: blur(2px);
-			transition:
-				opacity 0.4s cubic-bezier(0.4, 0.8, 0.2, 1),
-				transform 0.4s cubic-bezier(0.4, 0.8, 0.2, 1);
-		}
+	/* Mobile Navigation */
+	.floating-nav-mobile.is-visible {
+		@apply pointer-events-auto opacity-100;
+	}
 
-		.floating-nav-mobile.is-visible {
-			opacity: 1;
-			pointer-events: auto;
-		}
+	.floating-nav-mobile.is-hidden {
+		@apply pointer-events-none translate-y-full opacity-0;
+	}
 
-		.floating-nav-mobile.is-hidden {
-			transform: translateY(100%);
-			opacity: 0;
-			pointer-events: none;
-		}
+	.floating-nav-mobile .nav-item-mobile:focus-visible {
+		@apply outline-2 outline-offset-2 outline-accent-bg;
+	}
 
-		.floating-nav-mobile .nav-container {
-			position: relative;
-			display: flex;
-			width: 100%;
-			align-items: stretch;
-			justify-content: space-between;
-			gap: 0.25rem;
-			padding: 0.5rem;
-			border-radius: 1.5rem;
-			overflow: hidden;
-			isolation: isolate;
-			filter: saturate(1.5);
-			backdrop-filter: blur(16px);
-			background:
-				linear-gradient(140deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 60%)
-					border-box,
-				rgba(10, 25, 45, 0.55);
-			border: 1px solid rgba(255, 255, 255, 0.12);
-			box-shadow:
-				0 4px 10px -2px rgba(0, 0, 0, 0.4),
-				0 8px 28px -6px rgba(0, 0, 0, 0.45);
-			pointer-events: auto;
-		}
+	.floating-nav-mobile .nav-item-mobile.active .icon-wrapper,
+	.floating-nav-mobile .nav-item-mobile:hover .icon-wrapper {
+		background: oklch(var(--accent-bg) / 0.18);
+	}
 
-		.active-indicator {
-			position: absolute;
-			top: 6px;
-			left: 0;
-			height: calc(100% - 12px);
-			width: 0;
-			box-sizing: border-box;
-			background: linear-gradient(
-				145deg,
-				oklch(var(--accent-bg) / 0.55),
-				oklch(var(--accent-bg) / 0.25)
-			);
-			border: 1px solid oklch(var(--accent-bg) / 0.5);
-			box-shadow:
-				inset 0 0 0 1px oklch(var(--accent-bg) / 0.35),
-				0 4px 10px -2px oklch(var(--accent-bg) / 0.55);
-			border-radius: 18px;
-			transform: translateX(0);
-			transition:
-				transform 0.45s cubic-bezier(0.55, 0.2, 0.15, 1),
-				width 0.28s cubic-bezier(0.55, 0.2, 0.15, 1);
-			will-change: transform, width;
-			z-index: 0;
-			pointer-events: none;
-		}
+	.floating-nav-mobile .nav-item-mobile.active :global(.nav-icon) {
+		transform: scale(1.07);
+		filter: drop-shadow(0 2px 4px oklch(var(--accent-bg) / 0.55));
+	}
 
-		.floating-nav-mobile .nav-item {
-			position: relative;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			gap: 0.25rem;
-			padding: 0.5rem 0.75rem;
-			min-width: 60px;
-			font-size: 11px;
-			font-weight: 500;
-			text-decoration: none;
-			color: rgb(var(--foreground-muted));
-			border-radius: 1rem;
-			line-height: 1;
-			user-select: none;
-			-webkit-tap-highlight-color: transparent;
-			transition: color 0.3s;
-			z-index: 1;
-		}
+	.floating-nav-mobile .nav-item-mobile:not(.active) .nav-label {
+		@apply opacity-65;
+	}
 
-		.floating-nav-mobile .nav-item:focus-visible {
-			outline: 2px solid oklch(var(--accent-bg));
-			outline-offset: 2px;
-		}
+	.floating-nav-mobile .nav-item-mobile.active,
+	.floating-nav-mobile .nav-item-mobile:hover {
+		@apply text-accent-text;
+	}
 
-		.floating-nav-mobile .icon-wrapper {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 26px;
-			height: 26px;
-			border-radius: 10px;
-			transition:
-				background 0.3s,
-				transform 0.3s;
-		}
-
-		.floating-nav-mobile .nav-item :global(.nav-icon) {
-			height: 1.25rem;
-			width: 1.25rem;
-			transition:
-				transform 0.35s,
-				filter 0.35s;
-		}
-
-		.floating-nav-mobile .nav-item.active .icon-wrapper,
-		.floating-nav-mobile .nav-item:hover .icon-wrapper {
-			background: oklch(var(--accent-bg) / 0.18);
-		}
-
-		.floating-nav-mobile .nav-item.active :global(.nav-icon) {
-			transform: scale(1.07);
-			filter: drop-shadow(0 2px 4px oklch(var(--accent-bg) / 0.55));
-		}
-
-		.floating-nav-mobile .nav-label {
-			letter-spacing: 0.25px;
-			opacity: 0.85;
-			transition: opacity 0.3s;
-		}
-
-		.floating-nav-mobile .nav-item:not(.active) .nav-label {
-			opacity: 0.65;
-		}
-
-		.floating-nav-mobile .nav-item.active,
-		.floating-nav-mobile .nav-item:hover {
-			color: oklch(var(--accent-text));
-		}
-
-		.floating-nav-mobile .nav-item:active .icon-wrapper {
-			transform: scale(0.92);
-		}
+	.floating-nav-mobile .nav-item-mobile:active .icon-wrapper {
+		transform: scale(0.92);
 	}
 
 	/* Reduced motion */
@@ -432,9 +255,11 @@
 		.active-indicator,
 		.floating-nav-mobile,
 		.floating-nav-desktop,
-		.nav-item,
+		.nav-item-mobile,
+		.nav-item-desktop,
 		.icon-wrapper,
-		.nav-item :global(.nav-icon) {
+		.nav-item-mobile :global(.nav-icon),
+		.nav-item-desktop :global(.nav-icon) {
 			transition: none !important;
 		}
 	}

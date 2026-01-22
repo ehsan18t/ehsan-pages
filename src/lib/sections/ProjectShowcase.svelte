@@ -18,51 +18,62 @@
 			id="project-grid-container"
 			class="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10 lg:grid-cols-3"
 		>
-			{#each projects as project, index}
-				<article class="project-card" style="--delay: {index * 0.1}s">
+			{#each projects as project, index (project.title)}
+				<article
+					class="project-card card-elevated flex h-full flex-col overflow-hidden"
+					style="--delay: {index * 0.1}s; contain: content;"
+				>
 					<ImageSlider
 						title={project.title}
 						images={project.imageUrls}
 						imageLayout={project.imageLayout}
 					/>
 
-					<div class="project-info">
-						<h3 class="project-title">{project.title}</h3>
-						<p class="project-description">{project.shortDescription}</p>
+					<div class="flex flex-1 flex-col gap-3 border-t border-foreground/8 p-5">
+						<h3
+							class="m-0 text-xl leading-tight font-semibold text-foreground transition-colors duration-300 group-hover:text-accent-500"
+						>
+							{project.title}
+						</h3>
+						<p class="m-0 grow text-justify text-sm leading-relaxed text-foreground-muted">
+							{project.shortDescription}
+						</p>
 
-						<div class="project-tech">
+						<div class="mt-1">
 							<div class="flex flex-wrap gap-1.5">
-								{#each project.techStack as tech}
+								{#each project.techStack as tech (tech)}
 									<TechPill name={tech} />
 								{/each}
 							</div>
 						</div>
 
-						<div class="project-links">
+						<div
+							class="mt-2 flex w-full flex-wrap justify-between border-t border-foreground/8 pt-3"
+						>
 							<a
 								href={project.liveUrl || '#'}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="project-link"
+								class="project-link inline-flex min-w-[calc(50%-0.5rem)] items-center justify-center gap-1.5 rounded-md bg-foreground/5 px-3 py-1.5 text-sm font-medium text-accent-500 transition-colors duration-200 hover:bg-accent-500/10"
 								class:disabled={!project.liveUrl}
 								aria-disabled={!project.liveUrl}
 								title={project.liveUrl ? 'View live demo' : 'Live demo not available'}
 								onclick={!project.liveUrl ? (e) => e.preventDefault() : undefined}
 							>
-								<Icon icon="mdi:open-in-new" />
+								<Icon icon="mdi:open-in-new" class="h-4 w-4" />
 								<span>View Live</span>
 							</a>
 							<a
 								href={project.repoUrl || '#'}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="project-link"
+								class="project-link inline-flex min-w-[calc(50%-0.5rem)] items-center justify-center gap-1.5 rounded-md bg-foreground/5 px-3 py-1.5 text-sm font-medium text-accent-500 transition-colors duration-200 hover:bg-accent-500/10"
 								class:disabled={!project.repoUrl}
 								aria-disabled={!project.repoUrl}
 								title={project.repoUrl ? 'View source code' : 'Source code not available'}
 								onclick={!project.repoUrl ? (e) => e.preventDefault() : undefined}
 							>
-								<Icon icon="mdi:github" />
+								<Icon icon="mdi:github" class="h-4 w-4" />
 								<span>Source Code</span>
 							</a>
 						</div>
@@ -74,167 +85,33 @@
 </section>
 
 <style>
-	.project-card {
-		display: flex;
-		flex-direction: column;
-		background-color: color-mix(in oklch, rgb(var(--background)), white 3%);
-		border-radius: 0.75rem;
-		box-shadow:
-			0 15px 30px -5px oklch(var(--accent-500) / 0.05),
-			0 8px 15px -6px oklch(var(--accent-500) / 0.08);
-		overflow: hidden;
-		height: 100%;
-		contain: content;
-		transition:
-			transform 0.3s ease-out,
-			box-shadow 0.3s ease-out;
-		will-change: transform, opacity;
-		backface-visibility: hidden;
+	@reference "../../routes/layout.css";
+
+	/* Hover effect for title */
+	.project-card:hover h3 {
+		@apply text-accent-500;
 	}
 
-	/* Simple fade-in animation for card loading */
-	@keyframes fade-in {
-		from {
-			opacity: 0;
-			transform: translateY(10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	/* Project info container */
-	.project-info {
-		padding: 1.25rem;
-		border-top: 1px solid rgba(var(--foreground), 0.08);
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-		flex: 1;
-	}
-
-	/* Project title with better transition */
-	.project-title {
-		font-size: 1.25rem;
-		font-weight: 600;
-		color: rgb(var(--foreground));
-		margin: 0;
-		line-height: 1.3;
-		transition: color 0.3s ease;
-	}
-
-	/* Project description */
-	.project-description {
-		text-align: justify;
-		font-size: 0.875rem;
-		line-height: 1.5;
-		color: rgb(var(--foreground-muted));
-		margin: 0;
-		flex-grow: 1;
-	}
-
-	/* Tech stack container */
-	.project-tech {
-		margin-top: 0.25rem;
-	}
-
-	/* Project links styling */
-	.project-links {
-		display: flex;
-		justify-content: space-between;
-		margin-top: 0.5rem;
-		flex-wrap: wrap;
-		border-top: 1px solid rgba(var(--foreground), 0.08);
-		padding-top: 0.75rem;
-		width: 100%;
-	}
-
-	/* Individual link buttons */
-	.project-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-		padding: 0.375rem 0.75rem;
-		border-radius: 0.375rem;
-		font-size: 0.875rem;
-		background-color: rgba(var(--foreground), 0.05);
-		color: oklch(var(--accent-500));
-		font-weight: 500;
-		min-width: calc(50% - 0.5rem);
-		justify-content: center;
-		transition: background-color 0.2s ease;
-	}
-
-	.project-link :global(svg) {
-		width: 1rem;
-		height: 1rem;
-	}
-
+	/* Disabled link styles */
 	.project-link.disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-		pointer-events: none;
-	}
-
-	.project-link.disabled:hover {
-		background-color: transparent;
-		color: var(--color-text-secondary);
-	}
-
-	.project-card:hover {
-		transform: translateY(-8px) scale(1.01);
-		box-shadow:
-			0 15px 30px -5px oklch(var(--accent-500) / 0.2),
-			0 8px 15px -6px oklch(var(--accent-500) / 0.15);
-		background-color: color-mix(in oklch, rgb(var(--background)), white 5%);
-	}
-
-	.project-card:hover .project-title {
-		color: oklch(var(--accent-500));
-	}
-
-	/* Optimize based on device capability */
-	@media screen and (min-width: 768px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
-		.project-card {
-			transition:
-				transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-				box-shadow 0.4s ease-out;
-		}
-
-		.project-link:hover {
-			background-color: oklch(var(--accent-500) / 0.1);
-		}
-
-		.project-link:active {
-			transform: translateY(1px);
-		}
-	}
-
-	/* Mobile-specific optimizations */
-	@media (max-width: 767px), (hover: none) {
-		.project-link:active {
-			background-color: oklch(var(--accent-500) / 0.1);
-		}
-	}
-
-	/* Respect reduced motion preference */
-	@media (prefers-reduced-motion: reduce) {
-		.project-card,
-		.project-link,
-		.project-title {
-			transition: none;
-		}
-
-		.project-card:hover,
-		.project-card:active {
-			transform: none;
-		}
+		@apply pointer-events-none cursor-not-allowed opacity-50;
 	}
 
 	/* Scroll optimization class */
 	:global(.scroll-active) .project-card {
 		transition: none !important;
 		will-change: auto !important;
+	}
+
+	/* Reduced motion preference */
+	@media (prefers-reduced-motion: reduce) {
+		.project-card,
+		.project-link {
+			transition: none !important;
+		}
+
+		.project-card:hover {
+			transform: none !important;
+		}
 	}
 </style>

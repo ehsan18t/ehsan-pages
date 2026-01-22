@@ -169,18 +169,22 @@
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
-			class="modal-content flex w-full flex-col overflow-hidden rounded-xl border border-white/20 bg-[rgb(var(--background))]/95 shadow-2xl {maxWidthClasses[maxWidth]} {className}"
+			class="modal-content flex w-full flex-col overflow-hidden rounded-xl border border-white/20 bg-[rgb(var(--background))]/95 shadow-2xl {maxWidthClasses[
+				maxWidth
+			]} {className}"
 			onclick={handleContentClick}
 			bind:this={modalContainerRef}
 			in:animateIn
 			out:animateOut
 		>
 			{#if header}
-				<div class="modal-header flex items-center justify-between border-b border-white/10 px-6 py-3">
+				<div
+					class="modal-header flex items-center justify-between border-b border-white/10 px-6 py-3"
+				>
 					{@render header()}
 					<button
 						onclick={closeModal}
-						class="cursor-pointer select-none px-2 text-4xl leading-none text-gray-300 transition-colors hover:text-white"
+						class="cursor-pointer px-2 text-4xl leading-none text-gray-300 transition-colors select-none hover:text-white"
 						aria-label="Close"
 					>
 						&times;
@@ -189,7 +193,7 @@
 			{:else}
 				<button
 					onclick={closeModal}
-					class="absolute right-4 top-4 z-10 cursor-pointer select-none px-2 text-4xl leading-none text-gray-300 transition-colors hover:text-white"
+					class="absolute top-4 right-4 z-10 cursor-pointer px-2 text-4xl leading-none text-gray-300 transition-colors select-none hover:text-white"
 					aria-label="Close"
 				>
 					&times;

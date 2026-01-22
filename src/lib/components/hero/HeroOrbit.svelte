@@ -17,14 +17,14 @@
 		rotation = 0,
 		opacity = 100,
 		starOnly = false,
-		class: className,
+		class: className = '',
 		children
 	}: Props = $props();
 </script>
 
 {#if !starOnly}
 	<div
-		class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-emerald-300/5 shadow-[0_0_80px_inset] shadow-emerald-300/5"
+		class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-emerald-300/5 shadow-[0_0_80px_inset] shadow-emerald-300/5 {className}"
 		style="width: {size}rem; height: {size}rem; opacity: {opacity}%;"
 	></div>
 {/if}

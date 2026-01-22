@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		name: string;
@@ -12,7 +11,6 @@
 		title?: string;
 		variant?: 'ghost' | 'solid' | 'outline';
 		onclick?: () => void;
-		children?: Snippet;
 	}
 
 	let {
@@ -24,8 +22,7 @@
 		href,
 		title,
 		variant = 'ghost',
-		onclick,
-		children
+		onclick
 	}: Props = $props();
 
 	// Normalize slug (handles: "C++", "c#", "Next.js", "Tailwind CSS" etc.)
@@ -103,6 +100,7 @@
 		class="tech-pill size-{size} variant-{variant} {className}"
 		data-tech={techSlug}
 		data-size={size}
+		data-sveltekit-preload-data="off"
 		aria-label={name}
 		title={computedTitle}
 		{href}
@@ -138,7 +136,7 @@
 		title={computedTitle}
 		role={onclick ? 'button' : undefined}
 		tabindex={onclick ? 0 : undefined}
-		onclick={onclick}
+		{onclick}
 		onkeydown={(e) => {
 			if (onclick && (e.key === 'Enter' || e.key === ' ')) {
 				e.preventDefault();

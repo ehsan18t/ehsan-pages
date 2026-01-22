@@ -2,10 +2,14 @@
 	let isExiting = $state(false);
 </script>
 
-<div id="hero-loader" class="loader-container" class:exit={isExiting}>
-	<div class="loader-content">
+<div
+	id="hero-loader"
+	class="loader-container fixed inset-0 z-9999 m-4 box-border flex h-dvh w-dvw items-center justify-center overflow-hidden bg-background"
+	class:exit={isExiting}
+>
+	<div class="z-2 flex flex-col items-center gap-8">
 		<!-- Logo with E and K -->
-		<div class="logo-container">
+		<div class="logo-container relative">
 			<svg width="150" height="150" viewBox="0 0 150 150" class="logo-svg">
 				<!-- Background circle -->
 				<circle
@@ -14,7 +18,7 @@
 					r="70"
 					class="logo-circle"
 					fill="none"
-					stroke="#FFD700"
+					stroke="var(--loader-gold)"
 					stroke-width="2"
 				></circle>
 
@@ -23,7 +27,7 @@
 					class="letter letter-e"
 					d="M 26.287 36.346 L 63.004 35.714 L 63.509 50.346 L 41.424 47.568 L 37.383 63.47 L 59.346 62.586 L 59.094 77.219 L 38.015 78.355 L 40.414 95.647 L 62.878 90.342 L 61.868 106.237 L 26.287 106.869 L 26.287 36.346 Z"
 					fill="none"
-					stroke="#FFD700"
+					stroke="var(--loader-gold)"
 					stroke-width="3"
 					stroke-linecap="round"
 					stroke-linejoin="round"
@@ -35,7 +39,7 @@
 					class="letter letter-k"
 					d="M 73.441 48.13 L 91.725 51.068 L 88.253 79.245 L 105.998 51.068 L 122.179 51.068 L 96.703 83.648 L 123.381 111.691 L 105.998 120.505 L 88.119 92.996 L 91.725 120.505 L 77.447 120.505 L 73.441 48.13 Z"
 					fill="none"
-					stroke="#FFD700"
+					stroke="var(--loader-gold)"
 					stroke-width="3"
 					stroke-linecap="round"
 					stroke-linejoin="round"
@@ -45,8 +49,11 @@
 		</div>
 
 		<!-- Name -->
-		<div class="name-container">
-			<div class="name">
+		<div class="h-10 overflow-hidden md:h-8">
+			<div
+				class="name flex gap-2 text-[1.8rem] font-bold tracking-wider md:text-2xl"
+				style="color: var(--loader-gold); filter: drop-shadow(0 0 2px var(--loader-gold-glow));"
+			>
 				<span class="name-char">E</span>
 				<span class="name-char">H</span>
 				<span class="name-char">S</span>
@@ -63,7 +70,7 @@
 	</div>
 
 	<!-- Background particles -->
-	<div class="particles">
+	<div class="particles absolute inset-0">
 		<div class="particle p1"></div>
 		<div class="particle p2"></div>
 		<div class="particle p3"></div>
@@ -74,47 +81,20 @@
 </div>
 
 <style>
+	@reference "../../../routes/layout.css";
+
+	/* Animation variables using theme tokens */
 	:root {
-		--gold-color: #ffd700;
-		--gold-glow: rgba(255, 215, 0, 0.3);
 		--circle-dash: 440;
 		--letter-dash: 370;
 		--base-delay: 0.6s;
 		--delay-increment: 0.05s;
 	}
 
-	.loader-container {
-		position: fixed;
-		left: 0;
-		top: 0;
-		z-index: 9999;
-		margin: 1rem;
-		box-sizing: border-box;
-		display: flex;
-		height: 100dvh;
-		width: 100dvw;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-		background-color: rgb(var(--background));
-	}
-
-	.loader-content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 2rem;
-		z-index: 2;
-	}
-
-	/* Logo styles and animations */
-	.logo-container {
-		position: relative;
-	}
-
+	/* Logo animations */
 	.logo-svg {
 		transform-origin: center;
-		filter: drop-shadow(0 0 3px var(--gold-glow));
+		filter: drop-shadow(0 0 3px var(--loader-gold-glow));
 		animation: logoReveal 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 		will-change: transform, opacity;
 		backface-visibility: hidden;
@@ -140,25 +120,9 @@
 		animation-delay: 0.3s;
 	}
 
-	/* Name styles and animations */
-	.name-container {
-		height: 2.5rem;
-		overflow: hidden;
-	}
-
-	.name {
-		display: flex;
-		gap: 0.5rem;
-		font-weight: 700;
-		font-size: 1.8rem;
-		color: var(--gold-color);
-		letter-spacing: 0.1rem;
-		filter: drop-shadow(0 0 2px var(--gold-glow));
-	}
-
+	/* Name character animations */
 	.name-char {
-		display: inline-block;
-		opacity: 0;
+		@apply inline-block opacity-0;
 		transform: translate3d(0, 20px, 0);
 		animation: revealChar 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 		animation-delay: calc(var(--base-delay) + var(--char-index, 0) * var(--delay-increment));
@@ -200,74 +164,41 @@
 		--char-index: 10;
 	}
 
-	/* Particle animations */
-	.particles {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-	}
-
+	/* Particle base styles */
 	.particle {
-		position: absolute;
-		background: radial-gradient(circle, var(--gold-glow) 0%, rgba(255, 215, 0, 0) 70%);
-		border-radius: 50%;
-		opacity: 0;
+		@apply absolute rounded-full opacity-0;
+		background: radial-gradient(circle, var(--loader-gold-glow) 0%, transparent 70%);
 		animation: floatParticle 1.8s ease-out;
 		will-change: transform, opacity;
 		backface-visibility: hidden;
 	}
 
 	.p1 {
-		width: 150px;
-		height: 150px;
-		top: 20%;
-		left: 10%;
+		@apply top-[20%] left-[10%] size-37.5;
 		animation-delay: 0.1s;
 	}
-
 	.p2 {
-		width: 100px;
-		height: 100px;
-		top: 60%;
-		left: 15%;
+		@apply top-[60%] left-[15%] size-25;
 		animation-delay: 0.3s;
 	}
-
 	.p3 {
-		width: 120px;
-		height: 120px;
-		top: 25%;
-		right: 15%;
+		@apply top-[25%] right-[15%] size-30;
 		animation-delay: 0.5s;
 	}
-
 	.p4 {
-		width: 80px;
-		height: 80px;
-		bottom: 20%;
-		right: 20%;
+		@apply right-[20%] bottom-[20%] size-20;
 		animation-delay: 0.2s;
 	}
-
 	.p5 {
-		width: 180px;
-		height: 180px;
-		bottom: 10%;
-		left: 40%;
+		@apply bottom-[10%] left-[40%] size-45;
 		animation-delay: 0.1s;
 	}
-
 	.p6 {
-		width: 140px;
-		height: 140px;
-		top: 10%;
-		right: 35%;
+		@apply top-[10%] right-[35%] size-35;
 		animation-delay: 0.4s;
 	}
 
-	/* Keyframes for animations */
+	/* Keyframes */
 	@keyframes logoReveal {
 		from {
 			transform: scale3d(0.92, 0.92, 1);
@@ -376,17 +307,8 @@
 		animation: reverseFloatParticle 1s ease-in forwards;
 	}
 
-	/* Responsive styles */
+	/* Mobile particle scaling */
 	@media (max-width: 768px) {
-		.name {
-			font-size: 1.5rem;
-		}
-
-		.name-container {
-			height: 2rem;
-		}
-
-		/* Reduce particle size for mobile */
 		.particle {
 			transform: scale3d(0.8, 0.8, 1);
 			max-width: 120px;
@@ -394,7 +316,7 @@
 		}
 	}
 
-	/* Reduce animations for users who prefer reduced motion */
+	/* Reduced motion */
 	@media (prefers-reduced-motion) {
 		.logo-svg,
 		.logo-circle,

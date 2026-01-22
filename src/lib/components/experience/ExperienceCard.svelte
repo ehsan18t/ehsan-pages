@@ -13,14 +13,9 @@
 	let { experience, position, laneColor, onmouseenter, onmouseleave }: Props = $props();
 
 	let cardRef = $state<HTMLDivElement | null>(null);
-	// Use $state for mutable position that starts from prop but can be clamped
-	let clampedPosition = $state({ x: 0, y: 0 });
+	// Use writable derived for position that starts from prop but can be clamped
+	let clampedPosition = $derived.by(() => ({ ...position }));
 	let isPositioned = $state(false);
-
-	// Initialize clampedPosition from prop when position changes
-	$effect(() => {
-		clampedPosition = { ...position };
-	});
 
 	function clampToViewport() {
 		if (!cardRef || typeof window === 'undefined') return;
@@ -145,8 +140,8 @@
 	style:overflow-y="auto"
 	style:visibility={isPositioned ? 'visible' : 'hidden'}
 	style:opacity={isPositioned ? 1 : 0}
-	onmouseenter={onmouseenter}
-	onmouseleave={onmouseleave}
+	{onmouseenter}
+	{onmouseleave}
 	role="tooltip"
 	aria-labelledby="card-title"
 >
@@ -182,14 +177,14 @@
 
 	<!-- Description List -->
 	<ul class="card-description-list">
-		{#each experience.description as item, index}
+		{#each experience.description as item, itemIndex (`desc-${itemIndex}`)}
 			<li class="card-description-item">{item}</li>
 		{/each}
 	</ul>
 
 	<!-- Tech Stack -->
 	<div class="card-tech-stack">
-		{#each experience.techStack as tech}
+		{#each experience.techStack as tech (tech)}
 			<span class="card-tech-pill">{tech}</span>
 		{/each}
 	</div>
@@ -201,7 +196,7 @@
 			<span class="diff-file">metrics.md</span>
 		</div>
 		<div class="diff-content">
-			{#each experience.impact as item, index}
+			{#each experience.impact as item, index (`impact-${index}`)}
 				<div class="diff-line {item.type}">
 					<span class="diff-line-number">{index + 1}</span>
 					<span class="diff-symbol">

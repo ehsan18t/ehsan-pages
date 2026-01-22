@@ -44,7 +44,6 @@
 			if (offset > total - 2) offset -= total;
 
 			const isActive = offset === 0;
-			const isBehind = offset < 0;
 			const position = Math.abs(offset);
 
 			// Calculate transforms
@@ -211,7 +210,7 @@
 <section
 	bind:this={sectionRef}
 	id="testimonials"
-	class="testimonials-section"
+	class="section-container relative mx-auto w-full max-w-6xl pb-16"
 	aria-labelledby="testimonials-heading"
 >
 	<SectionTitle
@@ -221,7 +220,7 @@
 	/>
 
 	<div
-		class="testimonials-wrapper"
+		class="relative flex flex-col items-center gap-8"
 		role="region"
 		aria-roledescription="carousel"
 		aria-label="Client testimonials"
@@ -229,22 +228,29 @@
 		<!-- Card Stack -->
 		<div
 			bind:this={cardsContainer}
-			class="cards-container"
+			class="cards-container relative h-96 w-full max-w-160 touch-pan-y sm:h-88 md:h-80"
+			style="perspective: 1000px;"
 			ontouchstart={handleTouchStart}
 			ontouchend={handleTouchEnd}
 			onmouseenter={pause}
 			onmouseleave={resume}
+			role="group"
+			aria-label="Testimonial cards"
 		>
-			{#each testimonials as testimonial, index}
-				<article
-					class="testimonial-card"
+			{#each testimonials as testimonial, index (testimonial.name)}
+				<div
+					class="testimonial-card card-glass absolute top-0 left-0 flex h-full w-full flex-col p-6 sm:p-8"
+					style="transform-style: preserve-3d; will-change: transform, opacity;"
 					role="tabpanel"
 					aria-roledescription="slide"
 					aria-label={`Testimonial from ${testimonial.name}`}
 					aria-hidden={index !== activeIndex}
 				>
 					<!-- Quote mark -->
-					<div class="quote-mark" aria-hidden="true">
+					<div
+						class="absolute top-4 right-6 h-10 w-10 text-accent-text/15 sm:top-6 sm:right-8 sm:h-12 sm:w-12"
+						aria-hidden="true"
+					>
 						<svg viewBox="0 0 24 24" fill="currentColor">
 							<path
 								d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"
@@ -253,46 +259,63 @@
 					</div>
 
 					<!-- Content -->
-					<blockquote class="testimonial-content">
-						<p>{testimonial.content}</p>
+					<blockquote class="flex flex-1 items-center overflow-hidden">
+						<p
+							class="line-clamp-6 text-sm leading-7 text-foreground/90 italic sm:line-clamp-5 sm:text-base md:line-clamp-4 md:text-[1.0625rem]"
+						>
+							{testimonial.content}
+						</p>
 					</blockquote>
 
 					<!-- Author -->
-					<footer class="testimonial-author">
-						<div class="author-avatar">
+					<footer class="mt-auto flex items-center gap-3.5 border-t border-accent-text/10 pt-4">
+						<div
+							class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-accent-text/20"
+							style="background: linear-gradient(135deg, oklch(var(--accent-text) / 0.2), oklch(var(--accent-bg) / 0.3));"
+						>
 							{#if testimonial.image}
-								<img src={testimonial.image} alt="" loading="lazy" decoding="async" />
+								<img
+									src={testimonial.image}
+									alt=""
+									loading="lazy"
+									decoding="async"
+									class="h-full w-full object-cover"
+								/>
 							{:else}
-								<span class="avatar-initials">{getInitials(testimonial.name)}</span>
+								<span class="text-base font-bold text-accent-text"
+									>{getInitials(testimonial.name)}</span
+								>
 							{/if}
 						</div>
-						<div class="author-info">
-							<cite class="author-name">{testimonial.name}</cite>
-							<span class="author-role">{testimonial.role}</span>
+						<div class="flex min-w-0 flex-col gap-0.5">
+							<cite class="truncate text-base font-semibold text-foreground not-italic"
+								>{testimonial.name}</cite
+							>
+							<span class="truncate text-[0.8125rem] text-accent-text/70">{testimonial.role}</span>
 						</div>
 					</footer>
-				</article>
+				</div>
 			{/each}
 		</div>
 
 		<!-- Navigation -->
-		<div class="navigation">
+		<div class="flex items-center gap-4">
 			<button
-				class="nav-btn prev"
+				class="btn-icon h-11 w-11"
 				onclick={prev}
 				aria-label="Previous testimonial"
 				disabled={isAnimating}
 			>
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<path d="M15 18l-6-6 6-6" />
 				</svg>
 			</button>
 
 			<!-- Indicators -->
-			<div class="indicators" role="tablist">
-				{#each testimonials as _, index}
+			<div class="flex gap-2" role="tablist">
+				{#each testimonials as testimonial, index (testimonial.name)}
 					<button
-						class="indicator"
+						class="indicator-dot"
 						class:active={index === activeIndex}
 						onclick={() => goTo(index)}
 						aria-label={`Go to testimonial ${index + 1}`}
@@ -303,12 +326,12 @@
 			</div>
 
 			<button
-				class="nav-btn next"
+				class="btn-icon h-11 w-11"
 				onclick={next}
 				aria-label="Next testimonial"
 				disabled={isAnimating}
 			>
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<path d="M9 18l6-6-6-6" />
 				</svg>
 			</button>
@@ -317,265 +340,9 @@
 </section>
 
 <style>
-	.testimonials-section {
-		position: relative;
-		width: 100%;
-		max-width: 72rem;
-		margin: 0 auto;
-		padding: 0 1rem 4rem;
-	}
-
-	.testimonials-wrapper {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 2rem;
-	}
-
-	/* Card Stack Container */
-	.cards-container {
-		position: relative;
-		width: 100%;
-		max-width: 40rem;
-		height: 24rem;
-		perspective: 1000px;
-		touch-action: pan-y;
-	}
-
-	@media (min-width: 640px) {
-		.cards-container {
-			height: 22rem;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.cards-container {
-			height: 20rem;
-		}
-	}
-
-	/* Individual Card */
-	.testimonial-card {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		padding: 1.5rem;
-		border-radius: 1.25rem;
-		background: linear-gradient(
-			145deg,
-			oklch(var(--accent-bg) / 0.12),
-			oklch(var(--accent-bg) / 0.04)
-		);
-		border: 1px solid oklch(var(--accent-text) / 0.15);
-		backdrop-filter: blur(20px);
-		box-shadow:
-			0 25px 50px -12px rgba(0, 0, 0, 0.25),
-			0 0 0 1px oklch(var(--accent-text) / 0.05);
-		transform-style: preserve-3d;
-		will-change: transform, opacity;
-	}
-
-	@media (min-width: 640px) {
-		.testimonial-card {
-			padding: 2rem;
-		}
-	}
-
-	/* Quote Mark */
-	.quote-mark {
-		position: absolute;
-		top: 1rem;
-		right: 1.5rem;
-		width: 2.5rem;
-		height: 2.5rem;
-		color: oklch(var(--accent-text) / 0.15);
-	}
-
-	@media (min-width: 640px) {
-		.quote-mark {
-			width: 3rem;
-			height: 3rem;
-			top: 1.5rem;
-			right: 2rem;
-		}
-	}
-
-	/* Content */
-	.testimonial-content {
-		flex: 1;
-		display: flex;
-		align-items: center;
-		overflow: hidden;
-	}
-
-	.testimonial-content p {
-		font-size: 0.875rem;
-		line-height: 1.75;
-		color: rgb(var(--foreground) / 0.9);
-		font-style: italic;
-		display: -webkit-box;
-		-webkit-line-clamp: 6;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-	}
-
-	@media (min-width: 640px) {
-		.testimonial-content p {
-			font-size: 1rem;
-			-webkit-line-clamp: 5;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.testimonial-content p {
-			font-size: 1.0625rem;
-			-webkit-line-clamp: 4;
-		}
-	}
-
-	/* Author Section */
-	.testimonial-author {
-		display: flex;
-		align-items: center;
-		gap: 0.875rem;
-		padding-top: 1rem;
-		border-top: 1px solid oklch(var(--accent-text) / 0.1);
-		margin-top: auto;
-	}
-
-	.author-avatar {
-		flex-shrink: 0;
-		width: 3rem;
-		height: 3rem;
-		border-radius: 50%;
-		overflow: hidden;
-		background: linear-gradient(
-			135deg,
-			oklch(var(--accent-text) / 0.2),
-			oklch(var(--accent-bg) / 0.3)
-		);
-		border: 2px solid oklch(var(--accent-text) / 0.2);
-	}
-
-	.author-avatar img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-
-	.avatar-initials {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-		font-size: 1rem;
-		font-weight: 700;
-		color: oklch(var(--accent-text));
-	}
-
-	.author-info {
-		display: flex;
-		flex-direction: column;
-		gap: 0.125rem;
-		min-width: 0;
-	}
-
-	.author-name {
-		font-size: 1rem;
-		font-weight: 600;
-		font-style: normal;
-		color: rgb(var(--foreground));
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	.author-role {
-		font-size: 0.8125rem;
-		color: oklch(var(--accent-text) / 0.7);
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	/* Navigation */
-	.navigation {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.nav-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.75rem;
-		height: 2.75rem;
-		border-radius: 50%;
-		border: 1px solid oklch(var(--accent-text) / 0.2);
-		background: oklch(var(--accent-bg) / 0.1);
-		color: oklch(var(--accent-text));
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.nav-btn:hover:not(:disabled) {
-		background: oklch(var(--accent-bg) / 0.2);
-		border-color: oklch(var(--accent-text) / 0.3);
-		transform: scale(1.05);
-	}
-
-	.nav-btn:active:not(:disabled) {
-		transform: scale(0.95);
-	}
-
-	.nav-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.nav-btn svg {
-		width: 1.25rem;
-		height: 1.25rem;
-	}
-
-	/* Indicators */
-	.indicators {
-		display: flex;
-		gap: 0.5rem;
-	}
-
-	.indicator {
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: 50%;
-		border: none;
-		background: oklch(var(--accent-text) / 0.25);
-		cursor: pointer;
-		transition: all 0.3s ease;
-	}
-
-	.indicator:hover {
-		background: oklch(var(--accent-text) / 0.5);
-	}
-
-	.indicator.active {
-		width: 1.5rem;
-		border-radius: 0.25rem;
-		background: oklch(var(--accent-text));
-	}
-
-	/* Reduced motion */
+	/* Only keeping the essential reduced motion styles */
 	@media (prefers-reduced-motion: reduce) {
-		.testimonial-card,
-		.nav-btn,
-		.indicator {
+		.testimonial-card {
 			transition: none !important;
 		}
 	}

@@ -3,6 +3,7 @@
 	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import Icon from '@iconify/svelte';
 	import { onDestroy, onMount } from 'svelte';
+	import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 
 	interface Skill {
 		name: string;
@@ -33,7 +34,7 @@
 					name: 'HTML',
 					icon: 'mdi:language-html5',
 					description:
-						"Crafting semantic, accessible, and structured web content. Fluent in HTML5 elements and avoiding `div` soup (mostly!).",
+						'Crafting semantic, accessible, and structured web content. Fluent in HTML5 elements and avoiding `div` soup (mostly!).',
 					extension: '.html'
 				},
 				{
@@ -149,7 +150,7 @@
 					name: 'Python',
 					icon: 'mdi:language-python',
 					description:
-						"Versatile language for scripting, backend (Django), and general programming. Appreciating the readability, dreading the accidental indentation error.",
+						'Versatile language for scripting, backend (Django), and general programming. Appreciating the readability, dreading the accidental indentation error.',
 					extension: '.py'
 				},
 				{
@@ -261,7 +262,7 @@
 	];
 
 	// Build skills map
-	const skillsMap = new Map<string, SkillWithCategory>();
+	const skillsMap = new SvelteMap<string, SkillWithCategory>();
 	skillGroups.forEach((group) => {
 		group.skills.forEach((skill) => {
 			skillsMap.set(skill.name, {
@@ -276,7 +277,7 @@
 	const folderCount = skillGroups.length;
 
 	// State
-	let expandedFolders = $state<Set<string>>(new Set([skillGroups[0].category]));
+	let expandedFolders = new SvelteSet([skillGroups[0].category]);
 	let activeSkill = $state<SkillWithCategory | null>(null);
 	let sidebarVisible = $state(true);
 	let lineInfo = $state({ line: 1, col: 1 });
@@ -314,11 +315,11 @@
 		} else {
 			expandedFolders.add(category);
 		}
-		expandedFolders = new Set(expandedFolders); // Trigger reactivity
+		// SvelteSet is reactive, no need to reassign
 	}
 
 	function collapseAllFolders() {
-		expandedFolders = new Set();
+		expandedFolders.clear();
 	}
 
 	function openSkill(skillName: string) {
@@ -383,23 +384,23 @@
 					class="sidebar w-48 overflow-y-auto border-r border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,rgb(var(--background)),black_40%)] p-2 md:w-64"
 				>
 					<div
-						class="sidebar-header text-foreground-muted mb-2 flex items-center justify-between px-1 text-xs uppercase"
+						class="sidebar-header mb-2 flex items-center justify-between px-1 text-xs text-foreground-muted uppercase"
 					>
 						<span>Explorer</span>
 						<button
 							title="Collapse All"
-							class="collapse-all-btn hover:bg-accent-300/10 rounded p-1"
+							class="collapse-all-btn rounded p-1 hover:bg-accent-300/10"
 							onclick={collapseAllFolders}
 						>
 							<Icon icon="mdi:chevron-double-up" class="h-3 w-3" />
 						</button>
 					</div>
 					<ul class="file-tree space-y-0.5">
-						{#each skillGroups as group}
+						{#each skillGroups as group (group.category)}
 							{@const isExpanded = expandedFolders.has(group.category)}
 							<li class="folder-item" data-expanded={isExpanded}>
 								<button
-									class="folder-header hover:bg-accent-300/10 flex w-full cursor-pointer items-center rounded p-1"
+									class="folder-header flex w-full cursor-pointer items-center rounded p-1 hover:bg-accent-300/10"
 									style="--folder-color: {group.color}"
 									onclick={() => toggleFolder(group.category)}
 								>
@@ -418,9 +419,9 @@
 									class:max-h-0={!isExpanded}
 									class:max-h-[500px]={isExpanded}
 								>
-									{#each group.skills as skill}
+									{#each group.skills as skill (skill.name)}
 										<li
-											class="file-item hover:bg-accent-500/10 text-foreground-muted hover:text-foreground cursor-pointer rounded p-1"
+											class="file-item cursor-pointer rounded p-1 text-foreground-muted hover:bg-accent-500/10 hover:text-foreground"
 											class:active={activeSkill?.name === skill.name}
 										>
 											<button
@@ -477,12 +478,12 @@
 
 				<!-- Editor Pane -->
 				<div
-					class="editor-pane text-foreground-muted flex-1 overflow-y-auto p-4 font-mono text-xs leading-relaxed md:p-6 md:text-sm"
+					class="editor-pane flex-1 overflow-y-auto p-4 font-mono text-xs leading-relaxed text-foreground-muted md:p-6 md:text-sm"
 				>
 					{#if activeSkill}
 						<!-- Skill content -->
 						<div class="skill-content">
-							<h3 class="text-foreground mb-4 text-lg font-semibold md:text-xl">
+							<h3 class="mb-4 text-lg font-semibold text-foreground md:text-xl">
 								{activeSkill.name}
 							</h3>
 							<div class="whitespace-pre-wrap">{activeSkill.description}</div>
@@ -505,7 +506,7 @@
 
 				<!-- Status Bar -->
 				<footer
-					class="status-bar text-foreground-muted flex justify-between border-t border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,rgb(var(--background)),black_50%)] px-3 py-1 text-xs"
+					class="status-bar flex justify-between border-t border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,rgb(var(--background)),black_50%)] px-3 py-1 text-xs text-foreground-muted"
 				>
 					<div class="flex gap-4">
 						<span>{fileCount} Files, {folderCount} Folders</span>
@@ -521,20 +522,9 @@
 </section>
 
 <style>
-	.code-editor {
-		font-family: var(--font-Inter);
-		box-shadow:
-			0 20px 40px rgba(0, 0, 0, 0.15),
-			0 0 0 1px rgba(var(--foreground), 0.05);
-	}
+	@reference "../../routes/layout.css";
 
-	.editor-pane {
-		font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-		position: relative;
-		counter-reset: line;
-	}
-
-	/* File Tree Styling */
+	/* Custom scrollbar for sidebar */
 	.sidebar {
 		scrollbar-width: thin;
 		scrollbar-color: rgba(var(--foreground), 0.2) transparent;
@@ -550,50 +540,25 @@
 		border-radius: 3px;
 	}
 
-	.folder-header {
-		user-select: none;
-	}
-
-	.folder-item[data-expanded='true'] .folder-header {
-		color: var(--folder-color, oklch(var(--accent-300)));
-		background-color: rgba(var(--foreground), 0.05);
-	}
-
 	/* Active states */
 	.file-item.active {
-		background-color: rgba(var(--accent-500), 0.15);
-		color: oklch(var(--accent-500));
-		user-select: none;
+		@apply bg-accent-500/15 text-accent-500 select-none;
 	}
 
 	.tab.active {
+		@apply relative top-px border-b-transparent text-foreground select-none;
 		background-color: rgba(var(--background), 0.9);
-		color: rgb(var(--foreground));
-		border-bottom-color: transparent;
-		position: relative;
-		top: 1px;
-		user-select: none;
 	}
 
 	/* Keyboard shortcut styling */
 	.kbd {
-		display: inline-block;
-		border: 1px solid rgba(var(--foreground), 0.2);
-		border-radius: 3px;
-		padding: 0px 4px;
-		margin: 0 2px;
-		font-size: 0.8em;
-		color: oklch(var(--accent-500));
+		@apply inline-block rounded border border-foreground/20 px-1 text-xs text-accent-500;
 	}
 
 	/* Cursor animation */
 	.editor-pane::after {
 		content: '';
-		position: absolute;
-		display: inline-block;
-		width: 2px;
-		height: 16px;
-		background-color: oklch(var(--accent-500));
+		@apply absolute inline-block h-4 w-0.5 bg-accent-500;
 		animation: blink 1s step-end infinite;
 		margin-left: 2px;
 		vertical-align: text-bottom;
@@ -603,11 +568,6 @@
 		50% {
 			opacity: 0;
 		}
-	}
-
-	/* Transitions for skill content */
-	.skill-content {
-		transition: opacity 0.2s ease;
 	}
 
 	/* Folder arrow rotation */

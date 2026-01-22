@@ -29,7 +29,7 @@
 
 <div class="appear z-10 flex items-center justify-center md:justify-start">
 	<div class="flex gap-3">
-		{#each Object.keys(socials) as key}
+		{#each Object.keys(socials) as key (key)}
 			{@const url = socials[key as SocialKeys]}
 			<a target="_blank" href={url} rel="noopener noreferrer">
 				<Icon

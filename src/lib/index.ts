@@ -21,4 +21,3 @@ export * from './data';
 
 // Note: Components and sections are not re-exported here to avoid naming conflicts
 // Use the $components and $lib/sections aliases instead
-

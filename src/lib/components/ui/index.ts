@@ -5,4 +5,3 @@ export { default as Modal } from './Modal.svelte';
 export { default as SectionTitle } from './SectionTitle.svelte';
 export { default as TechPill } from './TechPill.svelte';
 export { default as TestimonialsCarousel } from './TestimonialsCarousel.svelte';
-
