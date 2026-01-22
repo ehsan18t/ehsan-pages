@@ -3,17 +3,16 @@
 	 * Mobile Navigation - Arc Navigator Design
 	 *
 	 * A unique radial expanding mobile navigation that:
-	 * - Shows a minimal floating pill when collapsed (active section icon only)
-	 * - Expands into a semi-circular arc when tapped
+	 * - Shows a centered floating pill when collapsed with current section
+	 * - Expands into a symmetrical semi-circular arc above the trigger
 	 * - Uses Svelte 5 Spring for smooth physics-based animations
 	 * - Hardware-accelerated with CSS transforms only
-	 * - Performant: no DOM manipulation, pure CSS transforms
+	 * - Uses Svelte idioms: svelte:window, svelte:document, $effect
 	 */
 
 	import { browser } from '$app/environment';
 	import { navItems } from '$data';
 	import Icon from '@iconify/svelte';
-	import { onDestroy, onMount } from 'svelte';
 	import { Spring } from 'svelte/motion';
 
 	// State
@@ -21,25 +20,26 @@
 	let isExpanded = $state(false);
 	let isVisible = $state(false);
 	let isNearBottom = $state(false);
+	let navContainer = $state<HTMLElement | null>(null);
 
 	// Spring for expansion animation (0 = collapsed, 1 = expanded)
 	const expansion = new Spring(0, {
-		stiffness: 0.15,
-		damping: 0.7
+		stiffness: 0.18,
+		damping: 0.75
 	});
 
 	// Computed values
 	let currentItem = $derived(navItems[activeIndex]);
+	const sectionIds = navItems.map((item) => item.href.slice(1));
 
-	// Arc configuration
-	const ARC_RADIUS = 85; // pixels from center
-	const ARC_START_ANGLE = -140; // degrees (left side)
-	const ARC_END_ANGLE = -40; // degrees (right side)
+	// Arc configuration - symmetrical arc above the button
+	const ARC_RADIUS = 90;
+	const ARC_START_ANGLE = -150;
+	const ARC_END_ANGLE = -30;
 	const TOTAL_ITEMS = navItems.length;
 
 	/**
 	 * Calculate position for each nav item in the arc
-	 * Returns x, y offsets from center
 	 */
 	function getItemPosition(index: number): { x: number; y: number } {
 		const angleRange = ARC_END_ANGLE - ARC_START_ANGLE;
@@ -54,49 +54,45 @@
 	}
 
 	/**
-	 * Get scroll container for smooth scrolling
+	 * Navigate to section using native browser navigation
+	 * This is the simplest and most reliable approach
 	 */
-	function getScrollContainer(el: HTMLElement | null): HTMLElement {
-		let node = el?.parentElement;
-		while (node) {
-			const style = getComputedStyle(node);
-			if (/(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight) {
-				return node;
-			}
-			node = node.parentElement;
-		}
-		return (document.scrollingElement as HTMLElement) || document.documentElement;
-	}
+	function navigateToSection(event: MouseEvent, index: number) {
+		event.preventDefault();
+		event.stopPropagation();
 
-	/**
-	 * Navigate to section
-	 */
-	function navigateToSection(index: number) {
 		const item = navItems[index];
 		const target = document.getElementById(item.href.slice(1));
-		if (!target) return;
 
-		const container = getScrollContainer(target);
+		if (!target) {
+			console.warn(`Section not found: ${item.href}`);
+			return;
+		}
 
-		if (item.offset !== undefined) {
-			const containerRect = container.getBoundingClientRect();
-			const targetRect = target.getBoundingClientRect();
-			const currentScrollTop = container.scrollTop;
-			const relativeTop = targetRect.top - containerRect.top;
-			const destination = currentScrollTop + relativeTop - item.offset;
-			container.scrollTo({ top: destination, behavior: 'smooth' });
+		// Use scrollIntoView - simple and works everywhere
+		const offset = item.offset ?? 0;
+
+		if (offset > 0) {
+			// If we have an offset, calculate position manually
+			const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
+			window.scrollTo({ top: targetPosition, behavior: 'smooth' });
 		} else {
+			// No offset - use native scrollIntoView
 			target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}
 
-		// Collapse after navigation
+		// Update active index immediately
+		activeIndex = index;
+
+		// Collapse nav
 		collapse();
 	}
 
 	/**
 	 * Toggle expansion
 	 */
-	function toggle() {
+	function toggle(event: MouseEvent) {
+		event.stopPropagation();
 		isExpanded = !isExpanded;
 		expansion.target = isExpanded ? 1 : 0;
 	}
@@ -110,44 +106,48 @@
 	}
 
 	/**
-	 * Handle click outside to close
+	 * Handle click outside - used by svelte:document
 	 */
 	function handleClickOutside(event: MouseEvent) {
+		if (!isExpanded) return;
 		const target = event.target as HTMLElement;
-		if (isExpanded && !target.closest('.mobile-nav-container')) {
+		if (navContainer && !navContainer.contains(target)) {
 			collapse();
 		}
 	}
 
 	/**
-	 * Scroll handler - detect near bottom
+	 * Handle scroll - used by svelte:window
+	 * Detects if user is near bottom of page
 	 */
 	function handleScroll() {
-		const scrollY = window.scrollY;
-		const scrollHeight = document.documentElement.scrollHeight;
-		const clientHeight = document.documentElement.clientHeight;
-		isNearBottom = scrollY + clientHeight >= scrollHeight - 30;
+		const { scrollY } = window;
+		const { scrollHeight, clientHeight } = document.documentElement;
+		isNearBottom = scrollY + clientHeight >= scrollHeight - 100;
 	}
 
-	// IntersectionObserver for active section detection
-	let observer: IntersectionObserver;
+	// Setup IntersectionObserver for active section detection using $effect
+	$effect(() => {
+		if (!browser) return;
 
-	onMount(() => {
-		// Setup intersection observer for section detection
-		const sections = navItems
-			.map((item) => document.getElementById(item.href.substring(1)))
-			.filter(Boolean) as HTMLElement[];
+		// Get section elements
+		const sections = sectionIds
+			.map((id) => document.getElementById(id))
+			.filter((el): el is HTMLElement => el !== null);
 
-		observer = new IntersectionObserver(
+		if (sections.length === 0) return;
+
+		// Create observer
+		const observer = new IntersectionObserver(
 			(entries) => {
-				entries.forEach((entry) => {
+				for (const entry of entries) {
 					if (entry.isIntersecting) {
-						const idx = navItems.findIndex((item) => item.href.substring(1) === entry.target.id);
+						const idx = sectionIds.indexOf(entry.target.id);
 						if (idx >= 0) {
 							activeIndex = idx;
 						}
 					}
-				});
+				}
 			},
 			{
 				root: null,
@@ -156,101 +156,114 @@
 			}
 		);
 
+		// Observe all sections
 		sections.forEach((section) => observer.observe(section));
 
-		// Scroll listener for bottom detection (passive for performance)
-		window.addEventListener('scroll', handleScroll, { passive: true });
-
-		// Click outside listener
-		document.addEventListener('click', handleClickOutside);
-
-		// Show nav after loader delay
-		setTimeout(() => {
-			isVisible = true;
-		}, 2500);
+		// Cleanup when effect re-runs or component unmounts
+		return () => observer.disconnect();
 	});
 
-	onDestroy(() => {
+	// Show nav after loader delay
+	$effect(() => {
 		if (!browser) return;
-		if (observer) observer.disconnect();
-		window.removeEventListener('scroll', handleScroll);
-		document.removeEventListener('click', handleClickOutside);
+
+		const timer = setTimeout(() => {
+			isVisible = true;
+		}, 2500);
+
+		return () => clearTimeout(timer);
 	});
 </script>
 
+<!-- Svelte window/document event handlers - no manual cleanup needed -->
+<svelte:window onscroll={handleScroll} />
+<svelte:document onclick={handleClickOutside} />
+
 <nav
-	class="mobile-nav-container fixed bottom-6 left-1/2 z-50 block -translate-x-1/2 md:hidden"
+	bind:this={navContainer}
+	class="mobile-nav-container fixed right-0 bottom-6 left-0 z-50 flex flex-col items-center md:hidden"
 	class:is-visible={isVisible}
 	class:is-hidden={isNearBottom}
 	aria-label="Mobile navigation"
 >
-	<!-- Expanded arc items -->
-	<div class="arc-items absolute bottom-0 left-1/2 -translate-x-1/2" aria-hidden={!isExpanded}>
+	<!-- Arc items container - positioned relative to center -->
+	<div class="arc-container relative" aria-hidden={!isExpanded}>
 		{#each navItems as item, index (item.section)}
 			{@const pos = getItemPosition(index)}
 			{@const isActive = index === activeIndex}
+			{@const delay = index * 0.03}
 			<button
 				type="button"
-				class="arc-item absolute flex size-11 items-center justify-center rounded-full border border-white/10 transition-colors"
+				class="arc-item absolute top-1/2 left-1/2 flex size-12 items-center justify-center rounded-full border transition-colors"
 				class:active={isActive}
 				style="
-					--x: {pos.x}px;
-					--y: {pos.y}px;
-					transform: translate(-50%, -50%) translate(calc(var(--x) * {expansion.current}), calc(var(--y) * {expansion.current})) scale({0.5 +
-					0.5 * expansion.current});
+					transform: translate(-50%, -50%) 
+						translate({pos.x * expansion.current}px, {pos.y * expansion.current}px) 
+						scale({0.3 + 0.7 * expansion.current});
 					opacity: {expansion.current};
 					pointer-events: {expansion.current > 0.5 ? 'auto' : 'none'};
+					transition-delay: {isExpanded ? delay : 0}s;
 				"
-				onclick={() => navigateToSection(index)}
+				onclick={(e) => navigateToSection(e, index)}
 				aria-label={item.label}
 				aria-current={isActive ? 'page' : undefined}
 				tabindex={isExpanded ? 0 : -1}
 			>
 				<Icon icon={item.icon} class="size-5" />
+				<!-- Tooltip label on hover/active -->
+				{#if isActive}
+					<span class="arc-item-label">{item.label}</span>
+				{/if}
 			</button>
 		{/each}
 	</div>
 
-	<!-- Main trigger button (collapsed state shows active section) -->
+	<!-- Main trigger pill - centered and prominent -->
 	<button
 		type="button"
-		class="main-trigger relative flex items-center gap-2 rounded-full border border-white/15 px-4 py-3 backdrop-blur-xl transition-all duration-300"
+		class="main-trigger relative flex items-center justify-center gap-2.5 rounded-full px-5 py-3 transition-all duration-300"
 		class:expanded={isExpanded}
 		onclick={toggle}
 		aria-expanded={isExpanded}
 		aria-label={isExpanded ? 'Close navigation' : `Navigation - ${currentItem?.label}`}
 	>
-		<!-- Collapsed: show active section icon + label -->
+		<!-- Collapsed: show active section icon + label + chevron -->
 		<span
-			class="flex items-center gap-2 transition-all duration-300"
-			style="opacity: {1 - expansion.current}; transform: scale({1 - 0.2 * expansion.current});"
+			class="flex items-center gap-2.5 transition-all duration-300"
+			style="opacity: {1 - expansion.current}; transform: scale({1 - 0.15 * expansion.current});"
 		>
-			<Icon icon={currentItem?.icon ?? 'mdi:menu'} class="size-5 text-accent-text" />
-			<span class="text-xs font-medium text-foreground-muted">
+			<span class="icon-wrapper flex items-center justify-center">
+				<Icon icon={currentItem?.icon ?? 'mdi:menu'} class="size-5" />
+			</span>
+			<span class="trigger-label">
 				{currentItem?.label ?? 'Menu'}
 			</span>
+			<Icon icon="mdi:chevron-up" class="size-4 text-foreground-muted/60" />
 		</span>
 
 		<!-- Expanded: show close icon -->
 		<span
 			class="absolute inset-0 flex items-center justify-center transition-all duration-300"
-			style="opacity: {expansion.current}; transform: scale({0.5 +
-				0.5 * expansion.current}) rotate({expansion.current * 180}deg);"
+			style="opacity: {expansion.current}; transform: scale({0.6 +
+				0.4 * expansion.current}) rotate({expansion.current * 180}deg);"
 		>
 			<Icon icon="mdi:close" class="size-5 text-foreground" />
 		</span>
 	</button>
 
-	<!-- Section indicator dots -->
+	<!-- Section progress dots -->
 	<div
-		class="dots-indicator mt-2 flex justify-center gap-1.5"
-		style="opacity: {1 - expansion.current};"
+		class="progress-dots mt-3 flex items-center gap-2"
+		style="opacity: {1 - expansion.current * 0.5};"
 	>
 		{#each navItems as item, index (item.section)}
-			<span
-				class="size-1.5 rounded-full transition-all duration-300"
+			<button
+				type="button"
+				class="dot-item transition-all duration-300"
 				class:active={index === activeIndex}
-			></span>
+				onclick={(e) => navigateToSection(e, index)}
+				aria-label={`Go to ${item.label}`}
+			></button>
 		{/each}
 	</div>
 </nav>
@@ -261,7 +274,7 @@
 	.mobile-nav-container {
 		opacity: 0;
 		pointer-events: none;
-		transform: translate(-50%, 100%);
+		transform: translateY(100%);
 		transition:
 			opacity 0.4s ease,
 			transform 0.4s cubic-bezier(0.4, 0.8, 0.2, 1);
@@ -271,64 +284,55 @@
 	.mobile-nav-container.is-visible {
 		opacity: 1;
 		pointer-events: auto;
-		transform: translate(-50%, 0);
+		transform: translateY(0);
 	}
 
 	.mobile-nav-container.is-hidden {
 		opacity: 0;
 		pointer-events: none;
-		transform: translate(-50%, 100%);
+		transform: translateY(100%);
 	}
 
-	/* Main trigger button */
-	.main-trigger {
-		background:
-			linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 60%) border-box,
-			rgba(10, 25, 45, 0.85);
-		box-shadow:
-			0 4px 20px -4px rgba(0, 0, 0, 0.4),
-			0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-		will-change: transform;
-	}
-
-	.main-trigger:hover {
-		background:
-			linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 60%) border-box,
-			rgba(10, 25, 45, 0.9);
-	}
-
-	.main-trigger:active {
-		transform: scale(0.96);
-	}
-
-	.main-trigger.expanded {
-		background:
-			linear-gradient(145deg, oklch(var(--accent-bg) / 0.2), transparent 60%) border-box,
-			rgba(10, 25, 45, 0.9);
-		border-color: oklch(var(--accent-bg) / 0.3);
+	/* Arc container - holds the expanding items */
+	.arc-container {
+		width: 0;
+		height: 0;
+		margin-bottom: 8px;
 	}
 
 	/* Arc items */
-	.arc-items {
-		width: 0;
-		height: 0;
-	}
-
 	.arc-item {
 		background:
-			linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 60%) border-box,
-			rgba(10, 25, 45, 0.9);
+			linear-gradient(
+				165deg,
+				rgba(255, 255, 255, 0.12) 0%,
+				rgba(255, 255, 255, 0.02) 50%,
+				transparent 100%
+			),
+			rgba(15, 25, 40, 0.95);
+		border-color: rgba(255, 255, 255, 0.1);
 		box-shadow:
-			0 4px 12px -2px rgba(0, 0, 0, 0.3),
-			0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+			0 8px 24px -4px rgba(0, 0, 0, 0.4),
+			0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+			0 2px 8px rgba(0, 0, 0, 0.2);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
 		will-change: transform, opacity;
 		-webkit-tap-highlight-color: transparent;
+		color: rgba(var(--foreground), 0.8);
 	}
 
 	.arc-item:hover {
 		background:
-			linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0) 60%) border-box,
+			linear-gradient(
+				165deg,
+				rgba(255, 255, 255, 0.18) 0%,
+				rgba(255, 255, 255, 0.05) 50%,
+				transparent 100%
+			),
 			rgba(20, 35, 55, 0.95);
+		border-color: rgba(255, 255, 255, 0.15);
+		color: rgba(var(--foreground), 1);
 	}
 
 	.arc-item:active {
@@ -337,25 +341,140 @@
 
 	.arc-item.active {
 		background:
-			linear-gradient(145deg, oklch(var(--accent-bg) / 0.4), oklch(var(--accent-bg) / 0.1) 80%)
-				border-box,
-			rgba(10, 25, 45, 0.9);
-		border-color: oklch(var(--accent-bg) / 0.5);
+			linear-gradient(
+				165deg,
+				oklch(var(--accent-bg) / 0.35) 0%,
+				oklch(var(--accent-bg) / 0.15) 50%,
+				oklch(var(--accent-bg) / 0.05) 100%
+			),
+			rgba(15, 25, 40, 0.95);
+		border-color: oklch(var(--accent-bg) / 0.4);
 		color: oklch(var(--accent-text));
 		box-shadow:
-			0 4px 16px -2px oklch(var(--accent-bg) / 0.4),
-			0 0 0 1px oklch(var(--accent-bg) / 0.2) inset;
+			0 8px 28px -4px oklch(var(--accent-bg) / 0.35),
+			0 0 0 1px oklch(var(--accent-bg) / 0.2) inset,
+			0 0 20px oklch(var(--accent-bg) / 0.15);
 	}
 
-	/* Dots indicator */
-	.dots-indicator span {
-		background: rgba(var(--foreground), 0.2);
+	/* Arc item label tooltip */
+	.arc-item-label {
+		position: absolute;
+		bottom: -22px;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 9px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		white-space: nowrap;
+		color: oklch(var(--accent-text));
+		opacity: 0.9;
 	}
 
-	.dots-indicator span.active {
-		background: oklch(var(--accent-text));
-		width: 1rem;
-		border-radius: 9999px;
+	/* Main trigger button */
+	.main-trigger {
+		background:
+			linear-gradient(
+				165deg,
+				rgba(255, 255, 255, 0.1) 0%,
+				rgba(255, 255, 255, 0.02) 40%,
+				transparent 100%
+			),
+			rgba(12, 22, 38, 0.92);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		box-shadow:
+			0 8px 32px -4px rgba(0, 0, 0, 0.5),
+			0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+			0 4px 12px rgba(0, 0, 0, 0.25);
+		backdrop-filter: blur(20px) saturate(180%);
+		-webkit-backdrop-filter: blur(20px) saturate(180%);
+		will-change: transform;
+		min-width: 140px;
+	}
+
+	.main-trigger:hover {
+		background:
+			linear-gradient(
+				165deg,
+				rgba(255, 255, 255, 0.14) 0%,
+				rgba(255, 255, 255, 0.04) 40%,
+				transparent 100%
+			),
+			rgba(15, 28, 45, 0.95);
+		border-color: rgba(255, 255, 255, 0.18);
+	}
+
+	.main-trigger:active {
+		transform: scale(0.97);
+	}
+
+	.main-trigger.expanded {
+		background:
+			linear-gradient(
+				165deg,
+				oklch(var(--accent-bg) / 0.2) 0%,
+				oklch(var(--accent-bg) / 0.05) 50%,
+				transparent 100%
+			),
+			rgba(12, 22, 38, 0.95);
+		border-color: oklch(var(--accent-bg) / 0.35);
+		box-shadow:
+			0 8px 32px -4px oklch(var(--accent-bg) / 0.25),
+			0 0 0 1px oklch(var(--accent-bg) / 0.15) inset;
+	}
+
+	/* Icon wrapper in trigger */
+	.icon-wrapper {
+		width: 28px;
+		height: 28px;
+		border-radius: 8px;
+		background: linear-gradient(
+			145deg,
+			oklch(var(--accent-bg) / 0.25),
+			oklch(var(--accent-bg) / 0.1)
+		);
+		color: oklch(var(--accent-text));
+	}
+
+	/* Trigger label */
+	.trigger-label {
+		font-size: 13px;
+		font-weight: 500;
+		color: rgba(var(--foreground), 0.9);
+		letter-spacing: 0.2px;
+	}
+
+	/* Progress dots */
+	.progress-dots {
+		padding: 6px 12px;
+		background: rgba(0, 0, 0, 0.2);
+		border-radius: 20px;
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+	}
+
+	.dot-item {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: rgba(var(--foreground), 0.25);
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.dot-item:hover {
+		background: rgba(var(--foreground), 0.4);
+		transform: scale(1.2);
+	}
+
+	.dot-item.active {
+		width: 20px;
+		border-radius: 10px;
+		background: linear-gradient(90deg, oklch(var(--accent-bg) / 0.8), oklch(var(--accent-text)));
+		box-shadow: 0 0 8px oklch(var(--accent-bg) / 0.5);
 	}
 
 	/* Reduced motion */
@@ -363,7 +482,7 @@
 		.mobile-nav-container,
 		.main-trigger,
 		.arc-item,
-		.dots-indicator span {
+		.dot-item {
 			transition: none !important;
 		}
 	}
