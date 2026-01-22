@@ -40,7 +40,7 @@
 			.replace(/\s+/g, '') // remove spaces for your mapping keys (matches original)
 			.replace(/[^a-z0-9]/g, '');
 
-	const techSlug = normalizeSlug(name);
+	const techSlug = $derived(normalizeSlug(name));
 
 	// Original mapping (kept and slightly expanded for aliases)
 	const techIcons: Record<string, string> = {
@@ -93,9 +93,9 @@
 		aiml: 'mdi:brain'
 	};
 
-	const iconName = techIcons[techSlug] || 'mdi:code-tags';
-	const computedTitle = title || name;
-	const isLink = as === 'a' && href;
+	const iconName = $derived(techIcons[techSlug] || 'mdi:code-tags');
+	const computedTitle = $derived(title || name);
+	const isLink = $derived(as === 'a' && href);
 </script>
 
 {#if isLink}
@@ -129,6 +129,7 @@
 		<span class="tech-name">{name}</span>
 	</button>
 {:else}
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<span
 		class="tech-pill size-{size} variant-{variant} {className}"
 		data-tech={techSlug}

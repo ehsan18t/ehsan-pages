@@ -61,7 +61,7 @@
 >
 	<!-- Fade out bottom -->
 	<div
-		class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]"
+		class="absolute inset-0 mask-[linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]"
 	>
 		<!-- Grain Effect -->
 		<div class="absolute inset-0 -z-30 opacity-5" style="background-image: url({grain});"></div>
@@ -152,7 +152,7 @@
 	<div
 		class="fade-in flex max-w-full flex-col items-center justify-center md:flex-row md:px-10 lg:w-2/3"
 	>
-		<div class="flex-shrink-0">
+		<div class="shrink-0">
 			<Profile />
 		</div>
 		<div class="flex w-full flex-col gap-2 px-5 md:px-10">

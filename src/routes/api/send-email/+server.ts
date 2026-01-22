@@ -43,9 +43,6 @@ export const POST: RequestHandler = async ({ request }) => {
             throw err;
         }
 
-        throw error(500, {
-            message: 'Failed to send email',
-            error: err instanceof Error ? err.message : 'Unknown error'
-        });
+        throw error(500, err instanceof Error ? err.message : 'Failed to send email');
     }
 };

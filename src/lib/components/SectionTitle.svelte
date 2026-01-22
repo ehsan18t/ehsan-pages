@@ -20,7 +20,7 @@
 		<span>{p2}</span>
 	</h2>
 	{#if subtitle}
-		<div class="from-accent-500 to-accent-900 mx-auto h-1 w-24 rounded-full bg-gradient-to-r"></div>
+		<div class="from-accent-500 to-accent-900 mx-auto h-1 w-24 rounded-full bg-linear-to-r"></div>
 		<p class="text-foreground-muted mx-auto mt-6 max-w-2xl text-lg">{subtitle}</p>
 	{/if}
 </div>

@@ -60,24 +60,24 @@
 		<img src={background} alt="" id="background" fetchpriority="high" />
 
 		<div class="from-background via-background/80 relative z-1 bg-linear-to-b to-transparent">
-			<div use:animateOnScroll={{ animation: 'slide-up', delay: '200ms' }}>
+			<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
 				<Skills />
 			</div>
 		</div>
 
-		<div use:animateOnScroll={{ animation: 'slide-up', delay: '200ms' }}>
+		<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
 			<Experience />
 		</div>
 
-		<div use:animateOnScroll={{ animation: 'slide-up', delay: '200ms' }}>
+		<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
 			<ProjectShowcase />
 		</div>
 
-		<div use:animateOnScroll={{ animation: 'slide-up', delay: '200ms' }}>
+		<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
 			<Testimonials />
 		</div>
 
-		<div use:animateOnScroll={{ animation: 'slide-up', delay: '200ms' }}>
+		<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
 			<Footer />
 		</div>
 	</div>

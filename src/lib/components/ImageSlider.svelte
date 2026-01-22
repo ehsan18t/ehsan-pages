@@ -31,11 +31,15 @@
 	let lightboxIndex = $state(0);
 	let lightboxImageContainerRef = $state<HTMLDivElement | null>(null);
 
-	const options: EmblaOptionsType = {
+	// Use $derived for values that depend on images prop
+	let hasMultipleImages = $derived(images.length > 1);
+
+	// Embla options need to be reactive
+	let options = $derived<EmblaOptionsType>({
 		loop: images.length > 1,
 		align: 'start',
 		containScroll: 'trimSnaps'
-	};
+	});
 
 	function onEmblaInit(event: CustomEvent<EmblaCarouselType>) {
 		emblaApi = event.detail;
@@ -129,8 +133,6 @@
 		if (autoplayTimer) clearInterval(autoplayTimer);
 		document.body.classList.remove('lightbox-open');
 	});
-
-	const hasMultipleImages = images.length > 1;
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -147,7 +149,7 @@
 	>
 		<div
 			class="embla__viewport"
-			use:emblaCarouselSvelte={{ options }}
+			use:emblaCarouselSvelte={{ options, plugins: [] }}
 			onemblaInit={onEmblaInit}
 		>
 			<div class="embla__container">
@@ -209,14 +211,21 @@
 
 	<!-- Lightbox -->
 	{#if isFullscreen}
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<div
 			class="slider-lightbox"
 			onclick={closeLightbox}
+			onkeydown={(e) => e.key === 'Escape' && closeLightbox()}
 			role="dialog"
 			aria-modal="true"
 			tabindex="-1"
 		>
-			<div class="slider-lightbox-content" onclick={(e) => e.stopPropagation()}>
+			<div
+				class="slider-lightbox-content"
+				onclick={(e) => e.stopPropagation()}
+				onkeydown={(e) => e.stopPropagation()}
+				role="presentation"
+			>
 				<div
 					bind:this={lightboxImageContainerRef}
 					class="slider-lightbox-image-container"
@@ -565,19 +574,19 @@
 		height: 100%;
 	}
 
-	/* Image transition using pure CSS */
-	.slider-lightbox-image-container.transitioning .slider-lightbox-image {
+	/* Image transition using pure CSS - classes applied via JS */
+	:global(.slider-lightbox-image-container.transitioning .slider-lightbox-image) {
 		animation-name: var(--transition-animation);
 		animation-duration: 450ms;
 		animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 		animation-fill-mode: forwards;
 	}
 
-	.slider-lightbox-image-container[data-direction='next'].transitioning {
+	:global(.slider-lightbox-image-container[data-direction='next'].transitioning) {
 		--transition-animation: slide-from-right;
 	}
 
-	.slider-lightbox-image-container[data-direction='prev'].transitioning {
+	:global(.slider-lightbox-image-container[data-direction='prev'].transitioning) {
 		--transition-animation: slide-from-left;
 	}
 

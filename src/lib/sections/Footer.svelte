@@ -23,7 +23,7 @@
 
 <footer
 	id="contact"
-	class="from-background via-background/90 relative mt-12 overflow-hidden bg-gradient-to-t to-transparent pt-16 pb-10"
+	class="from-background via-background/90 relative mt-12 overflow-hidden bg-linear-to-t to-transparent pt-16 pb-10"
 >
 	<!-- Main Footer Content -->
 	<div class="relative z-10 container mx-auto px-4">

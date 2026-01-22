@@ -66,7 +66,7 @@
 	<div class="testimonial-carousel-container">
 		<div
 			class="testimonial-carousel-viewport"
-			use:emblaCarouselSvelte={{ options }}
+			use:emblaCarouselSvelte={{ options, plugins: [] }}
 			onemblaInit={onEmblaInit}
 		>
 			<div class="testimonial-carousel-slides">

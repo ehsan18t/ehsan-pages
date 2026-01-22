@@ -104,10 +104,6 @@
 		}
 	}
 
-	.project-card.is-visible {
-		animation: fade-in 0.5s ease forwards;
-	}
-
 	/* Project info container */
 	.project-info {
 		padding: 1.25rem;

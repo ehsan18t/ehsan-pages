@@ -2,14 +2,14 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		id: string;
+		id?: string;
 		class?: string;
 		link?: string;
 		children?: Snippet;
 		onclick?: (event: MouseEvent) => void;
 	}
 
-	let { id, class: className, link, children, onclick }: Props = $props();
+	let { id, class: className = '', link, children, onclick }: Props = $props();
 
 	function handleClick(event: MouseEvent) {
 		const button = event.currentTarget as HTMLButtonElement;

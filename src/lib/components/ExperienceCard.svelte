@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import gsap from 'gsap';
 	import type { Experience } from '$data';
+	import gsap from 'gsap';
 
 	interface Props {
 		experience: Experience;
@@ -14,8 +13,14 @@
 	let { experience, position, laneColor, onmouseenter, onmouseleave }: Props = $props();
 
 	let cardRef = $state<HTMLDivElement | null>(null);
-	let clampedPosition = $state({ ...position });
+	// Use $state for mutable position that starts from prop but can be clamped
+	let clampedPosition = $state({ x: 0, y: 0 });
 	let isPositioned = $state(false);
+
+	// Initialize clampedPosition from prop when position changes
+	$effect(() => {
+		clampedPosition = { ...position };
+	});
 
 	function clampToViewport() {
 		if (!cardRef || typeof window === 'undefined') return;

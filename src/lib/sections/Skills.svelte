@@ -375,12 +375,12 @@
 
 		<!-- Code Editor Structure -->
 		<div
-			class="code-editor mx-auto flex min-h-[60vh] max-w-5xl overflow-hidden rounded-lg border border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_25%)] text-sm shadow-2xl"
+			class="code-editor mx-auto flex min-h-[60vh] max-w-5xl overflow-hidden rounded-lg border border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,rgb(var(--background)),black_25%)] text-sm shadow-2xl"
 		>
 			<!-- Sidebar (File Tree) -->
 			{#if sidebarVisible}
 				<aside
-					class="sidebar w-48 overflow-y-auto border-r border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)] p-2 md:w-64"
+					class="sidebar w-48 overflow-y-auto border-r border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,rgb(var(--background)),black_40%)] p-2 md:w-64"
 				>
 					<div
 						class="sidebar-header text-foreground-muted mb-2 flex items-center justify-between px-1 text-xs uppercase"
@@ -409,7 +409,7 @@
 									>
 										<Icon icon="mdi:chevron-right" class="h-4 w-4" />
 									</span>
-									<Icon icon={group.icon} class="mx-1 h-4 w-4 flex-shrink-0" />
+									<Icon icon={group.icon} class="mx-1 h-4 w-4 shrink-0" />
 									<span class="truncate text-xs font-medium">{group.category}</span>
 									<span class="ml-auto text-xs opacity-60">{group.skills.length}</span>
 								</button>
@@ -429,7 +429,7 @@
 											>
 												<Icon
 													icon={skill.icon}
-													class="mr-2 h-4 w-4 flex-shrink-0 opacity-80"
+													class="mr-2 h-4 w-4 shrink-0 opacity-80"
 													style="color: {group.color};"
 												/>
 												<span class="truncate text-xs">{skill.name}</span>
@@ -450,10 +450,10 @@
 			<main class="main-content flex min-w-0 flex-1 flex-col">
 				<!-- Tab Bar -->
 				<div
-					class="tab-bar flex border-b border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_40%)]"
+					class="tab-bar flex border-b border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,rgb(var(--background)),black_40%)]"
 				>
 					<div
-						class="tab active flex max-w-[250px] items-center gap-2 border-r border-[rgba(var(--foreground)/0.1)] px-4 py-2 text-xs"
+						class="tab active flex max-w-62.5 items-center gap-2 border-r border-[rgba(var(--foreground)/0.1)] px-4 py-2 text-xs"
 					>
 						{#if activeSkill}
 							<Icon
@@ -505,7 +505,7 @@
 
 				<!-- Status Bar -->
 				<footer
-					class="status-bar text-foreground-muted flex justify-between border-t border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,_rgb(var(--background)),_black_50%)] px-3 py-1 text-xs"
+					class="status-bar text-foreground-muted flex justify-between border-t border-[rgba(var(--foreground)/0.1)] bg-[color-mix(in_oklch,rgb(var(--background)),black_50%)] px-3 py-1 text-xs"
 				>
 					<div class="flex gap-4">
 						<span>{fileCount} Files, {folderCount} Folders</span>

@@ -312,7 +312,7 @@
 			border-radius: 1.5rem;
 			overflow: hidden;
 			isolation: isolate;
-			saturate: 1.5;
+			filter: saturate(1.5);
 			backdrop-filter: blur(16px);
 			background:
 				linear-gradient(140deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 60%)

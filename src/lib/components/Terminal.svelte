@@ -303,12 +303,14 @@ Type 'help' to see available commands.`
 	});
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
-	class="terminal-container mx-auto max-w-[680px] overflow-hidden rounded-lg"
+	class="terminal-container mx-auto max-w-170 overflow-hidden rounded-lg"
 	onclick={focusInput}
 	onkeydown={(e) => e.key === 'Enter' && focusInput()}
 	aria-label="Interactive terminal"
-	role="region"
+	role="application"
 	tabindex="0"
 >
 	<!-- Terminal Header -->
