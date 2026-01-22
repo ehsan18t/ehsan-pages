@@ -36,6 +36,10 @@ export default defineConfig(
 				parser: ts.parser,
 				svelteConfig
 			}
+		},
+		rules: {
+			// Disable Warn: Unknown at rule @apply (css)
+			'svelte/at-rule-no-unknown': 'off'
 		}
 	},
 	// Disable no-navigation-without-resolve for components with external links or fragment hrefs
