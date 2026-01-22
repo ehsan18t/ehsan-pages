@@ -1,0 +1,413 @@
+<script lang="ts">
+	let isExiting = $state(false);
+</script>
+
+<div id="hero-loader" class="loader-container" class:exit={isExiting}>
+	<div class="loader-content">
+		<!-- Logo with E and K -->
+		<div class="logo-container">
+			<svg width="150" height="150" viewBox="0 0 150 150" class="logo-svg">
+				<!-- Background circle -->
+				<circle
+					cx="75"
+					cy="75"
+					r="70"
+					class="logo-circle"
+					fill="none"
+					stroke="#FFD700"
+					stroke-width="2"
+				></circle>
+
+				<!-- E Letter -->
+				<path
+					class="letter letter-e"
+					d="M 26.287 36.346 L 63.004 35.714 L 63.509 50.346 L 41.424 47.568 L 37.383 63.47 L 59.346 62.586 L 59.094 77.219 L 38.015 78.355 L 40.414 95.647 L 62.878 90.342 L 61.868 106.237 L 26.287 106.869 L 26.287 36.346 Z"
+					fill="none"
+					stroke="#FFD700"
+					stroke-width="3"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					transform="matrix(1.0000000000000002, 0, 0, 1.0000000000000002, 1.7763568394002505e-15, 3.552713678800501e-15)"
+				></path>
+
+				<!-- K Letter -->
+				<path
+					class="letter letter-k"
+					d="M 73.441 48.13 L 91.725 51.068 L 88.253 79.245 L 105.998 51.068 L 122.179 51.068 L 96.703 83.648 L 123.381 111.691 L 105.998 120.505 L 88.119 92.996 L 91.725 120.505 L 77.447 120.505 L 73.441 48.13 Z"
+					fill="none"
+					stroke="#FFD700"
+					stroke-width="3"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					transform="matrix(1.0000000000000002, 0, 0, 1.0000000000000002, 1.7763568394002505e-15, 3.552713678800501e-15)"
+				></path>
+			</svg>
+		</div>
+
+		<!-- Name -->
+		<div class="name-container">
+			<div class="name">
+				<span class="name-char">E</span>
+				<span class="name-char">H</span>
+				<span class="name-char">S</span>
+				<span class="name-char">A</span>
+				<span class="name-char">N</span>
+				<span class="name-char">&nbsp;</span>
+				<span class="name-char">&nbsp;</span>
+				<span class="name-char">K</span>
+				<span class="name-char">H</span>
+				<span class="name-char">A</span>
+				<span class="name-char">N</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- Background particles -->
+	<div class="particles">
+		<div class="particle p1"></div>
+		<div class="particle p2"></div>
+		<div class="particle p3"></div>
+		<div class="particle p4"></div>
+		<div class="particle p5"></div>
+		<div class="particle p6"></div>
+	</div>
+</div>
+
+<style>
+	@reference "../../routes/layout.css";
+
+	:root {
+		--gold-color: #ffd700;
+		--gold-glow: rgba(255, 215, 0, 0.3);
+		--circle-dash: 440;
+		--letter-dash: 370;
+		--base-delay: 0.6s;
+		--delay-increment: 0.05s;
+	}
+
+	.loader-container {
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 9999;
+		margin: 1rem;
+		box-sizing: border-box;
+		display: flex;
+		height: 100dvh;
+		width: 100dvw;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		background-color: rgb(var(--background));
+	}
+
+	.loader-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2rem;
+		z-index: 2;
+	}
+
+	/* Logo styles and animations */
+	.logo-container {
+		position: relative;
+	}
+
+	.logo-svg {
+		transform-origin: center;
+		filter: drop-shadow(0 0 3px var(--gold-glow));
+		animation: logoReveal 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+		will-change: transform, opacity;
+		backface-visibility: hidden;
+	}
+
+	.logo-circle {
+		stroke-dasharray: var(--circle-dash);
+		stroke-dashoffset: var(--circle-dash);
+		animation: drawCircle 1s ease-out forwards;
+	}
+
+	.letter {
+		stroke-dasharray: var(--letter-dash);
+		stroke-dashoffset: var(--letter-dash);
+		animation: drawLetter 1s ease-out forwards;
+	}
+
+	.letter-e {
+		animation-delay: 0.2s;
+	}
+
+	.letter-k {
+		animation-delay: 0.3s;
+	}
+
+	/* Name styles and animations */
+	.name-container {
+		height: 2.5rem;
+		overflow: hidden;
+	}
+
+	.name {
+		display: flex;
+		gap: 0.5rem;
+		font-weight: 700;
+		font-size: 1.8rem;
+		color: var(--gold-color);
+		letter-spacing: 0.1rem;
+		filter: drop-shadow(0 0 2px var(--gold-glow));
+	}
+
+	.name-char {
+		display: inline-block;
+		opacity: 0;
+		transform: translate3d(0, 20px, 0);
+		animation: revealChar 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+		animation-delay: calc(var(--base-delay) + var(--char-index, 0) * var(--delay-increment));
+		will-change: transform, opacity;
+		backface-visibility: hidden;
+	}
+
+	.name-char:nth-child(1) {
+		--char-index: 0;
+	}
+	.name-char:nth-child(2) {
+		--char-index: 1;
+	}
+	.name-char:nth-child(3) {
+		--char-index: 2;
+	}
+	.name-char:nth-child(4) {
+		--char-index: 3;
+	}
+	.name-char:nth-child(5) {
+		--char-index: 4;
+	}
+	.name-char:nth-child(6) {
+		--char-index: 5;
+	}
+	.name-char:nth-child(7) {
+		--char-index: 6;
+	}
+	.name-char:nth-child(8) {
+		--char-index: 7;
+	}
+	.name-char:nth-child(9) {
+		--char-index: 8;
+	}
+	.name-char:nth-child(10) {
+		--char-index: 9;
+	}
+	.name-char:nth-child(11) {
+		--char-index: 10;
+	}
+
+	/* Particle animations */
+	.particles {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.particle {
+		position: absolute;
+		background: radial-gradient(circle, var(--gold-glow) 0%, rgba(255, 215, 0, 0) 70%);
+		border-radius: 50%;
+		opacity: 0;
+		animation: floatParticle 1.8s ease-out;
+		will-change: transform, opacity;
+		backface-visibility: hidden;
+	}
+
+	.p1 {
+		width: 150px;
+		height: 150px;
+		top: 20%;
+		left: 10%;
+		animation-delay: 0.1s;
+	}
+
+	.p2 {
+		width: 100px;
+		height: 100px;
+		top: 60%;
+		left: 15%;
+		animation-delay: 0.3s;
+	}
+
+	.p3 {
+		width: 120px;
+		height: 120px;
+		top: 25%;
+		right: 15%;
+		animation-delay: 0.5s;
+	}
+
+	.p4 {
+		width: 80px;
+		height: 80px;
+		bottom: 20%;
+		right: 20%;
+		animation-delay: 0.2s;
+	}
+
+	.p5 {
+		width: 180px;
+		height: 180px;
+		bottom: 10%;
+		left: 40%;
+		animation-delay: 0.1s;
+	}
+
+	.p6 {
+		width: 140px;
+		height: 140px;
+		top: 10%;
+		right: 35%;
+		animation-delay: 0.4s;
+	}
+
+	/* Keyframes for animations */
+	@keyframes logoReveal {
+		from {
+			transform: scale3d(0.92, 0.92, 1);
+			opacity: 0;
+		}
+		to {
+			transform: scale3d(1, 1, 1);
+			opacity: 1;
+		}
+	}
+
+	@keyframes drawCircle {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@keyframes drawLetter {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@keyframes revealChar {
+		0% {
+			opacity: 0;
+			transform: translate3d(0, 15px, 0);
+		}
+		100% {
+			opacity: 1;
+			transform: translate3d(0, 0, 0);
+		}
+	}
+
+	@keyframes floatParticle {
+		0% {
+			transform: translate3d(0, 5px, 0) scale3d(0.95, 0.95, 1);
+			opacity: 0;
+		}
+		30% {
+			opacity: 0.2;
+		}
+		100% {
+			transform: translate3d(0, -5px, 0) scale3d(1.05, 1.05, 1);
+			opacity: 0;
+		}
+	}
+
+	@keyframes hideChar {
+		0% {
+			opacity: 1;
+			transform: translate3d(0, 0, 0);
+		}
+		100% {
+			opacity: 0;
+			transform: translate3d(0, 15px, 0);
+		}
+	}
+
+	@keyframes reverseFloatParticle {
+		0% {
+			transform: translate3d(0, -5px, 0) scale3d(1.05, 1.05, 1);
+			opacity: 0;
+		}
+		30% {
+			opacity: 0.2;
+		}
+		100% {
+			transform: translate3d(0, 5px, 0) scale3d(0.95, 0.95, 1);
+			opacity: 0;
+		}
+	}
+
+	@keyframes reverseDrawCircle {
+		from {
+			stroke-dashoffset: 0;
+		}
+		to {
+			stroke-dashoffset: var(--circle-dash);
+		}
+	}
+
+	@keyframes reverseDrawLetter {
+		from {
+			stroke-dashoffset: 0;
+		}
+		to {
+			stroke-dashoffset: var(--letter-dash);
+		}
+	}
+
+	/* Exit animations */
+	.loader-container.exit .logo-circle {
+		animation: reverseDrawCircle 0.8s ease-in forwards;
+	}
+
+	.loader-container.exit .letter {
+		animation: reverseDrawLetter 0.6s ease-in forwards;
+	}
+
+	.loader-container.exit .name-char {
+		animation: hideChar 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+	}
+
+	.loader-container.exit .particle {
+		animation: reverseFloatParticle 1s ease-in forwards;
+	}
+
+	/* Responsive styles */
+	@media (max-width: 768px) {
+		.name {
+			font-size: 1.5rem;
+		}
+
+		.name-container {
+			height: 2rem;
+		}
+
+		/* Reduce particle size for mobile */
+		.particle {
+			transform: scale3d(0.8, 0.8, 1);
+			max-width: 120px;
+			max-height: 120px;
+		}
+	}
+
+	/* Reduce animations for users who prefer reduced motion */
+	@media (prefers-reduced-motion) {
+		.logo-svg,
+		.logo-circle,
+		.letter,
+		.name-char,
+		.particle {
+			animation-duration: 0.1s !important;
+		}
+
+		.particles {
+			display: none;
+		}
+	}
+</style>
