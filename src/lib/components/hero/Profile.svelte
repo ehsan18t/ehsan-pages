@@ -4,16 +4,16 @@
 	const altText = 'Ehsan Khan';
 </script>
 
-<div class="flex select-none items-center justify-center p-5">
+<div class="flex items-center justify-center p-5 select-none">
 	<div
-		class="relative flex h-[13rem] w-[13rem] items-center justify-center
-			md:h-[16rem] md:w-[16rem] lg:h-[19rem] lg:w-[19rem]"
+		class="relative flex h-52 w-52 items-center justify-center
+			md:h-64 md:w-[16rem] lg:h-76 lg:w-76"
 	>
 		<!-- Animated gradient border -->
 		<div
-			class="animate-when-visible absolute left-0 top-0 z-10 h-full w-full animate-spin rounded-full p-5"
+			class="absolute top-0 left-0 z-10 h-full w-full rounded-full p-5"
 			style="
-				animation-duration: 5000ms;
+				animation: spin 5s linear infinite;
 				background: conic-gradient(
 					from 0deg,
 					rgb(var(--background)),
@@ -30,10 +30,24 @@
 		<img
 			src={meImage}
 			alt={altText}
-			class="z-20 rounded-full bg-background object-cover
-				h-[calc(13rem-0.313rem)] w-[calc(13rem-0.313rem)]
+			loading="eager"
+			decoding="async"
+			fetchpriority="high"
+			class="z-20 h-[calc(13rem-0.313rem)] w-[calc(13rem-0.313rem)] rounded-full
+				bg-background object-cover
 				md:h-[calc(16rem-0.4rem)] md:w-[calc(16rem-0.4rem)]
 				lg:h-[calc(19rem-0.438rem)] lg:w-[calc(19rem-0.438rem)]"
 		/>
 	</div>
 </div>
+
+<style>
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+</style>

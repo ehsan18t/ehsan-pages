@@ -24,18 +24,39 @@
 
 {#if !starOnly}
 	<div
-		class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-emerald-300/5 shadow-[0_0_80px_inset] shadow-emerald-300/5"
+		class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-emerald-300/5 shadow-[0_0_80px_inset] shadow-emerald-300/5"
 		style="width: {size}rem; height: {size}rem; opacity: {opacity}%;"
 	></div>
 {/if}
 
 {#if children}
-	<div class="animate-when-visible absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+	<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 		<div
-			class="animate-when-visible"
-			style="animation: custom-spin {duration}s linear infinite; width: {size}rem; height: {size}rem; transform: rotate({rotation}deg); --initial-rotation: {rotation}deg;"
+			class="orbit-spin"
+			style="
+				--duration: {duration}s;
+				--initial-rotation: {rotation}deg;
+				width: {size}rem;
+				height: {size}rem;
+			"
 		>
 			{@render children()}
 		</div>
 	</div>
 {/if}
+
+<style>
+	.orbit-spin {
+		animation: orbit-spin var(--duration) linear infinite;
+		transform: rotate(var(--initial-rotation));
+	}
+
+	@keyframes orbit-spin {
+		from {
+			transform: rotate(var(--initial-rotation));
+		}
+		to {
+			transform: rotate(calc(var(--initial-rotation) + 360deg));
+		}
+	}
+</style>

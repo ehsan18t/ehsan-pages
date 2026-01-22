@@ -56,10 +56,10 @@
 </script>
 
 <div class="testimonial-section">
-	<h2 class="font-doto mb-4 text-center text-4xl font-bold md:text-5xl">
+	<h2 class="mb-4 text-center font-doto text-4xl font-bold md:text-5xl">
 		<span class="text-accent-title">Client</span> Testimonials
 	</h2>
-	<p class="text-foreground-muted mx-auto mb-16 max-w-2xl text-center">
+	<p class="mx-auto mb-16 max-w-2xl text-center text-foreground-muted">
 		Don't just take my word for it - here's what clients have to say about working with me.
 	</p>
 
@@ -84,6 +84,7 @@
 											alt={testimonial.name}
 											class="testimonial-author-image"
 											loading="lazy"
+											decoding="async"
 										/>
 									{:else}
 										<div class="testimonial-author-initials">
@@ -126,7 +127,9 @@
 	<div class="testimonial-pagination">
 		{#each scrollSnaps as _, i}
 			<button
-				class="testimonial-dot {i === selectedIndex ? 'testimonial-dot-active' : 'testimonial-dot-inactive'}"
+				class="testimonial-dot {i === selectedIndex
+					? 'testimonial-dot-active'
+					: 'testimonial-dot-inactive'}"
 				onclick={() => scrollTo(i)}
 				aria-label="View testimonial {i + 1}"
 			></button>

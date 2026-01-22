@@ -161,6 +161,7 @@
 							class="slider-image"
 							style:object-fit={imageLayout}
 							loading={index === 0 ? 'eager' : 'lazy'}
+							decoding="async"
 						/>
 					</div>
 				{/each}
@@ -236,6 +237,7 @@
 						alt="{title} - image {lightboxIndex + 1}"
 						class="slider-lightbox-image animate-zoom-in fill-forwards"
 						loading="eager"
+						decoding="async"
 					/>
 				</div>
 

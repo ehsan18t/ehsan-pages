@@ -10,8 +10,25 @@
 	let { size, duration = 10, opacity = 100 }: Props = $props();
 </script>
 
-<Icon
-	icon="mdi:star-four-points"
-	class="animate-when-visible absolute z-0 animate-spin text-emerald-300"
-	style="width: {size}rem; height: {size}rem; animation-duration: {duration}s; opacity: {opacity}%;"
-/>
+<div
+	class="absolute z-0 text-emerald-300"
+	style="
+		width: {size}rem;
+		height: {size}rem;
+		opacity: {opacity}%;
+		animation: spin {duration}s linear infinite;
+	"
+>
+	<Icon icon="mdi:star-four-points" class="h-full w-full" />
+</div>
+
+<style>
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+</style>

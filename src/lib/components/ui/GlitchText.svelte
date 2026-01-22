@@ -8,9 +8,9 @@
 </script>
 
 <div class="stack {className}" style="--stacks: 3;">
-	<span class="animate-when-visible" style="--index: 0;">{text}</span>
-	<span class="animate-when-visible" style="--index: 1;">{text}</span>
-	<span class="animate-when-visible" style="--index: 2;">{text}</span>
+	<span style="--index: 0;">{text}</span>
+	<span style="--index: 1;">{text}</span>
+	<span style="--index: 2;">{text}</span>
 </div>
 
 <style>

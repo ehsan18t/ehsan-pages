@@ -1,7 +1,7 @@
 <script lang="ts">
 	import background from '$assets/images/background.svg';
 	import Loader from '$components/layout/Loader.svelte';
-	import { animateOnScroll } from '$lib/actions/animateOnScroll';
+	import { initScrollAnimations, scrollReveal } from '$lib/actions/scrollReveal';
 	import Experience from '$lib/sections/Experience.svelte';
 	import Footer from '$lib/sections/Footer.svelte';
 	import Hero from '$lib/sections/Hero.svelte';
@@ -31,16 +31,27 @@
 							Array.from(loaderElement.getElementsByClassName('name-char')),
 							Array.from(loaderElement.getElementsByClassName('particle'))
 						)
-						.map((el) => new Promise((res) => el.addEventListener('animationend', res, { once: true })))
+						.map(
+							(el) => new Promise((res) => el.addEventListener('animationend', res, { once: true }))
+						)
 				).then(() => {
 					showLoader = false;
 					document.body.style.overflow = 'auto';
 					mainVisible = true;
+
+					// Initialize scroll animations after content is visible
+					requestAnimationFrame(() => {
+						initScrollAnimations();
+					});
 				});
 			}
 		}, 2000);
 	});
 </script>
+
+<svelte:head>
+	<title>Ehsan Khan | Full Stack Web Developer</title>
+</svelte:head>
 
 {#if showLoader}
 	<Loader />
@@ -48,36 +59,49 @@
 
 <main
 	id="main-content"
-	class="transition-opacity duration-600 ease-in-out"
+	class="transition-opacity duration-500 ease-out"
 	style:opacity={mainVisible ? 1 : 0}
 	style:pointer-events={mainVisible ? 'auto' : 'none'}
 >
 	<div class="relative">
-		<div class="bg-background relative z-10">
+		<!-- Hero section - always visible, no scroll animation needed -->
+		<div class="relative z-10 bg-background">
 			<Hero />
 		</div>
 
-		<img src={background} alt="" id="background" fetchpriority="high" />
+		<img
+			src={background}
+			alt=""
+			id="background"
+			fetchpriority="high"
+			aria-hidden="true"
+			decoding="async"
+		/>
 
-		<div class="from-background via-background/80 relative z-1 bg-linear-to-b to-transparent">
-			<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
+		<!-- Skills section - fades in on scroll -->
+		<div class="relative z-1 bg-linear-to-b from-background via-background/80 to-transparent">
+			<div use:scrollReveal={{ y: 60, duration: 0.8 }}>
 				<Skills />
 			</div>
 		</div>
 
-		<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
+		<!-- Experience section -->
+		<div use:scrollReveal={{ y: 60, duration: 0.8 }}>
 			<Experience />
 		</div>
 
-		<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
+		<!-- Projects section -->
+		<div use:scrollReveal={{ y: 60, duration: 0.8 }}>
 			<ProjectShowcase />
 		</div>
 
-		<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
+		<!-- Testimonials section -->
+		<div use:scrollReveal={{ y: 60, duration: 0.8 }}>
 			<Testimonials />
 		</div>
 
-		<div use:animateOnScroll={{ animation: 'slide-up', delay: 200 }}>
+		<!-- Footer section -->
+		<div use:scrollReveal={{ y: 40, duration: 0.6 }}>
 			<Footer />
 		</div>
 	</div>

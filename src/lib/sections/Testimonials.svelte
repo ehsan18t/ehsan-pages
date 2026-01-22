@@ -267,8 +267,7 @@
 					stroke="currentColor"
 					class="h-6 w-6"
 				>
-					<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"
-					></path>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
 				</svg>
 			</button>
 		</div>
@@ -308,6 +307,7 @@
 										class="testimonial-author-image"
 										alt="{testimonial.name}, {testimonial.role}"
 										loading="lazy"
+										decoding="async"
 									/>
 								{:else}
 									<div class="testimonial-author-initials">
@@ -469,7 +469,11 @@
 		height: 0.25rem;
 		width: 100%;
 		border-radius: 0.375rem 0.375rem 0 0;
-		background: linear-gradient(to right, oklch(var(--accent-text) / 0.7), oklch(var(--accent-title)));
+		background: linear-gradient(
+			to right,
+			oklch(var(--accent-text) / 0.7),
+			oklch(var(--accent-title))
+		);
 	}
 
 	/* Quote icon */
