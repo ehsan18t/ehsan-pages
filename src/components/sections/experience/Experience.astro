@@ -8,6 +8,9 @@ import ExperienceGraph from "./ExperienceGraph";
   <div class="container mx-auto px-4">
     <SectionTitle p1="My" p2="Journey" subtitle="A visual timeline of my professional path. Hover on commits to explore each role." />
 
-    <ExperienceGraph experiences={data.experiences} client:visible />
+    <ExperienceGraph
+      experiences={data.experiences}
+      client:visible={{ rootMargin: "200px 0px" }}
+    />
   </div>
 </section>

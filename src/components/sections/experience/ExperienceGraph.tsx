@@ -141,9 +141,9 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
         ease: "none",
         scrollTrigger: {
           trigger: graphRef.current,
-          start: "top 75%",
-          end: "bottom 40%",
-          scrub: 0.5,
+          start: "top 85%",
+          end: "bottom 75%",
+          scrub: 0.35,
         },
       });
 
@@ -152,11 +152,11 @@ const ExperienceGraph: React.FC<ExperienceGraphProps> = ({ experiences }) => {
         gsap.to(node, {
           scale: 1,
           opacity: 1,
-          duration: 0.4,
+          duration: 0.6,
           ease: "back.out(1.7)",
           scrollTrigger: {
-            trigger: graphRef.current,
-            start: `top+=${i * 120} 85%`,
+            trigger: node,
+            start: "top 85%",
             toggleActions: "play none none reverse",
           },
         });
