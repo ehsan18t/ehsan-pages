@@ -2,663 +2,581 @@
 	import { browser } from '$app/environment';
 	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import { testimonials } from '$data';
+	import gsap from 'gsap';
 	import { onDestroy, onMount } from 'svelte';
 
-	// Helper function to get initials from name
+	// Get initials from name
 	function getInitials(name: string): string {
-		const words = name.trim().split(' ');
-		if (words.length === 1) {
-			return words[0].charAt(0).toUpperCase();
-		}
-		return words
+		return name
+			.split(' ')
 			.slice(0, 2)
-			.map((word) => word.charAt(0).toUpperCase())
-			.join('');
+			.map((w) => w[0])
+			.join('')
+			.toUpperCase();
 	}
 
-	const autoplayDelay = 5000;
-	const autoplayDelayAfterInterruption = 10000;
-	const swipeThreshold = 50;
+	const AUTOPLAY_INTERVAL = 6000;
+	const ANIMATION_DURATION = 0.5;
 
-	let currentIndex = $state(0);
+	let activeIndex = $state(0);
 	let isAnimating = $state(false);
-	let animationClass = $state<string | null>(null);
-	let isInViewport = $state(false);
+	let isPaused = $state(false);
+	let cardsContainer = $state<HTMLElement | null>(null);
+	let autoplayTimer: ReturnType<typeof setInterval> | null = null;
 
-	let carouselRef = $state<HTMLElement | null>(null);
-	let sectionRef = $state<HTMLElement | null>(null);
-	let interval: number | undefined;
+	// Get card elements
+	function getCards(): HTMLElement[] {
+		if (!cardsContainer) return [];
+		return Array.from(cardsContainer.querySelectorAll('.testimonial-card'));
+	}
 
-	// Touch and drag state
-	let startX = 0;
-	let isDragging = false;
-	let mouseStartX = 0;
+	// Position cards in stack formation
+	function positionCards(animate = true) {
+		const cards = getCards();
+		const total = cards.length;
 
-	function showTestimonial(index: number, reverse = false) {
-		if (isAnimating || index === currentIndex) return;
+		cards.forEach((card, i) => {
+			// Calculate position relative to active card
+			let offset = i - activeIndex;
+
+			// Wrap around for infinite effect
+			if (offset < -1) offset += total;
+			if (offset > total - 2) offset -= total;
+
+			const isActive = offset === 0;
+			const isBehind = offset < 0;
+			const position = Math.abs(offset);
+
+			// Calculate transforms
+			const scale = isActive ? 1 : Math.max(0.85 - position * 0.05, 0.7);
+			const y = isActive ? 0 : -20 - position * 10;
+			const z = -position * 50;
+			const opacity = position > 2 ? 0 : isActive ? 1 : 0.6 - position * 0.15;
+			const blur = isActive ? 0 : position * 2;
+
+			const props = {
+				scale,
+				y,
+				z,
+				opacity,
+				filter: `blur(${blur}px)`,
+				zIndex: total - position,
+				pointerEvents: isActive ? 'auto' : 'none',
+				duration: animate ? ANIMATION_DURATION : 0,
+				ease: 'power2.out'
+			};
+
+			gsap.to(card, props);
+		});
+	}
+
+	// Navigate to next testimonial
+	function next() {
+		if (isAnimating) return;
 		isAnimating = true;
 
-		// Add animation class to current slide
-		animationClass = reverse ? 'entering' : 'leaving';
+		activeIndex = (activeIndex + 1) % testimonials.length;
+		positionCards();
 
-		// Wait for animation, then switch
 		setTimeout(() => {
-			animationClass = null;
-			currentIndex = index;
-			setTimeout(() => {
-				isAnimating = false;
-			}, 500);
-		}, 500);
+			isAnimating = false;
+		}, ANIMATION_DURATION * 1000);
 	}
 
-	function nextTestimonial() {
-		const newIndex = (currentIndex + 1) % testimonials.length;
-		showTestimonial(newIndex);
+	// Navigate to previous testimonial
+	function prev() {
+		if (isAnimating) return;
+		isAnimating = true;
+
+		activeIndex = (activeIndex - 1 + testimonials.length) % testimonials.length;
+		positionCards();
+
+		setTimeout(() => {
+			isAnimating = false;
+		}, ANIMATION_DURATION * 1000);
 	}
 
-	function prevTestimonial() {
-		const newIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
-		showTestimonial(newIndex, true);
+	// Go to specific index
+	function goTo(index: number) {
+		if (isAnimating || index === activeIndex) return;
+		isAnimating = true;
+
+		activeIndex = index;
+		positionCards();
+
+		setTimeout(() => {
+			isAnimating = false;
+		}, ANIMATION_DURATION * 1000);
 	}
 
+	// Autoplay controls
 	function startAutoplay() {
-		stopAutoplay();
-		interval = window.setInterval(nextTestimonial, autoplayDelay);
+		if (autoplayTimer) return;
+		autoplayTimer = setInterval(() => {
+			if (!isPaused && !isAnimating) {
+				next();
+			}
+		}, AUTOPLAY_INTERVAL);
 	}
 
 	function stopAutoplay() {
-		if (interval) {
-			clearInterval(interval);
-			interval = undefined;
+		if (autoplayTimer) {
+			clearInterval(autoplayTimer);
+			autoplayTimer = null;
 		}
 	}
 
-	function handleDotClick(index: number) {
-		stopAutoplay();
-		showTestimonial(index);
-		if (isInViewport) {
-			setTimeout(startAutoplay, autoplayDelayAfterInterruption);
-		}
+	function pause() {
+		isPaused = true;
 	}
 
-	function handlePrevClick() {
-		stopAutoplay();
-		prevTestimonial();
-		if (isInViewport) {
-			setTimeout(startAutoplay, autoplayDelayAfterInterruption);
-		}
+	function resume() {
+		isPaused = false;
 	}
 
-	function handleNextClick() {
-		stopAutoplay();
-		nextTestimonial();
-		if (isInViewport) {
-			setTimeout(startAutoplay, autoplayDelayAfterInterruption);
-		}
-	}
+	// Touch/swipe handling
+	let touchStartX = 0;
+	let touchStartY = 0;
 
-	// Touch handlers
 	function handleTouchStart(e: TouchEvent) {
-		startX = e.touches[0].clientX;
-		stopAutoplay();
+		touchStartX = e.touches[0].clientX;
+		touchStartY = e.touches[0].clientY;
+		pause();
 	}
 
 	function handleTouchEnd(e: TouchEvent) {
-		const endX = e.changedTouches[0].clientX;
-		const diff = endX - startX;
-		if (Math.abs(diff) > swipeThreshold) {
-			if (diff < 0) {
-				nextTestimonial();
+		const deltaX = e.changedTouches[0].clientX - touchStartX;
+		const deltaY = e.changedTouches[0].clientY - touchStartY;
+
+		// Only swipe if horizontal movement is greater than vertical
+		if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+			if (deltaX > 0) {
+				prev();
 			} else {
-				prevTestimonial();
+				next();
 			}
 		}
-		if (isInViewport) {
-			setTimeout(startAutoplay, autoplayDelayAfterInterruption);
+		resume();
+	}
+
+	// Keyboard navigation
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'ArrowLeft') {
+			prev();
+		} else if (e.key === 'ArrowRight') {
+			next();
 		}
 	}
 
-	// Mouse drag handlers
-	function handleMouseDown(e: MouseEvent) {
-		isDragging = true;
-		mouseStartX = e.clientX;
-		if (carouselRef) carouselRef.style.cursor = 'grabbing';
-		stopAutoplay();
-		e.preventDefault();
-	}
-
-	function handleMouseUp(e: MouseEvent) {
-		if (!isDragging) return;
-
-		const endX = e.clientX;
-		const diff = endX - mouseStartX;
-
-		if (Math.abs(diff) > swipeThreshold) {
-			if (diff < 0) {
-				nextTestimonial();
-			} else {
-				prevTestimonial();
-			}
-		}
-
-		isDragging = false;
-		if (carouselRef) carouselRef.style.cursor = 'grab';
-
-		if (isInViewport) {
-			setTimeout(startAutoplay, autoplayDelayAfterInterruption);
-		}
-	}
-
-	function handleMouseEnter() {
-		stopAutoplay();
-	}
-
-	function handleMouseLeave() {
-		if (!isDragging && isInViewport) {
-			setTimeout(startAutoplay, autoplayDelay);
-		}
-	}
-
-	let observer: IntersectionObserver;
+	// Intersection observer for autoplay
+	let sectionRef = $state<HTMLElement | null>(null);
+	let observer: IntersectionObserver | null = null;
 
 	onMount(() => {
+		if (!browser) return;
+
+		// Initial positioning without animation
+		requestAnimationFrame(() => {
+			positionCards(false);
+		});
+
 		// Set up intersection observer
 		observer = new IntersectionObserver(
 			(entries) => {
-				entries.forEach((entry) => {
-					isInViewport = entry.isIntersecting;
-					if (isInViewport) {
-						startAutoplay();
-					} else {
-						stopAutoplay();
-					}
-				});
+				if (entries[0].isIntersecting) {
+					startAutoplay();
+				} else {
+					stopAutoplay();
+				}
 			},
-			{ threshold: 0.1 }
+			{ threshold: 0.3 }
 		);
 
 		if (sectionRef) {
 			observer.observe(sectionRef);
 		}
 
-		// Global mouse events for drag
-		window.addEventListener('mouseup', handleMouseUp);
-		window.addEventListener('mouseleave', () => {
-			if (isDragging) {
-				isDragging = false;
-				if (carouselRef) carouselRef.style.cursor = 'grab';
-				if (isInViewport) {
-					setTimeout(startAutoplay, autoplayDelayAfterInterruption);
-				}
-			}
-		});
-
-		if (isInViewport) {
-			startAutoplay();
-		}
+		// Keyboard listener
+		window.addEventListener('keydown', handleKeydown);
 	});
 
 	onDestroy(() => {
 		if (!browser) return;
-		if (observer) observer.disconnect();
 		stopAutoplay();
-		window.removeEventListener('mouseup', handleMouseUp);
+		observer?.disconnect();
+		window.removeEventListener('keydown', handleKeydown);
 	});
 </script>
 
 <section
 	bind:this={sectionRef}
-	class="testimonial-section"
 	id="testimonials"
+	class="testimonials-section"
 	aria-labelledby="testimonials-heading"
 >
 	<SectionTitle
 		p1="Client"
 		p2="Testimonials"
-		subtitle="Don't just take my word for it - here's what clients have to say about working with me."
+		subtitle="Don't just take my word for it — here's what clients say about working with me."
 	/>
 
-	<!-- Main carousel container -->
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<div
-		bind:this={carouselRef}
-		class="testimonial-carousel-container"
+		class="testimonials-wrapper"
 		role="region"
 		aria-roledescription="carousel"
-		aria-label="Client testimonials carousel"
-		ontouchstart={handleTouchStart}
-		ontouchend={handleTouchEnd}
-		onmousedown={handleMouseDown}
-		onmouseenter={handleMouseEnter}
-		onmouseleave={handleMouseLeave}
+		aria-label="Client testimonials"
 	>
-		<!-- Navigation Controls -->
-		<div class="testimonial-controls">
-			<button
-				class="testimonial-btn-base testimonial-prev"
-				aria-label="Previous testimonial"
-				type="button"
-				onclick={handlePrevClick}
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="2"
-					stroke="currentColor"
-					class="h-6 w-6"
-				>
-					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"
-					></path>
-				</svg>
-			</button>
-
-			<button
-				class="testimonial-btn-base testimonial-next"
-				aria-label="Next testimonial"
-				type="button"
-				onclick={handleNextClick}
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="2"
-					stroke="currentColor"
-					class="h-6 w-6"
-				>
-					<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
-				</svg>
-			</button>
-		</div>
-
-		<!-- Viewport for slides -->
-		<div class="testimonial-carousel-viewport" aria-live="polite">
+		<!-- Card Stack -->
+		<div
+			bind:this={cardsContainer}
+			class="cards-container"
+			ontouchstart={handleTouchStart}
+			ontouchend={handleTouchEnd}
+			onmouseenter={pause}
+			onmouseleave={resume}
+		>
 			{#each testimonials as testimonial, index}
-				{@const isVisible = index === currentIndex && !animationClass}
-				{@const isLeaving = index === currentIndex && animationClass}
-				<div
-					class="testimonial-slide"
-					class:slide-visible={isVisible || isLeaving}
-					class:entering={animationClass === 'entering' && isLeaving}
-					class:leaving={animationClass === 'leaving' && isLeaving}
-					data-index={index}
+				<article
+					class="testimonial-card"
 					role="tabpanel"
 					aria-roledescription="slide"
 					aria-label={`Testimonial from ${testimonial.name}`}
-					aria-hidden={!isVisible && !isLeaving}
-					style:display={isVisible || isLeaving ? 'block' : 'none'}
+					aria-hidden={index !== activeIndex}
 				>
-					<div class="testimonial-card">
-						<div class="testimonial-accent" aria-hidden="true"></div>
-						<svg class="quote-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+					<!-- Quote mark -->
+					<div class="quote-mark" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="currentColor">
 							<path
 								d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"
 							/>
 						</svg>
-
-						<p class="testimonial-content">{testimonial.content}</p>
-
-						<div class="testimonial-author-container">
-							<div class="testimonial-author-avatar">
-								{#if testimonial.image}
-									<img
-										src={testimonial.image}
-										class="testimonial-author-image"
-										alt="{testimonial.name}, {testimonial.role}"
-										loading="lazy"
-										decoding="async"
-									/>
-								{:else}
-									<div class="testimonial-author-initials">
-										{getInitials(testimonial.name)}
-									</div>
-								{/if}
-							</div>
-							<div class="testimonial-author-details">
-								<h4 class="testimonial-author-name">{testimonial.name}</h4>
-								<p class="testimonial-author-role">{testimonial.role}</p>
-							</div>
-						</div>
 					</div>
-				</div>
+
+					<!-- Content -->
+					<blockquote class="testimonial-content">
+						<p>{testimonial.content}</p>
+					</blockquote>
+
+					<!-- Author -->
+					<footer class="testimonial-author">
+						<div class="author-avatar">
+							{#if testimonial.image}
+								<img src={testimonial.image} alt="" loading="lazy" decoding="async" />
+							{:else}
+								<span class="avatar-initials">{getInitials(testimonial.name)}</span>
+							{/if}
+						</div>
+						<div class="author-info">
+							<cite class="author-name">{testimonial.name}</cite>
+							<span class="author-role">{testimonial.role}</span>
+						</div>
+					</footer>
+				</article>
 			{/each}
 		</div>
 
-		<!-- Pagination dots -->
-		<div class="testimonial-pagination" role="tablist">
-			{#each testimonials as testimonial, index}
-				<button
-					class="testimonial-dot"
-					class:testimonial-dot-active={index === currentIndex}
-					class:testimonial-dot-inactive={index !== currentIndex}
-					data-index={index}
-					aria-label={`View testimonial from ${testimonial.name}`}
-					role="tab"
-					aria-selected={index === currentIndex}
-					type="button"
-					onclick={() => handleDotClick(index)}
-				></button>
-			{/each}
+		<!-- Navigation -->
+		<div class="navigation">
+			<button
+				class="nav-btn prev"
+				onclick={prev}
+				aria-label="Previous testimonial"
+				disabled={isAnimating}
+			>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M15 18l-6-6 6-6" />
+				</svg>
+			</button>
+
+			<!-- Indicators -->
+			<div class="indicators" role="tablist">
+				{#each testimonials as _, index}
+					<button
+						class="indicator"
+						class:active={index === activeIndex}
+						onclick={() => goTo(index)}
+						aria-label={`Go to testimonial ${index + 1}`}
+						aria-selected={index === activeIndex}
+						role="tab"
+					></button>
+				{/each}
+			</div>
+
+			<button
+				class="nav-btn next"
+				onclick={next}
+				aria-label="Next testimonial"
+				disabled={isAnimating}
+			>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M9 18l6-6-6-6" />
+				</svg>
+			</button>
 		</div>
 	</div>
 </section>
 
 <style>
-	/* Testimonial Carousel Animation Variables */
-	:root {
-		--testimonial-duration-normal: 300ms;
-		--testimonial-duration-short: 200ms;
-		--testimonial-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-		--testimonial-timing-function-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-		--testimonial-shadow-normal: 0 4px 14px rgba(0, 0, 0, 0.08);
-		--testimonial-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-	}
-
-	/* Testimonial Container */
-	.testimonial-section {
+	.testimonials-section {
 		position: relative;
-		margin: 0 auto;
 		width: 100%;
 		max-width: 72rem;
-		padding-bottom: 2rem;
+		margin: 0 auto;
+		padding: 0 1rem 4rem;
 	}
 
-	/* Testimonial Carousel Container */
-	.testimonial-carousel-container {
-		position: relative;
-		cursor: grab;
-		overflow: visible;
-		user-select: none;
-	}
-
-	/* Carousel Viewport */
-	.testimonial-carousel-viewport {
-		overflow: hidden;
-		border-radius: 1rem;
-	}
-
-	/* Individual Slide */
-	.testimonial-slide {
-		width: 100%;
-		min-width: 0;
-		padding: 1rem;
-		opacity: 0;
-		user-select: none;
-		contain: style;
-		transition: opacity 0.5s var(--testimonial-timing-function);
-		will-change: opacity;
-		transform: translateZ(0);
-	}
-
-	.slide-visible {
-		opacity: 1;
-		z-index: 1;
-	}
-
-	.testimonial-slide.entering {
-		animation: fade-out-up 500ms forwards;
-	}
-
-	.testimonial-slide.leaving {
-		animation: fade-out-down 500ms forwards;
-	}
-
-	@keyframes fade-out-up {
-		from {
-			opacity: 1;
-			transform: translateY(0);
-		}
-		to {
-			opacity: 0;
-			transform: translateY(-20px);
-		}
-	}
-
-	@keyframes fade-out-down {
-		from {
-			opacity: 1;
-			transform: translateY(0);
-		}
-		to {
-			opacity: 0;
-			transform: translateY(20px);
-		}
-	}
-
-	/* Card Design */
-	.testimonial-card {
+	.testimonials-wrapper {
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		overflow: hidden;
-		border-radius: 1rem;
-		border: 1px solid oklch(var(--accent-bg) / 0.15);
-		padding: 2rem;
-		opacity: 0.4;
-		backdrop-filter: blur(12px);
-		contain: content;
-		background: linear-gradient(
-			135deg,
-			oklch(var(--accent-bg) / 0.08),
-			oklch(var(--accent-bg) / 0.03)
-		);
-		box-shadow: var(--testimonial-shadow-normal);
-		transition:
-			opacity 0.2s ease,
-			box-shadow 0.3s ease;
-		transform: translateZ(0);
+		align-items: center;
+		gap: 2rem;
 	}
 
-	.slide-visible .testimonial-card {
-		opacity: 1;
-		box-shadow:
-			0 10px 15px -3px rgba(0, 0, 0, 0.1),
-			0 4px 6px -4px rgba(0, 0, 0, 0.1);
+	/* Card Stack Container */
+	.cards-container {
+		position: relative;
+		width: 100%;
+		max-width: 40rem;
+		height: 24rem;
+		perspective: 1000px;
+		touch-action: pan-y;
 	}
 
-	.testimonial-card:hover {
-		box-shadow: var(--testimonial-shadow-hover);
+	@media (min-width: 640px) {
+		.cards-container {
+			height: 22rem;
+		}
 	}
 
-	/* Top accent border */
-	.testimonial-accent {
+	@media (min-width: 768px) {
+		.cards-container {
+			height: 20rem;
+		}
+	}
+
+	/* Individual Card */
+	.testimonial-card {
 		position: absolute;
 		top: 0;
 		left: 0;
-		height: 0.25rem;
 		width: 100%;
-		border-radius: 0.375rem 0.375rem 0 0;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		padding: 1.5rem;
+		border-radius: 1.25rem;
 		background: linear-gradient(
-			to right,
-			oklch(var(--accent-text) / 0.7),
-			oklch(var(--accent-title))
+			145deg,
+			oklch(var(--accent-bg) / 0.12),
+			oklch(var(--accent-bg) / 0.04)
 		);
+		border: 1px solid oklch(var(--accent-text) / 0.15);
+		backdrop-filter: blur(20px);
+		box-shadow:
+			0 25px 50px -12px rgba(0, 0, 0, 0.25),
+			0 0 0 1px oklch(var(--accent-text) / 0.05);
+		transform-style: preserve-3d;
+		will-change: transform, opacity;
 	}
 
-	/* Quote icon */
-	.quote-icon {
-		height: 3rem;
-		width: 3rem;
-		color: oklch(var(--accent-text));
-		opacity: 0.8;
+	@media (min-width: 640px) {
+		.testimonial-card {
+			padding: 2rem;
+		}
+	}
+
+	/* Quote Mark */
+	.quote-mark {
+		position: absolute;
+		top: 1rem;
+		right: 1.5rem;
+		width: 2.5rem;
+		height: 2.5rem;
+		color: oklch(var(--accent-text) / 0.15);
+	}
+
+	@media (min-width: 640px) {
+		.quote-mark {
+			width: 3rem;
+			height: 3rem;
+			top: 1.5rem;
+			right: 2rem;
+		}
 	}
 
 	/* Content */
 	.testimonial-content {
-		padding: 2rem 0;
-		text-align: center;
-		font-size: 0.875rem;
-		font-weight: 600;
-		font-style: italic;
-		color: rgb(var(--foreground));
-		line-height: 1.7;
-		flex-grow: 1;
-	}
-
-	@media (min-width: 1024px) {
-		.testimonial-content {
-			font-size: 1.125rem;
-		}
-	}
-
-	/* Author info */
-	.testimonial-author-container {
-		margin-top: auto;
+		flex: 1;
 		display: flex;
 		align-items: center;
-		border-top: 1px solid oklch(var(--accent-bg) / 0.15);
-		padding-top: 1.25rem;
-	}
-
-	.testimonial-author-avatar {
-		margin-right: 1rem;
-		height: 3.5rem;
-		width: 3.5rem;
 		overflow: hidden;
-		border-radius: 9999px;
-		border: 2px solid oklch(var(--accent-text) / 0.3);
-		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-		background: linear-gradient(135deg, oklch(var(--accent-bg) / 0.2), transparent);
 	}
 
-	.testimonial-author-image {
-		height: 100%;
-		width: 100%;
-		border-radius: 9999px;
-		object-fit: cover;
-	}
-
-	.testimonial-author-initials {
-		display: flex;
-		height: 100%;
-		width: 100%;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.125rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		color: oklch(var(--accent-text));
-		background: linear-gradient(
-			135deg,
-			oklch(var(--accent-text) / 0.15),
-			oklch(var(--accent-text) / 0.25)
-		);
-		letter-spacing: 0.025em;
-	}
-
-	.testimonial-author-name {
-		font-size: 1.25rem;
-		font-weight: 700;
-	}
-
-	.testimonial-author-role {
+	.testimonial-content p {
 		font-size: 0.875rem;
-		color: oklch(var(--accent-text) / 0.7);
-	}
-
-	/* Next/Prev Button */
-	.testimonial-btn-base {
-		position: absolute;
-		top: 50%;
-		z-index: 10;
-		display: flex;
-		height: 2.5rem;
-		width: 2.5rem;
-		transform: translateY(-50%);
-		cursor: pointer;
-		align-items: center;
-		justify-content: center;
-		border-radius: 9999px;
-		border: 1px solid oklch(var(--accent-text) / 0.15);
-		background: oklch(var(--accent-bg) / 0.1);
-		color: oklch(var(--accent-text));
-		opacity: 0.7;
-		backdrop-filter: blur(12px);
-		pointer-events: auto;
-		transition:
-			opacity var(--testimonial-duration-normal) ease,
-			background-color var(--testimonial-duration-normal) ease,
-			transform var(--testimonial-duration-normal) ease,
-			box-shadow var(--testimonial-duration-normal) ease;
-		will-change: opacity, background-color, transform, box-shadow;
+		line-height: 1.75;
+		color: rgb(var(--foreground) / 0.9);
+		font-style: italic;
+		display: -webkit-box;
+		-webkit-line-clamp: 6;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
 
 	@media (min-width: 640px) {
-		.testimonial-btn-base {
-			height: 3rem;
-			width: 3rem;
+		.testimonial-content p {
+			font-size: 1rem;
+			-webkit-line-clamp: 5;
 		}
-	}
-
-	.testimonial-btn-base:hover {
-		background: oklch(var(--accent-bg) / 0.2);
-		transform: translateY(-50%) scale(1.05);
-		opacity: 1;
-		box-shadow: 0 0 15px oklch(var(--accent-text) / 0.3);
-	}
-
-	.testimonial-next {
-		right: 0.5rem;
-	}
-
-	.testimonial-prev {
-		left: 0.5rem;
 	}
 
 	@media (min-width: 768px) {
-		.testimonial-next {
-			right: 0;
-		}
-		.testimonial-prev {
-			left: 0;
+		.testimonial-content p {
+			font-size: 1.0625rem;
+			-webkit-line-clamp: 4;
 		}
 	}
 
-	/* Pagination Dots */
-	.testimonial-pagination {
-		margin-top: 2rem;
+	/* Author Section */
+	.testimonial-author {
 		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		padding-top: 1rem;
+		border-top: 1px solid oklch(var(--accent-text) / 0.1);
+		margin-top: auto;
+	}
+
+	.author-avatar {
+		flex-shrink: 0;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 50%;
+		overflow: hidden;
+		background: linear-gradient(
+			135deg,
+			oklch(var(--accent-text) / 0.2),
+			oklch(var(--accent-bg) / 0.3)
+		);
+		border: 2px solid oklch(var(--accent-text) / 0.2);
+	}
+
+	.author-avatar img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.avatar-initials {
+		display: flex;
+		align-items: center;
 		justify-content: center;
+		width: 100%;
+		height: 100%;
+		font-size: 1rem;
+		font-weight: 700;
+		color: oklch(var(--accent-text));
+	}
+
+	.author-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+		min-width: 0;
+	}
+
+	.author-name {
+		font-size: 1rem;
+		font-weight: 600;
+		font-style: normal;
+		color: rgb(var(--foreground));
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.author-role {
+		font-size: 0.8125rem;
+		color: oklch(var(--accent-text) / 0.7);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	/* Navigation */
+	.navigation {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.nav-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 50%;
+		border: 1px solid oklch(var(--accent-text) / 0.2);
+		background: oklch(var(--accent-bg) / 0.1);
+		color: oklch(var(--accent-text));
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.nav-btn:hover:not(:disabled) {
+		background: oklch(var(--accent-bg) / 0.2);
+		border-color: oklch(var(--accent-text) / 0.3);
+		transform: scale(1.05);
+	}
+
+	.nav-btn:active:not(:disabled) {
+		transform: scale(0.95);
+	}
+
+	.nav-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.nav-btn svg {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	/* Indicators */
+	.indicators {
+		display: flex;
 		gap: 0.5rem;
 	}
 
-	.testimonial-dot {
-		height: 0.75rem;
-		width: 0.75rem;
-		cursor: pointer;
-		border-radius: 9999px;
+	.indicator {
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 50%;
 		border: none;
-		background: oklch(var(--accent-text) / 0.3);
-		transform-origin: center;
-		will-change: width, background-color;
-		transition:
-			width 0.3s var(--testimonial-timing-function-spring),
-			background-color 0.3s ease;
+		background: oklch(var(--accent-text) / 0.25);
+		cursor: pointer;
+		transition: all 0.3s ease;
 	}
 
-	.testimonial-dot-active {
+	.indicator:hover {
+		background: oklch(var(--accent-text) / 0.5);
+	}
+
+	.indicator.active {
+		width: 1.5rem;
+		border-radius: 0.25rem;
 		background: oklch(var(--accent-text));
-		width: 2rem;
 	}
 
-	.testimonial-dot-inactive {
-		background: oklch(var(--accent-text) / 0.3);
-		width: 0.75rem;
-	}
-
-	/* Accessibility */
+	/* Reduced motion */
 	@media (prefers-reduced-motion: reduce) {
 		.testimonial-card,
-		.testimonial-btn-base,
-		.testimonial-dot,
-		.testimonial-slide {
+		.nav-btn,
+		.indicator {
 			transition: none !important;
-			animation: none !important;
-		}
-
-		.slide-visible {
-			opacity: 1;
 		}
 	}
 </style>
