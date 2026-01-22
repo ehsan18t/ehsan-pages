@@ -1,2 +1,3 @@
 // Actions barrel export
-export { animateOnScroll } from './animateOnScroll';
+export { animateOnScroll, staggerChildren } from './animateOnScroll';
+export type { AnimateOnScrollOptions, StaggerOptions } from './animateOnScroll';
