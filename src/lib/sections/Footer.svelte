@@ -40,15 +40,15 @@
 			</p>
 			<div class="mt-4 flex items-center gap-1 text-sm text-foreground-muted md:mt-0">
 				<span class="animate-pulse inline-block h-2 w-2 rounded-full bg-accent-text"></span>
-				<span class="flex items-center gap-1">
+				<span class="flex items-center gap-1 select-none">
 					Built with
 					<span class="ml-2 flex items-center gap-2.5">
 						{#each tech as item (item.name)}
 							<span
-								class="tech-icon relative flex h-7 w-7 items-center justify-center rounded-md bg-accent-bg/20 p-1.5 text-accent-text transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-bg/30 hover:text-accent-300 hover:shadow-[0_4px_8px_-2px_oklch(var(--accent-bg)/0.5)]"
+								class="footer-tech-icon relative flex cursor-pointer items-center justify-center rounded-md bg-accent-bg/20 p-1.5 text-accent-text transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-bg/30 hover:text-accent-300 hover:shadow-[0_4px_8px_-2px_oklch(var(--accent-bg)/0.5)]"
 								title={item.name}
 							>
-								<Icon icon={item.icon} width={20} height={20} />
+								<Icon icon={item.icon} />
 							</span>
 						{/each}
 					</span>
@@ -62,7 +62,7 @@
 </footer>
 
 <style>
-	.tech-icon:hover::before {
+	.footer-tech-icon:hover::before {
 		content: attr(title);
 		position: absolute;
 		top: -24px;
