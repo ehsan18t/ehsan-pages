@@ -30,4 +30,3 @@ export type { GsapScrollOptions } from './gsapScrollAnimations';
 // Legacy CSS-based animations (deprecated, use scrollReveal instead)
 export { animateOnScroll, staggerChildren } from './animateOnScroll';
 export type { AnimateOnScrollOptions, StaggerOptions } from './animateOnScroll';
-

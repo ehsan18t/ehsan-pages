@@ -31,154 +31,185 @@ import { browser } from '$app/environment';
 import type { Action } from 'svelte/action';
 
 export interface ViewportAnimationOptions {
-    /** GSAP tween or timeline to pause/resume (optional) */
-    gsapTween?: gsap.core.Animation | null;
-    /** Root margin for IntersectionObserver (default: '50px' for early triggering) */
-    rootMargin?: string;
-    /** Threshold for intersection (default: 0) */
-    threshold?: number | number[];
-    /** Whether animation should start paused (default: false) */
-    startPaused?: boolean;
-    /** Callback when animation is paused */
-    onPause?: () => void;
-    /** Callback when animation is resumed */
-    onResume?: () => void;
+	/** GSAP tween or timeline to pause/resume (optional) */
+	gsapTween?: gsap.core.Animation | null;
+	/** Root margin for IntersectionObserver (default: '50px' for early triggering) */
+	rootMargin?: string;
+	/** Threshold for intersection (default: 0) */
+	threshold?: number | number[];
+	/** Whether animation should start paused (default: false) */
+	startPaused?: boolean;
+	/** Callback when animation is paused */
+	onPause?: () => void;
+	/** Callback when animation is resumed */
+	onResume?: () => void;
 }
 
 /**
  * Svelte action that pauses animations when element is outside viewport
  */
 export const viewportAnimation: Action<HTMLElement, ViewportAnimationOptions | undefined> = (
-    node,
-    options = {}
+	node,
+	options = {}
 ) => {
-    if (!browser) return;
+	if (!browser || typeof window === 'undefined') {
+		return {
+			update() {},
+			destroy() {}
+		};
+	}
 
-    let { gsapTween = null, rootMargin = '50px', onPause, onResume } = options;
-    const { threshold = 0, startPaused = false } = options;
+	let { gsapTween = null, rootMargin = '50px', onPause, onResume } = options;
+	const { threshold = 0, startPaused = false } = options;
 
-    let observer: IntersectionObserver | null = null;
-    let isVisible = !startPaused;
-    let prefersReducedMotion = false;
+	let observer: IntersectionObserver | null = null;
+	let isVisible = !startPaused;
+	let prefersReducedMotion = false;
 
-    // Check reduced motion preference
-    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    prefersReducedMotion = motionQuery.matches;
+	// Check reduced motion preference (if supported)
+	const motionQuery = window.matchMedia
+		? window.matchMedia('(prefers-reduced-motion: reduce)')
+		: null;
+	if (motionQuery) {
+		prefersReducedMotion = motionQuery.matches;
 
-    // Listen for reduced motion changes
-    const handleMotionChange = (e: MediaQueryListEvent) => {
-        prefersReducedMotion = e.matches;
-        if (prefersReducedMotion) {
-            pauseAnimation();
-        } else if (isVisible) {
-            resumeAnimation();
-        }
-    };
-    motionQuery.addEventListener('change', handleMotionChange);
+		// Listen for reduced motion changes
+		const handleMotionChange = (e: MediaQueryListEvent) => {
+			prefersReducedMotion = e.matches;
+			if (prefersReducedMotion) {
+				pauseAnimation();
+			} else if (isVisible) {
+				resumeAnimation();
+			}
+		};
+		motionQuery.addEventListener('change', handleMotionChange);
 
-    /**
-     * Pause the animation (CSS or GSAP)
-     */
-    function pauseAnimation(): void {
-        // Pause CSS animations
-        node.style.animationPlayState = 'paused';
+		// Store for cleanup
+		(node as HTMLElement & { __motionHandler?: (e: MediaQueryListEvent) => void }).__motionHandler =
+			handleMotionChange;
+	}
 
-        // Also pause any children with animations
-        const animatedChildren = node.querySelectorAll<HTMLElement>('*');
-        animatedChildren.forEach((child) => {
-            const computedStyle = window.getComputedStyle(child);
-            if (computedStyle.animationName !== 'none') {
-                child.style.animationPlayState = 'paused';
-            }
-        });
+	/**
+	 * Pause the animation (CSS or GSAP)
+	 */
+	function pauseAnimation(): void {
+		// Pause CSS animations
+		node.style.animationPlayState = 'paused';
 
-        // Pause GSAP tween if provided
-        if (gsapTween && typeof gsapTween.pause === 'function') {
-            gsapTween.pause();
-        }
+		// Also pause any children with animations
+		const animatedChildren = node.querySelectorAll<HTMLElement>('*');
+		animatedChildren.forEach((child) => {
+			const computedStyle = window.getComputedStyle(child);
+			if (computedStyle.animationName !== 'none') {
+				child.style.animationPlayState = 'paused';
+			}
+		});
 
-        onPause?.();
-    }
+		// Pause GSAP tween if provided
+		if (gsapTween && typeof gsapTween.pause === 'function') {
+			gsapTween.pause();
+		}
 
-    /**
-     * Resume the animation (CSS or GSAP)
-     */
-    function resumeAnimation(): void {
-        // Don't resume if user prefers reduced motion
-        if (prefersReducedMotion) return;
+		onPause?.();
+	}
 
-        // Resume CSS animations
-        node.style.animationPlayState = 'running';
+	/**
+	 * Resume the animation (CSS or GSAP)
+	 */
+	function resumeAnimation(): void {
+		// Don't resume if user prefers reduced motion
+		if (prefersReducedMotion) return;
 
-        // Also resume any children with animations
-        const animatedChildren = node.querySelectorAll<HTMLElement>('*');
-        animatedChildren.forEach((child) => {
-            child.style.animationPlayState = 'running';
-        });
+		// Resume CSS animations
+		node.style.animationPlayState = 'running';
 
-        // Resume GSAP tween if provided
-        if (gsapTween && typeof gsapTween.resume === 'function') {
-            gsapTween.resume();
-        }
+		// Also resume any children with animations
+		const animatedChildren = node.querySelectorAll<HTMLElement>('*');
+		animatedChildren.forEach((child) => {
+			child.style.animationPlayState = 'running';
+		});
 
-        onResume?.();
-    }
+		// Resume GSAP tween if provided
+		if (gsapTween && typeof gsapTween.resume === 'function') {
+			gsapTween.resume();
+		}
 
-    /**
-     * IntersectionObserver callback
-     */
-    function handleIntersection(entries: IntersectionObserverEntry[]): void {
-        entries.forEach((entry) => {
-            isVisible = entry.isIntersecting;
+		onResume?.();
+	}
 
-            if (entry.isIntersecting) {
-                resumeAnimation();
-            } else {
-                pauseAnimation();
-            }
-        });
-    }
+	/**
+	 * IntersectionObserver callback
+	 */
+	function handleIntersection(entries: IntersectionObserverEntry[]): void {
+		entries.forEach((entry) => {
+			isVisible = entry.isIntersecting;
 
-    // Create observer
-    observer = new IntersectionObserver(handleIntersection, {
-        root: null, // viewport
-        rootMargin,
-        threshold
-    });
+			if (entry.isIntersecting) {
+				resumeAnimation();
+			} else {
+				pauseAnimation();
+			}
+		});
+	}
 
-    // Start observing
-    observer.observe(node);
+	// Create observer if supported
+	if (typeof IntersectionObserver !== 'undefined') {
+		observer = new IntersectionObserver(handleIntersection, {
+			root: null, // viewport
+			rootMargin,
+			threshold
+		});
 
-    // Initial state
-    if (startPaused || prefersReducedMotion) {
-        pauseAnimation();
-    }
+		// Start observing
+		observer.observe(node);
+	} else {
+		// Fallback: keep running if observer isn't available
+		resumeAnimation();
+	}
 
-    return {
-        update(newOptions: ViewportAnimationOptions = {}) {
-            // Update GSAP tween reference
-            gsapTween = newOptions.gsapTween ?? gsapTween;
-            rootMargin = newOptions.rootMargin ?? rootMargin;
-            onPause = newOptions.onPause;
-            onResume = newOptions.onResume;
+	// Initial state
+	if (startPaused || prefersReducedMotion) {
+		pauseAnimation();
+	}
 
-            // Recreate observer if rootMargin changed
-            if (newOptions.rootMargin && newOptions.rootMargin !== rootMargin) {
-                observer?.disconnect();
-                observer = new IntersectionObserver(handleIntersection, {
-                    root: null,
-                    rootMargin: newOptions.rootMargin,
-                    threshold: newOptions.threshold ?? threshold
-                });
-                observer.observe(node);
-            }
-        },
-        destroy() {
-            observer?.disconnect();
-            observer = null;
-            motionQuery.removeEventListener('change', handleMotionChange);
-        }
-    };
+	return {
+		update(newOptions: ViewportAnimationOptions = {}) {
+			// Update GSAP tween reference
+			gsapTween = newOptions.gsapTween ?? gsapTween;
+			const nextRootMargin = newOptions.rootMargin ?? rootMargin;
+			onPause = newOptions.onPause;
+			onResume = newOptions.onResume;
+
+			// Recreate observer if rootMargin or threshold changed
+			if (
+				observer &&
+				((newOptions.rootMargin && nextRootMargin !== rootMargin) ||
+					newOptions.threshold !== undefined)
+			) {
+				observer.disconnect();
+				observer = new IntersectionObserver(handleIntersection, {
+					root: null,
+					rootMargin: nextRootMargin,
+					threshold: newOptions.threshold ?? threshold
+				});
+				observer.observe(node);
+			}
+
+			rootMargin = nextRootMargin;
+		},
+		destroy() {
+			observer?.disconnect();
+			observer = null;
+			const stored = (
+				node as HTMLElement & {
+					__motionHandler?: (e: MediaQueryListEvent) => void;
+				}
+			).__motionHandler;
+			if (motionQuery && stored) {
+				motionQuery.removeEventListener('change', stored);
+			}
+		}
+	};
 };
 
 /**
@@ -186,41 +217,41 @@ export const viewportAnimation: Action<HTMLElement, ViewportAnimationOptions | u
  * Use this when you need more control over GSAP animations
  */
 export function createViewportGsapController(
-    element: HTMLElement,
-    options: Omit<ViewportAnimationOptions, 'gsapTween'> = {}
+	element: HTMLElement,
+	options: Omit<ViewportAnimationOptions, 'gsapTween'> = {}
 ): {
-    setTween: (tween: gsap.core.Animation | null) => void;
-    destroy: () => void;
-    isVisible: () => boolean;
+	setTween: (tween: gsap.core.Animation | null) => void;
+	destroy: () => void;
+	isVisible: () => boolean;
 } {
-    let currentTween: gsap.core.Animation | null = null;
-    const visible = true;
+	let currentTween: gsap.core.Animation | null = null;
+	const visible = true;
 
-    const action = viewportAnimation(element, {
-        ...options,
-        onPause: () => {
-            currentTween?.pause();
-            options.onPause?.();
-        },
-        onResume: () => {
-            currentTween?.resume();
-            options.onResume?.();
-        }
-    });
+	const action = viewportAnimation(element, {
+		...options,
+		onPause: () => {
+			currentTween?.pause();
+			options.onPause?.();
+		},
+		onResume: () => {
+			currentTween?.resume();
+			options.onResume?.();
+		}
+	});
 
-    return {
-        setTween(tween: gsap.core.Animation | null) {
-            currentTween = tween;
-            // If currently not visible, pause the new tween
-            if (!visible && tween) {
-                tween.pause();
-            }
-        },
-        destroy() {
-            action?.destroy?.();
-        },
-        isVisible: () => visible
-    };
+	return {
+		setTween(tween: gsap.core.Animation | null) {
+			currentTween = tween;
+			// If currently not visible, pause the new tween
+			if (!visible && tween) {
+				tween.pause();
+			}
+		},
+		destroy() {
+			action?.destroy?.();
+		},
+		isVisible: () => visible
+	};
 }
 
 export default viewportAnimation;
