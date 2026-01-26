@@ -12,13 +12,16 @@
 	 * @component ExperienceGraph
 	 */
 
+	import { browser } from '$app/environment';
 	import type { Experience } from '$data';
 	import gsap from 'gsap';
-	import ScrollTrigger from 'gsap/ScrollTrigger';
+	import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 	import ExperienceCard from './ExperienceCard.svelte';
 
-	// Register GSAP plugin
-	gsap.registerPlugin(ScrollTrigger);
+	// Register GSAP plugin (browser only)
+	if (browser) {
+		gsap.registerPlugin(ScrollTrigger);
+	}
 
 	// ─────────────────────────────────────────────────────────────
 	// Props
@@ -180,7 +183,7 @@
 		// Clean up any existing animations
 		scrollTriggers.forEach((t) => t.kill());
 		scrollTriggers = [];
-		ScrollTrigger.getAll().forEach((t) => t.kill());
+		ScrollTrigger.getAll().forEach((t: ScrollTrigger) => t.kill());
 
 		const len = pathRef.getTotalLength();
 
@@ -237,7 +240,7 @@
 			return () => {
 				clearTimeout(timeoutId);
 				scrollTriggers.forEach((t) => t.kill());
-				ScrollTrigger.getAll().forEach((t) => t.kill());
+				ScrollTrigger.getAll().forEach((t: ScrollTrigger) => t.kill());
 				if (closeTimeoutRef) {
 					clearTimeout(closeTimeoutRef);
 					closeTimeoutRef = null;

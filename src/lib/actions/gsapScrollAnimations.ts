@@ -14,7 +14,7 @@
 
 import { browser } from '$app/environment';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 import type { Action } from 'svelte/action';
 import { prefersReducedMotion } from 'svelte/motion';
 

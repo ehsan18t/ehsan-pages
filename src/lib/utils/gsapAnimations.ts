@@ -14,9 +14,9 @@
 
 import { browser } from '$app/environment';
 import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 
-// Register GSAP plugins
+// Register GSAP plugins (browser only)
 if (browser) {
 	gsap.registerPlugin(ScrollTrigger);
 }
@@ -272,7 +272,7 @@ export function createScrollAnimation(
 		ease,
 		stagger:
 			(Array.isArray(element) || element instanceof NodeList) &&
-			(element as ArrayLike<Element>).length > 1
+				(element as ArrayLike<Element>).length > 1
 				? stagger
 				: undefined,
 		scrollTrigger: {
@@ -320,7 +320,7 @@ export function gsapScrollTrigger(
 			if (animation) {
 				animation.kill();
 			}
-			ScrollTrigger.getAll().forEach((st) => {
+			ScrollTrigger.getAll().forEach((st: ScrollTrigger) => {
 				if (st.trigger === node) {
 					st.kill();
 				}
@@ -358,7 +358,7 @@ export function gsapStaggerChildren(
 			if (animation) {
 				animation.kill();
 			}
-			ScrollTrigger.getAll().forEach((st) => {
+			ScrollTrigger.getAll().forEach((st: ScrollTrigger) => {
 				if (st.trigger === node) {
 					st.kill();
 				}
