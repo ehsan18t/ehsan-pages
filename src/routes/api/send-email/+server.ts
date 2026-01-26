@@ -17,14 +17,15 @@ export const POST: RequestHandler = async ({ request }) => {
 		const body = await request.json();
 
 		// Validate required fields
-		if (!body.to || !body.subject) {
-			throw error(400, 'Missing required fields: to and subject');
+		// Validate required fields
+		if (!body.subject) {
+			throw error(400, 'Missing required fields: subject');
 		}
 
 		// Send the email using the parsed data
 		const info = await transporter.sendMail({
 			from: EMAIL_USER,
-			to: body.to,
+			to: EMAIL_USER,
 			subject: body.subject,
 			text: body.text || '',
 			html: body.html

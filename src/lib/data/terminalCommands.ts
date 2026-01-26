@@ -48,7 +48,6 @@ async function sendEmail(
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				to: 'ehsan18t@gmail.com',
 				subject: `Contact Form: ${email}`,
 				html: `
 					<h1>New contact form submission</h1>
