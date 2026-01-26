@@ -22,6 +22,48 @@
 	let pdfDocument = $state<PDFDocumentProxy | null>(null);
 	let pdfBlobUrl = $state<string | null>(null);
 	let pdfjsLib = $state<PdfjsLib | null>(null);
+	let renderToken = 0;
+	let resizeRaf: number | null = null;
+	let pendingRender = false;
+	let lastRenderedWidth = 0;
+
+	function containerRefAttachment(node: HTMLDivElement) {
+		containerRef = node;
+		const observer = new ResizeObserver((entries) => {
+			const width = entries[0]?.contentRect.width ?? node.clientWidth;
+			if (!width) return;
+
+			containerWidth = width;
+			if (resizeRaf !== null) {
+				cancelAnimationFrame(resizeRaf);
+			}
+			resizeRaf = requestAnimationFrame(() => {
+				if (pdfDocument && pagesContainer) {
+					renderAllPages();
+				} else {
+					pendingRender = true;
+				}
+			});
+		});
+
+		observer.observe(node);
+
+		return () => {
+			observer.disconnect();
+			if (containerRef === node) {
+				containerRef = null;
+			}
+		};
+	}
+
+	function pagesContainerAttachment(node: HTMLDivElement) {
+		pagesContainer = node;
+		return () => {
+			if (pagesContainer === node) {
+				pagesContainer = null;
+			}
+		};
+	}
 
 	// Initialize PDF.js worker - client-only
 	onMount(async () => {
@@ -35,10 +77,6 @@
 			import.meta.url
 		).toString();
 
-		// Handle initial resize
-		handleResize();
-		window.addEventListener('resize', handleResize);
-
 		// Fetch PDF
 		if (cvPDF.trim()) {
 			await fetchPdf(cvPDF);
@@ -47,7 +85,10 @@
 
 	onDestroy(() => {
 		if (!browser) return;
-		window.removeEventListener('resize', handleResize);
+		if (resizeRaf !== null) {
+			cancelAnimationFrame(resizeRaf);
+			resizeRaf = null;
+		}
 		if (pdfBlobUrl) {
 			URL.revokeObjectURL(pdfBlobUrl);
 		}
@@ -55,12 +96,6 @@
 			pdfDocument.destroy();
 		}
 	});
-
-	function handleResize() {
-		if (containerRef) {
-			containerWidth = containerRef.clientWidth;
-		}
-	}
 
 	async function fetchPdf(url: string) {
 		if (!pdfjsLib) return;
@@ -91,7 +126,6 @@
 			}
 
 			pdfBlobUrl = newBlobUrl;
-			isRendering = true;
 
 			// Load the PDF document
 			const loadingTask = pdfjsLib.getDocument(newBlobUrl);
@@ -108,36 +142,58 @@
 		}
 	}
 
-	async function renderAllPages() {
+	async function renderAllPages(force = false) {
 		if (!pdfDocument || !pagesContainer) return;
+		if (!force && lastRenderedWidth && Math.abs(containerWidth - lastRenderedWidth) < 2) return;
+		if (isRendering) {
+			pendingRender = true;
+			return;
+		}
 
-		// Clear existing pages - intentional DOM manipulation for PDF canvas rendering
-		// eslint-disable-next-line svelte/no-dom-manipulating
-		pagesContainer.innerHTML = '';
+		renderToken += 1;
+		const currentToken = renderToken;
+		isRendering = true;
+		lastRenderedWidth = containerWidth;
 
-		for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-			const page = await pdfDocument.getPage(pageNum);
-			const scale = Math.min(containerWidth, 900) / page.getViewport({ scale: 1 }).width;
-			const viewport = page.getViewport({ scale });
+		try {
+			// Clear existing pages - intentional DOM manipulation for PDF canvas rendering
+			pagesContainer.innerHTML = '';
 
-			// Create canvas for this page
-			const canvas = document.createElement('canvas');
-			canvas.className = 'mb-1 block';
-			canvas.width = viewport.width;
-			canvas.height = viewport.height;
+			for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+				if (currentToken !== renderToken) return;
 
-			const context = canvas.getContext('2d');
-			if (context) {
-				await page.render({
-					canvasContext: context,
-					viewport,
-					canvas
-				}).promise;
+				const page = await pdfDocument.getPage(pageNum);
+				const scale = Math.min(containerWidth, 900) / page.getViewport({ scale: 1 }).width;
+				const viewport = page.getViewport({ scale });
+
+				// Create canvas for this page
+				const canvas = document.createElement('canvas');
+				canvas.className = 'mb-1 block';
+				canvas.width = viewport.width;
+				canvas.height = viewport.height;
+
+				const context = canvas.getContext('2d');
+				if (context) {
+					await page.render({
+						canvasContext: context,
+						viewport,
+						canvas
+					}).promise;
+				}
+
+				if (currentToken !== renderToken) return;
+
+				// Intentional DOM manipulation for PDF canvas rendering
+				pagesContainer.appendChild(canvas);
 			}
-
-			// Intentional DOM manipulation for PDF canvas rendering
-			// eslint-disable-next-line svelte/no-dom-manipulating
-			pagesContainer.appendChild(canvas);
+		} finally {
+			if (currentToken === renderToken) {
+				isRendering = false;
+				if (pendingRender) {
+					pendingRender = false;
+					renderAllPages(true);
+				}
+			}
 		}
 	}
 
@@ -147,15 +203,10 @@
 		}
 	}
 
-	// Re-render when container width changes significantly
-	$effect(() => {
-		if (pdfDocument && containerWidth && pagesContainer) {
-			renderAllPages();
-		}
-	});
+	// Rendering is triggered on load and on resize
 </script>
 
-<div class="flex h-full w-full max-w-4xl flex-col" bind:this={containerRef}>
+<div class="flex h-full w-full max-w-4xl flex-col" {@attach containerRefAttachment}>
 	{#if error}
 		<div class="flex h-full w-full items-center justify-center text-center">
 			<div class="space-y-4">
@@ -179,7 +230,7 @@
 					<p>Rendering PDF...</p>
 				</div>
 			{/if}
-			<div class={isRendering ? 'invisible' : 'visible'} bind:this={pagesContainer}></div>
+			<div class={isRendering ? 'invisible' : 'visible'} {@attach pagesContainerAttachment}></div>
 		</div>
 	{/if}
 </div>
