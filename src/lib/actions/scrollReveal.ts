@@ -35,7 +35,7 @@ export function scrollReveal(
 	node: HTMLElement,
 	options: ScrollRevealOptions = {}
 ): { destroy: () => void } {
-	if (!browser) return { destroy: () => { } };
+	if (!browser) return { destroy: () => {} };
 
 	const {
 		y = 50,
