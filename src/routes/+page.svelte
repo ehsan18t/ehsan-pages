@@ -1,7 +1,7 @@
 <script lang="ts">
 	import background from '$assets/images/background.svg';
 	import Loader from '$components/layout/Loader.svelte';
-	import { initScrollAnimations, scrollReveal } from '$lib/actions/scrollReveal';
+	import { scrollReveal } from '$lib/actions/scrollReveal';
 	import Experience from '$lib/sections/Experience.svelte';
 	import Footer from '$lib/sections/Footer.svelte';
 	import Hero from '$lib/sections/Hero.svelte';
@@ -19,7 +19,7 @@
 
 		const loaderElement = document.getElementById('hero-loader');
 
-		setTimeout(() => {
+		const timeoutId = setTimeout(() => {
 			if (loaderElement) {
 				loaderElement.classList.add('exit');
 
@@ -36,16 +36,16 @@
 						)
 				).then(() => {
 					showLoader = false;
-					document.body.style.overflow = 'auto';
+					document.body.style.removeProperty('overflow');
 					mainVisible = true;
-
-					// Initialize scroll animations after content is visible
-					requestAnimationFrame(() => {
-						initScrollAnimations();
-					});
 				});
 			}
 		}, 2000);
+
+		return () => {
+			clearTimeout(timeoutId);
+			document.body.style.removeProperty('overflow');
+		};
 	});
 </script>
 
