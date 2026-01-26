@@ -17,10 +17,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		// Convert to absolute URL
 		const finalUrl = fileUrl.startsWith('/') ? new URL(fileUrl, url.origin).toString() : fileUrl;
 
-		// Validate URL format
+		// Validate URL format and origin
+		let parsedUrl: URL;
 		try {
-			new URL(finalUrl);
-		} catch {
+			parsedUrl = new URL(finalUrl);
+			// Security: Only allow requests to same origin
+			if (parsedUrl.origin !== url.origin) {
+				throw error(403, 'External URLs are not allowed');
+			}
+		} catch (err) {
+			if (err && typeof err === 'object' && 'status' in err) throw err;
 			throw error(400, 'Invalid URL format');
 		}
 
