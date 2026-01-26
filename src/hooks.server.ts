@@ -33,10 +33,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 	// API routes and sitemap - moderate caching
 	else if (pathname.startsWith('/api/') || pathname === '/sitemap.xml') {
-		newHeaders.set(
-			'Cache-Control',
-			'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400'
-		);
+		// Only cache GET requests and don't overwrite existing Cache-Control
+		if (event.request.method === 'GET' && !newHeaders.has('Cache-Control')) {
+			newHeaders.set(
+				'Cache-Control',
+				'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400'
+			);
+		}
 	}
 
 	// Security headers
