@@ -7,20 +7,19 @@
 	 * - Expands into a symmetrical semi-circular arc above the trigger
 	 * - Uses Svelte 5 Spring for smooth physics-based animations
 	 * - Hardware-accelerated with CSS transforms only
-	 * - Uses Svelte idioms: svelte:window, svelte:document, $effect
+	 * - Uses centralized navigation store for state management
 	 */
 
-	import { browser } from '$app/environment';
-	import { navItems } from '$data';
+	import { navigation, navItems } from '$lib/stores';
 	import Icon from '@iconify/svelte';
+	import { on } from 'svelte/events';
 	import { Spring } from 'svelte/motion';
 
-	// State
-	let activeIndex = $state(0);
+	// Local state
 	let isExpanded = $state(false);
-	let isVisible = $state(false);
-	let isNearBottom = $state(false);
-	let navContainer = $state<HTMLElement | null>(null);
+
+	// Reference to the nav container for click outside detection
+	let navContainer: HTMLElement | null = $state(null);
 
 	// Spring for expansion animation (0 = collapsed, 1 = expanded)
 	const expansion = new Spring(0, {
@@ -28,9 +27,11 @@
 		damping: 0.75
 	});
 
-	// Computed values
+	// Reactive state from navigation store
+	let activeIndex = $derived(navigation.activeIndex);
+	let isVisible = $derived(navigation.isVisible);
+	let isNearBottom = $derived(navigation.isNearBottom);
 	let currentItem = $derived(navItems[activeIndex]);
-	const sectionIds = navItems.map((item) => item.href.slice(1));
 
 	// Arc configuration - symmetrical arc above the button
 	const ARC_RADIUS = 90;
@@ -54,45 +55,40 @@
 	}
 
 	/**
-	 * Navigate to section using native browser navigation
-	 * This is the simplest and most reliable approach
+	 * Navigate to section and collapse menu
 	 */
-	function navigateToSection(event: MouseEvent, index: number) {
-		event.preventDefault();
-		event.stopPropagation();
+	function handleNavClick(e: MouseEvent, index: number) {
+		e.preventDefault();
 
 		const item = navItems[index];
-		const target = document.getElementById(item.href.slice(1));
+		if (!item) return;
 
-		if (!target) {
-			console.warn(`Section not found: ${item.href}`);
-			return;
-		}
+		const sectionId = item.href.slice(1);
+		const target = document.getElementById(sectionId);
 
-		// Use scrollIntoView - simple and works everywhere
-		const offset = item.offset ?? 0;
-
-		if (offset > 0) {
-			// If we have an offset, calculate position manually
+		if (target) {
+			const offset = item.offset ?? 0;
 			const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
-			window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+
+			// Collapse first
+			collapse();
+
+			// Scroll after a microtask to ensure state updates don't conflict
+			setTimeout(() => {
+				window.scrollTo({
+					top: targetPosition,
+					behavior: 'smooth'
+				});
+			}, 0);
 		} else {
-			// No offset - use native scrollIntoView
-			target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			collapse();
 		}
-
-		// Update active index immediately
-		activeIndex = index;
-
-		// Collapse nav
-		collapse();
 	}
 
 	/**
-	 * Toggle expansion
+	 * Toggle expanded state
 	 */
-	function toggle(event: MouseEvent) {
-		event.stopPropagation();
+	function toggle() {
 		isExpanded = !isExpanded;
 		expansion.target = isExpanded ? 1 : 0;
 	}
@@ -105,79 +101,25 @@
 		expansion.target = 0;
 	}
 
-	/**
-	 * Handle click outside - used by svelte:document
-	 */
-	function handleClickOutside(event: MouseEvent) {
-		if (!isExpanded) return;
-		const target = event.target as HTMLElement;
-		if (navContainer && !navContainer.contains(target)) {
+	// Setup click outside detection
+	$effect(() => {
+		if (!navContainer || !isExpanded) return;
+
+		// Use mousedown/pointerdown to catch clicks before they bubble up
+		const cleanup = on(document, 'pointerdown', (e: PointerEvent) => {
+			if (!isExpanded) return;
+
+			const target = e.target as HTMLElement;
+			// Don't close if clicking inside container
+			if (navContainer?.contains(target)) return;
+
+			// Close if clicking outside
 			collapse();
-		}
-	}
+		});
 
-	/**
-	 * Handle scroll - used by svelte:window
-	 * Detects if user is near bottom of page
-	 */
-	function handleScroll() {
-		const { scrollY } = window;
-		const { scrollHeight, clientHeight } = document.documentElement;
-		isNearBottom = scrollY + clientHeight >= scrollHeight - 100;
-	}
-
-	// Setup IntersectionObserver for active section detection using $effect
-	$effect(() => {
-		if (!browser) return;
-
-		// Get section elements
-		const sections = sectionIds
-			.map((id) => document.getElementById(id))
-			.filter((el): el is HTMLElement => el !== null);
-
-		if (sections.length === 0) return;
-
-		// Create observer
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting) {
-						const idx = sectionIds.indexOf(entry.target.id);
-						if (idx >= 0) {
-							activeIndex = idx;
-						}
-					}
-				}
-			},
-			{
-				root: null,
-				rootMargin: '-20% 0px -60% 0px',
-				threshold: 0
-			}
-		);
-
-		// Observe all sections
-		sections.forEach((section) => observer.observe(section));
-
-		// Cleanup when effect re-runs or component unmounts
-		return () => observer.disconnect();
-	});
-
-	// Show nav after loader delay
-	$effect(() => {
-		if (!browser) return;
-
-		const timer = setTimeout(() => {
-			isVisible = true;
-		}, 2500);
-
-		return () => clearTimeout(timer);
+		return cleanup;
 	});
 </script>
-
-<!-- Svelte window/document event handlers - no manual cleanup needed -->
-<svelte:window onscroll={handleScroll} />
-<svelte:document onclick={handleClickOutside} />
 
 <nav
 	bind:this={navContainer}
@@ -192,8 +134,8 @@
 			{@const pos = getItemPosition(index)}
 			{@const isActive = index === activeIndex}
 			{@const delay = index * 0.03}
-			<button
-				type="button"
+			<a
+				href={item.href}
 				class="arc-item absolute top-1/2 left-1/2 flex size-12 items-center justify-center rounded-full border transition-colors"
 				class:active={isActive}
 				style="
@@ -204,17 +146,17 @@
 					pointer-events: {expansion.current > 0.5 ? 'auto' : 'none'};
 					transition-delay: {isExpanded ? delay : 0}s;
 				"
-				onclick={(e) => navigateToSection(e, index)}
 				aria-label={item.label}
 				aria-current={isActive ? 'page' : undefined}
 				tabindex={isExpanded ? 0 : -1}
+				onclick={(e) => handleNavClick(e, index)}
 			>
-				<Icon icon={item.icon} class="size-5" />
+				<Icon icon={item.icon} class="pointer-events-none size-5" />
 				<!-- Tooltip label on hover/active -->
 				{#if isActive}
 					<span class="arc-item-label">{item.label}</span>
 				{/if}
-			</button>
+			</a>
 		{/each}
 	</div>
 
@@ -257,13 +199,13 @@
 		style="opacity: {1 - expansion.current * 0.5};"
 	>
 		{#each navItems as item, index (item.section)}
-			<button
-				type="button"
+			<a
+				href={item.href}
 				class="dot-item transition-all duration-300"
 				class:active={index === activeIndex}
-				onclick={(e) => navigateToSection(e, index)}
 				aria-label={`Go to ${item.label}`}
-			></button>
+				onclick={(e) => handleNavClick(e, index)}
+			></a>
 		{/each}
 	</div>
 </nav>
@@ -287,10 +229,11 @@
 		transform: translateY(0);
 	}
 
-	.mobile-nav-container.is-hidden {
-		opacity: 0;
-		pointer-events: none;
-		transform: translateY(100%);
+	/* Near bottom - fade out but KEEP pointer-events so nav remains clickable */
+	.mobile-nav-container.is-visible.is-hidden {
+		opacity: 0.3;
+		transform: translateY(20%);
+		/* pointer-events: auto is inherited from .is-visible */
 	}
 
 	/* Arc container - holds the expanding items */

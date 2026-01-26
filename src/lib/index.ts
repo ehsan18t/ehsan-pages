@@ -8,6 +8,7 @@
  * - $utils/* for utility functions
  * - $lib/actions/* for Svelte actions
  * - $data for data exports
+ * - $stores for state management
  */
 
 // Re-export utilities
@@ -18,6 +19,9 @@ export * from './actions';
 
 // Re-export data
 export * from './data';
+
+// Re-export stores
+export * from './stores';
 
 // Note: Components and sections are not re-exported here to avoid naming conflicts
 // Use the $components and $lib/sections aliases instead

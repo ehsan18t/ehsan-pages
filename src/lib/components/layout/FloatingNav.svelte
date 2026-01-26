@@ -2,91 +2,25 @@
 	/**
 	 * Desktop Floating Navigation
 	 *
-	 * A vertical floating nav for desktop screens only.
-	 * Mobile navigation is handled by MobileNav.svelte
+	 * A vertical floating nav that shows on desktop screens.
+	 * Uses centralized navigation store for state management.
+	 *
+	 * Features:
+	 * - Expands on hover to show labels
+	 * - Highlights active section
+	 * - Smooth scroll navigation
 	 */
 
-	import { browser } from '$app/environment';
-	import { navItems } from '$data';
+	import { navigation, navItems } from '$lib/stores';
 	import Icon from '@iconify/svelte';
-	import { onDestroy, onMount } from 'svelte';
 
-	// State
-	let desktopNavRef = $state<HTMLElement | null>(null);
-	let activeIndex = $state(0);
-	let isVisible = $state(false);
-
-	// Helper function
-	function getScrollContainer(el: HTMLElement | null): HTMLElement {
-		let node = el?.parentElement;
-		while (node) {
-			const style = getComputedStyle(node);
-			if (/(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight)
-				return node;
-			node = node.parentElement;
-		}
-		return (document.scrollingElement as HTMLElement) || document.documentElement;
-	}
-
-	function scrollToSection(e: MouseEvent, href: string, offset?: number) {
-		e.preventDefault();
-		const id = href.slice(1);
-		const target = id ? document.getElementById(id) : null;
-		if (!target) return;
-
-		const container = getScrollContainer(target);
-
-		if (offset !== undefined) {
-			const containerRect = container.getBoundingClientRect();
-			const targetRect = target.getBoundingClientRect();
-			const currentScrollTop = container.scrollTop;
-			const relativeTop = targetRect.top - containerRect.top;
-			const destination = currentScrollTop + relativeTop - offset;
-			container.scrollTo({ top: destination, behavior: 'smooth' });
-		} else {
-			target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-		}
-	}
-
-	let observer: IntersectionObserver;
-
-	onMount(() => {
-		// Setup intersection observer
-		const sections = navItems
-			.map((item) => document.getElementById(item.href.substring(1)))
-			.filter(Boolean) as HTMLElement[];
-
-		observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						const idx = navItems.findIndex((item) => item.href.substring(1) === entry.target.id);
-						if (idx >= 0) {
-							activeIndex = idx;
-						}
-					}
-				});
-			},
-			{ root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 }
-		);
-
-		sections.forEach((section) => observer.observe(section));
-
-		// Show nav after delay
-		setTimeout(() => {
-			isVisible = true;
-		}, 2500);
-	});
-
-	onDestroy(() => {
-		if (!browser) return;
-		if (observer) observer.disconnect();
-	});
+	// Reactive state from navigation store
+	let activeIndex = $derived(navigation.activeIndex);
+	let isVisible = $derived(navigation.isVisible);
 </script>
 
 <!-- Desktop Navigation Only -->
 <nav
-	bind:this={desktopNavRef}
 	id="floating-nav-desktop"
 	class="floating-nav-desktop nav-glass pointer-events-none fixed top-1/2 left-6 z-50 hidden -translate-y-1/2 opacity-0 transition-opacity duration-300 md:block"
 	class:is-visible={isVisible}
@@ -102,7 +36,7 @@
 				data-section={item.section}
 				aria-label={item.label}
 				aria-current={index === activeIndex ? 'page' : undefined}
-				onclick={(e) => scrollToSection(e, item.href, item.offset)}
+				onclick={(e) => navigation.handleNavClick(e, index)}
 			>
 				<Icon icon={item.icon} class="nav-icon h-6 w-6 shrink-0 transition-all duration-300" />
 				<span
