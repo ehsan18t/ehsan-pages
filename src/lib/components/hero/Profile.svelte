@@ -1,4 +1,10 @@
 <script lang="ts">
+	/**
+	 * Profile Component - Animated gradient border with viewport optimization
+	 *
+	 * CSS animation pauses when outside viewport to save battery on mobile
+	 */
+	import { viewportAnimation } from '$lib/actions';
 	import meImage from '$lib/assets/images/me.png';
 
 	const altText = 'Ehsan Khan';
@@ -11,9 +17,9 @@
 	>
 		<!-- Animated gradient border -->
 		<div
-			class="absolute top-0 left-0 z-10 h-full w-full rounded-full p-5"
+			use:viewportAnimation={{ rootMargin: '100px' }}
+			class="profile-border absolute top-0 left-0 z-10 h-full w-full rounded-full p-5"
 			style="
-				animation: spin 5s linear infinite;
 				background: conic-gradient(
 					from 0deg,
 					rgb(var(--background)),
@@ -23,7 +29,6 @@
 					oklch(var(--accent-500)),
 					oklch(var(--accent-300))
 				);
-				will-change: transform;
 			"
 		></div>
 
@@ -41,3 +46,26 @@
 		/>
 	</div>
 </div>
+
+<style>
+	.profile-border {
+		animation: spin 5s linear infinite;
+		will-change: transform;
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* Reduced motion preference */
+	@media (prefers-reduced-motion: reduce) {
+		.profile-border {
+			animation: none;
+		}
+	}
+</style>

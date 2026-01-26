@@ -1,4 +1,10 @@
 <script lang="ts">
+	/**
+	 * HeroOrbit Component - Animated orbital ring with viewport optimization
+	 *
+	 * CSS animation pauses when outside viewport to save battery on mobile
+	 */
+	import { viewportAnimation } from '$lib/actions';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -32,6 +38,7 @@
 {#if children}
 	<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 		<div
+			use:viewportAnimation={{ rootMargin: '100px' }}
 			class="orbit-spin"
 			style="
 				--duration: {duration}s;
@@ -49,6 +56,7 @@
 	.orbit-spin {
 		animation: orbit-spin var(--duration) linear infinite;
 		transform: rotate(var(--initial-rotation));
+		will-change: transform;
 	}
 
 	@keyframes orbit-spin {
@@ -57,6 +65,13 @@
 		}
 		to {
 			transform: rotate(calc(var(--initial-rotation) + 360deg));
+		}
+	}
+
+	/* Reduced motion preference */
+	@media (prefers-reduced-motion: reduce) {
+		.orbit-spin {
+			animation: none;
 		}
 	}
 </style>

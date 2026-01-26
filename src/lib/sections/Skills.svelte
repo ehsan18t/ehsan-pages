@@ -6,11 +6,12 @@
 	 * - Svelte 5 runes ($state, $derived) for reactive state
 	 * - SvelteMap and SvelteSet from svelte/reactivity
 	 * - <svelte:document> for keyboard shortcuts
-	 * - No onMount/onDestroy needed
+	 * - Viewport-aware cursor animation for mobile optimization
 	 *
 	 * @component Skills
 	 */
 
+	import { browser } from '$app/environment';
 	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import {
 		getLanguageNameFromExtension,
@@ -58,6 +59,12 @@
 
 	/** Simulated line/column info for editor aesthetic */
 	let lineInfo = $state({ line: 1, col: 1 });
+
+	/** Editor pane ref for intersection observer */
+	let editorPaneRef = $state<HTMLDivElement | null>(null);
+
+	/** Whether cursor animation should be playing (viewport optimization) */
+	let cursorAnimating = $state(true);
 
 	// ─────────────────────────────────────────────────────────────
 	// Derived State
@@ -134,6 +141,30 @@
 			toggleSidebar();
 		}
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	// Effects
+	// ─────────────────────────────────────────────────────────────
+
+	// Viewport-aware cursor animation (pause when out of view)
+	$effect(() => {
+		if (!browser || !editorPaneRef) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					cursorAnimating = entry.isIntersecting;
+				});
+			},
+			{ rootMargin: '50px' }
+		);
+
+		observer.observe(editorPaneRef);
+
+		return () => {
+			observer.disconnect();
+		};
+	});
 </script>
 
 <!-- Use <svelte:document> for keyboard shortcuts - automatic cleanup -->
@@ -251,7 +282,9 @@
 
 				<!-- Editor Pane -->
 				<div
+					bind:this={editorPaneRef}
 					class="editor-pane flex-1 overflow-y-auto p-4 font-mono text-xs leading-relaxed text-foreground-muted md:p-6 md:text-sm"
+					class:cursor-paused={!cursorAnimating}
 				>
 					{#if activeSkill}
 						<!-- Skill content -->
@@ -337,9 +370,21 @@
 		vertical-align: text-bottom;
 	}
 
+	/* Pause cursor animation when out of viewport */
+	.editor-pane.cursor-paused::after {
+		animation-play-state: paused;
+	}
+
 	@keyframes blink {
 		50% {
 			opacity: 0;
+		}
+	}
+
+	/* Reduced motion preference */
+	@media (prefers-reduced-motion: reduce) {
+		.editor-pane::after {
+			animation: none;
 		}
 	}
 
