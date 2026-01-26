@@ -1,2 +1,6 @@
 // Stores barrel export
-export { navigation, navItems } from './navigation.svelte';
+export {
+    destroyNavigation, handleNavClick, initNavigation, navigateToSection, navigation,
+    navItems
+} from './navigation.svelte';
+
