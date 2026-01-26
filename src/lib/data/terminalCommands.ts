@@ -59,7 +59,15 @@ async function sendEmail(
 			})
 		});
 
-		await response.json();
+		const data = await response.json();
+
+		if (!response.ok) {
+			return {
+				success: false,
+				error: data.message || `HTTP Error ${response.status}`
+			};
+		}
+
 		return { success: true };
 	} catch (error) {
 		return {
