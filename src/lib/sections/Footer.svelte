@@ -7,8 +7,8 @@
 
 	const tech = [
 		{
-			name: 'Svelte',
-			icon: 'simple-icons:svelte'
+			name: 'TypeScript',
+			icon: 'simple-icons:typescript'
 		},
 		{
 			name: 'SvelteKit',
