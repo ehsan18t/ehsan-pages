@@ -20,7 +20,6 @@
 
 import { browser } from '$app/environment';
 import type { Action } from 'svelte/action';
-import { on } from 'svelte/events';
 
 /** Options for the scroll spy action */
 export interface ScrollSpyOptions {
@@ -52,7 +51,6 @@ export const scrollSpy: Action<HTMLElement, ScrollSpyOptions> = (_node, options)
 	if (!browser) return {};
 
 	let observer: IntersectionObserver | null = null;
-	let scrollCleanup: (() => void) | null = null;
 	let currentOptions = options;
 
 	/**
@@ -99,10 +97,8 @@ export const scrollSpy: Action<HTMLElement, ScrollSpyOptions> = (_node, options)
 		}, config);
 
 		// Observe all sections
+		// Observe all sections
 		sections.forEach((section) => observer!.observe(section));
-
-		// Use svelte/events for scroll listener (for bottom detection if needed)
-		scrollCleanup = on(window, 'scroll', () => {}, { passive: true });
 	}
 
 	/**
@@ -112,10 +108,6 @@ export const scrollSpy: Action<HTMLElement, ScrollSpyOptions> = (_node, options)
 		if (observer) {
 			observer.disconnect();
 			observer = null;
-		}
-		if (scrollCleanup) {
-			scrollCleanup();
-			scrollCleanup = null;
 		}
 	}
 
