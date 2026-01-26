@@ -214,6 +214,7 @@
 	aria-labelledby="testimonials-heading"
 >
 	<SectionTitle
+		id="testimonials-heading"
 		p1="Client"
 		p2="Testimonials"
 		subtitle="Don't just take my word for it — here's what clients say about working with me."
