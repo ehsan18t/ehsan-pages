@@ -40,9 +40,6 @@ class NavigationState {
 	/** Scroll timeout for debouncing */
 	private scrollTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	/** Bound scroll handler for proper cleanup */
-	private boundScrollHandler: (() => void) | null = null;
-
 	/**
 	 * Get the current active nav item
 	 */
@@ -79,11 +76,6 @@ class NavigationState {
 
 		if (this.scrollTimeout) {
 			clearTimeout(this.scrollTimeout);
-		}
-
-		if (this.boundScrollHandler) {
-			window.removeEventListener('scroll', this.boundScrollHandler);
-			this.boundScrollHandler = null;
 		}
 	}
 
@@ -149,10 +141,8 @@ class NavigationState {
 	 * Setup scroll listener for bottom detection and fallback
 	 */
 	private setupScrollListener() {
-		// Store bound reference for cleanup
-		this.boundScrollHandler = this.handleScroll.bind(this);
 		// Using passive listener for performance
-		window.addEventListener('scroll', this.boundScrollHandler, { passive: true });
+		window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
 	}
 
 	/**
