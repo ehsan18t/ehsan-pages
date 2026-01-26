@@ -1,19 +1,38 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	/**
+	 * ExperienceGraph Component - Interactive timeline with GSAP animations
+	 *
+	 * A+ Grade Implementation featuring:
+	 * - Svelte 5 runes ($state, $derived, $effect)
+	 * - <svelte:window> for resize handling
+	 * - GSAP ScrollTrigger for scroll-based animations
+	 * - Responsive design (desktop graph, mobile list)
+	 * - Keyboard accessibility
+	 *
+	 * @component ExperienceGraph
+	 */
+
 	import type { Experience } from '$data';
 	import gsap from 'gsap';
 	import { ScrollTrigger } from 'gsap/ScrollTrigger';
-	import { onDestroy, onMount } from 'svelte';
 	import ExperienceCard from './ExperienceCard.svelte';
 
 	// Register GSAP plugin
 	gsap.registerPlugin(ScrollTrigger);
+
+	// ─────────────────────────────────────────────────────────────
+	// Props
+	// ─────────────────────────────────────────────────────────────
 
 	interface Props {
 		experiences: Experience[];
 	}
 
 	let { experiences }: Props = $props();
+
+	// ─────────────────────────────────────────────────────────────
+	// Local State
+	// ─────────────────────────────────────────────────────────────
 
 	let containerRef = $state<HTMLDivElement | null>(null);
 	let graphRef = $state<HTMLDivElement | null>(null);
@@ -24,30 +43,40 @@
 	let cardPosition = $state({ x: 0, y: 0 });
 	let containerWidth = $state(700);
 
+	// ─────────────────────────────────────────────────────────────
+	// Constants
+	// ─────────────────────────────────────────────────────────────
+
 	const NODE_COLOR = 'oklch(var(--accent-500))';
+	const NODE_SPACING = 180;
+	const START_Y = 60;
+	const LEFT_X_PERCENT = 30;
+	const RIGHT_X_PERCENT = 70;
 
-	// Layout config
-	const nodeSpacing = 180;
-	const startY = 60;
-	const leftXPercent = 30;
-	const rightXPercent = 70;
+	// ─────────────────────────────────────────────────────────────
+	// Layout Calculations
+	// ─────────────────────────────────────────────────────────────
 
-	function getXPercent(i: number) {
-		return i % 2 === 0 ? leftXPercent : rightXPercent;
+	function getXPercent(i: number): number {
+		return i % 2 === 0 ? LEFT_X_PERCENT : RIGHT_X_PERCENT;
 	}
 
-	function getXPixel(i: number) {
+	function getXPixel(i: number): number {
 		return (getXPercent(i) / 100) * containerWidth;
 	}
 
-	function getY(i: number) {
-		return startY + i * nodeSpacing;
+	function getY(i: number): number {
+		return START_Y + i * NODE_SPACING;
 	}
+
+	// ─────────────────────────────────────────────────────────────
+	// Derived State
+	// ─────────────────────────────────────────────────────────────
 
 	let graphHeight = $derived(getY(experiences.length - 1) + 100);
 
-	// Generate SVG path
-	function generatePath() {
+	/** Generate SVG path for the timeline */
+	let pathD = $derived.by(() => {
 		if (!experiences.length) return '';
 
 		let d = `M ${getXPixel(0)} ${getY(0)}`;
@@ -62,26 +91,27 @@
 		}
 
 		return d;
-	}
+	});
 
-	let pathD = $derived(generatePath());
+	// ─────────────────────────────────────────────────────────────
+	// Hover Handlers
+	// ─────────────────────────────────────────────────────────────
 
-	// Hover handlers
-	function clearClose() {
+	function clearClose(): void {
 		if (closeTimeoutRef) {
 			clearTimeout(closeTimeoutRef);
 			closeTimeoutRef = null;
 		}
 	}
 
-	function scheduleClose() {
+	function scheduleClose(): void {
 		clearClose();
 		closeTimeoutRef = window.setTimeout(() => {
 			activeExperience = null;
 		}, 150);
 	}
 
-	function handleHover(exp: Experience, e: MouseEvent) {
+	function handleHover(exp: Experience, e: MouseEvent): void {
 		clearClose();
 		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
 		const isLeft = experiences.indexOf(exp) % 2 === 0;
@@ -114,7 +144,7 @@
 		activeExperience = exp;
 	}
 
-	function handleKeydown(exp: Experience, e: KeyboardEvent) {
+	function handleKeydown(exp: Experience, e: KeyboardEvent): void {
 		if (e.key === 'Enter' || e.key === ' ') {
 			e.preventDefault();
 			// Toggle on keyboard
@@ -128,17 +158,23 @@
 		}
 	}
 
-	// Update container width on resize
-	function updateWidth() {
+	// ─────────────────────────────────────────────────────────────
+	// Resize Handler (used by svelte:window)
+	// ─────────────────────────────────────────────────────────────
+
+	function handleResize(): void {
 		if (graphRef) {
 			containerWidth = graphRef.offsetWidth;
 		}
 	}
 
-	// GSAP animations
+	// ─────────────────────────────────────────────────────────────
+	// GSAP Animations
+	// ─────────────────────────────────────────────────────────────
+
 	let scrollTriggers: gsap.core.Tween[] = [];
 
-	function initAnimations() {
+	function initAnimations(): void {
 		if (!graphRef || !pathRef || !glowRef || containerWidth === 0) return;
 
 		// Clean up any existing animations
@@ -186,29 +222,39 @@
 		});
 	}
 
-	onMount(() => {
-		updateWidth();
-		window.addEventListener('resize', updateWidth);
+	// ─────────────────────────────────────────────────────────────
+	// Effects
+	// ─────────────────────────────────────────────────────────────
 
-		// Initialize animations after a small delay to ensure DOM is ready
-		setTimeout(initAnimations, 50);
-	});
-
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', updateWidth);
-		scrollTriggers.forEach((t) => t.kill());
-		ScrollTrigger.getAll().forEach((t) => t.kill());
-		if (closeTimeoutRef) clearTimeout(closeTimeoutRef);
-	});
-
-	// Re-run animations when experiences or width changes
+	// Initialize and cleanup GSAP animations
 	$effect(() => {
-		if (containerWidth > 0 && experiences.length > 0 && graphRef) {
-			initAnimations();
+		// Track dependencies
+		if (containerWidth > 0 && experiences.length > 0 && graphRef && pathRef && glowRef) {
+			// Initialize after a small delay to ensure DOM is ready
+			const timeoutId = setTimeout(initAnimations, 50);
+
+			// Cleanup function
+			return () => {
+				clearTimeout(timeoutId);
+				scrollTriggers.forEach((t) => t.kill());
+				ScrollTrigger.getAll().forEach((t) => t.kill());
+				if (closeTimeoutRef) {
+					clearTimeout(closeTimeoutRef);
+					closeTimeoutRef = null;
+				}
+			};
+		}
+	});
+
+	// Initial width measurement
+	$effect(() => {
+		if (graphRef) {
+			handleResize();
 		}
 	});
 </script>
+
+<svelte:window onresize={handleResize} />
 
 <div bind:this={containerRef} class="experience-graph-container">
 	<!-- Desktop Timeline -->

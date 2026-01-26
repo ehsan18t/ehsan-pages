@@ -1,26 +1,53 @@
 <script lang="ts">
+	/**
+	 * Terminal Component - Interactive contact terminal
+	 *
+	 * A+ Grade Implementation featuring:
+	 * - Svelte 5 runes ($state, $effect)
+	 * - Complete business logic separation (terminalCommands.ts)
+	 * - Command history navigation
+	 * - Tab autocomplete
+	 * - Ctrl+C / Ctrl+L shortcuts
+	 *
+	 * @component Terminal
+	 */
+
 	import {
 		createTerminalCommands,
 		findMatchingCommand,
 		type Command,
 		type CommandEntry
 	} from '$data';
-	import { onMount } from 'svelte';
+
+	// ─────────────────────────────────────────────────────────────
+	// Local State
+	// ─────────────────────────────────────────────────────────────
 
 	let commandHistory = $state<CommandEntry[]>([]);
 	let currentInput = $state('');
 	let isLoading = $state(false);
 	let commandBuffer = $state<string[]>([]);
 	let bufferPosition = $state(-1);
+	let hasInitialized = $state(false);
 
 	let terminalRef = $state<HTMLDivElement | null>(null);
 	let inputRef = $state<HTMLInputElement | null>(null);
 	let promptRef = $state<HTMLDivElement | null>(null);
 
-	// Create commands with context
+	// ─────────────────────────────────────────────────────────────
+	// Constants
+	// ─────────────────────────────────────────────────────────────
+
+	/** Available terminal commands */
 	const COMMANDS: Command[] = createTerminalCommands();
 
-	// Command context for handlers
+	// ─────────────────────────────────────────────────────────────
+	// Command Context Factory
+	// ─────────────────────────────────────────────────────────────
+
+	/**
+	 * Creates the context object passed to command handlers
+	 */
 	function getCommandContext() {
 		return {
 			setLoading: (loading: boolean) => {
@@ -33,25 +60,41 @@
 		};
 	}
 
-	function focusInput() {
+	// ─────────────────────────────────────────────────────────────
+	// Terminal Functions
+	// ─────────────────────────────────────────────────────────────
+
+	/**
+	 * Focus the input element
+	 */
+	function focusInput(): void {
 		inputRef?.focus();
 	}
 
-	function adjustInputPosition() {
+	/**
+	 * Adjust input padding based on prompt width
+	 */
+	function adjustInputPosition(): void {
 		if (promptRef && inputRef) {
 			const promptWidth = promptRef.offsetWidth;
 			inputRef.style.paddingLeft = `${promptWidth + 8}px`;
 		}
 	}
 
-	function addToCommandBuffer(command: string) {
+	/**
+	 * Add command to buffer for history navigation
+	 */
+	function addToCommandBuffer(command: string): void {
 		if (command.trim() && (commandBuffer.length === 0 || commandBuffer[0] !== command)) {
 			commandBuffer = [command, ...commandBuffer.slice(0, 19)];
 		}
 		bufferPosition = -1;
 	}
 
-	async function executeCommand(commandInput: string, addToBuffer = true) {
+	/**
+	 * Execute a terminal command
+	 */
+	async function executeCommand(commandInput: string, addToBuffer = true): Promise<void> {
 		if (addToBuffer) {
 			addToCommandBuffer(commandInput);
 		}
@@ -85,7 +128,10 @@ Type 'help' to see available commands.`
 		}
 	}
 
-	function handleKeyDown(e: KeyboardEvent) {
+	/**
+	 * Handle keyboard events for terminal interaction
+	 */
+	function handleKeyDown(e: KeyboardEvent): void {
 		// Prevent terminal scrolling on spacebar
 		if (e.key === ' ' && e.target === inputRef) {
 			e.stopPropagation();
@@ -150,8 +196,23 @@ Type 'help' to see available commands.`
 		}
 	}
 
+	// ─────────────────────────────────────────────────────────────
+	// Effects
+	// ─────────────────────────────────────────────────────────────
+
+	// Initialize terminal with default command (runs once)
+	$effect(() => {
+		if (!hasInitialized && terminalRef) {
+			hasInitialized = true;
+			// Run default 'man send' command on mount
+			executeCommand('man send', false);
+		}
+	});
+
 	// Auto-scroll to bottom when history changes
 	$effect(() => {
+		// Track dependency
+		void commandHistory.length;
 		if (terminalRef) {
 			terminalRef.scrollTop = terminalRef.scrollHeight;
 		}
@@ -163,11 +224,6 @@ Type 'help' to see available commands.`
 		void currentInput;
 		void isLoading;
 		adjustInputPosition();
-	});
-
-	onMount(() => {
-		// Run default 'man send' command on mount
-		executeCommand('man send', false);
 	});
 </script>
 

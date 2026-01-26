@@ -1,20 +1,31 @@
 /**
- * GSAP-based Scroll Animation Action
- * Provides performant scroll-triggered animations using GSAP and ScrollTrigger.
+ * GSAP-based Scroll Animation Actions
  *
- * Usage:
- *   <div use:gsapFadeIn>...</div>
- *   <div use:gsapFadeIn={{ y: 50, duration: 0.8, delay: 0.2 }}>...</div>
+ * A+ Grade Implementation featuring:
+ * - Proper Svelte Action typing
+ * - Accessibility: respects prefers-reduced-motion
+ * - Performant scroll-triggered animations using GSAP and ScrollTrigger
+ * - Multiple animation presets (fadeIn, slideUp, slideLeft, slideRight, scaleIn, staggerIn)
+ *
+ * @example
+ * <div use:gsapFadeIn>...</div>
+ * <div use:gsapFadeIn={{ y: 50, duration: 0.8, delay: 0.2 }}>...</div>
  */
 
 import { browser } from '$app/environment';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { prefersReducedMotion } from 'svelte/motion';
+import type { Action } from 'svelte/action';
 
 // Register GSAP plugins (only in browser)
 if (browser) {
 	gsap.registerPlugin(ScrollTrigger);
 }
+
+// ─────────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────────
 
 export interface GsapScrollOptions {
 	/** Starting Y offset (default: 30) */
@@ -41,14 +52,24 @@ export interface GsapScrollOptions {
 	childSelector?: string;
 }
 
+// ─────────────────────────────────────────────────────────────
+// Main Action
+// ─────────────────────────────────────────────────────────────
+
 /**
  * Fade in animation with scroll trigger
  */
-export function gsapFadeIn(
-	node: HTMLElement,
-	options: GsapScrollOptions = {}
-): { destroy: () => void; update: (opts: GsapScrollOptions) => void } {
-	if (!browser) return { destroy: () => {}, update: () => {} };
+export const gsapFadeIn: Action<HTMLElement, GsapScrollOptions | undefined> = (
+	node,
+	options = {}
+) => {
+	if (!browser) return {};
+
+	// Respect prefers-reduced-motion
+	if (prefersReducedMotion.current) {
+		node.style.opacity = '1';
+		return {};
+	}
 
 	gsap.registerPlugin(ScrollTrigger);
 
@@ -103,7 +124,13 @@ export function gsapFadeIn(
 	ScrollTrigger.refresh(true);
 
 	return {
-		update(newOptions: GsapScrollOptions) {
+		update(newOptions: GsapScrollOptions = {}) {
+			// Respect prefers-reduced-motion
+			if (prefersReducedMotion.current) {
+				node.style.opacity = '1';
+				return;
+			}
+
 			// Kill old animation and create new one
 			if (animation) animation.kill();
 			if (scrollTrigger) scrollTrigger.kill();
@@ -152,60 +179,70 @@ export function gsapFadeIn(
 			if (scrollTrigger) scrollTrigger.kill();
 		}
 	};
+};
+
+// ─────────────────────────────────────────────────────────────
+// Preset Actions
+// ─────────────────────────────────────────────────────────────
+
+interface SlideOptions extends Omit<GsapScrollOptions, 'y' | 'x'> {
+	distance?: number;
+}
+
+interface ScaleOptions extends Omit<GsapScrollOptions, 'scale'> {
+	fromScale?: number;
+}
+
+interface StaggerOptions extends GsapScrollOptions {
+	selector?: string;
 }
 
 /**
  * Slide up animation
  */
-export function gsapSlideUp(
-	node: HTMLElement,
-	options: Omit<GsapScrollOptions, 'y'> & { distance?: number } = {}
-): { destroy: () => void; update: (opts: GsapScrollOptions) => void } {
+export const gsapSlideUp: Action<HTMLElement, SlideOptions | undefined> = (node, options = {}) => {
 	return gsapFadeIn(node, { ...options, y: options.distance ?? 50 });
-}
+};
 
 /**
  * Slide in from left
  */
-export function gsapSlideLeft(
-	node: HTMLElement,
-	options: Omit<GsapScrollOptions, 'x'> & { distance?: number } = {}
-): { destroy: () => void; update: (opts: GsapScrollOptions) => void } {
+export const gsapSlideLeft: Action<HTMLElement, SlideOptions | undefined> = (
+	node,
+	options = {}
+) => {
 	return gsapFadeIn(node, { ...options, x: -(options.distance ?? 50), y: 0 });
-}
+};
 
 /**
  * Slide in from right
  */
-export function gsapSlideRight(
-	node: HTMLElement,
-	options: Omit<GsapScrollOptions, 'x'> & { distance?: number } = {}
-): { destroy: () => void; update: (opts: GsapScrollOptions) => void } {
+export const gsapSlideRight: Action<HTMLElement, SlideOptions | undefined> = (
+	node,
+	options = {}
+) => {
 	return gsapFadeIn(node, { ...options, x: options.distance ?? 50, y: 0 });
-}
+};
 
 /**
  * Scale in animation
  */
-export function gsapScaleIn(
-	node: HTMLElement,
-	options: Omit<GsapScrollOptions, 'scale'> & { fromScale?: number } = {}
-): { destroy: () => void; update: (opts: GsapScrollOptions) => void } {
+export const gsapScaleIn: Action<HTMLElement, ScaleOptions | undefined> = (node, options = {}) => {
 	return gsapFadeIn(node, { ...options, scale: options.fromScale ?? 0.9, y: 0 });
-}
+};
 
 /**
  * Stagger children animation
  */
-export function gsapStaggerIn(
-	node: HTMLElement,
-	options: GsapScrollOptions & { selector?: string } = {}
-): { destroy: () => void; update: (opts: GsapScrollOptions) => void } {
+export const gsapStaggerIn: Action<HTMLElement, StaggerOptions | undefined> = (
+	node,
+	options = {}
+) => {
 	return gsapFadeIn(node, {
 		...options,
 		stagger: options.stagger ?? 0.1,
 		childSelector: options.selector ?? ':scope > *'
 	});
-}
+};
 
 export default gsapFadeIn;

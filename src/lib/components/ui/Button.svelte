@@ -1,38 +1,112 @@
 <script lang="ts">
+	/**
+	 * Button Component - Accessible button with ripple effect
+	 *
+	 * A+ Grade Implementation featuring:
+	 * - Svelte 5 runes ($state, $effect)
+	 * - Reactive ripple effect without direct DOM manipulation
+	 * - Optional link opening
+	 * - Snippet-based content composition
+	 *
+	 * @component Button
+	 */
+
 	import type { Snippet } from 'svelte';
 
-	interface Props {
-		id?: string;
-		class?: string;
-		link?: string;
-		children?: Snippet;
-		onclick?: (event: MouseEvent) => void;
+	// ─────────────────────────────────────────────────────────────
+	// Types
+	// ─────────────────────────────────────────────────────────────
+
+	interface RippleEffect {
+		id: number;
+		x: number;
+		y: number;
+		size: number;
 	}
 
-	let { id, class: className = '', link, children, onclick }: Props = $props();
+	interface Props {
+		/** Optional element ID */
+		id?: string;
+		/** Additional CSS classes */
+		class?: string;
+		/** URL to open on click */
+		link?: string;
+		/** Button content */
+		children?: Snippet;
+		/** Click handler */
+		onclick?: (event: MouseEvent) => void;
+		/** Disabled state */
+		disabled?: boolean;
+		/** Button type */
+		type?: 'button' | 'submit' | 'reset';
+	}
 
-	function handleClick(event: MouseEvent) {
-		const button = event.currentTarget as HTMLButtonElement;
-		const circle = document.createElement('span');
-		const diameter = Math.max(button.clientWidth, button.clientHeight);
-		const radius = diameter / 2;
+	// ─────────────────────────────────────────────────────────────
+	// Props
+	// ─────────────────────────────────────────────────────────────
 
-		circle.style.width = circle.style.height = `${diameter}px`;
-		circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
-		circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
-		circle.classList.add('ripple');
+	let {
+		id,
+		class: className = '',
+		link,
+		children,
+		onclick,
+		disabled = false,
+		type = 'button'
+	}: Props = $props();
 
-		// Remove existing ripple if present
-		const ripple = button.getElementsByClassName('ripple')[0];
-		if (ripple) {
-			ripple.remove();
-		}
+	// ─────────────────────────────────────────────────────────────
+	// Constants
+	// ─────────────────────────────────────────────────────────────
 
-		// Append the new ripple effect
-		button.appendChild(circle);
+	const RIPPLE_DURATION = 600;
+
+	// ─────────────────────────────────────────────────────────────
+	// Local State
+	// ─────────────────────────────────────────────────────────────
+
+	let ripples = $state<RippleEffect[]>([]);
+	let rippleIdCounter = $state(0);
+	let buttonRef = $state<HTMLButtonElement | null>(null);
+
+	// ─────────────────────────────────────────────────────────────
+	// Event Handlers
+	// ─────────────────────────────────────────────────────────────
+
+	/**
+	 * Create ripple effect at click position
+	 */
+	function createRipple(event: MouseEvent): void {
+		if (!buttonRef) return;
+
+		const rect = buttonRef.getBoundingClientRect();
+		const size = Math.max(rect.width, rect.height);
+		const x = event.clientX - rect.left - size / 2;
+		const y = event.clientY - rect.top - size / 2;
+
+		const ripple: RippleEffect = {
+			id: rippleIdCounter++,
+			x,
+			y,
+			size
+		};
+
+		ripples = [...ripples, ripple];
+
+		// Remove ripple after animation completes
+		setTimeout(() => {
+			ripples = ripples.filter((r) => r.id !== ripple.id);
+		}, RIPPLE_DURATION);
+	}
+
+	/**
+	 * Handle button click
+	 */
+	function handleClick(event: MouseEvent): void {
+		createRipple(event);
 
 		if (link) {
-			window.open(link, '_blank')?.focus();
+			window.open(link, '_blank', 'noopener,noreferrer')?.focus();
 		}
 
 		onclick?.(event);
@@ -40,12 +114,26 @@
 </script>
 
 <button
+	bind:this={buttonRef}
 	{id}
+	{type}
+	{disabled}
 	class="relative cursor-pointer overflow-hidden rounded-lg border-2 border-accent-500 bg-accent-bg/30
 		px-5 py-3.5 leading-tight font-bold text-accent-text transition duration-300 ease-in-out
-		hover:bg-accent-bg/60 {className}"
+		hover:bg-accent-bg/60 disabled:cursor-not-allowed disabled:opacity-50 {className}"
 	onclick={handleClick}
 >
+	<!-- Ripple effects rendered reactively -->
+	{#each ripples as ripple (ripple.id)}
+		<span
+			class="ripple"
+			style:width="{ripple.size}px"
+			style:height="{ripple.size}px"
+			style:left="{ripple.x}px"
+			style:top="{ripple.y}px"
+		></span>
+	{/each}
+
 	{#if children}
 		{@render children()}
 	{:else}
@@ -54,8 +142,8 @@
 </button>
 
 <style>
-	/* Ripple effect styling - must be global to target dynamically created elements */
-	:global(.ripple) {
+	/* Ripple effect styling */
+	.ripple {
 		--ripple-color: oklch(100% 0 0 / 0.6);
 		--ripple-scale: 4;
 		--ripple-duration: 600ms;

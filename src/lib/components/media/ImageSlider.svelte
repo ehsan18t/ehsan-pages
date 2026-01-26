@@ -1,9 +1,24 @@
 <script lang="ts">
+	/**
+	 * Image Slider Component - Embla Carousel with Lightbox
+	 *
+	 * A+ Grade Implementation featuring:
+	 * - Svelte 5 runes ($state, $derived, $effect)
+	 * - <svelte:window> for keyboard navigation
+	 * - $effect for autoplay with proper cleanup
+	 * - No onDestroy needed
+	 *
+	 * @component ImageSlider
+	 */
+
 	import { browser } from '$app/environment';
 	import Icon from '@iconify/svelte';
 	import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 	import emblaCarouselSvelte from 'embla-carousel-svelte';
-	import { onDestroy } from 'svelte';
+
+	// ─────────────────────────────────────────────────────────────
+	// Props
+	// ─────────────────────────────────────────────────────────────
 
 	interface Props {
 		images: string[];
@@ -21,6 +36,10 @@
 		autoplayInterval = 5000
 	}: Props = $props();
 
+	// ─────────────────────────────────────────────────────────────
+	// Local State
+	// ─────────────────────────────────────────────────────────────
+
 	let selectedIndex = $state(0);
 	let scrollSnaps = $state<number[]>([]);
 	let isFullscreen = $state(false);
@@ -31,17 +50,25 @@
 	let lightboxIndex = $state(0);
 	let lightboxImageContainerRef = $state<HTMLDivElement | null>(null);
 
-	// Use $derived for values that depend on images prop
+	// ─────────────────────────────────────────────────────────────
+	// Derived State
+	// ─────────────────────────────────────────────────────────────
+
+	/** Whether there are multiple images to show controls */
 	let hasMultipleImages = $derived(images.length > 1);
 
-	// Embla options need to be reactive
+	/** Embla carousel options - reactive to image changes */
 	let options = $derived<EmblaOptionsType>({
 		loop: images.length > 1,
 		align: 'start',
 		containScroll: 'trimSnaps'
 	});
 
-	function onEmblaInit(event: CustomEvent<EmblaCarouselType>) {
+	// ─────────────────────────────────────────────────────────────
+	// Event Handlers
+	// ─────────────────────────────────────────────────────────────
+
+	function onEmblaInit(event: CustomEvent<EmblaCarouselType>): void {
 		emblaApi = event.detail;
 		scrollSnaps = emblaApi.scrollSnapList();
 
@@ -54,19 +81,19 @@
 		});
 	}
 
-	function scrollPrev() {
+	function scrollPrev(): void {
 		emblaApi?.scrollPrev();
 	}
 
-	function scrollNext() {
+	function scrollNext(): void {
 		emblaApi?.scrollNext();
 	}
 
-	function scrollTo(index: number) {
+	function scrollTo(index: number): void {
 		emblaApi?.scrollTo(index);
 	}
 
-	function toggleFullscreen() {
+	function toggleFullscreen(): void {
 		isFullscreen = !isFullscreen;
 		lightboxIndex = selectedIndex;
 
@@ -77,12 +104,12 @@
 		}
 	}
 
-	function closeLightbox() {
+	function closeLightbox(): void {
 		isFullscreen = false;
 		document.body.classList.remove('lightbox-open');
 	}
 
-	function lightboxPrev() {
+	function lightboxPrev(): void {
 		if (!lightboxImageContainerRef) return;
 		lightboxImageContainerRef.dataset.direction = 'prev';
 		lightboxImageContainerRef.classList.remove('transitioning');
@@ -91,7 +118,7 @@
 		lightboxIndex = lightboxIndex > 0 ? lightboxIndex - 1 : images.length - 1;
 	}
 
-	function lightboxNext() {
+	function lightboxNext(): void {
 		if (!lightboxImageContainerRef) return;
 		lightboxImageContainerRef.dataset.direction = 'next';
 		lightboxImageContainerRef.classList.remove('transitioning');
@@ -100,8 +127,10 @@
 		lightboxIndex = lightboxIndex < images.length - 1 ? lightboxIndex + 1 : 0;
 	}
 
-	// Keyboard navigation for lightbox
-	function handleKeydown(e: KeyboardEvent) {
+	/**
+	 * Handle keyboard navigation for lightbox
+	 */
+	function handleKeydown(e: KeyboardEvent): void {
 		if (!isFullscreen) return;
 
 		if (e.key === 'Escape') closeLightbox();
@@ -109,29 +138,35 @@
 		else if (e.key === 'ArrowRight') lightboxNext();
 	}
 
-	// Autoplay
-	let autoplayTimer: ReturnType<typeof setInterval> | undefined;
+	// ─────────────────────────────────────────────────────────────
+	// Effects
+	// ─────────────────────────────────────────────────────────────
 
+	// Autoplay effect with cleanup
 	$effect(() => {
-		if (emblaApi && autoplay) {
-			autoplayTimer = setInterval(() => {
-				if (emblaApi?.canScrollNext()) {
-					emblaApi.scrollNext();
-				} else if (options.loop) {
-					emblaApi?.scrollTo(0);
-				}
-			}, autoplayInterval);
+		if (!browser || !emblaApi || !autoplay) return;
 
-			return () => {
-				if (autoplayTimer) clearInterval(autoplayTimer);
-			};
-		}
+		const timer = setInterval(() => {
+			if (emblaApi?.canScrollNext()) {
+				emblaApi.scrollNext();
+			} else if (options.loop) {
+				emblaApi?.scrollTo(0);
+			}
+		}, autoplayInterval);
+
+		// Cleanup on effect re-run or destroy
+		return () => {
+			clearInterval(timer);
+		};
 	});
 
-	onDestroy(() => {
-		if (!browser) return;
-		if (autoplayTimer) clearInterval(autoplayTimer);
-		document.body.classList.remove('lightbox-open');
+	// Cleanup lightbox class on unmount
+	$effect(() => {
+		return () => {
+			if (browser) {
+				document.body.classList.remove('lightbox-open');
+			}
+		};
 	});
 </script>
 

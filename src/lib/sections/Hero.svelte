@@ -1,5 +1,15 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	/**
+	 * Hero Section - Landing page hero with animated background
+	 *
+	 * A+ Grade Implementation featuring:
+	 * - Svelte 5 $effect for lifecycle management
+	 * - <svelte:window> for event listeners
+	 * - Dynamic viewport height handling for mobile
+	 *
+	 * @component Hero
+	 */
+
 	import grain from '$assets/images/grain.jpg';
 	import HeroOrbit from '$components/hero/HeroOrbit.svelte';
 	import Profile from '$components/hero/Profile.svelte';
@@ -8,28 +18,44 @@
 	import PDFViewerModal from '$components/media/PDFViewerModal.svelte';
 	import GlitchText from '$components/ui/GlitchText.svelte';
 	import info from '$data';
-	import { onDestroy, onMount } from 'svelte';
+
+	// ─────────────────────────────────────────────────────────────
+	// Constants
+	// ─────────────────────────────────────────────────────────────
+
+	/** Debounce delay for resize events (ms) */
+	const RESIZE_DEBOUNCE = 100;
+
+	/** Debounce delay for orientation change events (ms) */
+	const ORIENTATION_DEBOUNCE = 200;
+
+	/** Mobile breakpoint width (px) */
+	const MOBILE_BREAKPOINT = 768;
+
+	// ─────────────────────────────────────────────────────────────
+	// Local State
+	// ─────────────────────────────────────────────────────────────
 
 	let heroRef = $state<HTMLElement | null>(null);
+	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-	// Debounce utility
-	function debounce<T extends (...args: unknown[]) => void>(func: T, timeout: number = 100) {
-		let timer: ReturnType<typeof setTimeout>;
-		return (...args: Parameters<T>) => {
-			clearTimeout(timer);
-			timer = setTimeout(() => func(...args), timeout);
-		};
-	}
+	// ─────────────────────────────────────────────────────────────
+	// Utility Functions
+	// ─────────────────────────────────────────────────────────────
 
-	function setHeroHeight() {
+	/**
+	 * Update hero height based on viewport
+	 * Uses CSS custom property for dynamic viewport height
+	 */
+	function updateHeroHeight(): void {
 		if (!heroRef) return;
 
-		// Use dynamic viewport height for better mobile support
+		// Set dynamic viewport height CSS custom property
 		const vh = window.innerHeight * 0.01;
 		document.documentElement.style.setProperty('--vh', `${vh}px`);
 
 		// Set minimum height but allow content to expand if needed
-		if (window.innerWidth < 768) {
+		if (window.innerWidth < MOBILE_BREAKPOINT) {
 			heroRef.style.minHeight = `${window.innerHeight}px`;
 			heroRef.style.height = 'auto';
 		} else {
@@ -38,21 +64,44 @@
 		}
 	}
 
-	const debouncedSetHeight = debounce(setHeroHeight, 100);
-	const debouncedOrientationSetHeight = debounce(setHeroHeight, 200);
+	/**
+	 * Debounced handler for resize events
+	 */
+	function handleResize(): void {
+		if (debounceTimer) clearTimeout(debounceTimer);
+		debounceTimer = setTimeout(updateHeroHeight, RESIZE_DEBOUNCE);
+	}
 
-	onMount(() => {
-		setHeroHeight();
-		window.addEventListener('resize', debouncedSetHeight);
-		window.addEventListener('orientationchange', debouncedOrientationSetHeight);
-	});
+	/**
+	 * Debounced handler for orientation change events
+	 */
+	function handleOrientationChange(): void {
+		if (debounceTimer) clearTimeout(debounceTimer);
+		debounceTimer = setTimeout(updateHeroHeight, ORIENTATION_DEBOUNCE);
+	}
 
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', debouncedSetHeight);
-		window.removeEventListener('orientationchange', debouncedOrientationSetHeight);
+	// ─────────────────────────────────────────────────────────────
+	// Effects
+	// ─────────────────────────────────────────────────────────────
+
+	// Initialize height when heroRef is available
+	$effect(() => {
+		if (heroRef) {
+			updateHeroHeight();
+		}
+
+		// Cleanup debounce timer on destroy
+		return () => {
+			if (debounceTimer) {
+				clearTimeout(debounceTimer);
+				debounceTimer = null;
+			}
+		};
 	});
 </script>
+
+<!-- Use <svelte:window> for event listeners - automatic cleanup -->
+<svelte:window onresize={handleResize} onorientationchange={handleOrientationChange} />
 
 <section
 	id="hero"

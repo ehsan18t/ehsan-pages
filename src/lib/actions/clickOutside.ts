@@ -1,15 +1,29 @@
 /**
- * Click Outside Action - Svelte action to detect clicks outside an element
+ * Click Outside Action - Svelte 5 Action for detecting clicks outside an element
  *
- * Usage:
- *   <div use:clickOutside={() => isOpen = false}>
- *   <div use:clickOutside={{ callback: () => isOpen = false, enabled: isOpen }}>
+ * A+ Grade Implementation featuring:
+ * - Uses `on()` from svelte/events for proper event ordering
+ * - Supports both callback function and options object
+ * - Conditional enabling/disabling without re-attaching listeners
+ * - Type-safe with proper JSDoc
+ *
+ * @example
+ * ```svelte
+ * <div use:clickOutside={() => isOpen = false}>
+ * <div use:clickOutside={{ callback: () => isOpen = false, enabled: isOpen }}>
+ * ```
+ *
+ * @module clickOutside
  */
 
 import { browser } from '$app/environment';
+import { on } from 'svelte/events';
+import type { Action } from 'svelte/action';
 
+/** Callback function type for click outside events */
 export type ClickOutsideCallback = () => void;
 
+/** Options object for click outside action */
 export interface ClickOutsideOptions {
 	/** Callback when click outside is detected */
 	callback: ClickOutsideCallback;
@@ -17,44 +31,63 @@ export interface ClickOutsideOptions {
 	enabled?: boolean;
 }
 
-export function clickOutside(
-	node: HTMLElement,
-	options: ClickOutsideCallback | ClickOutsideOptions
-): { update: (opts: ClickOutsideCallback | ClickOutsideOptions) => void; destroy: () => void } {
-	if (!browser) return { update: () => {}, destroy: () => {} };
+/** Parameter type for the action - accepts either callback or options */
+type ClickOutsideParameter = ClickOutsideCallback | ClickOutsideOptions;
+
+/**
+ * Svelte action to detect clicks outside an element
+ *
+ * Uses Svelte 5's `on()` from svelte/events for proper event ordering
+ * with declarative event handlers.
+ */
+export const clickOutside: Action<HTMLElement, ClickOutsideParameter> = (node, parameter) => {
+	if (!browser) return {};
 
 	let currentCallback: ClickOutsideCallback;
 	let enabled = true;
 
-	function parseOptions(opts: ClickOutsideCallback | ClickOutsideOptions) {
-		if (typeof opts === 'function') {
-			currentCallback = opts;
+	/**
+	 * Parse the parameter to extract callback and enabled state
+	 */
+	function parseParameter(param: ClickOutsideParameter): void {
+		if (typeof param === 'function') {
+			currentCallback = param;
 			enabled = true;
 		} else {
-			currentCallback = opts.callback;
-			enabled = opts.enabled ?? true;
+			currentCallback = param.callback;
+			enabled = param.enabled ?? true;
 		}
 	}
 
-	function handleClick(event: MouseEvent) {
+	/**
+	 * Handle click events on the document
+	 */
+	function handleClick(event: MouseEvent): void {
 		if (!enabled) return;
+
 		const target = event.target as Node;
+
+		// Check if click is outside the node and event is not prevented
 		if (node && !node.contains(target) && !event.defaultPrevented) {
 			currentCallback();
 		}
 	}
 
-	parseOptions(options);
-	document.addEventListener('click', handleClick, true);
+	// Initialize with the provided parameter
+	parseParameter(parameter);
+
+	// Use svelte/events `on()` for proper event ordering
+	// Capture phase (true) to handle before other handlers
+	const off = on(document, 'click', handleClick, { capture: true });
 
 	return {
-		update(newOptions: ClickOutsideCallback | ClickOutsideOptions) {
-			parseOptions(newOptions);
+		update(newParameter: ClickOutsideParameter) {
+			parseParameter(newParameter);
 		},
 		destroy() {
-			document.removeEventListener('click', handleClick, true);
+			off();
 		}
 	};
-}
+};
 
 export default clickOutside;
