@@ -1,12 +1,13 @@
 <script lang="ts">
 	/**
-	 * Image Slider Component - Embla Carousel with Lightbox
+	 * Image Slider Component - Embla Carousel with Premium GSAP Lightbox
 	 *
 	 * A+ Grade Implementation featuring:
 	 * - Svelte 5 runes ($state, $derived, $effect)
 	 * - <svelte:window> for keyboard navigation
 	 * - $effect for autoplay with proper cleanup
-	 * - No onDestroy needed
+	 * - Portal pattern for lightbox (renders to document.body)
+	 * - GSAP-powered animations for cinematic lightbox experience
 	 *
 	 * @component ImageSlider
 	 */
@@ -15,6 +16,8 @@
 	import Icon from '@iconify/svelte';
 	import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 	import emblaCarouselSvelte from 'embla-carousel-svelte';
+	import gsap from 'gsap';
+	import type { Action } from 'svelte/action';
 
 	// ─────────────────────────────────────────────────────────────
 	// Props
@@ -37,6 +40,24 @@
 	}: Props = $props();
 
 	// ─────────────────────────────────────────────────────────────
+	// Portal Action (teleports element to document.body)
+	// ─────────────────────────────────────────────────────────────
+
+	const portal: Action<HTMLElement> = (node) => {
+		const target = document.body;
+		target.appendChild(node);
+
+		return {
+			destroy() {
+				// Only remove if still attached to target
+				if (node.parentNode === target) {
+					target.removeChild(node);
+				}
+			}
+		};
+	};
+
+	// ─────────────────────────────────────────────────────────────
 	// Local State
 	// ─────────────────────────────────────────────────────────────
 
@@ -49,6 +70,19 @@
 	// Lightbox state
 	let lightboxIndex = $state(0);
 	let lightboxImageContainerRef = $state<HTMLDivElement | null>(null);
+
+	// GSAP lightbox element refs
+	let lightboxRef = $state<HTMLDivElement | null>(null);
+	let lightboxContentRef = $state<HTMLDivElement | null>(null);
+	let lightboxCloseRef = $state<HTMLButtonElement | null>(null);
+	let lightboxNavPrevRef = $state<HTMLButtonElement | null>(null);
+	let lightboxNavNextRef = $state<HTMLButtonElement | null>(null);
+	let lightboxCounterRef = $state<HTMLDivElement | null>(null);
+	let lightboxImageRef = $state<HTMLImageElement | null>(null);
+
+	// Animation state
+	let isAnimating = $state(false);
+	let lightboxTimeline = $state<gsap.core.Timeline | null>(null);
 
 	// ─────────────────────────────────────────────────────────────
 	// Derived State
@@ -63,6 +97,237 @@
 		align: 'start',
 		containScroll: 'trimSnaps'
 	});
+
+	// ─────────────────────────────────────────────────────────────
+	// GSAP Animation Functions
+	// ─────────────────────────────────────────────────────────────
+
+	/**
+	 * Animate lightbox opening with cinematic effects
+	 */
+	function animateLightboxOpen(): void {
+		if (!lightboxRef || !browser) return;
+
+		// Kill any existing timeline
+		lightboxTimeline?.kill();
+
+		const tl = gsap.timeline({
+			defaults: { ease: 'power3.out' },
+			onStart: () => {
+				isAnimating = true;
+			},
+			onComplete: () => {
+				isAnimating = false;
+			}
+		});
+
+		// Set initial states
+		gsap.set(lightboxRef, { opacity: 0, backdropFilter: 'blur(0px)' });
+		gsap.set(lightboxImageRef, { opacity: 0, scale: 0.85, rotateX: 15, y: 60 });
+		gsap.set(lightboxCloseRef, { opacity: 0, scale: 0, rotation: -180 });
+		gsap.set([lightboxNavPrevRef, lightboxNavNextRef], { opacity: 0, scale: 0.5 });
+		gsap.set(lightboxCounterRef, { opacity: 0, y: 30 });
+
+		// Animate backdrop
+		tl.to(lightboxRef, {
+			opacity: 1,
+			backdropFilter: 'blur(20px)',
+			duration: 0.5
+		});
+
+		// Animate image with spring-like effect
+		tl.to(
+			lightboxImageRef,
+			{
+				opacity: 1,
+				scale: 1,
+				rotateX: 0,
+				y: 0,
+				duration: 0.7,
+				ease: 'back.out(1.4)'
+			},
+			'-=0.3'
+		);
+
+		// Animate close button with spin
+		tl.to(
+			lightboxCloseRef,
+			{
+				opacity: 1,
+				scale: 1,
+				rotation: 0,
+				duration: 0.4,
+				ease: 'back.out(2)'
+			},
+			'-=0.4'
+		);
+
+		// Animate nav buttons from sides
+		tl.to(
+			lightboxNavPrevRef,
+			{
+				opacity: 1,
+				scale: 1,
+				x: 0,
+				duration: 0.4,
+				ease: 'back.out(1.7)'
+			},
+			'-=0.3'
+		);
+
+		tl.to(
+			lightboxNavNextRef,
+			{
+				opacity: 1,
+				scale: 1,
+				x: 0,
+				duration: 0.4,
+				ease: 'back.out(1.7)'
+			},
+			'-=0.35'
+		);
+
+		// Animate counter
+		tl.to(
+			lightboxCounterRef,
+			{
+				opacity: 1,
+				y: 0,
+				duration: 0.4,
+				ease: 'power2.out'
+			},
+			'-=0.3'
+		);
+
+		lightboxTimeline = tl;
+	}
+
+	/**
+	 * Animate lightbox closing with reverse cinematic effects
+	 */
+	function animateLightboxClose(onComplete: () => void): void {
+		if (!lightboxRef || !browser) {
+			onComplete();
+			return;
+		}
+
+		// Kill any existing timeline
+		lightboxTimeline?.kill();
+
+		const tl = gsap.timeline({
+			defaults: { ease: 'power2.in' },
+			onStart: () => {
+				isAnimating = true;
+			},
+			onComplete: () => {
+				isAnimating = false;
+				onComplete();
+			}
+		});
+
+		// Fade out controls first
+		tl.to([lightboxCounterRef, lightboxNavPrevRef, lightboxNavNextRef], {
+			opacity: 0,
+			scale: 0.8,
+			duration: 0.2
+		});
+
+		tl.to(
+			lightboxCloseRef,
+			{
+				opacity: 0,
+				scale: 0,
+				rotation: 90,
+				duration: 0.25
+			},
+			'-=0.1'
+		);
+
+		// Animate image out with dramatic exit
+		tl.to(
+			lightboxImageRef,
+			{
+				opacity: 0,
+				scale: 0.9,
+				y: 40,
+				duration: 0.35,
+				ease: 'power3.in'
+			},
+			'-=0.15'
+		);
+
+		// Fade backdrop
+		tl.to(
+			lightboxRef,
+			{
+				opacity: 0,
+				backdropFilter: 'blur(0px)',
+				duration: 0.3
+			},
+			'-=0.2'
+		);
+
+		lightboxTimeline = tl;
+	}
+
+	/**
+	 * Animate image transition with 3D perspective effect
+	 */
+	function animateImageTransition(direction: 'next' | 'prev'): void {
+		if (!lightboxImageRef || !browser || isAnimating) return;
+
+		isAnimating = true;
+
+		const xDirection = direction === 'next' ? -1 : 1;
+		const rotateDirection = direction === 'next' ? -1 : 1;
+
+		// Create exit timeline
+		const exitTl = gsap.timeline({
+			onComplete: () => {
+				// Update the index
+				if (direction === 'next') {
+					lightboxIndex = lightboxIndex < images.length - 1 ? lightboxIndex + 1 : 0;
+				} else {
+					lightboxIndex = lightboxIndex > 0 ? lightboxIndex - 1 : images.length - 1;
+				}
+
+				// Small delay to ensure image src updates
+				requestAnimationFrame(() => {
+					// Animate in new image from opposite side
+					gsap.fromTo(
+						lightboxImageRef,
+						{
+							opacity: 0,
+							x: -xDirection * 80,
+							scale: 0.92,
+							rotateY: -rotateDirection * 8
+						},
+						{
+							opacity: 1,
+							x: 0,
+							scale: 1,
+							rotateY: 0,
+							duration: 0.5,
+							ease: 'power2.out',
+							onComplete: () => {
+								isAnimating = false;
+							}
+						}
+					);
+				});
+			}
+		});
+
+		// Animate current image out
+		exitTl.to(lightboxImageRef, {
+			opacity: 0,
+			x: xDirection * 80,
+			scale: 0.92,
+			rotateY: rotateDirection * 8,
+			duration: 0.35,
+			ease: 'power2.in'
+		});
+	}
 
 	// ─────────────────────────────────────────────────────────────
 	// Event Handlers
@@ -94,37 +359,40 @@
 	}
 
 	function toggleFullscreen(): void {
-		isFullscreen = !isFullscreen;
-		lightboxIndex = selectedIndex;
+		if (isAnimating) return;
 
-		if (isFullscreen) {
+		if (!isFullscreen) {
+			// Opening lightbox
+			isFullscreen = true;
+			lightboxIndex = selectedIndex;
 			document.body.classList.add('lightbox-open');
+			// Animation triggered by $effect when lightboxRef is available
 		} else {
-			document.body.classList.remove('lightbox-open');
+			// Closing lightbox with animation
+			animateLightboxClose(() => {
+				isFullscreen = false;
+				document.body.classList.remove('lightbox-open');
+			});
 		}
 	}
 
 	function closeLightbox(): void {
-		isFullscreen = false;
-		document.body.classList.remove('lightbox-open');
+		if (isAnimating) return;
+
+		animateLightboxClose(() => {
+			isFullscreen = false;
+			document.body.classList.remove('lightbox-open');
+		});
 	}
 
 	function lightboxPrev(): void {
-		if (!lightboxImageContainerRef) return;
-		lightboxImageContainerRef.dataset.direction = 'prev';
-		lightboxImageContainerRef.classList.remove('transitioning');
-		void lightboxImageContainerRef.offsetWidth; // Force reflow
-		lightboxImageContainerRef.classList.add('transitioning');
-		lightboxIndex = lightboxIndex > 0 ? lightboxIndex - 1 : images.length - 1;
+		if (isAnimating) return;
+		animateImageTransition('prev');
 	}
 
 	function lightboxNext(): void {
-		if (!lightboxImageContainerRef) return;
-		lightboxImageContainerRef.dataset.direction = 'next';
-		lightboxImageContainerRef.classList.remove('transitioning');
-		void lightboxImageContainerRef.offsetWidth; // Force reflow
-		lightboxImageContainerRef.classList.add('transitioning');
-		lightboxIndex = lightboxIndex < images.length - 1 ? lightboxIndex + 1 : 0;
+		if (isAnimating) return;
+		animateImageTransition('next');
 	}
 
 	/**
@@ -158,6 +426,16 @@
 		return () => {
 			clearInterval(timer);
 		};
+	});
+
+	// GSAP lightbox open animation effect
+	$effect(() => {
+		if (isFullscreen && lightboxRef && lightboxImageRef) {
+			// Small delay to ensure DOM is ready
+			requestAnimationFrame(() => {
+				animateLightboxOpen();
+			});
+		}
 	});
 
 	// Cleanup lightbox class on unmount
@@ -212,8 +490,11 @@
 		>
 			{#if hasMultipleImages}
 				<button
-					class="slider-control slider-button absolute top-1/2 left-4 z-5 h-11 w-11 -translate-y-1/2 transition-transform"
-					onclick={scrollPrev}
+					class="slider-control slider-button pointer-events-auto absolute top-1/2 left-4 z-5 h-11 w-11 -translate-y-1/2 transition-transform"
+					onclick={(e) => {
+						e.stopPropagation();
+						scrollPrev();
+					}}
 					disabled={!emblaApi?.canScrollPrev() && !options.loop}
 					aria-label="Previous slide"
 				>
@@ -221,8 +502,11 @@
 				</button>
 
 				<button
-					class="slider-control slider-button absolute top-1/2 right-4 z-5 h-11 w-11 -translate-y-1/2 transition-transform"
-					onclick={scrollNext}
+					class="slider-control slider-button pointer-events-auto absolute top-1/2 right-4 z-5 h-11 w-11 -translate-y-1/2 transition-transform"
+					onclick={(e) => {
+						e.stopPropagation();
+						scrollNext();
+					}}
 					disabled={!emblaApi?.canScrollNext() && !options.loop}
 					aria-label="Next slide"
 				>
@@ -251,8 +535,11 @@
 			{/if}
 
 			<button
-				class="slider-control slider-fullscreen absolute top-6 right-6 z-5 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full"
-				onclick={toggleFullscreen}
+				class="slider-fullscreen pointer-events-auto absolute top-6 right-6 z-5 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-black/45 text-white shadow-md backdrop-blur-sm transition-all duration-300 hover:scale-118 hover:bg-black/85"
+				onclick={(e) => {
+					e.stopPropagation();
+					toggleFullscreen();
+				}}
 				aria-label="View fullscreen"
 			>
 				<Icon icon="mdi:fullscreen" class="h-5 w-5" />
@@ -260,10 +547,12 @@
 		</div>
 	</div>
 
-	<!-- Lightbox -->
+	<!-- Lightbox (portaled to document.body) with GSAP animations -->
 	{#if isFullscreen}
 		<div
-			class="slider-lightbox fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center bg-black/95 backdrop-blur-lg select-none"
+			bind:this={lightboxRef}
+			use:portal
+			class="slider-lightbox fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center bg-black/95 select-none"
 			onclick={closeLightbox}
 			onkeydown={(e) => e.key === 'Escape' && closeLightbox()}
 			role="dialog"
@@ -271,8 +560,9 @@
 			tabindex="-1"
 		>
 			<div
+				bind:this={lightboxContentRef}
 				class="slider-lightbox-content relative flex h-full w-full items-center justify-center"
-				style="perspective: 1000px;"
+				style="perspective: 1200px; transform-style: preserve-3d;"
 				onclick={(e) => e.stopPropagation()}
 				onkeydown={(e) => e.stopPropagation()}
 				role="presentation"
@@ -280,20 +570,26 @@
 				<div
 					bind:this={lightboxImageContainerRef}
 					class="slider-lightbox-image-container relative flex h-full w-full items-center justify-center"
-					data-direction="next"
+					style="transform-style: preserve-3d;"
 				>
 					<img
+						bind:this={lightboxImageRef}
 						src={images[lightboxIndex]}
 						alt="{title} - image {lightboxIndex + 1}"
-						class="slider-lightbox-image animate-zoom-in fill-forwards absolute max-h-[85vh] max-w-[90vw] rounded object-contain shadow-2xl"
+						class="slider-lightbox-image absolute max-h-[85vh] max-w-[90vw] rounded-lg object-contain will-change-transform"
+						style="transform-style: preserve-3d; box-shadow: 0 25px 80px -20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 255, 255, 0.05);"
 						loading="eager"
 						decoding="async"
 					/>
 				</div>
 
 				<button
-					class="slider-lightbox-close animate-fade-in fill-forwards absolute top-6 right-6 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-0 bg-red-500/60 text-white shadow-md transition-all duration-300 hover:scale-115 hover:bg-red-500/90"
-					onclick={closeLightbox}
+					bind:this={lightboxCloseRef}
+					class="slider-lightbox-close pointer-events-auto absolute top-6 right-6 z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-0 bg-red-500/70 text-white shadow-lg transition-colors duration-200 hover:bg-red-500"
+					onclick={(e) => {
+						e.stopPropagation();
+						closeLightbox();
+					}}
 					aria-label="Close fullscreen view"
 				>
 					<Icon
@@ -304,21 +600,30 @@
 
 				{#if hasMultipleImages}
 					<button
-						class="slider-control slider-lightbox-nav animate-fade-in fill-forwards animation-delay-200 absolute top-1/2 left-8 z-15 h-12 w-12 -translate-y-1/2"
-						onclick={lightboxPrev}
+						bind:this={lightboxNavPrevRef}
+						class="slider-lightbox-nav pointer-events-auto absolute top-1/2 left-8 z-15 flex h-14 w-14 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/70 text-white shadow-lg transition-colors duration-200 hover:border-white/40 hover:bg-black/90"
+						onclick={(e) => {
+							e.stopPropagation();
+							lightboxPrev();
+						}}
 						aria-label="Previous image"
 					>
-						<Icon icon="mdi:chevron-left" class="h-7 w-7" />
+						<Icon icon="mdi:chevron-left" class="h-8 w-8" />
 					</button>
 					<button
-						class="slider-control slider-lightbox-nav animate-fade-in fill-forwards animation-delay-200 absolute top-1/2 right-8 z-15 h-12 w-12 -translate-y-1/2"
-						onclick={lightboxNext}
+						bind:this={lightboxNavNextRef}
+						class="slider-lightbox-nav pointer-events-auto absolute top-1/2 right-8 z-15 flex h-14 w-14 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/70 text-white shadow-lg transition-colors duration-200 hover:border-white/40 hover:bg-black/90"
+						onclick={(e) => {
+							e.stopPropagation();
+							lightboxNext();
+						}}
 						aria-label="Next image"
 					>
-						<Icon icon="mdi:chevron-right" class="h-7 w-7" />
+						<Icon icon="mdi:chevron-right" class="h-8 w-8" />
 					</button>
 					<div
-						class="slider-lightbox-counter animate-fade-up fill-forwards animation-delay-300 absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/15 bg-black/60 px-5 py-2.5 text-base font-semibold tracking-wide text-white shadow-md backdrop-blur-md"
+						bind:this={lightboxCounterRef}
+						class="slider-lightbox-counter absolute bottom-8 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/20 bg-black/70 px-6 py-3 text-base font-semibold tracking-wider text-white shadow-lg backdrop-blur-md"
 					>
 						{lightboxIndex + 1} / {images.length}
 					</div>
@@ -364,71 +669,39 @@
 		box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
 	}
 
-	/* Image transition using pure CSS */
-	:global(.slider-lightbox-image-container.transitioning .slider-lightbox-image) {
-		animation-name: var(--transition-animation);
-		animation-duration: 450ms;
-		animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-		animation-fill-mode: forwards;
-	}
-
-	:global(.slider-lightbox-image-container[data-direction='next'].transitioning) {
-		--transition-animation: slide-from-right;
-	}
-
-	:global(.slider-lightbox-image-container[data-direction='prev'].transitioning) {
-		--transition-animation: slide-from-left;
-	}
-
-	/* Responsive adjustments */
+	/* Lightbox nav buttons - responsive */
 	@media (max-width: 768px) {
-		.slider-lightbox-nav {
-			@apply right-4 left-4;
+		:global(.slider-lightbox-nav) {
+			@apply h-11 w-11;
 		}
-		.slider-lightbox-close {
+		:global(.slider-lightbox-nav.left-8) {
+			left: 1rem !important;
+		}
+		:global(.slider-lightbox-nav.right-8) {
+			right: 1rem !important;
+		}
+		:global(.slider-lightbox-close) {
 			@apply top-4 right-4;
 		}
-		.slider-lightbox-counter {
-			@apply text-sm;
+		:global(.slider-lightbox-counter) {
+			@apply bottom-6 px-4 py-2 text-sm;
+		}
+		:global(.slider-lightbox-image) {
+			max-width: 95vw !important;
+			max-height: 80vh !important;
 		}
 	}
 
-	/* Accessibility */
+	/* Accessibility - respect reduced motion preferences */
 	@media (prefers-reduced-motion: reduce) {
 		.embla__slide,
 		.slider-image,
 		.slider-button,
 		.slider-dot,
-		.slider-fullscreen,
-		.slider-lightbox-image,
-		.slider-lightbox-nav,
-		.slider-lightbox-close {
+		.slider-fullscreen {
 			transition: none !important;
-			animation: none !important;
 		}
-	}
-
-	/* Slide animations */
-	@keyframes slide-from-right {
-		from {
-			transform: translateX(100%);
-			opacity: 0;
-		}
-		to {
-			transform: translateX(0);
-			opacity: 1;
-		}
-	}
-
-	@keyframes slide-from-left {
-		from {
-			transform: translateX(-100%);
-			opacity: 0;
-		}
-		to {
-			transform: translateX(0);
-			opacity: 1;
-		}
+		/* GSAP will also be disabled via a runtime check */
 	}
 
 	/* Body scroll management */

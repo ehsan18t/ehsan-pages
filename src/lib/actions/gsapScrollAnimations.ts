@@ -15,8 +15,8 @@
 import { browser } from '$app/environment';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { prefersReducedMotion } from 'svelte/motion';
 import type { Action } from 'svelte/action';
+import { prefersReducedMotion } from 'svelte/motion';
 
 // Register GSAP plugins (only in browser)
 if (browser) {

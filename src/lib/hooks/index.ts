@@ -14,14 +14,14 @@
 
 export {
 	useCarousel,
+	type CarouselActions,
 	type CarouselOptions,
-	type CarouselState,
-	type CarouselActions
+	type CarouselState
 } from './useCarousel.svelte';
 export {
 	useScrollSpy,
+	type ScrollSpyActions,
 	type ScrollSpyOptions,
 	type ScrollSpySection,
-	type ScrollSpyState,
-	type ScrollSpyActions
+	type ScrollSpyState
 } from './useScrollSpy.svelte';

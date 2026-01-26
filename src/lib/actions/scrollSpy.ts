@@ -19,8 +19,8 @@
  */
 
 import { browser } from '$app/environment';
-import { on } from 'svelte/events';
 import type { Action } from 'svelte/action';
+import { on } from 'svelte/events';
 
 /** Options for the scroll spy action */
 export interface ScrollSpyOptions {

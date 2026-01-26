@@ -17,8 +17,8 @@
  */
 
 import { browser } from '$app/environment';
-import { on } from 'svelte/events';
 import type { Action } from 'svelte/action';
+import { on } from 'svelte/events';
 
 /** Callback function type for click outside events */
 export type ClickOutsideCallback = () => void;
