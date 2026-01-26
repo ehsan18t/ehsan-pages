@@ -35,7 +35,7 @@ export function scrollReveal(
 	node: HTMLElement,
 	options: ScrollRevealOptions = {}
 ): { destroy: () => void } {
-	if (!browser) return { destroy: () => {} };
+	if (!browser) return { destroy: () => { } };
 
 	const {
 		y = 50,
@@ -68,7 +68,8 @@ export function scrollReveal(
 						x: 0,
 						duration,
 						delay,
-						ease
+						ease,
+						clearProps: 'transform'
 					});
 
 					// Stop observing after animation
