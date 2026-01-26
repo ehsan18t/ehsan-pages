@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-const SITE_URL = 'https://ehsan18t.github.io';
+const SITE_URL = 'https://ehsankhan.me';
 
 // Define all routes in your application
 const staticPages = [{ url: '', priority: 1.0, changefreq: 'weekly' }];
