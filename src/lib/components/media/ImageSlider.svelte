@@ -293,8 +293,8 @@
 	{/if}
 {/if}
 
-<style>
-	@reference "../../../routes/layout.css";
+<style lang="postcss">
+	@reference "$routes/layout.css";
 
 	/* Active dot state */
 	.slider-dot.active {

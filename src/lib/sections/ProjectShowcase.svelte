@@ -84,8 +84,8 @@
 	</div>
 </section>
 
-<style>
-	@reference "../../routes/layout.css";
+<style lang="postcss">
+	@reference "$routes/layout.css";
 
 	/* Hover effect for title */
 	.project-card:hover h3 {

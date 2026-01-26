@@ -268,8 +268,8 @@
 	</div>
 </nav>
 
-<style>
-	@reference "../../../routes/layout.css";
+<style lang="postcss">
+	@reference "$routes/layout.css";
 
 	.mobile-nav-container {
 		opacity: 0;

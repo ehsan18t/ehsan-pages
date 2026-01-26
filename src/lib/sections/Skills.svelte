@@ -2,9 +2,9 @@
 	import { browser } from '$app/environment';
 	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import {
-		skillGroups,
 		getLanguageNameFromExtension,
 		getSkillCounts,
+		skillGroups,
 		type SkillWithCategory
 	} from '$data';
 	import Icon from '@iconify/svelte';
@@ -242,8 +242,8 @@
 	</div>
 </section>
 
-<style>
-	@reference "../../routes/layout.css";
+<style lang="postcss">
+	@reference "$routes/layout.css";
 
 	/* Custom scrollbar for sidebar */
 	.sidebar {

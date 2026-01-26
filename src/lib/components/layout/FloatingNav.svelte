@@ -115,8 +115,8 @@
 	</div>
 </nav>
 
-<style>
-	@reference "../../../routes/layout.css";
+<style lang="postcss">
+	@reference "$routes/layout.css";
 
 	/* Desktop Navigation */
 	.floating-nav-desktop.is-visible {

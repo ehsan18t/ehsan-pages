@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import {
 		createTerminalCommands,
 		findMatchingCommand,
-		type CommandEntry,
-		type Command
+		type Command,
+		type CommandEntry
 	} from '$data';
+	import { onMount } from 'svelte';
 
 	let commandHistory = $state<CommandEntry[]>([]);
 	let currentInput = $state('');
@@ -290,8 +290,8 @@ Type 'help' to see available commands.`
 	</div>
 </div>
 
-<style>
-	@reference "../../../routes/layout.css";
+<style lang="postcss">
+	@reference "$routes/layout.css";
 
 	/* Terminal Content with custom scrollbar */
 	.terminal-content {

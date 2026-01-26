@@ -80,8 +80,8 @@
 	</div>
 </div>
 
-<style>
-	@reference "../../../routes/layout.css";
+<style lang="postcss">
+	@reference "$routes/layout.css";
 
 	/* Animation variables using theme tokens */
 	:root {
