@@ -13,37 +13,33 @@
 	let showLoader = $state(true);
 	let mainVisible = $state(false);
 
-	onMount(() => {
-		// Hide body overflow during loader
-		document.body.style.overflow = 'hidden';
+	/** Duration of the longest exit animation (ms) */
+	const EXIT_ANIMATION_DURATION = 800;
+	/** Time to show loader before starting exit (ms) */
+	const LOADER_DISPLAY_TIME = 2000;
 
+	onMount(() => {
 		const loaderElement = document.getElementById('hero-loader');
 
 		const timeoutId = setTimeout(() => {
 			if (loaderElement) {
 				loaderElement.classList.add('exit');
 
-				// Wait for exit animations
-				Promise.all(
-					Array.from(loaderElement.getElementsByClassName('logo-circle'))
-						.concat(
-							Array.from(loaderElement.getElementsByClassName('letter')),
-							Array.from(loaderElement.getElementsByClassName('name-char')),
-							Array.from(loaderElement.getElementsByClassName('particle'))
-						)
-						.map(
-							(el) => new Promise((res) => el.addEventListener('animationend', res, { once: true }))
-						)
-				).then(() => {
+				// Use a fixed timeout instead of waiting for animation events
+				// This is more reliable and handles edge cases (reduced motion, missing elements)
+				setTimeout(() => {
 					showLoader = false;
+					// Remove both the class and inline style
+					document.body.classList.remove('is-loading');
 					document.body.style.removeProperty('overflow');
 					mainVisible = true;
-				});
+				}, EXIT_ANIMATION_DURATION);
 			}
-		}, 2000);
+		}, LOADER_DISPLAY_TIME);
 
 		return () => {
 			clearTimeout(timeoutId);
+			document.body.classList.remove('is-loading');
 			document.body.style.removeProperty('overflow');
 		};
 	});
