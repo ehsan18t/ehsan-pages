@@ -15,7 +15,7 @@
 	import { browser } from '$app/environment';
 	import type { Experience } from '$data';
 	import gsap from 'gsap';
-	import ScrollTrigger from 'gsap/dist/ScrollTrigger';
+	import ScrollTrigger from 'gsap/ScrollTrigger';
 	import ExperienceCard from './ExperienceCard.svelte';
 
 	// Register GSAP plugin (browser only)

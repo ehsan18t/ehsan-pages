@@ -14,7 +14,7 @@
 
 import { browser } from '$app/environment';
 import gsap from 'gsap';
-import ScrollTrigger from 'gsap/dist/ScrollTrigger';
+import ScrollTrigger from 'gsap/ScrollTrigger';
 
 // Register GSAP plugins (browser only)
 if (browser) {
