@@ -27,6 +27,12 @@ const SCROLL_DEBOUNCE = 100;
 /** Duration to ignore observer during programmatic scroll (ms) */
 const SCROLL_LOCK_DURATION = 800;
 
+/** Minimum time between index changes to prevent flickering (ms) */
+const INDEX_CHANGE_COOLDOWN = 150;
+
+/** Minimum intersection ratio difference to trigger a change */
+const RATIO_THRESHOLD = 0.1;
+
 /** Bottom threshold for hiding navigation (px from bottom) */
 const BOTTOM_THRESHOLD = 100;
 
@@ -71,6 +77,12 @@ class NavigationState {
 
 	/** Timeout handle for scroll debouncing */
 	#scrollDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+	/** Timestamp of last index change to prevent flickering */
+	#lastIndexChangeTime = 0;
+
+	/** Track intersection ratios for all sections */
+	#sectionRatios: Map<string, number> = new Map();
 
 	/** Bound scroll handler for cleanup */
 	#boundScrollHandler: (() => void) | null = null;
@@ -152,6 +164,7 @@ class NavigationState {
 
 		// Update active index immediately for responsive UI
 		this.activeIndex = index;
+		this.#lastIndexChangeTime = Date.now();
 
 		// Calculate target position with offset
 		const offset = item.offset ?? 0;
@@ -204,23 +217,37 @@ class NavigationState {
 				// Skip updates during programmatic scrolling
 				if (this.#isScrollLocked) return;
 
-				// Find the most visible section
-				let maxRatio = 0;
-				let mostVisibleIndex = -1;
+				// Check cooldown to prevent rapid switching (race condition fix)
+				const now = Date.now();
+				if (now - this.#lastIndexChangeTime < INDEX_CHANGE_COOLDOWN) return;
 
+				// Update ratios for all observed entries
 				for (const entry of entries) {
-					if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-						const idx = SECTION_IDS.indexOf(entry.target.id);
-						if (idx >= 0) {
-							maxRatio = entry.intersectionRatio;
-							mostVisibleIndex = idx;
-						}
+					this.#sectionRatios.set(entry.target.id, entry.intersectionRatio);
+				}
+
+				// Find the section with highest intersection ratio
+				let maxRatio = 0;
+				let bestIndex = -1;
+
+				for (let i = 0; i < SECTION_IDS.length; i++) {
+					const ratio = this.#sectionRatios.get(SECTION_IDS[i]) ?? 0;
+					if (ratio > maxRatio) {
+						maxRatio = ratio;
+						bestIndex = i;
 					}
 				}
 
-				// Update active index if we found a visible section
-				if (mostVisibleIndex >= 0 && this.activeIndex !== mostVisibleIndex) {
-					this.activeIndex = mostVisibleIndex;
+				// Only change if we found a valid section and it's significantly more visible
+				// This prevents flickering at boundaries where both sections have similar ratios
+				if (bestIndex >= 0 && bestIndex !== this.activeIndex) {
+					const currentRatio = this.#sectionRatios.get(SECTION_IDS[this.activeIndex]) ?? 0;
+
+					// Require the new section to be notably more visible than current
+					if (maxRatio > currentRatio + RATIO_THRESHOLD || currentRatio < 0.05) {
+						this.activeIndex = bestIndex;
+						this.#lastIndexChangeTime = now;
+					}
 				}
 			}, OBSERVER_CONFIG);
 
@@ -281,6 +308,10 @@ class NavigationState {
 	 * Used for initial detection and when observer might miss
 	 */
 	#detectCurrentSection(): void {
+		// Check cooldown to prevent rapid switching
+		const now = Date.now();
+		if (now - this.#lastIndexChangeTime < INDEX_CHANGE_COOLDOWN) return;
+
 		const viewportMiddle = window.innerHeight / 2;
 
 		for (let i = SECTION_IDS.length - 1; i >= 0; i--) {
@@ -292,6 +323,7 @@ class NavigationState {
 			if (rect.top <= viewportMiddle) {
 				if (this.activeIndex !== i) {
 					this.activeIndex = i;
+					this.#lastIndexChangeTime = now;
 				}
 				break;
 			}
