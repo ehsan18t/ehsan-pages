@@ -11,7 +11,6 @@
 
 	let { cvPDF }: Props = $props();
 
-	let containerRef: HTMLDivElement | null = null;
 	let pagesContainer: HTMLDivElement | null = null;
 	let containerWidth = 900;
 	let numPages = $state<number>(0);
@@ -23,15 +22,14 @@
 	let pdfjsLib: PdfjsLib | null = null;
 	let renderToken = 0;
 	let resizeRaf: number | null = null;
-	let pendingRender = false;
 	let lastRenderedWidth = 0;
-	let initialRenderDone = false;
+	let pdfReady = false;
+	let pendingRender = false;
 
 	// High-DPI support - render at higher resolution
 	const getPixelRatio = () => (browser ? Math.min(window.devicePixelRatio || 1, 2) : 1);
 
 	function containerRefAttachment(node: HTMLDivElement) {
-		containerRef = node;
 		const observer = new ResizeObserver((entries) => {
 			const width = entries[0]?.contentRect.width ?? node.clientWidth;
 			if (!width) return;
@@ -43,8 +41,6 @@
 			resizeRaf = requestAnimationFrame(() => {
 				if (pdfDocument && pagesContainer) {
 					renderAllPages();
-				} else {
-					pendingRender = true;
 				}
 			});
 		});
@@ -53,18 +49,13 @@
 
 		return () => {
 			observer.disconnect();
-			if (containerRef === node) {
-				containerRef = null;
-			}
 		};
 	}
 
 	function pagesContainerAttachment(node: HTMLDivElement) {
 		pagesContainer = node;
-		// If PDF was already loaded, render now
-		if (pdfDocument && numPages > 0 && !initialRenderDone) {
-			console.log('[PDFViewer] pagesContainer attached with PDF ready, triggering render');
-			initialRenderDone = true;
+		// If PDF was already loaded before container mounted, render now
+		if (pdfReady && pdfDocument && numPages > 0) {
 			setTimeout(() => renderAllPages(true), 0);
 		}
 		return () => {
@@ -75,25 +66,20 @@
 	}
 
 	onMount(async () => {
-		console.log('[PDFViewer] onMount started');
 		try {
 			const pdfjs = await import('pdfjs-dist');
 			pdfjsLib = pdfjs;
-			console.log('[PDFViewer] pdfjs-dist imported, version:', pdfjs.version);
 
 			// Use bundled worker from pdfjs-dist package
 			const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs?url');
 			pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
-			console.log('[PDFViewer] Worker source set from bundle');
 
 			if (cvPDF.trim()) {
-				console.log('[PDFViewer] Starting to fetch PDF:', cvPDF);
 				await fetchPdf(cvPDF);
 			} else {
-				console.warn('[PDFViewer] cvPDF is empty');
+				isLoading = false;
 			}
 		} catch (err) {
-			console.error('[PDFViewer] onMount error:', err);
 			error = err instanceof Error ? err.message : 'Failed to initialize PDF viewer';
 			isLoading = false;
 		}
@@ -114,18 +100,14 @@
 	});
 
 	async function fetchPdf(url: string) {
-		console.log('[PDFViewer] fetchPdf called with:', url);
-		if (!pdfjsLib) {
-			console.error('[PDFViewer] pdfjsLib not loaded');
-			return;
-		}
+		if (!pdfjsLib) return;
 
 		isLoading = true;
 		error = null;
 		numPages = 0;
+		pdfReady = false;
 
 		try {
-			console.log('[PDFViewer] Fetching blob from API...');
 			const response = await fetch('/api/get-file-as-blob', {
 				method: 'POST',
 				headers: {
@@ -135,16 +117,12 @@
 				body: JSON.stringify({ fileUrl: url.trim() })
 			});
 
-			console.log('[PDFViewer] API response status:', response.status, response.statusText);
-
 			if (!response.ok) {
 				throw new Error(`Failed to load: ${response.statusText}`);
 			}
 
 			const blob = await response.blob();
-			console.log('[PDFViewer] Blob received, size:', blob.size, 'type:', blob.type);
 			const newBlobUrl = URL.createObjectURL(blob);
-			console.log('[PDFViewer] Blob URL created:', newBlobUrl);
 
 			if (pdfBlobUrl) {
 				URL.revokeObjectURL(pdfBlobUrl);
@@ -152,16 +130,16 @@
 
 			pdfBlobUrl = newBlobUrl;
 
-			console.log('[PDFViewer] Loading PDF document...');
 			const loadingTask = pdfjsLib.getDocument(newBlobUrl);
 			pdfDocument = await loadingTask.promise;
 			numPages = pdfDocument.numPages;
-			console.log('[PDFViewer] PDF loaded successfully, pages:', numPages);
+			pdfReady = true;
 
-			await renderAllPages(true);
-			console.log('[PDFViewer] All pages rendered');
+			// Only render if container is already mounted
+			if (pagesContainer) {
+				await renderAllPages(true);
+			}
 		} catch (err) {
-			console.error('[PDFViewer] fetchPdf error:', err);
 			error = err instanceof Error ? err.message : 'Unknown error';
 		} finally {
 			isLoading = false;
@@ -452,7 +430,6 @@
 	:global(.pdf-page + .pdf-page) {
 		margin-top: 16px;
 		border-top: 4px solid #d0d0d0;
-		padding-top: 0;
 	}
 
 	:global(.pdf-canvas) {
