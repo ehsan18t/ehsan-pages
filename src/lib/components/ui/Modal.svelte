@@ -4,6 +4,7 @@
 	 *
 	 * A+ Grade Implementation featuring:
 	 * - Svelte 5 runes ($state, $bindable, $effect)
+	 * - Portal rendering to document.body
 	 * - <svelte:window> for keyboard handling
 	 * - GSAP for smooth animations
 	 * - Focus trap and focus restoration
@@ -13,6 +14,7 @@
 	 * @component Modal
 	 */
 
+	import { browser } from '$app/environment';
 	import gsap from 'gsap';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -88,6 +90,22 @@
 
 	let modalContainerRef = $state<HTMLDivElement | null>(null);
 	let previouslyFocusedElement: HTMLElement | null = null;
+
+	// Portal action - teleports element to document.body
+	function portal(node: HTMLElement) {
+		if (!browser) return;
+
+		const target = document.body;
+		target.appendChild(node);
+
+		return {
+			destroy() {
+				if (node.parentNode === target) {
+					target.removeChild(node);
+				}
+			}
+		};
+	}
 
 	// ─────────────────────────────────────────────────────────────
 	// Event Handlers
@@ -228,12 +246,13 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 z-999 flex items-center justify-center bg-black/30 px-4 py-4 backdrop-blur-sm"
+		class="modal-backdrop"
 		onclick={handleBackdropClick}
 		role="dialog"
 		aria-modal="true"
 		tabindex="-1"
 		transition:fade={{ duration: 200 }}
+		use:portal
 	>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -283,6 +302,18 @@
 {/if}
 
 <style>
+	.modal-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 9999;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(4px);
+	}
+
 	.modal-content {
 		max-height: min(92vh, calc(100vh - 2rem));
 	}

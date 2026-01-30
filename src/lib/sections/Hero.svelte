@@ -172,24 +172,59 @@
 	</div>
 
 	<!-- Content -->
-	<div
-		class="fade-in flex max-w-full flex-col items-center justify-center md:flex-row md:px-10 lg:w-2/3"
-	>
-		<div class="shrink-0">
+	<div class="hero-content">
+		<!-- Profile Section -->
+		<div class="profile-section">
 			<Profile />
 		</div>
-		<div class="flex w-full flex-col gap-2 px-5 md:px-10">
-			<GlitchText
-				text={info.name}
-				class="text-center text-3xl font-bold sm:text-4xl md:text-left"
-			/>
-			<h2 class="text-center text-xl text-secondary sm:text-2xl md:text-left">
-				{info.title}
-			</h2>
-			<p class="text-justify text-sm sm:text-base md:text-lg">{info.description}</p>
-			<div class="pt-4 pb-3 sm:pt-6">
-				<PDFViewerModal cvPDF={info.resume} />
+
+		<!-- Info Section -->
+		<div class="info-section">
+			<!-- Greeting badge -->
+			<div class="greeting-badge">
+				<span class="wave">👋</span>
+				<span>Hello, I'm</span>
 			</div>
+
+			<!-- Name with glitch effect -->
+			<GlitchText text={info.name} class="hero-name" />
+
+			<!-- Title with accent -->
+			<div class="title-wrapper">
+				<span class="title-accent"></span>
+				<h2 class="hero-title">{info.title}</h2>
+			</div>
+
+			<!-- Description -->
+			<p class="hero-description">{info.description}</p>
+
+			<!-- CTA Buttons -->
+			<div class="cta-wrapper">
+				<PDFViewerModal cvPDF={info.resume} />
+				<button
+					type="button"
+					class="contact-btn"
+					onclick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+				>
+					<span>Let's Talk</span>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="18"
+						height="18"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M5 12h14" />
+						<path d="m12 5 7 7-7 7" />
+					</svg>
+				</button>
+			</div>
+
+			<!-- Social bar -->
 			<SocialBar />
 		</div>
 	</div>
@@ -200,6 +235,291 @@
 	#hero {
 		min-height: 100vh;
 		min-height: calc(var(--vh, 1vh) * 100);
+	}
+
+	/* Hero content layout */
+	.hero-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2rem;
+		max-width: 100%;
+		padding: 0 1.5rem;
+		animation: fadeInUp 0.8s ease-out;
+	}
+
+	@media (min-width: 768px) {
+		.hero-content {
+			flex-direction: row;
+			gap: 3rem;
+			padding: 0 2.5rem;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.hero-content {
+			gap: 4rem;
+			max-width: 1100px;
+		}
+	}
+
+	/* Profile section */
+	.profile-section {
+		flex-shrink: 0;
+		animation: fadeInLeft 0.8s ease-out 0.2s both;
+	}
+
+	/* Info section */
+	.info-section {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		text-align: center;
+		animation: fadeInRight 0.8s ease-out 0.3s both;
+	}
+
+	@media (min-width: 768px) {
+		.info-section {
+			text-align: left;
+		}
+	}
+
+	/* Greeting badge */
+	.greeting-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.4rem 1rem;
+		background: oklch(var(--accent-500) / 0.1);
+		border: 1px solid oklch(var(--accent-500) / 0.2);
+		border-radius: 50px;
+		font-size: 0.875rem;
+		color: oklch(var(--accent-text));
+		width: fit-content;
+		margin: 0 auto;
+	}
+
+	@media (min-width: 768px) {
+		.greeting-badge {
+			margin: 0;
+		}
+	}
+
+	.wave {
+		display: inline-block;
+		animation: wave 2.5s ease-in-out infinite;
+		transform-origin: 70% 70%;
+	}
+
+	/* Name styling */
+	:global(.hero-name) {
+		font-size: 2.25rem;
+		font-weight: 700;
+		line-height: 1.1;
+		letter-spacing: -0.02em;
+	}
+
+	@media (min-width: 640px) {
+		:global(.hero-name) {
+			font-size: 2.75rem;
+		}
+	}
+
+	@media (min-width: 768px) {
+		:global(.hero-name) {
+			font-size: 3.25rem;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		:global(.hero-name) {
+			font-size: 3.75rem;
+		}
+	}
+
+	/* Title with accent bar */
+	.title-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		justify-content: center;
+	}
+
+	@media (min-width: 768px) {
+		.title-wrapper {
+			justify-content: flex-start;
+		}
+	}
+
+	.title-accent {
+		width: 3px;
+		height: 1.5rem;
+		background: linear-gradient(
+			to bottom,
+			oklch(var(--accent-300)),
+			oklch(var(--accent-500)),
+			oklch(var(--accent-900))
+		);
+		border-radius: 2px;
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.title-accent {
+			display: block;
+		}
+	}
+
+	.hero-title {
+		font-size: 1.25rem;
+		font-weight: 500;
+		color: oklch(var(--secondary));
+	}
+
+	@media (min-width: 640px) {
+		.hero-title {
+			font-size: 1.5rem;
+		}
+	}
+
+	/* Description */
+	.hero-description {
+		font-size: 0.95rem;
+		line-height: 1.7;
+		color: oklch(var(--foreground) / 0.8);
+		max-width: 500px;
+		margin: 0 auto;
+	}
+
+	@media (min-width: 768px) {
+		.hero-description {
+			font-size: 1rem;
+			margin: 0;
+			text-align: left;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.hero-description {
+			font-size: 1.1rem;
+		}
+	}
+
+	/* CTA wrapper */
+	.cta-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding-top: 0.5rem;
+		width: 100%;
+		max-width: 280px;
+		margin: 0 auto;
+	}
+
+	@media (min-width: 768px) {
+		.cta-wrapper {
+			flex-direction: row;
+			max-width: none;
+			width: auto;
+			margin: 0;
+		}
+	}
+
+	/* Shared button styles via global for the View CV button */
+	:global(.cta-btn) {
+		min-width: 140px;
+		text-align: center;
+	}
+
+	/* Contact button */
+	.contact-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		min-width: 140px;
+		padding: 0.875rem 1.5rem;
+		background: transparent;
+		border: 2px solid oklch(var(--accent-500) / 0.5);
+		border-radius: 8px;
+		color: oklch(var(--accent-text));
+		font-size: 0.95rem;
+		font-weight: 700;
+		text-decoration: none;
+		transition: all 0.3s ease;
+	}
+
+	.contact-btn:hover {
+		background: oklch(var(--accent-500) / 0.15);
+		border-color: oklch(var(--accent-500));
+	}
+
+	.contact-btn svg {
+		transition: transform 0.3s ease;
+	}
+
+	.contact-btn:hover svg {
+		transform: translateX(4px);
+	}
+
+	/* Keyframes */
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes fadeInLeft {
+		from {
+			opacity: 0;
+			transform: translateX(-30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes fadeInRight {
+		from {
+			opacity: 0;
+			transform: translateX(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes wave {
+		0%,
+		100% {
+			transform: rotate(0deg);
+		}
+		10% {
+			transform: rotate(14deg);
+		}
+		20% {
+			transform: rotate(-8deg);
+		}
+		30% {
+			transform: rotate(14deg);
+		}
+		40% {
+			transform: rotate(-4deg);
+		}
+		50% {
+			transform: rotate(10deg);
+		}
+		60%,
+		100% {
+			transform: rotate(0deg);
+		}
 	}
 
 	@media (max-height: 600px) {
@@ -213,6 +533,16 @@
 		#hero {
 			padding-top: 1rem;
 			padding-bottom: 1rem;
+		}
+	}
+
+	/* Reduced motion */
+	@media (prefers-reduced-motion: reduce) {
+		.hero-content,
+		.profile-section,
+		.info-section,
+		.wave {
+			animation: none;
 		}
 	}
 </style>

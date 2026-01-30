@@ -16,8 +16,8 @@
 	}
 </script>
 
-<div class="flex h-full w-full items-center justify-center select-none md:justify-start">
-	<Button onclick={openModal} class="w-3xs font-bold">View CV</Button>
+<div class="contents">
+	<Button onclick={openModal} class="cta-btn">View CV</Button>
 </div>
 
 <Modal bind:open={isModalOpen} maxWidth="4xl">
@@ -25,9 +25,29 @@
 		<Button link={cvPDF}>Download CV</Button>
 	{/snippet}
 
-	<div
-		class="h-[min(80vh,calc(100vh-8rem))] overflow-hidden bg-[rgb(var(--background))] px-1 pb-4 md:px-2 lg:px-4"
-	>
+	<div class="pdf-container">
 		<PDFViewer {cvPDF} />
 	</div>
 </Modal>
+
+<style>
+	.pdf-container {
+		height: min(80vh, calc(100vh - 8rem));
+		width: 100%;
+		overflow: hidden;
+		background: rgb(var(--background));
+		padding: 0 0.25rem 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.pdf-container {
+			padding: 0 0.5rem 1rem;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.pdf-container {
+			padding: 0 1rem 1rem;
+		}
+	}
+</style>

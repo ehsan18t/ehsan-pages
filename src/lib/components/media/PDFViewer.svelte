@@ -206,7 +206,7 @@
 	// Rendering is triggered on load and on resize
 </script>
 
-<div class="flex h-full w-full max-w-4xl flex-col" {@attach containerRefAttachment}>
+<div class="pdf-viewer" {@attach containerRefAttachment}>
 	{#if error}
 		<div class="flex h-full w-full items-center justify-center text-center">
 			<div class="space-y-4">
@@ -234,3 +234,12 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+	.pdf-viewer {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		width: 100%;
+	}
+</style>
