@@ -259,7 +259,6 @@
 		aria-label="Client testimonials"
 	>
 		<!-- Card Stack - Optimized: removed 3D transforms for better mobile performance -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			bind:this={cardsContainer}
 			class="cards-container relative h-96 w-full max-w-160 touch-pan-y sm:h-88 md:h-80"

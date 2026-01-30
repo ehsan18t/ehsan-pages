@@ -272,4 +272,3 @@ export const navigation = new NavigationState();
 
 /** Re-export navItems for convenience */
 export { navItems };
-

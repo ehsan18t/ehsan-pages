@@ -272,7 +272,7 @@ export function createScrollAnimation(
 		ease,
 		stagger:
 			(Array.isArray(element) || element instanceof NodeList) &&
-				(element as ArrayLike<Element>).length > 1
+			(element as ArrayLike<Element>).length > 1
 				? stagger
 				: undefined,
 		scrollTrigger: {
