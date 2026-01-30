@@ -27,6 +27,9 @@
 	let pendingRender = false;
 	let lastRenderedWidth = 0;
 
+	// Get device pixel ratio for high-DPI rendering (capped at 2 for performance)
+	const getPixelRatio = () => (browser ? Math.min(window.devicePixelRatio || 1, 2) : 1);
+
 	function containerRefAttachment(node: HTMLDivElement) {
 		containerRef = node;
 		const observer = new ResizeObserver((entries) => {
@@ -155,25 +158,46 @@
 		isRendering = true;
 		lastRenderedWidth = containerWidth;
 
+		const pixelRatio = getPixelRatio();
+
 		try {
-			// Clear existing pages - intentional DOM manipulation for PDF canvas rendering
+			// Clear existing pages
 			pagesContainer.innerHTML = '';
 
 			for (let pageNum = 1; pageNum <= numPages; pageNum++) {
 				if (currentToken !== renderToken) return;
 
 				const page = await pdfDocument.getPage(pageNum);
-				const scale = Math.min(containerWidth, 900) / page.getViewport({ scale: 1 }).width;
+				const baseViewport = page.getViewport({ scale: 1 });
+				
+				// Calculate scale to fit container width (max 900px for readability)
+				const targetWidth = Math.min(containerWidth, 900);
+				const scale = targetWidth / baseViewport.width;
 				const viewport = page.getViewport({ scale });
 
-				// Create canvas for this page
+				// Create page wrapper
+				const pageWrapper = document.createElement('div');
+				pageWrapper.className = 'pdf-page';
+				pageWrapper.style.width = `${viewport.width}px`;
+				pageWrapper.style.height = `${viewport.height}px`;
+				pageWrapper.style.position = 'relative';
+				pageWrapper.style.marginBottom = '8px';
+
+				// Create canvas with high-DPI support
 				const canvas = document.createElement('canvas');
-				canvas.className = 'mb-1 block';
-				canvas.width = viewport.width;
-				canvas.height = viewport.height;
+				canvas.style.width = `${viewport.width}px`;
+				canvas.style.height = `${viewport.height}px`;
+				canvas.style.display = 'block';
+				
+				// Scale canvas for high-DPI displays
+				canvas.width = Math.floor(viewport.width * pixelRatio);
+				canvas.height = Math.floor(viewport.height * pixelRatio);
 
 				const context = canvas.getContext('2d');
 				if (context) {
+					// Scale context for high-DPI
+					context.scale(pixelRatio, pixelRatio);
+
 					await page.render({
 						canvasContext: context,
 						viewport,
@@ -183,8 +207,8 @@
 
 				if (currentToken !== renderToken) return;
 
-				// Intentional DOM manipulation for PDF canvas rendering
-				pagesContainer.appendChild(canvas);
+				pageWrapper.appendChild(canvas);
+				pagesContainer.appendChild(pageWrapper);
 			}
 		} finally {
 			if (currentToken === renderToken) {
@@ -202,35 +226,36 @@
 			await fetchPdf(cvPDF);
 		}
 	}
-
-	// Rendering is triggered on load and on resize
 </script>
 
 <div class="pdf-viewer" {@attach containerRefAttachment}>
 	{#if error}
-		<div class="flex h-full w-full items-center justify-center text-center">
+		<div class="error-state">
 			<div class="space-y-4">
 				<p>Error loading PDF. Disable extensions like IDM and try again.</p>
-				<button
-					class="rounded-md border border-white/20 px-3 py-2 text-sm transition-colors hover:border-white/40"
-					onclick={retry}
-				>
+				<button class="retry-btn" onclick={retry}>
 					Retry
 				</button>
 			</div>
 		</div>
 	{:else if isLoading && !pdfBlobUrl}
-		<div class="flex h-full w-full items-center justify-center text-center">
+		<div class="loading-state">
+			<div class="spinner"></div>
 			<p>Loading PDF...</p>
 		</div>
 	{:else}
-		<div class="relative flex-1 overflow-x-hidden overflow-y-auto">
+		<div class="pages-scroll-area">
 			{#if isRendering}
-				<div class="absolute inset-0 z-10 flex items-center justify-center">
-					<p>Rendering PDF...</p>
+				<div class="rendering-overlay">
+					<div class="spinner"></div>
+					<p>Rendering...</p>
 				</div>
 			{/if}
-			<div class={isRendering ? 'invisible' : 'visible'} {@attach pagesContainerAttachment}></div>
+			<div 
+				class="pages-container" 
+				class:invisible={isRendering}
+				{@attach pagesContainerAttachment}
+			></div>
 		</div>
 	{/if}
 </div>
@@ -241,5 +266,83 @@
 		flex-direction: column;
 		height: 100%;
 		width: 100%;
+	}
+
+	.error-state,
+	.loading-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		width: 100%;
+		text-align: center;
+		gap: 1rem;
+	}
+
+	.retry-btn {
+		padding: 0.5rem 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 0.375rem;
+		font-size: 0.875rem;
+		transition: border-color 0.2s;
+		cursor: pointer;
+		background: transparent;
+		color: inherit;
+	}
+
+	.retry-btn:hover {
+		border-color: rgba(255, 255, 255, 0.4);
+	}
+
+	.pages-scroll-area {
+		position: relative;
+		flex: 1;
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+
+	.pages-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 1rem 0;
+	}
+
+	.pages-container.invisible {
+		visibility: hidden;
+	}
+
+	.rendering-overlay {
+		position: absolute;
+		inset: 0;
+		z-index: 10;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+		background: rgba(0, 0, 0, 0.3);
+	}
+
+	.spinner {
+		width: 32px;
+		height: 32px;
+		border: 3px solid rgba(255, 255, 255, 0.2);
+		border-top-color: oklch(var(--accent-500));
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* Ensure crisp rendering on high-DPI */
+	:global(.pdf-page canvas) {
+		image-rendering: -webkit-optimize-contrast;
+		image-rendering: crisp-edges;
 	}
 </style>
