@@ -4,6 +4,7 @@
 	import { testimonials } from '$data';
 	import gsap from 'gsap';
 	import { onDestroy, onMount } from 'svelte';
+	import { prefersReducedMotion } from 'svelte/motion';
 
 	// Get initials from name
 	function getInitials(name: string): string {
@@ -16,13 +17,15 @@
 	}
 
 	const AUTOPLAY_INTERVAL = 6000;
-	const ANIMATION_DURATION = 0.5;
+	// Animation duration for smooth transitions
+	const ANIMATION_DURATION = 0.4;
 
 	let activeIndex = $state(0);
 	let isAnimating = $state(false);
 	let isPaused = $state(false);
 	let cardsContainer = $state<HTMLElement | null>(null);
 	let autoplayTimer: ReturnType<typeof setInterval> | null = null;
+	let isVisible = $state(false);
 
 	// Get card elements
 	function getCards(): HTMLElement[] {
@@ -30,48 +33,69 @@
 		return Array.from(cardsContainer.querySelectorAll('.testimonial-card'));
 	}
 
-	// Position cards in stack formation
+	// Kill all existing tweens on cards to prevent memory leaks and stacking
+	function killCardTweens() {
+		const cards = getCards();
+		cards.forEach((card) => gsap.killTweensOf(card));
+	}
+
+	// Position cards - show only active card with bouncy entrance
 	function positionCards(animate = true) {
 		const cards = getCards();
-		const total = cards.length;
+		const shouldAnimate = animate && !prefersReducedMotion.current;
+		const duration = shouldAnimate ? ANIMATION_DURATION : 0;
+
+		// Kill existing tweens before starting new ones
+		if (animate) {
+			killCardTweens();
+		}
 
 		cards.forEach((card, i) => {
-			// Calculate position relative to active card
-			let offset = i - activeIndex;
+			const isActive = i === activeIndex;
 
-			// Wrap around for infinite effect
-			if (offset < -1) offset += total;
-			if (offset > total - 2) offset -= total;
+			if (isActive) {
+				// Active card: bouncy entrance with scale
+				const props: gsap.TweenVars = {
+					opacity: 1,
+					scale: 1,
+					y: 0,
+					zIndex: 10,
+					pointerEvents: 'auto',
+					duration: shouldAnimate ? duration * 1.2 : 0,
+					ease: 'back.out(1.4)', // Bouncy easing
+					overwrite: true
+				};
 
-			const isActive = offset === 0;
-			const position = Math.abs(offset);
+				if (shouldAnimate) {
+					// Start slightly scaled down for bounce effect
+					gsap.fromTo(card, { scale: 0.95, y: 10, opacity: 0 }, props);
+				} else {
+					gsap.set(card, props);
+				}
+			} else {
+				// Hidden cards: fade out
+				const props: gsap.TweenVars = {
+					opacity: 0,
+					scale: 0.95,
+					zIndex: 0,
+					pointerEvents: 'none',
+					duration,
+					ease: 'power2.out',
+					overwrite: true
+				};
 
-			// Calculate transforms
-			const scale = isActive ? 1 : Math.max(0.85 - position * 0.05, 0.7);
-			const y = isActive ? 0 : -20 - position * 10;
-			const z = -position * 50;
-			const opacity = position > 2 ? 0 : isActive ? 1 : 0.6 - position * 0.15;
-			const blur = isActive ? 0 : position * 2;
-
-			const props = {
-				scale,
-				y,
-				z,
-				opacity,
-				filter: `blur(${blur}px)`,
-				zIndex: total - position,
-				pointerEvents: isActive ? 'auto' : 'none',
-				duration: animate ? ANIMATION_DURATION : 0,
-				ease: 'power2.out'
-			};
-
-			gsap.to(card, props);
+				if (shouldAnimate) {
+					gsap.to(card, props);
+				} else {
+					gsap.set(card, props);
+				}
+			}
 		});
 	}
 
 	// Navigate to next testimonial
 	function next() {
-		if (isAnimating) return;
+		if (isAnimating || !isVisible) return;
 		isAnimating = true;
 
 		activeIndex = (activeIndex + 1) % testimonials.length;
@@ -84,7 +108,7 @@
 
 	// Navigate to previous testimonial
 	function prev() {
-		if (isAnimating) return;
+		if (isAnimating || !isVisible) return;
 		isAnimating = true;
 
 		activeIndex = (activeIndex - 1 + testimonials.length) % testimonials.length;
@@ -97,7 +121,7 @@
 
 	// Go to specific index
 	function goTo(index: number) {
-		if (isAnimating || index === activeIndex) return;
+		if (isAnimating || index === activeIndex || !isVisible) return;
 		isAnimating = true;
 
 		activeIndex = index;
@@ -110,9 +134,9 @@
 
 	// Autoplay controls
 	function startAutoplay() {
-		if (autoplayTimer) return;
+		if (autoplayTimer || !isVisible) return;
 		autoplayTimer = setInterval(() => {
-			if (!isPaused && !isAnimating) {
+			if (!isPaused && !isAnimating && isVisible) {
 				next();
 			}
 		}, AUTOPLAY_INTERVAL);
@@ -133,7 +157,7 @@
 		isPaused = false;
 	}
 
-	// Touch/swipe handling
+	// Touch/swipe handling with passive event support
 	let touchStartX = 0;
 	let touchStartY = 0;
 
@@ -160,6 +184,7 @@
 
 	// Keyboard navigation
 	function handleKeydown(e: KeyboardEvent) {
+		if (!isVisible) return;
 		if (e.key === 'ArrowLeft') {
 			prev();
 		} else if (e.key === 'ArrowRight') {
@@ -167,7 +192,7 @@
 		}
 	}
 
-	// Intersection observer for autoplay
+	// Intersection observer for autoplay and visibility tracking
 	let sectionRef = $state<HTMLElement | null>(null);
 	let observer: IntersectionObserver | null = null;
 
@@ -179,16 +204,21 @@
 			positionCards(false);
 		});
 
-		// Set up intersection observer
+		// Set up intersection observer with optimized threshold
 		observer = new IntersectionObserver(
 			(entries) => {
-				if (entries[0].isIntersecting) {
+				const entry = entries[0];
+				isVisible = entry.isIntersecting;
+
+				if (entry.isIntersecting) {
 					startAutoplay();
 				} else {
 					stopAutoplay();
+					// Kill all tweens when section is not visible to free resources
+					killCardTweens();
 				}
 			},
-			{ threshold: 0.3 }
+			{ threshold: 0.2, rootMargin: '50px' }
 		);
 
 		if (sectionRef) {
@@ -202,6 +232,8 @@
 	onDestroy(() => {
 		if (!browser) return;
 		stopAutoplay();
+		// Clean up all GSAP tweens to prevent memory leaks
+		killCardTweens();
 		observer?.disconnect();
 		window.removeEventListener('keydown', handleKeydown);
 	});
@@ -226,11 +258,11 @@
 		aria-roledescription="carousel"
 		aria-label="Client testimonials"
 	>
-		<!-- Card Stack -->
+		<!-- Card Stack - Optimized: removed 3D transforms for better mobile performance -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			bind:this={cardsContainer}
 			class="cards-container relative h-96 w-full max-w-160 touch-pan-y sm:h-88 md:h-80"
-			style="perspective: 1000px;"
 			ontouchstart={handleTouchStart}
 			ontouchend={handleTouchEnd}
 			onmouseenter={pause}
@@ -241,7 +273,7 @@
 			{#each testimonials as testimonial, index (testimonial.name)}
 				<div
 					class="testimonial-card card-glass absolute top-0 left-0 flex h-full w-full flex-col p-6 sm:p-8"
-					style="transform-style: preserve-3d; will-change: transform, opacity;"
+					class:is-active={index === activeIndex}
 					role="tabpanel"
 					aria-roledescription="slide"
 					aria-label={`Testimonial from ${testimonial.name}`}
@@ -341,9 +373,39 @@
 </section>
 
 <style>
-	/* Only keeping the essential reduced motion styles */
+	/* Optimized card container - no expensive 3D context */
+	.cards-container {
+		/* Contain layout and paint to prevent repaints from affecting other elements */
+		contain: layout style;
+	}
+
+	/* Base card styles - GPU optimizations managed by GSAP's force3D */
+	.testimonial-card {
+		/* Hide cards by default until GSAP positions them */
+		opacity: 0;
+		/* Prevent text selection during swipe */
+		user-select: none;
+		/* Optimize for touch scrolling */
+		-webkit-overflow-scrolling: touch;
+		/* Backface visibility for potential 3D transforms */
+		backface-visibility: hidden;
+	}
+
+	/* Show first card immediately before JS runs */
+	.testimonial-card.is-active {
+		opacity: 1;
+		z-index: 10;
+	}
+
+	/* Reduced motion: disable all animations */
 	@media (prefers-reduced-motion: reduce) {
 		.testimonial-card {
+			transition: none !important;
+			animation: none !important;
+		}
+
+		.cards-container {
+			/* Instant transitions for accessibility */
 			transition: none !important;
 		}
 	}
