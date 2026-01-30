@@ -261,12 +261,14 @@
 	}
 
 	.p1 {
+		transform: translateX(var(--orbit1));
 		animation:
 			fadeIn 0.3s ease-out 0.4s forwards,
-			orbit1 10s linear 0.5s infinite;
+			orbit1 10s linear 0.4s infinite;
 	}
 
 	.p2 {
+		transform: translateX(calc(var(--orbit1) * -1));
 		animation:
 			fadeIn 0.3s ease-out 0.5s forwards,
 			orbit1 10s linear 0.5s infinite;
@@ -602,7 +604,9 @@
 
 	/* Particles fade */
 	:global(.loader.exit) .particle {
-		animation: reverseFade 0.4s ease-in forwards;
+		animation: none;
+		opacity: 0;
+		transition: opacity 0.2s ease-in;
 	}
 
 	/* Logo glow fades */
