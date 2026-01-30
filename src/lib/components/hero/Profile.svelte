@@ -45,19 +45,38 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 2rem;
+		padding: 1rem;
 		user-select: none;
+	}
+
+	@media (min-width: 640px) {
+		.profile-wrapper {
+			padding: 1.5rem;
+		}
+	}
+
+	@media (min-width: 768px) {
+		.profile-wrapper {
+			padding: 2rem;
+		}
 	}
 
 	/* Outer glow effect */
 	.glow-ring {
 		position: absolute;
-		width: 280px;
-		height: 280px;
+		width: 200px;
+		height: 200px;
 		border-radius: 50%;
 		background: radial-gradient(circle, oklch(var(--accent-500) / 0.15) 0%, transparent 70%);
 		filter: blur(20px);
 		animation: pulseGlow 4s ease-in-out infinite;
+	}
+
+	@media (min-width: 640px) {
+		.glow-ring {
+			width: 260px;
+			height: 260px;
+		}
 	}
 
 	@media (min-width: 768px) {
@@ -77,11 +96,18 @@
 	/* Main container */
 	.profile-container {
 		position: relative;
-		width: 200px;
-		height: 200px;
+		width: 160px;
+		height: 160px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	@media (min-width: 640px) {
+		.profile-container {
+			width: 190px;
+			height: 190px;
+		}
 	}
 
 	@media (min-width: 768px) {

@@ -106,7 +106,7 @@
 <section
 	id="hero"
 	bind:this={heroRef}
-	class="relative z-0 flex min-h-screen flex-col items-center justify-center overflow-hidden py-8"
+	class="relative z-0 flex min-h-screen flex-col items-center justify-center overflow-hidden py-8 pb-24 md:pb-8"
 >
 	<!-- Fade out bottom -->
 	<div
@@ -242,10 +242,17 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 2rem;
+		gap: 1rem;
 		max-width: 100%;
-		padding: 0 1.5rem;
+		padding: 0 1rem;
 		animation: fadeInUp 0.8s ease-out;
+	}
+
+	@media (min-width: 640px) {
+		.hero-content {
+			gap: 1.5rem;
+			padding: 0 1.5rem;
+		}
 	}
 
 	@media (min-width: 768px) {
@@ -273,9 +280,15 @@
 	.info-section {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 0.625rem;
 		text-align: center;
 		animation: fadeInRight 0.8s ease-out 0.3s both;
+	}
+
+	@media (min-width: 640px) {
+		.info-section {
+			gap: 0.875rem;
+		}
 	}
 
 	@media (min-width: 768px) {
@@ -313,10 +326,16 @@
 
 	/* Name styling */
 	:global(.hero-name) {
-		font-size: 2.25rem;
+		font-size: 1.875rem;
 		font-weight: 700;
 		line-height: 1.1;
 		letter-spacing: -0.02em;
+	}
+
+	@media (min-width: 400px) {
+		:global(.hero-name) {
+			font-size: 2.25rem;
+		}
 	}
 
 	@media (min-width: 640px) {
@@ -384,11 +403,18 @@
 
 	/* Description */
 	.hero-description {
-		font-size: 0.95rem;
-		line-height: 1.7;
+		font-size: 0.875rem;
+		line-height: 1.6;
 		color: oklch(var(--foreground) / 0.8);
 		max-width: 500px;
 		margin: 0 auto;
+	}
+
+	@media (min-width: 640px) {
+		.hero-description {
+			font-size: 0.95rem;
+			line-height: 1.7;
+		}
 	}
 
 	@media (min-width: 768px) {
@@ -409,11 +435,19 @@
 	.cta-wrapper {
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
-		padding-top: 0.5rem;
+		gap: 0.5rem;
+		padding-top: 0.25rem;
 		width: 100%;
-		max-width: 280px;
+		max-width: 260px;
 		margin: 0 auto;
+	}
+
+	@media (min-width: 640px) {
+		.cta-wrapper {
+			gap: 0.75rem;
+			padding-top: 0.5rem;
+			max-width: 280px;
+		}
 	}
 
 	@media (min-width: 768px) {
@@ -438,15 +472,22 @@
 		justify-content: center;
 		gap: 0.5rem;
 		min-width: 140px;
-		padding: 0.875rem 1.5rem;
+		padding: 0.75rem 1.25rem;
 		background: transparent;
 		border: 2px solid oklch(var(--accent-500) / 0.5);
 		border-radius: 8px;
 		color: oklch(var(--accent-text));
-		font-size: 0.95rem;
+		font-size: 0.875rem;
 		font-weight: 700;
 		text-decoration: none;
 		transition: all 0.3s ease;
+	}
+
+	@media (min-width: 640px) {
+		.contact-btn {
+			padding: 0.875rem 1.5rem;
+			font-size: 0.95rem;
+		}
 	}
 
 	.contact-btn:hover {
