@@ -8,6 +8,7 @@
 	 * - $effect for autoplay with proper cleanup
 	 * - Portal pattern for lightbox (renders to document.body)
 	 * - GSAP-powered animations for cinematic lightbox experience
+	 * - Lazy initialization via IntersectionObserver for mobile performance
 	 *
 	 * @component ImageSlider
 	 */
@@ -40,6 +41,39 @@
 	}: Props = $props();
 
 	// ─────────────────────────────────────────────────────────────
+	// Lazy Initialization Action (IntersectionObserver)
+	// ─────────────────────────────────────────────────────────────
+
+	/**
+	 * Action to detect when component enters viewport
+	 * Triggers carousel initialization only when visible
+	 */
+	const lazyInit: Action<HTMLElement> = (node) => {
+		if (!browser) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) {
+					isInView = true;
+					observer.disconnect();
+				}
+			},
+			{
+				rootMargin: '100px', // Pre-initialize 100px before entering viewport
+				threshold: 0
+			}
+		);
+
+		observer.observe(node);
+
+		return {
+			destroy() {
+				observer.disconnect();
+			}
+		};
+	};
+
+	// ─────────────────────────────────────────────────────────────
 	// Portal Action (teleports element to document.body)
 	// ─────────────────────────────────────────────────────────────
 
@@ -60,6 +94,9 @@
 	// ─────────────────────────────────────────────────────────────
 	// Local State
 	// ─────────────────────────────────────────────────────────────
+
+	/** Whether component is in viewport (for lazy initialization) */
+	let isInView = $state(false);
 
 	let selectedIndex = $state(0);
 	let scrollSnaps = $state<number[]>([]);
@@ -459,92 +496,108 @@
 		style:--current-index={selectedIndex}
 		aria-label="{title} image gallery"
 		role="region"
+		use:lazyInit
 	>
-		<div
-			class="embla__viewport h-full w-full overflow-hidden"
-			use:emblaCarouselSvelte={{ options, plugins: [] }}
-			onemblaInit={onEmblaInit}
-		>
-			<div class="embla__container flex h-full will-change-transform">
-				{#each images as image, index (`${title}-${index}`)}
-					<div
-						class="embla__slide relative h-full shrink-0 grow-0 basis-full overflow-hidden transition-opacity duration-300"
-					>
-						<img
-							src={image}
-							alt="{title} - image {index + 1}"
-							class="slider-image block h-full w-full object-cover transition-all duration-500 will-change-transform hover:scale-105"
-							style:object-fit={imageLayout}
-							loading={index === 0 ? 'eager' : 'lazy'}
-							decoding="async"
-						/>
-					</div>
-				{/each}
-			</div>
-		</div>
-
-		<!-- Controls -->
-		<div
-			class="slider-controls pointer-events-none absolute inset-0 z-1 opacity-0 transition-opacity duration-500"
-			class:visible={showControls}
-		>
-			{#if hasMultipleImages}
-				<button
-					class="slider-control slider-button pointer-events-auto absolute top-1/2 left-4 z-5 h-11 w-11 -translate-y-1/2 transition-transform"
-					onclick={(e) => {
-						e.stopPropagation();
-						scrollPrev();
-					}}
-					disabled={!emblaApi?.canScrollPrev() && !options.loop}
-					aria-label="Previous slide"
-				>
-					<Icon icon="mdi:chevron-left" class="h-6 w-6" />
-				</button>
-
-				<button
-					class="slider-control slider-button pointer-events-auto absolute top-1/2 right-4 z-5 h-11 w-11 -translate-y-1/2 transition-transform"
-					onclick={(e) => {
-						e.stopPropagation();
-						scrollNext();
-					}}
-					disabled={!emblaApi?.canScrollNext() && !options.loop}
-					aria-label="Next slide"
-				>
-					<Icon icon="mdi:chevron-right" class="h-6 w-6" />
-				</button>
-
-				<div
-					class="slider-pagination pointer-events-auto absolute bottom-6 left-1/2 z-5 flex -translate-x-1/2 gap-2.5 rounded-full border border-white/15 bg-black/45 px-4 py-2 shadow-md backdrop-blur-sm"
-				>
-					<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-					{#each scrollSnaps as _, index (index)}
-						<button
-							class="slider-dot h-2.5 w-2.5 cursor-pointer rounded-full border-0 bg-white/50 p-0 transition-all duration-300 hover:scale-125 hover:bg-white/90"
-							class:active={index === selectedIndex}
-							onclick={() => scrollTo(index)}
-							aria-label="Go to slide {index + 1}"
-						></button>
+		{#if isInView}
+			<!-- Full carousel - initialized only when in viewport -->
+			<div
+				class="embla__viewport h-full w-full overflow-hidden"
+				use:emblaCarouselSvelte={{ options, plugins: [] }}
+				onemblaInit={onEmblaInit}
+			>
+				<div class="embla__container flex h-full will-change-transform">
+					{#each images as image, index (`${title}-${index}`)}
+						<div
+							class="embla__slide relative h-full shrink-0 grow-0 basis-full overflow-hidden transition-opacity duration-300"
+						>
+							<img
+								src={image}
+								alt="{title} - image {index + 1}"
+								class="slider-image block h-full w-full object-cover transition-all duration-500 will-change-transform hover:scale-105"
+								style:object-fit={imageLayout}
+								loading={index === 0 ? 'eager' : 'lazy'}
+								decoding="async"
+							/>
+						</div>
 					{/each}
 				</div>
+			</div>
 
-				<div
-					class="slider-counter pointer-events-auto absolute right-6 bottom-6 z-5 rounded-full border border-white/15 bg-black/45 px-3 py-1.5 text-sm font-semibold tracking-wide text-white shadow-md backdrop-blur-sm"
-				>
-					{selectedIndex + 1}/{images.length}
-				</div>
-			{/if}
-
-			<button
-				class="slider-fullscreen pointer-events-auto absolute top-6 right-6 z-5 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-black/45 text-white shadow-md backdrop-blur-sm transition-all duration-300 hover:scale-118 hover:bg-black/85"
-				onclick={(e) => {
-					e.stopPropagation();
-					toggleFullscreen();
-				}}
-				aria-label="View fullscreen"
+			<!-- Controls -->
+			<div
+				class="slider-controls pointer-events-none absolute inset-0 z-1 opacity-0 transition-opacity duration-500"
+				class:visible={showControls}
 			>
-				<Icon icon="mdi:fullscreen" class="h-5 w-5" />
-			</button>
-		</div>
+				{#if hasMultipleImages}
+					<button
+						class="slider-control slider-button pointer-events-auto absolute top-1/2 left-4 z-5 h-11 w-11 -translate-y-1/2 transition-transform"
+						onclick={(e) => {
+							e.stopPropagation();
+							scrollPrev();
+						}}
+						disabled={!emblaApi?.canScrollPrev() && !options.loop}
+						aria-label="Previous slide"
+					>
+						<Icon icon="mdi:chevron-left" class="h-6 w-6" />
+					</button>
+
+					<button
+						class="slider-control slider-button pointer-events-auto absolute top-1/2 right-4 z-5 h-11 w-11 -translate-y-1/2 transition-transform"
+						onclick={(e) => {
+							e.stopPropagation();
+							scrollNext();
+						}}
+						disabled={!emblaApi?.canScrollNext() && !options.loop}
+						aria-label="Next slide"
+					>
+						<Icon icon="mdi:chevron-right" class="h-6 w-6" />
+					</button>
+
+					<div
+						class="slider-pagination pointer-events-auto absolute bottom-6 left-1/2 z-5 flex -translate-x-1/2 gap-2.5 rounded-full border border-white/15 bg-black/45 px-4 py-2 shadow-md backdrop-blur-sm"
+					>
+						<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+						{#each scrollSnaps as _, index (index)}
+							<button
+								class="slider-dot h-2.5 w-2.5 cursor-pointer rounded-full border-0 bg-white/50 p-0 transition-all duration-300 hover:scale-125 hover:bg-white/90"
+								class:active={index === selectedIndex}
+								onclick={() => scrollTo(index)}
+								aria-label="Go to slide {index + 1}"
+							></button>
+						{/each}
+					</div>
+
+					<div
+						class="slider-counter pointer-events-auto absolute right-6 bottom-6 z-5 rounded-full border border-white/15 bg-black/45 px-3 py-1.5 text-sm font-semibold tracking-wide text-white shadow-md backdrop-blur-sm"
+					>
+						{selectedIndex + 1}/{images.length}
+					</div>
+				{/if}
+
+				<button
+					class="slider-fullscreen pointer-events-auto absolute top-6 right-6 z-5 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-black/45 text-white shadow-md backdrop-blur-sm transition-all duration-300 hover:scale-118 hover:bg-black/85"
+					onclick={(e) => {
+						e.stopPropagation();
+						toggleFullscreen();
+					}}
+					aria-label="View fullscreen"
+				>
+					<Icon icon="mdi:fullscreen" class="h-5 w-5" />
+				</button>
+			</div>
+		{:else}
+			<!-- Placeholder - shown before carousel initializes (for performance) -->
+			<div class="h-full w-full">
+				<img
+					src={images[0]}
+					alt="{title} - cover image"
+					class="block h-full w-full object-cover"
+					style:object-fit={imageLayout}
+					loading="lazy"
+					decoding="async"
+				/>
+			</div>
+		{/if}
 	</div>
 
 	<!-- Lightbox (portaled to document.body) with GSAP animations -->
@@ -635,6 +688,11 @@
 
 <style lang="postcss">
 	@reference "$routes/layout.css";
+
+	/* Performance optimization for off-screen sliders */
+	.slider {
+		contain: layout style paint;
+	}
 
 	/* Active dot state */
 	.slider-dot.active {
