@@ -2,152 +2,351 @@
 	/**
 	 * Terminal Component - Interactive contact terminal
 	 *
-	 * A+ Grade Implementation featuring:
+	 * Features:
 	 * - Svelte 5 runes ($state, $effect)
-	 * - Complete business logic separation (terminalCommands.ts)
-	 * - Command history navigation
+	 * - Command history navigation (↑/↓)
 	 * - Tab autocomplete
 	 * - Ctrl+C / Ctrl+L shortcuts
-	 *
-	 * @component Terminal
+	 * - Blinking cursor
+	 * - ASCII art welcome banner
+	 * - Mobile-friendly design
+	 * - Social links with hover effects
 	 */
 
-	import {
-		createTerminalCommands,
-		findMatchingCommand,
-		type Command,
-		type CommandEntry
-	} from '$data';
+	import { browser } from '$app/environment';
+	import { description, name, socials, title } from '$data';
+	import Icon from '@iconify/svelte';
 
 	// ─────────────────────────────────────────────────────────────
-	// Local State
+	// Types
 	// ─────────────────────────────────────────────────────────────
 
-	let commandHistory = $state<CommandEntry[]>([]);
-	let currentInput = $state('');
-	let isLoading = $state(false);
-	let commandBuffer = $state<string[]>([]);
-	let bufferPosition = $state(-1);
-	let hasInitialized = $state(false);
+	interface CommandEntry {
+		id: number;
+		type: 'command' | 'output' | 'error' | 'success' | 'ascii' | 'links';
+		content: string;
+	}
 
-	let terminalRef = $state<HTMLDivElement | null>(null);
-	let inputRef = $state<HTMLInputElement | null>(null);
-	let promptRef = $state<HTMLDivElement | null>(null);
+	interface Command {
+		name: string;
+		description: string;
+		handler: (args: string[]) => Promise<CommandEntry[]> | CommandEntry[];
+	}
+
+	interface SocialLink {
+		platform: string;
+		url: string;
+		icon: string;
+	}
 
 	// ─────────────────────────────────────────────────────────────
 	// Constants
 	// ─────────────────────────────────────────────────────────────
 
-	/** Available terminal commands */
-	const COMMANDS: Command[] = createTerminalCommands();
+	const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+	const WELCOME_ASCII = `
+ ██████╗ ██████╗ ███╗   ██╗████████╗ █████╗  ██████╗████████╗
+██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔══██╗██╔════╝╚══██╔══╝
+██║     ██║   ██║██╔██╗ ██║   ██║   ███████║██║        ██║   
+██║     ██║   ██║██║╚██╗██║   ██║   ██╔══██║██║        ██║   
+╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║╚██████╗   ██║   
+ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝   ╚═╝`;
+
+	const SOCIAL_LINKS: SocialLink[] = [
+		{ platform: 'GitHub', url: socials.github, icon: 'mdi:github' },
+		{ platform: 'LinkedIn', url: socials.linkedin, icon: 'mdi:linkedin' },
+		{ platform: 'Email', url: socials.gmail, icon: 'mdi:email' },
+		{ platform: 'Telegram', url: socials.telegram, icon: 'mdi:telegram' },
+		{ platform: 'Discord', url: socials.discord, icon: 'mdi:discord' }
+	];
+
+	/** Get email address from mailto URL */
+	const EMAIL_ADDRESS = socials.gmail.replace('mailto:', '');
 
 	// ─────────────────────────────────────────────────────────────
-	// Command Context Factory
+	// Local State
 	// ─────────────────────────────────────────────────────────────
 
-	/**
-	 * Creates the context object passed to command handlers
-	 */
-	function getCommandContext() {
-		return {
-			setLoading: (loading: boolean) => {
-				isLoading = loading;
-			},
-			clearHistory: () => {
-				commandHistory = [];
-			},
-			commands: COMMANDS
-		};
+	let history = $state<CommandEntry[]>([]);
+	let input = $state('');
+	let isProcessing = $state(false);
+	let commandBuffer = $state<string[]>([]);
+	let bufferIndex = $state(-1);
+	let entryIdCounter = $state(0);
+	let showCursor = $state(true);
+	let hasInitialized = $state(false);
+
+	let terminalRef = $state<HTMLDivElement | null>(null);
+	let inputRef = $state<HTMLInputElement | null>(null);
+
+	// ─────────────────────────────────────────────────────────────
+	// Helpers
+	// ─────────────────────────────────────────────────────────────
+
+	function nextId(): number {
+		return entryIdCounter++;
 	}
 
-	// ─────────────────────────────────────────────────────────────
-	// Terminal Functions
-	// ─────────────────────────────────────────────────────────────
-
-	/**
-	 * Focus the input element
-	 */
 	function focusInput(): void {
 		inputRef?.focus();
 	}
 
-	/**
-	 * Adjust input padding based on prompt width
-	 */
-	function adjustInputPosition(): void {
-		if (promptRef && inputRef) {
-			const promptWidth = promptRef.offsetWidth;
-			inputRef.style.paddingLeft = `${promptWidth + 8}px`;
+	function scrollToBottom(): void {
+		if (terminalRef) {
+			requestAnimationFrame(() => {
+				if (terminalRef) {
+					terminalRef.scrollTop = terminalRef.scrollHeight;
+				}
+			});
 		}
 	}
 
-	/**
-	 * Add command to buffer for history navigation
-	 */
-	function addToCommandBuffer(command: string): void {
-		if (command.trim() && (commandBuffer.length === 0 || commandBuffer[0] !== command)) {
-			commandBuffer = [command, ...commandBuffer.slice(0, 19)];
+	function addToBuffer(cmd: string): void {
+		if (cmd.trim() && commandBuffer[0] !== cmd) {
+			commandBuffer = [cmd, ...commandBuffer.slice(0, 49)];
 		}
-		bufferPosition = -1;
+		bufferIndex = -1;
 	}
 
-	/**
-	 * Execute a terminal command
-	 */
-	async function executeCommand(commandInput: string, addToBuffer = true): Promise<void> {
-		if (addToBuffer) {
-			addToCommandBuffer(commandInput);
+	function handleLinkClick(e: MouseEvent, url: string): void {
+		e.stopPropagation();
+		window.open(url, '_blank', 'noopener,noreferrer');
+	}
+
+	// ─────────────────────────────────────────────────────────────
+	// Commands
+	// ─────────────────────────────────────────────────────────────
+
+	const commands: Command[] = [
+		{
+			name: 'help',
+			description: 'Show available commands',
+			handler: () => [
+				{
+					id: nextId(),
+					type: 'output',
+					content: `Available commands:
+
+  help      Show this help message
+  send      Send me a message
+            Usage: send <email> <message>
+  social    Show my social links
+  whoami    Learn more about me
+  clear     Clear the terminal
+
+Keyboard shortcuts:
+  ↑/↓       Navigate command history
+  Tab       Autocomplete commands
+  Ctrl+L    Clear terminal
+  Ctrl+C    Cancel operation`
+				}
+			]
+		},
+		{
+			name: 'whoami',
+			description: 'About me',
+			handler: () => [
+				{
+					id: nextId(),
+					type: 'output',
+					content: `┌────────────────────────────────────────────────────────┐
+│  ${name.toUpperCase().padEnd(52)}│
+│  ${title.padEnd(52)}│
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│  ${description.slice(0, 52).padEnd(52)}│
+│  ${description.slice(52, 104).padEnd(52)}│
+│  ${description.slice(104, 156).padEnd(52)}│
+│                                                        │
+│  🛠️  Stack: Next.js, Astro, SvelteKit, Django          │
+│  🎨 Design: Clean UI, smooth animations, great UX      │
+│  📍 Location: Open to remote opportunities             │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+Type 'send <your-email> <message>' to get in touch!`
+				}
+			]
+		},
+		{
+			name: 'social',
+			description: 'Show social links',
+			handler: () => [
+				{
+					id: nextId(),
+					type: 'links',
+					content: JSON.stringify(SOCIAL_LINKS)
+				}
+			]
+		},
+		{
+			name: 'send',
+			description: 'Send a message',
+			handler: async (args) => {
+				if (args.length < 2) {
+					return [
+						{
+							id: nextId(),
+							type: 'error',
+							content: `Usage: send <your-email> <message>
+
+Example:
+  send john@example.com Hi! I'd love to discuss a project.`
+						}
+					];
+				}
+
+				const email = args[0];
+				const message = args.slice(1).join(' ');
+
+				if (!EMAIL_REGEX.test(email)) {
+					return [
+						{
+							id: nextId(),
+							type: 'error',
+							content: `Invalid email format: ${email}
+
+Please provide a valid email address.`
+						}
+					];
+				}
+
+				if (message.length < 10) {
+					return [
+						{
+							id: nextId(),
+							type: 'error',
+							content: 'Message too short. Please write at least 10 characters.'
+						}
+					];
+				}
+
+				isProcessing = true;
+
+				try {
+					const response = await fetch('/api/send-email', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							subject: `Portfolio Contact: ${email}`,
+							html: `
+								<h2>New Contact Form Message</h2>
+								<p><strong>From:</strong> ${email}</p>
+								<p><strong>Message:</strong></p>
+								<blockquote style="border-left: 3px solid #ccc; padding-left: 1rem; margin: 1rem 0;">
+									${message}
+								</blockquote>
+							`,
+							text: `From: ${email}\n\nMessage:\n${message}`
+						})
+					});
+
+					const data = await response.json();
+
+					if (!response.ok) {
+						throw new Error(data.message || 'Failed to send message');
+					}
+
+					return [
+						{
+							id: nextId(),
+							type: 'success',
+							content: `✓ Message sent successfully!
+
+Thank you for reaching out. I'll get back to you at ${email} as soon as possible.`
+						}
+					];
+				} catch (error) {
+					return [
+						{
+							id: nextId(),
+							type: 'error',
+							content: `Failed to send message: ${error instanceof Error ? error.message : 'Unknown error'}
+
+Please try again or email me directly at ${EMAIL_ADDRESS}`
+						}
+					];
+				} finally {
+					isProcessing = false;
+				}
+			}
+		},
+		{
+			name: 'clear',
+			description: 'Clear terminal',
+			handler: () => {
+				history = [];
+				return [];
+			}
 		}
+	];
 
-		const newEntry: CommandEntry = {
-			type: 'command',
-			content: commandInput
-		};
+	// ─────────────────────────────────────────────────────────────
+	// Command Execution
+	// ─────────────────────────────────────────────────────────────
 
-		commandHistory = [...commandHistory, newEntry];
+	async function executeCommand(cmdInput: string): Promise<void> {
+		const trimmed = cmdInput.trim();
+		if (!trimmed) return;
 
-		const parts = commandInput.trim().split(' ');
-		const cmd = parts[0].toLowerCase();
-		const args = parts.slice(1);
+		addToBuffer(trimmed);
 
-		const command = COMMANDS.find((c) => c.name === cmd);
+		// Add command to history
+		history = [
+			...history,
+			{
+				id: nextId(),
+				type: 'command',
+				content: trimmed
+			}
+		];
+
+		const [cmdName, ...args] = trimmed.split(/\s+/);
+		const command = commands.find((c) => c.name === cmdName.toLowerCase());
+
 		if (command) {
-			const result = await command.handler(args, getCommandContext());
-			if (result) {
-				commandHistory = [...commandHistory, result];
+			const results = await command.handler(args);
+			if (results.length > 0) {
+				history = [...history, ...results];
 			}
 		} else {
-			commandHistory = [
-				...commandHistory,
+			history = [
+				...history,
 				{
+					id: nextId(),
 					type: 'error',
-					content: `Command not found: ${cmd}\n            
+					content: `Command not found: ${cmdName}
+
 Type 'help' to see available commands.`
 				}
 			];
 		}
+
+		scrollToBottom();
 	}
 
-	/**
-	 * Handle keyboard events for terminal interaction
-	 */
+	// ─────────────────────────────────────────────────────────────
+	// Event Handlers
+	// ─────────────────────────────────────────────────────────────
+
 	function handleKeyDown(e: KeyboardEvent): void {
 		// Prevent terminal scrolling on spacebar
 		if (e.key === ' ' && e.target === inputRef) {
 			e.stopPropagation();
 		}
 
-		if (e.key === 'Enter' && currentInput.trim()) {
+		if (e.key === 'Enter' && input.trim() && !isProcessing) {
 			e.preventDefault();
-			executeCommand(currentInput.trim(), true);
-			currentInput = '';
-		} else if (e.key === 'ArrowUp' && !e.ctrlKey) {
+			const cmd = input;
+			input = '';
+			executeCommand(cmd);
+		} else if (e.key === 'ArrowUp') {
 			e.preventDefault();
-			if (commandBuffer.length > 0) {
-				const newPosition = Math.min(bufferPosition + 1, commandBuffer.length - 1);
-				bufferPosition = newPosition;
-				currentInput = commandBuffer[newPosition];
-
+			if (commandBuffer.length > 0 && bufferIndex < commandBuffer.length - 1) {
+				bufferIndex++;
+				input = commandBuffer[bufferIndex];
+				// Move cursor to end
 				setTimeout(() => {
 					if (inputRef) {
 						inputRef.selectionStart = inputRef.value.length;
@@ -155,44 +354,32 @@ Type 'help' to see available commands.`
 					}
 				}, 0);
 			}
-		} else if (e.key === 'ArrowDown' && !e.ctrlKey) {
+		} else if (e.key === 'ArrowDown') {
 			e.preventDefault();
-			if (bufferPosition > 0) {
-				const newPosition = bufferPosition - 1;
-				bufferPosition = newPosition;
-				currentInput = commandBuffer[newPosition];
-			} else if (bufferPosition === 0) {
-				bufferPosition = -1;
-				currentInput = '';
+			if (bufferIndex > 0) {
+				bufferIndex--;
+				input = commandBuffer[bufferIndex];
+			} else if (bufferIndex === 0) {
+				bufferIndex = -1;
+				input = '';
 			}
 		} else if (e.key === 'Tab') {
 			e.preventDefault();
-			const input = currentInput.toLowerCase();
-			if (!input) return;
-
-			const matchingCommand = findMatchingCommand(input, COMMANDS);
-			if (matchingCommand) {
-				currentInput = matchingCommand.name + ' ';
-			} else if (input === 'man ') {
-				currentInput = 'man send';
+			const match = commands.find((c) => c.name.startsWith(input.toLowerCase()));
+			if (match) {
+				input = match.name + ' ';
 			}
 		} else if (e.key === 'c' && e.ctrlKey) {
 			e.preventDefault();
-			if (isLoading) {
-				isLoading = false;
-				commandHistory = [
-					...commandHistory,
-					{
-						type: 'error',
-						content: 'Operation canceled by user.'
-					}
-				];
+			if (isProcessing) {
+				isProcessing = false;
+				history = [...history, { id: nextId(), type: 'error', content: '^C' }];
 			} else {
-				currentInput = '';
+				input = '';
 			}
 		} else if (e.key === 'l' && e.ctrlKey) {
 			e.preventDefault();
-			commandHistory = [];
+			history = [];
 		}
 	}
 
@@ -200,221 +387,526 @@ Type 'help' to see available commands.`
 	// Effects
 	// ─────────────────────────────────────────────────────────────
 
-	// Initialize terminal with default command (runs once)
+	// Welcome message on mount
 	$effect(() => {
-		if (!hasInitialized && terminalRef) {
+		if (browser && !hasInitialized) {
 			hasInitialized = true;
-			// Run default 'man send' command on mount
-			executeCommand('man send', false);
+			history = [
+				{
+					id: nextId(),
+					type: 'ascii',
+					content: WELCOME_ASCII
+				},
+				{
+					id: nextId(),
+					type: 'output',
+					content: `Welcome! I'm ${name.split(' ')[0]}'s interactive contact terminal.
+
+Type 'help' for available commands, or try:
+  • send <email> <message>  — Send me a message
+  • social                  — View my social links
+  • whoami                  — Learn more about me`
+				}
+			];
 		}
 	});
 
-	// Auto-scroll to bottom when history changes
+	// Blinking cursor effect
 	$effect(() => {
-		// Track dependency
-		void commandHistory.length;
-		if (terminalRef) {
-			terminalRef.scrollTop = terminalRef.scrollHeight;
-		}
+		if (!browser) return;
+		const interval = setInterval(() => {
+			showCursor = !showCursor;
+		}, 530);
+		return () => clearInterval(interval);
 	});
 
-	// Adjust input position when input or loading changes
+	// Auto-scroll on history change
 	$effect(() => {
-		// Track dependencies
-		void currentInput;
-		void isLoading;
-		adjustInputPosition();
+		void history.length;
+		scrollToBottom();
 	});
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<div
-	class="terminal-container mx-auto my-8 max-w-170 overflow-hidden rounded-lg border border-terminal-border bg-linear-to-b from-terminal-bg to-terminal-bg-dark font-mono text-xs text-terminal-text shadow-terminal"
-	onclick={focusInput}
-	onkeydown={(e) => e.key === 'Enter' && focusInput()}
-	aria-label="Interactive terminal"
-	role="application"
-	tabindex="0"
->
-	<!-- Terminal Header -->
-	<div
-		class="flex items-center justify-between border-b border-terminal-header-border bg-linear-to-r from-terminal-header to-terminal-header-dark px-4 py-2.5"
-	>
-		<div class="flex items-center gap-2">
-			<div
-				class="size-3 rounded-full border border-[#ec4c48] bg-[#ff5f57] shadow-[inset_0_0_1px_rgba(255,255,255,0.2)]"
-			></div>
-			<div
-				class="size-3 rounded-full border border-[#e1aa25] bg-[#febc2e] shadow-[inset_0_0_1px_rgba(255,255,255,0.2)]"
-			></div>
-			<div
-				class="size-3 rounded-full border border-[#1db334] bg-[#28c840] shadow-[inset_0_0_1px_rgba(255,255,255,0.2)]"
-			></div>
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="terminal" onclick={focusInput}>
+	<!-- Window Header -->
+	<header class="terminal-header">
+		<div class="window-controls">
+			<span class="control close"></span>
+			<span class="control minimize"></span>
+			<span class="control maximize"></span>
 		</div>
-		<div class="flex-1 text-center text-xs font-medium text-terminal-title drop-shadow-sm">
-			user@mac: ~/contact
+		<div class="window-title">
+			<Icon icon="mdi:console" width={14} height={14} />
+			<span>ehsan@portfolio: ~/contact</span>
 		</div>
-		<div class="text-xs text-terminal-menu">⌘</div>
-	</div>
+		<div class="window-actions">
+			<Icon icon="mdi:plus" width={16} height={16} />
+		</div>
+	</header>
 
 	<!-- Terminal Content -->
-	<div bind:this={terminalRef} class="terminal-content" aria-live="polite">
-		{#each commandHistory as entry, index (index)}
-			<div>
-				{#if entry.type === 'command'}
-					<div class="mb-2 flex flex-wrap items-center gap-1">
-						<span class="flex">
-							<span class="text-terminal-prompt-user">user</span>
-							<span class="text-terminal-prompt-sep">@</span>
-							<span class="text-terminal-prompt-host">mac</span>
-							<span class="text-terminal-prompt-sep">:</span>
-						</span>
-						<span class="flex">
-							<span class="text-terminal-prompt-path">~/contact</span>
-							<span class="text-terminal-prompt-sep">$</span>
-						</span>
-						<span class="command-input ml-1">{entry.content}</span>
-					</div>
-				{:else if entry.type === 'error'}
-					<div
-						class="terminal-message border-l-2 border-terminal-error bg-terminal-error/8 text-terminal-error"
-					>
-						<div class="whitespace-pre-line">{entry.content}</div>
-					</div>
-				{:else if entry.type === 'success'}
-					<div
-						class="terminal-message border-l-2 border-terminal-success bg-terminal-success/8 text-terminal-success"
-					>
-						<div>{entry.content}</div>
-					</div>
-				{:else if entry.type === 'info'}
-					<div
-						class="terminal-message border-l-2 border-terminal-info bg-terminal-info/8 text-terminal-info"
-					>
-						<div class="whitespace-pre-line">{entry.content}</div>
-					</div>
-				{:else if entry.type === 'manual'}
-					<div
-						class="terminal-message border-l-2 border-terminal-warning bg-terminal-warning/8 text-terminal-warning"
-					>
-						<div class="whitespace-pre-line">{entry.content}</div>
-					</div>
-				{/if}
-			</div>
+	<div bind:this={terminalRef} class="terminal-content" role="log" aria-live="polite">
+		{#each history as entry (entry.id)}
+			{#if entry.type === 'command'}
+				<div class="prompt-line">
+					<span class="prompt">
+						<span class="prompt-user">ehsan</span><span class="prompt-at">@</span><span
+							class="prompt-host">portfolio</span
+						><span class="prompt-colon">:</span><span class="prompt-path">~/contact</span><span
+							class="prompt-symbol">$</span
+						>
+					</span>
+					<span class="prompt-command">{entry.content}</span>
+				</div>
+			{:else if entry.type === 'ascii'}
+				<pre class="ascii-art">{entry.content}</pre>
+			{:else if entry.type === 'output'}
+				<div class="output">{entry.content}</div>
+			{:else if entry.type === 'error'}
+				<div class="output error">{entry.content}</div>
+			{:else if entry.type === 'success'}
+				<div class="output success">{entry.content}</div>
+			{:else if entry.type === 'links'}
+				{@const links = JSON.parse(entry.content) as SocialLink[]}
+				<div class="social-links">
+					{#each links as link (link.platform)}
+						<button class="social-link" onclick={(e) => handleLinkClick(e, link.url)} type="button">
+							<Icon icon={link.icon} width={20} height={20} />
+							<span class="link-platform">{link.platform}</span>
+							<span class="link-url">{link.url.replace('mailto:', '').replace('https://', '')}</span
+							>
+							<Icon icon="mdi:open-in-new" width={14} height={14} class="link-icon" />
+						</button>
+					{/each}
+				</div>
+			{/if}
 		{/each}
 
-		<!-- Active prompt line -->
-		<div class="active-prompt-line {isLoading ? 'loading' : ''}">
-			{#if isLoading}
-				<div class="flex items-center text-terminal-loading">
-					<div
-						class="loading-spinner animate-spin mr-2 size-3.5 rounded-full border-2 border-transparent border-t-terminal-loading"
-					></div>
-					<span class="animate-pulse">Processing command...</span>
+		<!-- Active Input Line -->
+		<div class="prompt-line active">
+			{#if isProcessing}
+				<div class="processing">
+					<span class="spinner"></span>
+					<span>Sending message...</span>
 				</div>
 			{:else}
-				<div class="prompt-container" bind:this={promptRef}>
-					<span class="flex">
-						<span class="text-terminal-prompt-user">user</span>
-						<span class="text-terminal-prompt-sep">@</span>
-						<span class="text-terminal-prompt-host">mac</span>
-						<span class="text-terminal-prompt-sep">:</span>
-					</span>
-					<span class="flex">
-						<span class="text-terminal-prompt-path">~/contact</span>
-						<span class="text-terminal-prompt-sep">$</span>
-					</span>
+				<span class="prompt">
+					<span class="prompt-user">ehsan</span><span class="prompt-at">@</span><span
+						class="prompt-host">portfolio</span
+					><span class="prompt-colon">:</span><span class="prompt-path">~/contact</span><span
+						class="prompt-symbol">$</span
+					>
+				</span>
+				<div class="input-wrapper">
+					<input
+						bind:this={inputRef}
+						bind:value={input}
+						onkeydown={handleKeyDown}
+						type="text"
+						class="terminal-input"
+						spellcheck="false"
+						autocomplete="off"
+						autocapitalize="off"
+						aria-label="Terminal command input"
+					/>
+					<span class="cursor" class:visible={showCursor && !input}></span>
 				</div>
-				<input
-					bind:this={inputRef}
-					type="text"
-					class="terminal-input"
-					bind:value={currentInput}
-					onkeydown={handleKeyDown}
-					aria-label="Terminal input"
-				/>
 			{/if}
 		</div>
 	</div>
 
-	<!-- Terminal hint -->
-	<div
-		class="hidden border-t border-terminal-hint-border bg-terminal-hint-bg px-4 py-2 text-center text-[0.7rem] text-terminal-hint md:block"
-	>
-		Click to focus • Use ↑↓ to navigate history • Tab to autocomplete • Type 'help' for commands
-	</div>
+	<!-- Footer Hints -->
+	<footer class="terminal-footer">
+		<span class="hint"><kbd>↑↓</kbd> History</span>
+		<span class="hint"><kbd>Tab</kbd> Complete</span>
+		<span class="hint"><kbd>Ctrl+L</kbd> Clear</span>
+	</footer>
 </div>
 
 <style lang="postcss">
-	@reference "$routes/layout.css";
+	.terminal {
+		--t-bg: #0d1117;
+		--t-bg-light: #161b22;
+		--t-border: #30363d;
+		--t-text: #e6edf3;
+		--t-muted: #8b949e;
+		--t-accent: #58a6ff;
+		--t-green: #3fb950;
+		--t-red: #f85149;
+		--t-yellow: #d29922;
+		--t-purple: #a371f7;
+		--t-cyan: #39c5cf;
 
-	/* Terminal Content with custom scrollbar */
+		max-width: 52rem;
+		margin: 2rem auto;
+		border-radius: 12px;
+		overflow: hidden;
+		background: var(--t-bg);
+		border: 1px solid var(--t-border);
+		box-shadow:
+			0 16px 70px rgba(0, 0, 0, 0.5),
+			0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+		font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+	}
+
+	/* Header */
+	.terminal-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.875rem 1rem;
+		background: linear-gradient(180deg, #2d333b 0%, #22272e 100%);
+		border-bottom: 1px solid var(--t-border);
+	}
+
+	.window-controls {
+		display: flex;
+		gap: 8px;
+	}
+
+	.control {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		transition: filter 0.15s;
+	}
+
+	.control.close {
+		background: #ff5f57;
+		box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+	}
+	.control.minimize {
+		background: #febc2e;
+		box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+	}
+	.control.maximize {
+		background: #28c840;
+		box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+	}
+
+	.window-title {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.8125rem;
+		color: var(--t-muted);
+	}
+
+	.window-actions {
+		color: var(--t-muted);
+		opacity: 0.5;
+	}
+
+	/* Content */
 	.terminal-content {
-		@apply relative h-116.25 overflow-y-auto px-5 py-4 text-[0.85rem] leading-relaxed;
-		background-color: var(--terminal-bg);
-		color: var(--terminal-text);
+		height: 28rem;
+		padding: 1.25rem 1.5rem;
+		overflow-y: auto;
+		font-size: 0.875rem;
+		line-height: 1.7;
+		color: var(--t-text);
 		scrollbar-width: thin;
-		scrollbar-color: var(--terminal-scrollbar) var(--terminal-bg);
+		scrollbar-color: var(--t-border) transparent;
 	}
 
 	.terminal-content::-webkit-scrollbar {
 		width: 8px;
 	}
-
 	.terminal-content::-webkit-scrollbar-track {
-		background: var(--terminal-bg);
-		border-radius: 4px;
+		background: transparent;
 	}
-
 	.terminal-content::-webkit-scrollbar-thumb {
-		background-color: var(--terminal-scrollbar);
+		background: var(--t-border);
 		border-radius: 4px;
-		border: 2px solid var(--terminal-bg);
 	}
 
-	/* Active prompt line positioning */
-	.active-prompt-line {
-		@apply relative mt-2 flex min-h-6 w-full;
+	/* Prompt */
+	.prompt-line {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 0.625rem;
+		margin-bottom: 0.375rem;
 	}
 
-	.active-prompt-line.loading {
-		@apply mt-4;
+	.prompt-line.active {
+		margin-top: 1rem;
+		margin-bottom: 0;
 	}
 
-	.prompt-container {
-		@apply absolute top-0 left-0 z-10 flex items-center;
+	.prompt {
+		display: flex;
+		flex-shrink: 0;
+		font-weight: 500;
 	}
 
-	/* Terminal input styling */
+	.prompt-user {
+		color: var(--t-green);
+	}
+	.prompt-at,
+	.prompt-colon {
+		color: var(--t-muted);
+	}
+	.prompt-host {
+		color: var(--t-purple);
+	}
+	.prompt-path {
+		color: var(--t-cyan);
+	}
+	.prompt-symbol {
+		color: var(--t-accent);
+		margin-left: 0.375rem;
+	}
+
+	.prompt-command {
+		color: var(--t-text);
+	}
+
+	/* Input */
+	.input-wrapper {
+		flex: 1;
+		position: relative;
+		display: flex;
+		align-items: center;
+		min-width: 0;
+	}
+
 	.terminal-input {
-		@apply mb-2.5 w-full border-none bg-transparent pl-2 outline-none;
+		width: 100%;
+		background: transparent;
+		border: none;
+		outline: none;
+		color: var(--t-text);
 		font: inherit;
-		color: var(--terminal-text);
-		caret-color: var(--terminal-info);
+		caret-color: var(--t-accent);
+		padding: 0;
 	}
 
-	.terminal-input::selection {
-		background-color: rgba(150, 170, 220, 0.4);
+	.cursor {
+		position: absolute;
+		left: 0;
+		width: 8px;
+		height: 1.25em;
+		background: var(--t-accent);
+		opacity: 0;
+		pointer-events: none;
 	}
 
-	/* Message base styling */
-	.terminal-message {
-		@apply my-1 mb-4 rounded px-2 py-1 whitespace-pre-line;
+	.cursor.visible {
+		opacity: 0.8;
 	}
 
-	/* Command input typing animation */
-	.command-input {
-		@apply relative;
-		animation: typing 0.4s ease-out;
+	/* Output */
+	.output {
+		margin: 0.625rem 0 1.25rem;
+		padding: 1rem 1.25rem;
+		background: var(--t-bg-light);
+		border-radius: 8px;
+		border-left: 3px solid var(--t-accent);
+		white-space: pre-wrap;
+		word-break: break-word;
+		line-height: 1.6;
 	}
 
-	@keyframes typing {
-		from {
-			opacity: 0.5;
+	.output.error {
+		border-left-color: var(--t-red);
+		color: #ffa198;
+		background: rgba(248, 81, 73, 0.1);
+	}
+
+	.output.success {
+		border-left-color: var(--t-green);
+		color: #7ee787;
+		background: rgba(63, 185, 80, 0.1);
+	}
+
+	/* ASCII Art */
+	.ascii-art {
+		margin: 0 0 0.5rem;
+		font-size: 0.4375rem;
+		line-height: 1.15;
+		color: var(--t-accent);
+		overflow-x: auto;
+		font-weight: bold;
+	}
+
+	@media (min-width: 480px) {
+		.ascii-art {
+			font-size: 0.5625rem;
 		}
-		to {
+	}
+
+	@media (min-width: 640px) {
+		.ascii-art {
+			font-size: 0.6875rem;
+		}
+	}
+
+	/* Social Links */
+	.social-links {
+		display: flex;
+		flex-direction: column;
+		gap: 0.625rem;
+		margin: 0.75rem 0 1.25rem;
+	}
+
+	.social-link {
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		padding: 0.875rem 1.125rem;
+		background: var(--t-bg-light);
+		border: 1px solid var(--t-border);
+		border-radius: 10px;
+		color: var(--t-text);
+		font: inherit;
+		font-size: 0.875rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-align: left;
+	}
+
+	.social-link:hover {
+		background: rgba(88, 166, 255, 0.1);
+		border-color: var(--t-accent);
+		transform: translateX(6px);
+	}
+
+	.social-link:active {
+		transform: translateX(6px) scale(0.99);
+	}
+
+	.link-platform {
+		font-weight: 600;
+		min-width: 5rem;
+	}
+
+	.link-url {
+		flex: 1;
+		color: var(--t-muted);
+		font-size: 0.8125rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	:global(.link-icon) {
+		opacity: 0;
+		transition: opacity 0.2s;
+		flex-shrink: 0;
+	}
+
+	.social-link:hover :global(.link-icon) {
+		opacity: 0.7;
+	}
+
+	/* Processing */
+	.processing {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: var(--t-yellow);
+		animation: pulse 1.5s ease-in-out infinite;
+	}
+
+	@keyframes pulse {
+		0%,
+		100% {
 			opacity: 1;
+		}
+		50% {
+			opacity: 0.6;
+		}
+	}
+
+	.spinner {
+		width: 14px;
+		height: 14px;
+		border: 2px solid var(--t-border);
+		border-top-color: var(--t-yellow);
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* Footer */
+	.terminal-footer {
+		display: flex;
+		justify-content: center;
+		gap: 1.5rem;
+		padding: 0.625rem 1rem;
+		background: var(--t-bg-light);
+		border-top: 1px solid var(--t-border);
+	}
+
+	.hint {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		font-size: 0.6875rem;
+		color: var(--t-muted);
+	}
+
+	.hint kbd {
+		padding: 0.125rem 0.375rem;
+		background: var(--t-bg);
+		border: 1px solid var(--t-border);
+		border-radius: 4px;
+		font-family: inherit;
+		font-size: 0.625rem;
+	}
+
+	/* Responsive */
+	@media (max-width: 640px) {
+		.terminal {
+			margin: 1rem;
+			border-radius: 10px;
+		}
+
+		.terminal-content {
+			height: 22rem;
+			padding: 1rem;
+			font-size: 0.8125rem;
+		}
+
+		.prompt-line {
+			flex-direction: column;
+			gap: 0.25rem;
+		}
+
+		.prompt-line.active {
+			flex-direction: row;
+			flex-wrap: nowrap;
+			gap: 0.5rem;
+		}
+
+		.output {
+			padding: 0.75rem 1rem;
+			font-size: 0.8125rem;
+		}
+
+		.terminal-footer {
+			gap: 0.75rem;
+			padding: 0.5rem 0.75rem;
+		}
+
+		.hint {
+			font-size: 0.625rem;
+		}
+
+		.link-url {
+			display: none;
+		}
+
+		.social-link {
+			padding: 0.75rem 1rem;
 		}
 	}
 </style>
