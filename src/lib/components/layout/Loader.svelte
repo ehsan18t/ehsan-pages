@@ -1,21 +1,3 @@
-<script lang="ts">
-	// CSS-only animations for optimal performance
-	// Exit animation triggered by .exit class added from +page.svelte
-</script>
-
-<!--
-  LOADER COMPONENT
-  ================
-  
-  Uses the site's accent color system (teal/cyan, not gold)
-  Includes exit animation triggered by .exit class
-  
-  Architecture:
-  - logo-area is fixed size container for orbital elements
-  - All rings/particles orbit around logo center
-  - Exit class reverses all animations
--->
-
 <div id="hero-loader" class="loader">
 	<!-- Background -->
 	<div class="bg">
@@ -114,7 +96,7 @@
 	<div class="scanlines"></div>
 </div>
 
-<style>
+<style lang="postcss">
 	@reference "$routes/layout.css";
 
 	/* ========================================
