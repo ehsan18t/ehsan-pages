@@ -32,11 +32,6 @@
 			<span class="status-text">Available</span>
 		</div>
 	</div>
-
-	<!-- Decorative elements -->
-	<div class="orbit-dot dot-1"></div>
-	<div class="orbit-dot dot-2"></div>
-	<div class="orbit-dot dot-3"></div>
 </div>
 
 <style>
@@ -301,35 +296,6 @@
 		}
 	}
 
-	/* Orbit dots */
-	.orbit-dot {
-		position: absolute;
-		width: 6px;
-		height: 6px;
-		background: oklch(var(--accent-500));
-		border-radius: 50%;
-		box-shadow: 0 0 10px oklch(var(--accent-500) / 0.5);
-		animation: orbitFloat 20s linear infinite;
-	}
-
-	.dot-1 {
-		top: 10%;
-		left: 15%;
-		animation-delay: 0s;
-	}
-
-	.dot-2 {
-		top: 20%;
-		right: 10%;
-		animation-delay: -7s;
-	}
-
-	.dot-3 {
-		bottom: 15%;
-		right: 20%;
-		animation-delay: -14s;
-	}
-
 	/* Keyframes */
 	@keyframes rotateBorder {
 		from {
@@ -391,8 +357,7 @@
 	@media (prefers-reduced-motion: reduce) {
 		.gradient-border,
 		.glow-ring,
-		.status-dot,
-		.orbit-dot {
+		.status-dot {
 			animation: none;
 		}
 	}
