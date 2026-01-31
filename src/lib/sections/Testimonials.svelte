@@ -3,7 +3,6 @@
 	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import { testimonials } from '$data';
 	import gsap from 'gsap';
-	import { onDestroy, onMount } from 'svelte';
 	import { prefersReducedMotion } from 'svelte/motion';
 
 	// Get initials from name
@@ -194,10 +193,10 @@
 
 	// Intersection observer for autoplay and visibility tracking
 	let sectionRef = $state<HTMLElement | null>(null);
-	let observer: IntersectionObserver | null = null;
 
-	onMount(() => {
-		if (!browser) return;
+	// Setup intersection observer and cleanup via $effect
+	$effect(() => {
+		if (!browser || !sectionRef) return;
 
 		// Initial positioning without animation
 		requestAnimationFrame(() => {
@@ -205,7 +204,7 @@
 		});
 
 		// Set up intersection observer with optimized threshold
-		observer = new IntersectionObserver(
+		const observer = new IntersectionObserver(
 			(entries) => {
 				const entry = entries[0];
 				isVisible = entry.isIntersecting;
@@ -221,23 +220,20 @@
 			{ threshold: 0.2, rootMargin: '50px' }
 		);
 
-		if (sectionRef) {
-			observer.observe(sectionRef);
-		}
+		observer.observe(sectionRef);
 
-		// Keyboard listener
-		window.addEventListener('keydown', handleKeydown);
-	});
-
-	onDestroy(() => {
-		if (!browser) return;
-		stopAutoplay();
-		// Clean up all GSAP tweens to prevent memory leaks
-		killCardTweens();
-		observer?.disconnect();
-		window.removeEventListener('keydown', handleKeydown);
+		// Cleanup function
+		return () => {
+			stopAutoplay();
+			// Clean up all GSAP tweens to prevent memory leaks
+			killCardTweens();
+			observer.disconnect();
+		};
 	});
 </script>
+
+<!-- Keyboard navigation using declarative event handler -->
+<svelte:window onkeydown={handleKeydown} />
 
 <section
 	bind:this={sectionRef}

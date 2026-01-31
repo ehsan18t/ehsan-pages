@@ -14,6 +14,7 @@
 	import { getLanguageNameFromExtension, getSkillCounts, skillGroups } from '$data';
 	import Icon from '@iconify/svelte';
 	import { codeToHtml, type BundledLanguage } from 'shiki';
+	import { SvelteMap } from 'svelte/reactivity';
 
 	// ─────────────────────────────────────────────────────────────
 	// Types
@@ -1122,17 +1123,31 @@ class ${name.replace(/[^a-zA-Z]/g, '')}:
 		return EXT_TO_LANG[ext || ''] || 'plaintext';
 	}
 
+	/** Cache for highlighted code to avoid re-rendering */
+	const highlightCache = new SvelteMap<string, string>();
+
 	async function highlightWithShiki(code: string, ext: string | undefined): Promise<string> {
+		const cacheKey = `${ext || 'txt'}:${code}`;
+
+		// Return cached result if available
+		if (highlightCache.has(cacheKey)) {
+			return highlightCache.get(cacheKey)!;
+		}
+
 		const lang = getLang(ext);
 		try {
 			const html = await codeToHtml(code, {
 				lang,
 				theme: 'github-dark'
 			});
+			// Cache the result
+			highlightCache.set(cacheKey, html);
 			return html;
 		} catch {
 			// Fallback: escape HTML and return plain
-			return `<pre class="shiki"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+			const fallback = `<pre class="shiki"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+			highlightCache.set(cacheKey, fallback);
+			return fallback;
 		}
 	}
 

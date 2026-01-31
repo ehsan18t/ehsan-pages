@@ -8,8 +8,10 @@
  * - useCarousel: Navigation, autoplay, touch/keyboard handling for carousels
  * - useScrollSpy: Track active sections during scroll
  *
- * Note: Components currently use inline implementations or actions.
- * These hooks are available for future refactoring or new features.
+ * @deprecated These hooks are currently unused in the codebase.
+ * Navigation uses `navigation.svelte.ts` store instead of useScrollSpy.
+ * Carousels use inline implementations.
+ * Consider removing in future cleanup if not needed.
  */
 
 export {
@@ -25,3 +27,4 @@ export {
 	type ScrollSpySection,
 	type ScrollSpyState
 } from './useScrollSpy.svelte';
+

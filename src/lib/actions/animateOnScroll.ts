@@ -19,6 +19,7 @@
 
 import { browser } from '$app/environment';
 import type { Action } from 'svelte/action';
+import { prefersReducedMotion } from 'svelte/motion';
 
 /** Options for animate on scroll action */
 export interface AnimateOnScrollOptions {
@@ -53,15 +54,8 @@ const DEFAULT_OPTIONS: Required<AnimateOnScrollOptions> = {
 };
 
 /**
- * Check if user prefers reduced motion
- */
-function prefersReducedMotion(): boolean {
-	if (!browser) return false;
-	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-/**
  * Svelte action for CSS class-based scroll animations
+ * @deprecated Use scrollReveal action instead for GSAP-based animations
  */
 export const animateOnScroll: Action<HTMLElement, AnimateOnScrollOptions | string | undefined> = (
 	node,
@@ -75,7 +69,7 @@ export const animateOnScroll: Action<HTMLElement, AnimateOnScrollOptions | strin
 		...(typeof options === 'string' ? { animation: options } : options)
 	};
 
-	const shouldAnimate = !prefersReducedMotion();
+	const shouldAnimate = !prefersReducedMotion.current;
 	let observer: IntersectionObserver | null = null;
 	let hasAnimated = false;
 
@@ -174,6 +168,7 @@ export interface StaggerOptions extends AnimateOnScrollOptions {
  * Svelte action for staggered child animations
  *
  * Applies animation to children with increasing delays.
+ * @deprecated Use scrollReveal action with GSAP stagger instead
  */
 export const staggerChildren: Action<HTMLElement, StaggerOptions | undefined> = (
 	node,
@@ -190,7 +185,7 @@ export const staggerChildren: Action<HTMLElement, StaggerOptions | undefined> = 
 		once = true
 	} = options;
 
-	const shouldAnimate = !prefersReducedMotion();
+	const shouldAnimate = !prefersReducedMotion.current;
 	const children = node.querySelectorAll(selector);
 	let observer: IntersectionObserver | null = null;
 	let hasAnimated = false;

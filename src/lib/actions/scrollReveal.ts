@@ -19,6 +19,7 @@
 import { browser } from '$app/environment';
 import gsap from 'gsap';
 import type { Action } from 'svelte/action';
+import { prefersReducedMotion } from 'svelte/motion';
 
 /** Options for scroll reveal animation */
 export interface ScrollRevealOptions {
@@ -50,14 +51,6 @@ const DEFAULT_OPTIONS: Required<ScrollRevealOptions> = {
 };
 
 /**
- * Check if user prefers reduced motion
- */
-function prefersReducedMotion(): boolean {
-	if (!browser) return false;
-	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-/**
  * Svelte action for scroll-triggered reveal animations
  *
  * Uses IntersectionObserver for efficient detection and GSAP for smooth animations.
@@ -70,7 +63,7 @@ export const scrollReveal: Action<HTMLElement, ScrollRevealOptions | undefined> 
 	if (!browser) return {};
 
 	const opts = { ...DEFAULT_OPTIONS, ...options };
-	const shouldAnimate = !opts.respectReducedMotion || !prefersReducedMotion();
+	const shouldAnimate = !opts.respectReducedMotion || !prefersReducedMotion.current;
 
 	let observer: IntersectionObserver | null = null;
 	let hasAnimated = false;
