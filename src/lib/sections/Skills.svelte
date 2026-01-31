@@ -1155,21 +1155,14 @@ class ${name.replace(/[^a-zA-Z]/g, '')}:
 	// Effects
 	// ─────────────────────────────────────────────────────────────
 
-	// Mobile detection
+	// Initialize mobile state on mount
 	$effect(() => {
 		if (!browser) return;
-
-		const checkMobile = () => {
-			isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-			if (isMobile) {
-				sidebarOpen = false;
-			}
-		};
-
-		checkMobile();
-		window.addEventListener('resize', checkMobile);
-
-		return () => window.removeEventListener('resize', checkMobile);
+		// Initial check
+		isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+		if (isMobile) {
+			sidebarOpen = false;
+		}
 	});
 
 	// Syntax highlighting with Shiki
@@ -1215,7 +1208,18 @@ class ${name.replace(/[^a-zA-Z]/g, '')}:
 	function toggleSidebar(): void {
 		sidebarOpen = !sidebarOpen;
 	}
+
+	// Handle window resize for mobile detection
+	function handleResize(): void {
+		isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+		if (isMobile) {
+			sidebarOpen = false;
+		}
+	}
 </script>
+
+<!-- Window resize handler for mobile detection -->
+<svelte:window onresize={handleResize} />
 
 <section id="skills" class="py-20 md:py-28">
 	<div class="container mx-auto px-4">

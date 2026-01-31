@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import background from '$assets/images/background.svg';
 	import Loader from '$components/layout/Loader.svelte';
 	import { scrollReveal } from '$lib/actions/scrollReveal';
@@ -8,7 +9,6 @@
 	import ProjectShowcase from '$lib/sections/ProjectShowcase.svelte';
 	import Skills from '$lib/sections/Skills.svelte';
 	import Testimonials from '$lib/sections/Testimonials.svelte';
-	import { onMount } from 'svelte';
 
 	let showLoader = $state(true);
 	let mainVisible = $state(false);
@@ -18,7 +18,10 @@
 	/** Time to show loader before starting exit (ms) */
 	const LOADER_DISPLAY_TIME = 2000;
 
-	onMount(() => {
+	// Loader animation via $effect
+	$effect(() => {
+		if (!browser) return;
+
 		const loaderElement = document.getElementById('hero-loader');
 
 		const timeoutId = setTimeout(() => {

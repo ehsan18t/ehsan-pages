@@ -71,8 +71,6 @@ export const gsapFadeIn: Action<HTMLElement, GsapScrollOptions | undefined> = (
 		return {};
 	}
 
-	gsap.registerPlugin(ScrollTrigger);
-
 	const {
 		y = 30,
 		x = 0,
