@@ -1367,8 +1367,7 @@ class ${name.replace(/[^a-zA-Z]/g, '')}:
 		display: flex;
 		max-width: 64rem;
 		margin: 0 auto;
-		min-height: 480px;
-		max-height: 70vh;
+		height: min(70vh, 550px);
 		border-radius: 0.5rem;
 		overflow: hidden;
 		border: 1px solid oklch(var(--foreground) / 0.1);
@@ -1579,6 +1578,7 @@ class ${name.replace(/[^a-zA-Z]/g, '')}:
 	.tab-bar {
 		display: flex;
 		align-items: center;
+		flex-shrink: 0;
 		background: color-mix(in oklch, rgb(var(--background)), black 40%);
 		border-bottom: 1px solid oklch(var(--foreground) / 0.1);
 	}
@@ -1680,6 +1680,7 @@ class ${name.replace(/[^a-zA-Z]/g, '')}:
 		flex: 1;
 		display: flex;
 		overflow: auto;
+		min-height: 0;
 		background: color-mix(in oklch, rgb(var(--background)), black 25%);
 	}
 
@@ -1732,6 +1733,7 @@ class ${name.replace(/[^a-zA-Z]/g, '')}:
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		flex-shrink: 0;
 		padding: 0.25rem 0.75rem;
 		font-size: 0.75rem;
 		color: oklch(var(--foreground) / 0.6);
@@ -1755,9 +1757,7 @@ class ${name.replace(/[^a-zA-Z]/g, '')}:
 	/* Responsive */
 	@media (max-width: 639px) {
 		.editor-wrapper {
-			min-height: 400px;
-			max-height: none;
-			height: auto;
+			height: 450px;
 		}
 
 		.line-numbers {
