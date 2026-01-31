@@ -1,5 +1,8 @@
 // Actions barrel export
 
+// Portal - teleport elements to document.body (for modals, lightboxes)
+export { portal } from './portal';
+
 // Viewport animation pause/resume (performance optimization)
 export { createViewportGsapController, viewportAnimation } from './viewportAnimation';
 export type { ViewportAnimationOptions } from './viewportAnimation';

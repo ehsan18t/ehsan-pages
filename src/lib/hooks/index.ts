@@ -27,4 +27,3 @@ export {
 	type ScrollSpySection,
 	type ScrollSpyState
 } from './useScrollSpy.svelte';
-

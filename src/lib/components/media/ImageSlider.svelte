@@ -14,6 +14,7 @@
 	 */
 
 	import { browser } from '$app/environment';
+	import { portal } from '$lib/actions';
 	import Icon from '@iconify/svelte';
 	import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 	import emblaCarouselSvelte from 'embla-carousel-svelte';
@@ -69,24 +70,6 @@
 		return {
 			destroy() {
 				observer.disconnect();
-			}
-		};
-	};
-
-	// ─────────────────────────────────────────────────────────────
-	// Portal Action (teleports element to document.body)
-	// ─────────────────────────────────────────────────────────────
-
-	const portal: Action<HTMLElement> = (node) => {
-		const target = document.body;
-		target.appendChild(node);
-
-		return {
-			destroy() {
-				// Only remove if still attached to target
-				if (node.parentNode === target) {
-					target.removeChild(node);
-				}
 			}
 		};
 	};

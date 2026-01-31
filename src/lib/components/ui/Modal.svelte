@@ -14,7 +14,7 @@
 	 * @component Modal
 	 */
 
-	import { browser } from '$app/environment';
+	import { portal } from '$lib/actions';
 	import gsap from 'gsap';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -90,22 +90,6 @@
 
 	let modalContainerRef = $state<HTMLDivElement | null>(null);
 	let previouslyFocusedElement: HTMLElement | null = null;
-
-	// Portal action - teleports element to document.body
-	function portal(node: HTMLElement) {
-		if (!browser) return;
-
-		const target = document.body;
-		target.appendChild(node);
-
-		return {
-			destroy() {
-				if (node.parentNode === target) {
-					target.removeChild(node);
-				}
-			}
-		};
-	}
 
 	// ─────────────────────────────────────────────────────────────
 	// Event Handlers

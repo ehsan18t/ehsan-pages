@@ -2,6 +2,11 @@
  * GSAP Animation Utilities
  * Provides reusable animation functions and scroll-triggered animations using GSAP.
  *
+ * @deprecated These utilities are currently unused in the codebase.
+ * The project uses `scrollReveal` action from `$lib/actions/scrollReveal` instead
+ * for scroll-triggered animations. Consider removing this file if not needed,
+ * or use the scrollReveal action for new animations.
+ *
  * Usage:
  *   import { fadeUp, slideIn, staggerFadeUp } from '$lib/utils/gsapAnimations';
  *

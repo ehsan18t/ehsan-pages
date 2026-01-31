@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
-	import { onDestroy, onMount } from 'svelte';
 
 	type PdfjsLib = typeof import('pdfjs-dist');
 
@@ -65,38 +64,50 @@
 		};
 	}
 
-	onMount(async () => {
-		try {
-			const pdfjs = await import('pdfjs-dist');
-			pdfjsLib = pdfjs;
+	// Initialize PDF.js and load document
+	$effect(() => {
+		if (!browser) return;
 
-			// Use bundled worker from pdfjs-dist package
-			const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs?url');
-			pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+		let mounted = true;
 
-			if (cvPDF.trim()) {
-				await fetchPdf(cvPDF);
-			} else {
+		async function initPdf() {
+			try {
+				const pdfjs = await import('pdfjs-dist');
+				if (!mounted) return;
+				pdfjsLib = pdfjs;
+
+				// Use bundled worker from pdfjs-dist package
+				const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs?url');
+				pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+
+				if (cvPDF.trim()) {
+					await fetchPdf(cvPDF);
+				} else {
+					isLoading = false;
+				}
+			} catch (err) {
+				if (!mounted) return;
+				error = err instanceof Error ? err.message : 'Failed to initialize PDF viewer';
 				isLoading = false;
 			}
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to initialize PDF viewer';
-			isLoading = false;
 		}
-	});
 
-	onDestroy(() => {
-		if (!browser) return;
-		if (resizeRaf !== null) {
-			cancelAnimationFrame(resizeRaf);
-			resizeRaf = null;
-		}
-		if (pdfBlobUrl) {
-			URL.revokeObjectURL(pdfBlobUrl);
-		}
-		if (pdfDocument) {
-			pdfDocument.destroy();
-		}
+		initPdf();
+
+		// Cleanup function
+		return () => {
+			mounted = false;
+			if (resizeRaf !== null) {
+				cancelAnimationFrame(resizeRaf);
+				resizeRaf = null;
+			}
+			if (pdfBlobUrl) {
+				URL.revokeObjectURL(pdfBlobUrl);
+			}
+			if (pdfDocument) {
+				pdfDocument.destroy();
+			}
+		};
 	});
 
 	async function fetchPdf(url: string) {
