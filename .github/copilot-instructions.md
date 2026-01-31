@@ -7,3 +7,7 @@
 - ALWAYS WRITE CLEAR AND CONCISE COMMENTS TO EXPLAIN THE PURPOSE AND FUNCTIONALITY OF THE CODE.
 - ALWAYS FOLLOW BEST PRACTICES FOR SECURITY, PERFORMANCE, AND SCALABILITY.
 - AFTER ANY CHANGE, BEFORE YOU END MAKE SURE TO CHECK THE CODE QUALITY BY RUNNING lint and check. MAKE SURE NO ERRORS OR WARNINGS ARE PRESENT.
+- Always commit after as task is done.
+- Commit by **TASK**, not by file
+- Use clear messages: `feat(ui): add toggle` or `fix(theme): persist preference`
+- Don't group unrelated changes
