@@ -422,7 +422,7 @@ New here? Use the quick action buttons below, or type commands:
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="terminal mx-auto w-full max-w-220 overflow-hidden rounded-xl border border-(--t-border) bg-(--t-bg) font-mono shadow-[0_16px_70px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] max-sm:rounded-lg max-sm:border-x-0"
+	class="terminal w-full overflow-hidden rounded-xl border border-(--t-border) bg-(--t-bg) font-mono shadow-[0_16px_70px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] max-sm:rounded-lg max-sm:border-x-0"
 	onclick={focusInput}
 >
 	<!-- Window Header -->

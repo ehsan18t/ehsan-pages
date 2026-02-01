@@ -165,7 +165,7 @@
 </script>
 
 <div
-	class="mailbox mx-auto w-full max-w-220 overflow-hidden rounded-xl border border-(--m-border) bg-(--m-bg) shadow-[0_16px_70px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] max-sm:rounded-lg max-sm:border-x-0"
+	class="mailbox w-full overflow-hidden rounded-xl border border-(--m-border) bg-(--m-bg) shadow-[0_16px_70px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] max-sm:rounded-lg max-sm:border-x-0"
 >
 	<!-- Header -->
 	<header

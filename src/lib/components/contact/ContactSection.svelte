@@ -136,7 +136,7 @@
 		{#if isInitialized}
 			{#key mode}
 				<div
-					class="w-full"
+					class="w-full max-w-220 px-4 sm:px-0"
 					in:fly={{ y: 20, duration: 300, delay: 150 }}
 					out:fly={{ y: -20, duration: 200 }}
 				>
