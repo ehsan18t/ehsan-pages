@@ -325,13 +325,13 @@
 		max-width: 64rem;
 		margin: 0 auto;
 		height: min(70vh, 550px);
-		border-radius: 0.5rem;
+		border-radius: 0.75rem;
 		overflow: hidden;
-		border: 1px solid oklch(var(--foreground) / 0.1);
+		border: 1px solid oklch(var(--foreground) / 0.12);
 		background: color-mix(in oklch, rgb(var(--background)), black 30%);
 		box-shadow:
-			0 25px 50px -12px rgba(0, 0, 0, 0.25),
-			0 0 0 1px oklch(var(--foreground) / 0.05);
+			0 16px 70px rgba(0, 0, 0, 0.5),
+			0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 	}
 
 	/* Sidebar Overlay for Mobile */
