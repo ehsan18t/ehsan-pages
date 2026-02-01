@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Terminal from '$components/contact/Terminal.svelte';
+	import { ContactSection } from '$components/contact';
 	import SectionTitle from '$components/ui/SectionTitle.svelte';
 	import Icon from '@iconify/svelte';
 
@@ -30,10 +30,8 @@
 		<!-- Interactive Logo -->
 		<SectionTitle p1="Contact" p2="me" class="group mb-8 flex justify-center md:mb-8" />
 
-		<!-- Terminal Section -->
-		<div class="flex w-full items-center justify-center">
-			<Terminal />
-		</div>
+		<!-- Contact Section with Terminal/Form toggle -->
+		<ContactSection />
 
 		<!-- Footer bottom -->
 		<div class="flex flex-col-reverse items-center justify-between gap-1 pt-4 md:flex-row">
