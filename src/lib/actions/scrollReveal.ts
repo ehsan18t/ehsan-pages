@@ -123,12 +123,4 @@ export const scrollReveal: Action<HTMLElement, ScrollRevealOptions | undefined> 
 	};
 };
 
-/**
- * Initialize scroll animations - refreshes any pending observers
- * @deprecated No longer needed with IntersectionObserver approach
- */
-export function initScrollAnimations(): void {
-	// No-op for IntersectionObserver approach
-}
-
 export default scrollReveal;

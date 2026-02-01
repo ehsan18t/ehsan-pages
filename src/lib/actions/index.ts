@@ -8,7 +8,7 @@ export { createViewportGsapController, viewportAnimation } from './viewportAnima
 export type { ViewportAnimationOptions } from './viewportAnimation';
 
 // Scroll reveal animation (recommended)
-export { initScrollAnimations, scrollReveal } from './scrollReveal';
+export { scrollReveal } from './scrollReveal';
 export type { ScrollRevealOptions } from './scrollReveal';
 
 // Scroll spy for navigation
@@ -30,6 +30,3 @@ export {
 } from './gsapScrollAnimations';
 export type { GsapScrollOptions } from './gsapScrollAnimations';
 
-// Legacy CSS-based animations (deprecated, use scrollReveal instead)
-export { animateOnScroll, staggerChildren } from './animateOnScroll';
-export type { AnimateOnScrollOptions, StaggerOptions } from './animateOnScroll';
