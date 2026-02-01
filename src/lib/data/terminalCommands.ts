@@ -98,18 +98,17 @@ export const EMAIL_ADDRESS = '';
  */
 export const HELP_TEXT = `Available commands:
 
-  help      Show this help message
-  send      Send me a message
-            Usage: send <email> <message>
-  social    Show my social links
-  whoami    Learn more about me
-  clear     Clear the terminal
+• help — Show this help message
+• send <email> <message> — Send me a message
+• social — Show my social links
+• whoami — Learn more about me
+• clear — Clear the terminal
 
 Keyboard shortcuts:
-  ↑/↓       Navigate command history
-  Tab       Autocomplete commands
-  Ctrl+L    Clear terminal
-  Ctrl+C    Cancel operation`;
+• ↑/↓ — Navigate command history
+• Tab — Autocomplete commands
+• Ctrl+L — Clear terminal
+• Ctrl+C — Cancel operation`;
 
 /**
  * Send command usage error text

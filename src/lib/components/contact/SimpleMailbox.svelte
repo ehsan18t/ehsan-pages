@@ -16,9 +16,9 @@
 
 	import { browser } from '$app/environment';
 	import { name } from '$data';
-	import { sendEmail, getTerminalSocialLinks } from '$data/terminalCommands';
+	import { getTerminalSocialLinks, sendEmail } from '$data/terminalCommands';
 	import Icon from '@iconify/svelte';
-	import { fly, fade } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 
 	// ─────────────────────────────────────────────────────────────
 	// Types
@@ -165,7 +165,7 @@
 </script>
 
 <div
-	class="mailbox mx-8 my-8 w-full max-w-220 overflow-hidden rounded-xl border border-(--m-border) bg-(--m-bg) shadow-[0_16px_70px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset]"
+	class="mailbox mx-auto w-full max-w-220 overflow-hidden rounded-xl border border-(--m-border) bg-(--m-bg) shadow-[0_16px_70px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] max-sm:rounded-lg max-sm:border-x-0"
 >
 	<!-- Header -->
 	<header

@@ -391,10 +391,11 @@
 					content: `Welcome! I'm ${name.split(' ')[0]}'s interactive contact terminal.
 
 New here? Use the quick action buttons below, or type commands:
-  • send <email> <message>  — Send me a message
-  • social                  — View my social links
-  • whoami                  — Learn more about me
-  • help                    — See all commands
+
+• send <email> <message> — Send me a message
+• social — View my social links
+• whoami — Learn more about me
+• help — See all commands
 
 💡 Tip: Press Tab to autocomplete commands!`
 				}
@@ -421,7 +422,7 @@ New here? Use the quick action buttons below, or type commands:
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="terminal mx-8 my-8 w-full max-w-220 overflow-hidden rounded-xl border border-(--t-border) bg-(--t-bg) font-mono shadow-[0_16px_70px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset]"
+	class="terminal mx-auto w-full max-w-220 overflow-hidden rounded-xl border border-(--t-border) bg-(--t-bg) font-mono shadow-[0_16px_70px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] max-sm:rounded-lg max-sm:border-x-0"
 	onclick={focusInput}
 >
 	<!-- Window Header -->
@@ -448,7 +449,7 @@ New here? Use the quick action buttons below, or type commands:
 	<!-- Terminal Content -->
 	<div
 		bind:this={terminalRef}
-		class="terminal-content scrollbar-thin scrollbar-color-[var(--t-border)_transparent] h-112 overflow-y-auto px-6 py-5 text-sm leading-[1.7] text-(--t-text)"
+		class="terminal-content scrollbar-thin scrollbar-color-[var(--t-border)_transparent] h-112 overflow-y-auto px-4 py-4 text-sm leading-[1.7] text-(--t-text) sm:px-6 sm:py-5"
 		role="log"
 		aria-live="polite"
 	>
