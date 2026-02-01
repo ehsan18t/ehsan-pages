@@ -13,9 +13,15 @@
 	let { experience, position, laneColor, onmouseenter, onmouseleave }: Props = $props();
 
 	let cardRef = $state<HTMLDivElement | null>(null);
-	// Use writable derived for position that starts from prop but can be clamped
-	let clampedPosition = $derived.by(() => ({ ...position }));
+	// Offset for viewport clamping
+	let clampOffset = $state({ x: 0, y: 0 });
 	let isPositioned = $state(false);
+
+	// Derive final position from prop + clamping offset
+	let clampedPosition = $derived({
+		x: position.x + clampOffset.x,
+		y: position.y + clampOffset.y
+	});
 
 	function clampToViewport() {
 		if (!cardRef || typeof window === 'undefined') return;
@@ -37,10 +43,11 @@
 		const maxX = Math.max(padding, window.innerWidth - width - padding);
 		const maxY = Math.max(padding, window.innerHeight - height - padding);
 
-		const nextX = Math.min(Math.max(position.x, padding), maxX);
-		const nextY = Math.min(Math.max(position.y, padding), maxY);
+		const clampedX = Math.min(Math.max(position.x, padding), maxX);
+		const clampedY = Math.min(Math.max(position.y, padding), maxY);
 
-		clampedPosition = { x: nextX, y: nextY };
+		// Store offset from original position
+		clampOffset = { x: clampedX - position.x, y: clampedY - position.y };
 
 		if (!isPositioned) {
 			isPositioned = true;
@@ -113,7 +120,11 @@
 		);
 	}
 
+	// Re-clamp when card ref or position changes
 	$effect(() => {
+		// Track position changes
+		void position.x;
+		void position.y;
 		if (cardRef) {
 			clampToViewport();
 			requestAnimationFrame(clampToViewport);

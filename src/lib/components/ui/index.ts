@@ -10,4 +10,3 @@ export { default as TechPill } from './TechPill.svelte';
  * The Testimonials section uses a custom GSAP-based card stack instead.
  */
 export { default as TestimonialsCarousel } from './TestimonialsCarousel.svelte';
-
