@@ -17,7 +17,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		const body = await request.json();
 
 		// Validate required fields
-		// Validate required fields
 		if (!body.subject) {
 			throw error(400, 'Missing required fields: subject');
 		}
