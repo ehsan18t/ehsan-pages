@@ -132,14 +132,10 @@
 	</p>
 
 	<!-- Contact Component Container -->
-	<div class="flex justify-center">
+	<div class="relative mx-auto w-full max-w-220 px-4 sm:px-0">
 		{#if isInitialized}
 			{#key mode}
-				<div
-					class="w-full max-w-220 px-4 sm:px-0"
-					in:fly={{ y: 20, duration: 300, delay: 150 }}
-					out:fly={{ y: -20, duration: 200 }}
-				>
+				<div class="w-full" in:fly={{ y: 20, duration: 300 }}>
 					{#if mode === 'terminal'}
 						<Terminal />
 					{:else}
@@ -149,9 +145,7 @@
 			{/key}
 		{:else}
 			<!-- Loading placeholder -->
-			<div
-				class="animate-pulse mx-4 h-125 w-full max-w-220 rounded-xl border border-gray-700/50 bg-gray-900/50 sm:mx-8"
-			></div>
+			<div class="animate-pulse border-default h-144 w-full rounded-xl border bg-surface-1"></div>
 		{/if}
 	</div>
 </div>

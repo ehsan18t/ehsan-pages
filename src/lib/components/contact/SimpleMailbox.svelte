@@ -169,7 +169,7 @@
 >
 	<!-- Header -->
 	<header
-		class="flex items-center justify-between border-b border-(--m-border) bg-linear-to-b from-[#2d333b] to-[#22272e] px-4 py-3.5"
+		class="flex items-center justify-between border-b border-(--m-border) bg-(--m-bg-light) px-4 py-3.5"
 	>
 		<div class="flex gap-2">
 			<span class="size-3 rounded-full bg-[#ff5f57] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.12)]"
@@ -406,7 +406,7 @@
 	/* Responsive */
 	@media (max-width: 640px) {
 		.mailbox {
-			@apply mx-4 rounded-[10px];
+			@apply rounded-[10px];
 		}
 	}
 </style>
