@@ -49,7 +49,8 @@ export default defineConfig(
 			'**/SocialBar.svelte',
 			'**/ExperienceCard.svelte',
 			'**/TechPill.svelte',
-			'**/ProjectShowcase.svelte'
+			'**/ProjectShowcase.svelte',
+			'**/SimpleMailbox.svelte'
 		],
 		rules: {
 			'svelte/no-navigation-without-resolve': 'off'

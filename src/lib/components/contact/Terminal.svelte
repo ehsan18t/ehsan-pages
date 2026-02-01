@@ -5,12 +5,14 @@
 	 * Features:
 	 * - Svelte 5 runes ($state, $effect)
 	 * - Command history navigation (↑/↓)
-	 * - Tab autocomplete
+	 * - Tab autocomplete with visual suggestions
 	 * - Ctrl+C / Ctrl+L shortcuts
 	 * - Blinking cursor
 	 * - ASCII art welcome banner
-	 * - Mobile-friendly design
+	 * - Mobile-friendly design with quick action buttons
 	 * - Social links with hover effects
+	 * - Fuzzy command matching for error recovery
+	 * - Enhanced accessibility (ARIA, screen reader support)
 	 */
 
 	import { browser } from '$app/environment';
@@ -30,6 +32,7 @@
 		type TerminalSocialLink
 	} from '$data/terminalCommands';
 	import Icon from '@iconify/svelte';
+	import { fly } from 'svelte/transition';
 
 	// ─────────────────────────────────────────────────────────────
 	// Local State
@@ -43,9 +46,20 @@
 	let entryIdCounter = $state(0);
 	let showCursor = $state(true);
 	let hasInitialized = $state(false);
+	let autocompleteHint = $state('');
+	let showQuickActions = $state(true);
+	let lastAnnouncement = $state('');
 
 	let terminalRef = $state<HTMLDivElement | null>(null);
 	let inputRef = $state<HTMLInputElement | null>(null);
+
+	// Quick action buttons for discoverability
+	const quickActions = [
+		{ label: '📧 Send Message', command: 'send ', icon: 'mdi:email-fast-outline' },
+		{ label: '🔗 Social Links', command: 'social', icon: 'mdi:share-variant' },
+		{ label: '👤 About Me', command: 'whoami', icon: 'mdi:account-circle' },
+		{ label: '❓ Help', command: 'help', icon: 'mdi:help-circle' }
+	];
 
 	// ─────────────────────────────────────────────────────────────
 	// Helpers
@@ -79,6 +93,57 @@
 	function handleLinkClick(e: MouseEvent, url: string): void {
 		e.stopPropagation();
 		window.open(url, '_blank', 'noopener,noreferrer');
+	}
+
+	function announce(message: string): void {
+		lastAnnouncement = message;
+	}
+
+	function handleQuickAction(command: string): void {
+		input = command;
+		focusInput();
+		if (!command.endsWith(' ')) {
+			// Execute immediately if command is complete
+			executeCommand(command);
+			input = '';
+		}
+		// Hide quick actions after first use
+		showQuickActions = false;
+	}
+
+	// Fuzzy command matching for typo suggestions
+	function findSimilarCommand(input: string): string | null {
+		const cmdName = input.toLowerCase().split(/\s+/)[0];
+		const commandNames = commands.map((c) => c.name);
+
+		// Check for close matches using simple Levenshtein-like logic
+		for (const name of commandNames) {
+			// Check if starts with same letters
+			if (name.startsWith(cmdName.slice(0, 2)) && Math.abs(name.length - cmdName.length) <= 2) {
+				return name;
+			}
+			// Check for character transposition
+			if (cmdName.length >= 3) {
+				const sorted1 = cmdName.split('').sort().join('');
+				const sorted2 = name.split('').sort().join('');
+				if (sorted1 === sorted2) return name;
+			}
+		}
+		return null;
+	}
+
+	// Update autocomplete hint based on input
+	function updateAutocompleteHint(): void {
+		if (!input.trim()) {
+			autocompleteHint = '';
+			return;
+		}
+		const match = findMatchingCommand(input, commands);
+		if (match && match.name !== input.toLowerCase()) {
+			autocompleteHint = match.name.slice(input.length);
+		} else {
+			autocompleteHint = '';
+		}
 	}
 
 	// ─────────────────────────────────────────────────────────────
@@ -210,18 +275,26 @@
 			const results = await command.handler(args);
 			if (results.length > 0) {
 				history = [...history, ...results];
+				announce(`Command ${cmdName} executed`);
 			}
 		} else {
+			// Try to suggest a similar command
+			const suggestion = findSimilarCommand(trimmed);
+			let errorContent = `Command not found: ${cmdName}\n\nType 'help' to see available commands.`;
+
+			if (suggestion) {
+				errorContent = `Command not found: ${cmdName}\n\nDid you mean '${suggestion}'? Type 'help' for available commands.`;
+			}
+
 			history = [
 				...history,
 				{
 					id: nextId(),
 					type: 'error',
-					content: `Command not found: ${cmdName}
-
-Type 'help' to see available commands.`
+					content: errorContent
 				}
 			];
+			announce(`Error: Command ${cmdName} not found`);
 		}
 
 		scrollToBottom();
@@ -241,12 +314,15 @@ Type 'help' to see available commands.`
 			e.preventDefault();
 			const cmd = input;
 			input = '';
+			autocompleteHint = '';
+			showQuickActions = false;
 			executeCommand(cmd);
 		} else if (e.key === 'ArrowUp') {
 			e.preventDefault();
 			if (commandBuffer.length > 0 && bufferIndex < commandBuffer.length - 1) {
 				bufferIndex++;
 				input = commandBuffer[bufferIndex];
+				announce(`History: ${input}`);
 				// Move cursor to end
 				setTimeout(() => {
 					if (inputRef) {
@@ -260,28 +336,39 @@ Type 'help' to see available commands.`
 			if (bufferIndex > 0) {
 				bufferIndex--;
 				input = commandBuffer[bufferIndex];
+				announce(`History: ${input}`);
 			} else if (bufferIndex === 0) {
 				bufferIndex = -1;
 				input = '';
+				announce('End of history');
 			}
 		} else if (e.key === 'Tab') {
 			e.preventDefault();
 			const match = findMatchingCommand(input, commands);
 			if (match) {
 				input = match.name + ' ';
+				autocompleteHint = '';
+				announce(`Autocompleted to ${match.name}`);
 			}
 		} else if (e.key === 'c' && e.ctrlKey) {
 			e.preventDefault();
 			if (isProcessing) {
 				isProcessing = false;
 				history = [...history, { id: nextId(), type: 'error', content: '^C' }];
+				announce('Operation cancelled');
 			} else {
 				input = '';
+				autocompleteHint = '';
 			}
 		} else if (e.key === 'l' && e.ctrlKey) {
 			e.preventDefault();
 			history = [];
+			announce('Terminal cleared');
 		}
+	}
+
+	function handleInput(): void {
+		updateAutocompleteHint();
 	}
 
 	// ─────────────────────────────────────────────────────────────
@@ -303,10 +390,13 @@ Type 'help' to see available commands.`
 					type: 'output',
 					content: `Welcome! I'm ${name.split(' ')[0]}'s interactive contact terminal.
 
-Type 'help' for available commands, or try:
+New here? Use the quick action buttons below, or type commands:
   • send <email> <message>  — Send me a message
   • social                  — View my social links
-  • whoami                  — Learn more about me`
+  • whoami                  — Learn more about me
+  • help                    — See all commands
+
+💡 Tip: Press Tab to autocomplete commands!`
 				}
 			];
 		}
@@ -429,6 +519,16 @@ Type 'help' for available commands, or try:
 						class="animate-spin size-3.5 rounded-full border-2 border-(--t-border) border-t-(--t-yellow)"
 					></span>
 					<span>Sending message...</span>
+					<button
+						type="button"
+						class="ml-2 text-xs text-(--t-red) hover:underline"
+						onclick={() => {
+							isProcessing = false;
+							history = [...history, { id: nextId(), type: 'error', content: '^C Cancelled' }];
+						}}
+					>
+						Cancel
+					</button>
 				</div>
 			{:else}
 				<span class="prompt flex shrink-0 font-medium">
@@ -442,20 +542,58 @@ Type 'help' for available commands, or try:
 						bind:this={inputRef}
 						bind:value={input}
 						onkeydown={handleKeyDown}
+						oninput={handleInput}
 						type="text"
-						class="font-inherit w-full border-none bg-transparent p-0 text-(--t-text) caret-(--t-accent) outline-none"
+						class="font-inherit relative z-10 w-full border-none bg-transparent p-0 text-(--t-text) caret-(--t-accent) outline-none"
 						spellcheck="false"
 						autocomplete="off"
 						autocapitalize="off"
 						aria-label="Terminal command input"
+						aria-describedby="terminal-hint"
 					/>
+					<!-- Autocomplete hint overlay -->
+					{#if autocompleteHint}
+						<span
+							class="pointer-events-none absolute left-0 flex text-(--t-muted) opacity-50"
+							aria-hidden="true"
+						>
+							<span class="invisible">{input}</span><span class="text-(--t-accent)"
+								>{autocompleteHint}</span
+							>
+						</span>
+					{/if}
 					<span
-						class="cursor pointer-events-none absolute left-0 h-[1.25em] w-2 bg-(--t-accent) opacity-0"
+						class="cursor pointer-events-none absolute left-0 z-0 h-[1.25em] w-2 bg-(--t-accent) opacity-0"
 						class:visible={showCursor && !input}
 					></span>
 				</div>
 			{/if}
 		</div>
+
+		<!-- Quick Action Buttons (shown for new users) -->
+		{#if showQuickActions && !isProcessing}
+			<div
+				class="quick-actions mt-6 flex flex-wrap gap-2"
+				transition:fly={{ y: 10, duration: 200 }}
+			>
+				<span class="mb-2 w-full text-xs text-(--t-muted)">Quick actions:</span>
+				{#each quickActions as action (action.command)}
+					<button
+						type="button"
+						class="quick-action-btn flex items-center gap-2 rounded-lg border border-(--t-border) bg-(--t-bg-light) px-3 py-2 text-xs text-(--t-text) transition-all duration-200 hover:border-(--t-accent) hover:bg-[rgba(88,166,255,0.1)]"
+						onclick={() => handleQuickAction(action.command)}
+					>
+						<Icon icon={action.icon} width={14} height={14} class="text-(--t-accent)" />
+						{action.label}
+					</button>
+				{/each}
+			</div>
+		{/if}
+	</div>
+
+	<!-- Screen reader announcements -->
+	<div id="terminal-hint" class="sr-only" aria-live="polite">
+		{lastAnnouncement}
 	</div>
 
 	<!-- Footer Hints -->
@@ -502,6 +640,19 @@ Type 'help' for available commands, or try:
 		font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
 	}
 
+	/* Screen reader only */
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
 	/* Custom scrollbar */
 	.terminal-content::-webkit-scrollbar {
 		@apply w-2;
@@ -525,6 +676,11 @@ Type 'help' for available commands, or try:
 
 	.social-link:active {
 		@apply translate-x-1.5 scale-[0.99];
+	}
+
+	/* Quick action buttons */
+	.quick-action-btn:active {
+		@apply scale-[0.97];
 	}
 
 	/* Responsive */
@@ -559,6 +715,14 @@ Type 'help' for available commands, or try:
 
 		.social-link {
 			@apply px-4 py-3;
+		}
+
+		.quick-actions {
+			@apply gap-1.5;
+		}
+
+		.quick-action-btn {
+			@apply px-2 py-1.5 text-[0.6875rem];
 		}
 	}
 </style>
