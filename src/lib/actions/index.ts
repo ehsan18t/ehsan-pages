@@ -29,4 +29,3 @@ export {
 	gsapStaggerIn
 } from './gsapScrollAnimations';
 export type { GsapScrollOptions } from './gsapScrollAnimations';
-

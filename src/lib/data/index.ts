@@ -409,5 +409,6 @@ export const {
 export default info;
 
 // Re-export data modules
+export * from './skillCodeSnippets';
 export * from './skills';
 export * from './terminalCommands';

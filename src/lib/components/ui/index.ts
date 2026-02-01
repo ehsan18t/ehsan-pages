@@ -4,4 +4,3 @@ export { default as GlitchText } from './GlitchText.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as SectionTitle } from './SectionTitle.svelte';
 export { default as TechPill } from './TechPill.svelte';
-

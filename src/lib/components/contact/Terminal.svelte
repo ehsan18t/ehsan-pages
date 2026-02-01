@@ -14,61 +14,28 @@
 	 */
 
 	import { browser } from '$app/environment';
-	import { description, name, socials, title } from '$data';
+	import { description, name, title } from '$data';
+	import {
+		EMAIL_ADDRESS,
+		EMAIL_REGEX,
+		findMatchingCommand,
+		generateWhoamiBox,
+		HELP_TEXT,
+		SEND_USAGE_TEXT,
+		sendEmail,
+		TERMINAL_SOCIAL_LINKS,
+		WELCOME_ASCII,
+		type TerminalCommand,
+		type TerminalCommandEntry,
+		type TerminalSocialLink
+	} from '$data/terminalCommands';
 	import Icon from '@iconify/svelte';
-
-	// ─────────────────────────────────────────────────────────────
-	// Types
-	// ─────────────────────────────────────────────────────────────
-
-	interface CommandEntry {
-		id: number;
-		type: 'command' | 'output' | 'error' | 'success' | 'ascii' | 'links';
-		content: string;
-	}
-
-	interface Command {
-		name: string;
-		description: string;
-		handler: (args: string[]) => Promise<CommandEntry[]> | CommandEntry[];
-	}
-
-	interface SocialLink {
-		platform: string;
-		url: string;
-		icon: string;
-	}
-
-	// ─────────────────────────────────────────────────────────────
-	// Constants
-	// ─────────────────────────────────────────────────────────────
-
-	const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-	const WELCOME_ASCII = `
- ██████╗ ██████╗ ███╗   ██╗████████╗ █████╗  ██████╗████████╗
-██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔══██╗██╔════╝╚══██╔══╝
-██║     ██║   ██║██╔██╗ ██║   ██║   ███████║██║        ██║   
-██║     ██║   ██║██║╚██╗██║   ██║   ██╔══██║██║        ██║   
-╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║╚██████╗   ██║   
- ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝   ╚═╝`;
-
-	const SOCIAL_LINKS: SocialLink[] = [
-		{ platform: 'GitHub', url: socials.github, icon: 'mdi:github' },
-		{ platform: 'LinkedIn', url: socials.linkedin, icon: 'mdi:linkedin' },
-		{ platform: 'Email', url: socials.gmail, icon: 'mdi:email' },
-		{ platform: 'Telegram', url: socials.telegram, icon: 'mdi:telegram' },
-		{ platform: 'Discord', url: socials.discord, icon: 'mdi:discord' }
-	];
-
-	/** Get email address from mailto URL */
-	const EMAIL_ADDRESS = socials.gmail.replace('mailto:', '');
 
 	// ─────────────────────────────────────────────────────────────
 	// Local State
 	// ─────────────────────────────────────────────────────────────
 
-	let history = $state<CommandEntry[]>([]);
+	let history = $state<TerminalCommandEntry[]>([]);
 	let input = $state('');
 	let isProcessing = $state(false);
 	let commandBuffer = $state<string[]>([]);
@@ -118,30 +85,11 @@
 	// Commands
 	// ─────────────────────────────────────────────────────────────
 
-	const commands: Command[] = [
+	const commands: TerminalCommand[] = [
 		{
 			name: 'help',
 			description: 'Show available commands',
-			handler: () => [
-				{
-					id: nextId(),
-					type: 'output',
-					content: `Available commands:
-
-  help      Show this help message
-  send      Send me a message
-            Usage: send <email> <message>
-  social    Show my social links
-  whoami    Learn more about me
-  clear     Clear the terminal
-
-Keyboard shortcuts:
-  ↑/↓       Navigate command history
-  Tab       Autocomplete commands
-  Ctrl+L    Clear terminal
-  Ctrl+C    Cancel operation`
-				}
-			]
+			handler: () => [{ id: nextId(), type: 'output', content: HELP_TEXT }]
 		},
 		{
 			name: 'whoami',
@@ -150,22 +98,7 @@ Keyboard shortcuts:
 				{
 					id: nextId(),
 					type: 'output',
-					content: `┌────────────────────────────────────────────────────────┐
-│  ${name.toUpperCase().padEnd(52)}│
-│  ${title.padEnd(52)}│
-├────────────────────────────────────────────────────────┤
-│                                                        │
-│  ${description.slice(0, 52).padEnd(52)}│
-│  ${description.slice(52, 104).padEnd(52)}│
-│  ${description.slice(104, 156).padEnd(52)}│
-│                                                        │
-│  🛠️  Stack: Next.js, Astro, SvelteKit, Django          │
-│  🎨 Design: Clean UI, smooth animations, great UX      │
-│  📍 Location: Open to remote opportunities             │
-│                                                        │
-└────────────────────────────────────────────────────────┘
-
-Type 'send <your-email> <message>' to get in touch!`
+					content: generateWhoamiBox(name, title, description)
 				}
 			]
 		},
@@ -176,7 +109,7 @@ Type 'send <your-email> <message>' to get in touch!`
 				{
 					id: nextId(),
 					type: 'links',
-					content: JSON.stringify(SOCIAL_LINKS)
+					content: JSON.stringify(TERMINAL_SOCIAL_LINKS)
 				}
 			]
 		},
@@ -185,16 +118,7 @@ Type 'send <your-email> <message>' to get in touch!`
 			description: 'Send a message',
 			handler: async (args) => {
 				if (args.length < 2) {
-					return [
-						{
-							id: nextId(),
-							type: 'error',
-							content: `Usage: send <your-email> <message>
-
-Example:
-  send john@example.com Hi! I'd love to discuss a project.`
-						}
-					];
+					return [{ id: nextId(), type: 'error', content: SEND_USAGE_TEXT }];
 				}
 
 				const email = args[0];
@@ -205,9 +129,7 @@ Example:
 						{
 							id: nextId(),
 							type: 'error',
-							content: `Invalid email format: ${email}
-
-Please provide a valid email address.`
+							content: `Invalid email format: ${email}\n\nPlease provide a valid email address.`
 						}
 					];
 				}
@@ -225,46 +147,25 @@ Please provide a valid email address.`
 				isProcessing = true;
 
 				try {
-					const response = await fetch('/api/send-email', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							subject: `Portfolio Contact: ${email}`,
-							html: `
-								<h2>New Contact Form Message</h2>
-								<p><strong>From:</strong> ${email}</p>
-								<p><strong>Message:</strong></p>
-								<blockquote style="border-left: 3px solid #ccc; padding-left: 1rem; margin: 1rem 0;">
-									${message}
-								</blockquote>
-							`,
-							text: `From: ${email}\n\nMessage:\n${message}`
-						})
-					});
+					const result = await sendEmail(email, message);
 
-					const data = await response.json();
-
-					if (!response.ok) {
-						throw new Error(data.message || 'Failed to send message');
+					if (result.success) {
+						return [
+							{
+								id: nextId(),
+								type: 'success',
+								content: `✓ Message sent successfully!\n\nThank you for reaching out. I'll get back to you at ${email} as soon as possible.`
+							}
+						];
+					} else {
+						throw new Error(result.error || 'Failed to send message');
 					}
-
-					return [
-						{
-							id: nextId(),
-							type: 'success',
-							content: `✓ Message sent successfully!
-
-Thank you for reaching out. I'll get back to you at ${email} as soon as possible.`
-						}
-					];
 				} catch (error) {
 					return [
 						{
 							id: nextId(),
 							type: 'error',
-							content: `Failed to send message: ${error instanceof Error ? error.message : 'Unknown error'}
-
-Please try again or email me directly at ${EMAIL_ADDRESS}`
+							content: `Failed to send message: ${error instanceof Error ? error.message : 'Unknown error'}\n\nPlease try again or email me directly at ${EMAIL_ADDRESS}`
 						}
 					];
 				} finally {
@@ -365,7 +266,7 @@ Type 'help' to see available commands.`
 			}
 		} else if (e.key === 'Tab') {
 			e.preventDefault();
-			const match = commands.find((c) => c.name.startsWith(input.toLowerCase()));
+			const match = findMatchingCommand(input, commands);
 			if (match) {
 				input = match.name + ' ';
 			}
@@ -469,7 +370,7 @@ Type 'help' for available commands, or try:
 			{:else if entry.type === 'success'}
 				<div class="output success">{entry.content}</div>
 			{:else if entry.type === 'links'}
-				{@const links = JSON.parse(entry.content) as SocialLink[]}
+				{@const links = JSON.parse(entry.content) as TerminalSocialLink[]}
 				<div class="social-links">
 					{#each links as link (link.platform)}
 						<button class="social-link" onclick={(e) => handleLinkClick(e, link.url)} type="button">
