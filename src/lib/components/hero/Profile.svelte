@@ -43,8 +43,9 @@
 
 	/* Outer glow effect */
 	.glow-ring {
-		@apply absolute size-50 animate-[pulseGlow_4s_ease-in-out_infinite] rounded-full blur-[20px] sm:size-65 md:size-85 lg:size-100;
-		background: radial-gradient(circle, oklch(var(--accent-500) / 0.15) 0%, transparent 70%);
+		@apply absolute size-50 rounded-full blur-[20px] sm:size-65 md:size-85 lg:size-100;
+		background: radial-gradient(circle, oklch(var(--accent-500) / 0.3) 0%, transparent 70%);
+		/* animation: pulseGlow 4s ease-in-out infinite; */
 	}
 
 	/* Main container */
