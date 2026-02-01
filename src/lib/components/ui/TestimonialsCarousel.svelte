@@ -1,3 +1,10 @@
+<!--
+	@component TestimonialsCarousel
+	@deprecated This component is not currently used in the codebase.
+	The Testimonials section uses a custom GSAP-based card stack implementation
+	in src/lib/sections/Testimonials.svelte instead.
+	Consider removing this component if not needed.
+-->
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
