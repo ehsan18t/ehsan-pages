@@ -352,7 +352,7 @@
 				<button
 					type="submit"
 					disabled={status === 'submitting'}
-					class="flex w-full items-center justify-center gap-2 rounded-lg bg-(--m-accent) px-6 py-3.5 font-medium text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+					class="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-500/50 px-6 py-3.5 font-medium text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
 				>
 					{#if status === 'submitting'}
 						<span class="animate-spin size-5 rounded-full border-2 border-white/30 border-t-white"
