@@ -11,3 +11,4 @@
 - Commit by **TASK**, not by file
 - Use clear messages: `feat(ui): add toggle` or `fix(theme): persist preference`
 - Don't group unrelated changes
+- Always make sure there are no `suggestCanonicalClasses` warnings after you are done.
