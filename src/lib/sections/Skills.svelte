@@ -327,11 +327,12 @@
 		height: min(70vh, 550px);
 		border-radius: 0.75rem;
 		overflow: hidden;
-		border: 1px solid oklch(var(--foreground) / 0.12);
-		background: color-mix(in oklch, rgb(var(--background)), black 30%);
+		border: 1px solid oklch(var(--accent-500) / 0.2);
+		background: var(--surface-2);
 		box-shadow:
 			0 16px 70px rgba(0, 0, 0, 0.5),
-			0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+			0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+			0 0 40px oklch(var(--accent-500) / 0.05);
 	}
 
 	/* Sidebar Overlay for Mobile */
@@ -351,7 +352,7 @@
 		flex-shrink: 0;
 		display: flex;
 		flex-direction: column;
-		background: color-mix(in oklch, rgb(var(--background)), black 40%);
+		background: var(--surface-1);
 		border-right: 1px solid oklch(var(--foreground) / 0.1);
 		overflow: hidden;
 		transition:
@@ -536,7 +537,7 @@
 		display: flex;
 		align-items: center;
 		flex-shrink: 0;
-		background: color-mix(in oklch, rgb(var(--background)), black 40%);
+		background: var(--surface-1);
 		border-bottom: 1px solid oklch(var(--foreground) / 0.1);
 	}
 
@@ -595,7 +596,7 @@
 	}
 
 	.tab.active {
-		background: color-mix(in oklch, rgb(var(--background)), black 25%);
+		background: var(--surface-3);
 		color: oklch(var(--foreground));
 		border-bottom: 1px solid oklch(var(--accent-500));
 		margin-bottom: -1px;
