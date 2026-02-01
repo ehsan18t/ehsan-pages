@@ -14,7 +14,7 @@
 	import HeroOrbit from '$components/hero/HeroOrbit.svelte';
 	import Profile from '$components/hero/Profile.svelte';
 	import SocialBar from '$components/hero/SocialBar.svelte';
-	import TechIcon from '$components/hero/TechIcon.svelte';
+	import Star from '$components/hero/Star.svelte';
 	import PDFViewerModal from '$components/media/PDFViewerModal.svelte';
 	import GlitchText from '$components/ui/GlitchText.svelte';
 	import info from '$data';
@@ -115,75 +115,60 @@
 		<!-- Grain Effect -->
 		<div class="absolute inset-0 -z-30 opacity-5" style="background-image: url({grain});"></div>
 
-		<!-- Rings with Tech Icons -->
-		<!-- Ring-1: Inner Ring - Core Languages (smaller, closer) -->
-		<HeroOrbit size={20} duration={35} rotation={-20}>
-			<TechIcon
-				icon="mdi:language-javascript"
-				size={2.5}
-				counterDuration={35}
-				counterRotation={-20}
-			/>
+		<!-- Rings -->
+		<!-- Ring-1: Inner Ring with Smaller Stars -->
+		<HeroOrbit size={18} duration={30} rotation={-14}>
+			<Star size={2} duration={28} opacity={20} />
 		</HeroOrbit>
-		<HeroOrbit size={20} duration={35} rotation={100} starOnly>
-			<TechIcon
-				icon="mdi:language-typescript"
-				size={2.5}
-				counterDuration={35}
-				counterRotation={100}
-			/>
+		<HeroOrbit size={18} duration={30} rotation={79} starOnly>
+			<Star size={1.25} duration={16} opacity={20} />
+		</HeroOrbit>
+		<HeroOrbit size={18} duration={30} rotation={179} starOnly>
+			<Star size={1.25} duration={16} opacity={70} />
 		</HeroOrbit>
 
-		<!-- Ring-2: Frontend Frameworks -->
-		<HeroOrbit size={32} duration={45} rotation={15}>
-			<TechIcon icon="mdi:react" size={2.75} counterDuration={45} counterRotation={15} />
+		<!-- Ring-2: Adding More Stars for Increased Density -->
+		<HeroOrbit size={28} duration={42} rotation={178}>
+			<Star size={2.5} duration={20} opacity={20} />
 		</HeroOrbit>
-		<HeroOrbit size={32} duration={45} rotation={105} starOnly>
-			<TechIcon icon="simple-icons:svelte" size={2.75} counterDuration={45} counterRotation={105} />
+		<HeroOrbit size={28} duration={42} rotation={98} starOnly>
+			<Star size={2} duration={18} />
 		</HeroOrbit>
-		<HeroOrbit size={32} duration={45} rotation={195} starOnly>
-			<TechIcon
-				icon="simple-icons:nextdotjs"
-				size={2.75}
-				counterDuration={45}
-				counterRotation={195}
-			/>
+		<HeroOrbit size={28} duration={42} rotation={20} starOnly>
+			<Star size={3} duration={18} />
 		</HeroOrbit>
-		<HeroOrbit size={32} duration={45} rotation={285} starOnly>
-			<TechIcon icon="simple-icons:astro" size={2.75} counterDuration={45} counterRotation={285} />
+		<HeroOrbit size={28} duration={42} rotation={250} starOnly>
+			<Star size={1.5} duration={18} />
 		</HeroOrbit>
 
-		<!-- Ring-3: Backend & Tools -->
-		<HeroOrbit size={46} duration={60} rotation={40}>
-			<TechIcon icon="simple-icons:nestjs" size={3} counterDuration={60} counterRotation={40} />
+		<!-- Ring-3: Intermediate Ring with Medium Stars -->
+		<HeroOrbit size={38} duration={46} rotation={144}>
+			<Star size={3.5} duration={22} opacity={20} />
 		</HeroOrbit>
-		<HeroOrbit size={46} duration={60} rotation={130} starOnly>
-			<TechIcon icon="simple-icons:django" size={3} counterDuration={60} counterRotation={130} />
+		<HeroOrbit size={38} duration={42} rotation={85} starOnly>
+			<Star size={0.75} duration={20} opacity={20} />
 		</HeroOrbit>
-		<HeroOrbit size={46} duration={60} rotation={220} starOnly>
-			<TechIcon icon="mdi:github" size={3} counterDuration={60} counterRotation={220} />
+		<HeroOrbit size={38} duration={40} starOnly>
+			<Star size={2.3} duration={20} opacity={70} />
 		</HeroOrbit>
-		<HeroOrbit size={46} duration={60} rotation={310} starOnly>
-			<TechIcon icon="mdi:tailwind" size={3} counterDuration={60} counterRotation={310} />
+		<HeroOrbit size={38} duration={37} rotation={200} starOnly>
+			<Star size={2.7} duration={20} opacity={75} />
 		</HeroOrbit>
-
-		<!-- Ring-4: DevOps (outer ring) -->
-		<HeroOrbit size={60} duration={75} rotation={-30}>
-			<TechIcon icon="simple-icons:docker" size={3.25} counterDuration={75} counterRotation={-30} />
-		</HeroOrbit>
-		<HeroOrbit size={60} duration={75} rotation={150} starOnly>
-			<TechIcon
-				icon="simple-icons:express"
-				size={3.25}
-				counterDuration={75}
-				counterRotation={150}
-			/>
+		<HeroOrbit size={38} duration={35} rotation={270} starOnly>
+			<Star size={2.9} duration={18} />
 		</HeroOrbit>
 
-		<!-- Background Orbit Rings (decorative) -->
-		<HeroOrbit size={74} opacity={40} />
-		<HeroOrbit size={90} opacity={30} />
-		<HeroOrbit size={106} opacity={20} />
+		<!-- Ring-4: Larger Ring with Varied Star Sizes -->
+		<HeroOrbit size={50} duration={80} rotation={-72}>
+			<Star size={7} duration={25} />
+		</HeroOrbit>
+
+		<!-- Final Larger Orbits for Background Depth -->
+		<HeroOrbit size={62} opacity={60} />
+		<HeroOrbit size={74} opacity={50} />
+		<HeroOrbit size={86} opacity={40} />
+		<HeroOrbit size={98} opacity={30} />
+		<HeroOrbit size={110} opacity={20} />
 	</div>
 
 	<!-- Content -->
