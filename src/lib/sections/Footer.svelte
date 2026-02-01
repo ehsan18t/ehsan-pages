@@ -26,12 +26,14 @@
 	class="relative mt-12 overflow-hidden bg-linear-to-t from-background via-background/90 to-transparent pt-16 pb-10"
 >
 	<!-- Main Footer Content -->
-	<div class="relative z-10 container mx-auto px-4">
+	<div class="relative z-10 container mx-auto w-full px-4">
 		<!-- Interactive Logo -->
 		<SectionTitle p1="Contact" p2="me" class="group mb-8 flex justify-center md:mb-8" />
 
 		<!-- Terminal Section -->
-		<Terminal />
+		<div class="flex w-full items-center justify-center">
+			<Terminal />
+		</div>
 
 		<!-- Footer bottom -->
 		<div class="flex flex-col-reverse items-center justify-between gap-1 pt-4 md:flex-row">

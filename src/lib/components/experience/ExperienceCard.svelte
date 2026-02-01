@@ -159,9 +159,9 @@
 	<!-- Card Header -->
 	<div class="card-header">
 		<div class="card-header-content">
-			<div class="card-date-badge">
+			<span class="card-date-badge">
 				{experience.startDate} — {experience.endDate}
-			</div>
+			</span>
 			<h3 id="card-title" class="card-title">
 				{experience.role}
 			</h3>
@@ -227,20 +227,13 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
+	@reference "$routes/layout.css";
+
 	/* Experience Card */
 	.experience-card {
-		width: 380px;
-		max-width: calc(100vw - 40px);
-		max-height: calc(100vh - 40px);
-		overflow-y: auto;
+		@apply z-9999 max-h-[calc(100vh-40px)] w-95 max-w-[calc(100vw-40px)] overflow-y-auto rounded-2xl border border-[rgba(var(--foreground),0.12)] p-6 backdrop-blur-[20px];
 		background: color-mix(in oklch, rgb(var(--background)), black 35%);
-		backdrop-filter: blur(20px);
-		-webkit-backdrop-filter: blur(20px);
-		border: 1px solid rgba(var(--foreground), 0.12);
-		border-radius: 16px;
-		padding: 1.5rem;
-		z-index: 9999;
 		box-shadow:
 			0 25px 50px -12px rgba(0, 0, 0, 0.5),
 			0 0 0 1px rgba(var(--foreground), 0.05),
@@ -248,56 +241,30 @@
 	}
 
 	.experience-card::before {
+		@apply absolute inset-x-0 top-0 h-0.75 opacity-80;
 		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 3px;
 		background: var(--card-accent);
-		opacity: 0.8;
 	}
 
 	/* Card Header */
 	.card-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 1rem;
+		@apply mb-4 flex items-start justify-between;
 	}
 
 	.card-header-content {
-		flex: 1;
+		@apply flex-1;
 	}
 
 	.card-date-badge {
-		display: inline-block;
-		font-size: 0.7rem;
-		font-weight: 600;
-		color: var(--card-accent);
-		background: color-mix(in oklch, var(--card-accent), transparent 85%);
-		padding: 0.25rem 0.625rem;
-		border-radius: 4px;
-		margin-bottom: 0.5rem;
-		letter-spacing: 0.5px;
+		@apply m-0 inline-block rounded border-0 bg-transparent p-0 font-doto font-bold text-(--card-accent);
 	}
 
 	.card-title {
-		font-size: 1.25rem;
-		font-weight: 700;
-		color: rgb(var(--foreground));
-		margin: 0 0 0.25rem 0;
-		line-height: 1.3;
+		@apply m-0 mb-1 text-xl leading-tight font-bold text-foreground;
 	}
 
 	.card-company {
-		font-size: 0.875rem;
-		color: rgb(var(--foreground-muted));
-		text-decoration: none;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-		transition: color 0.2s ease;
+		@apply inline-flex items-center gap-1.5 text-sm text-foreground-muted no-underline transition-colors duration-200;
 	}
 
 	a.card-company:hover {
@@ -305,186 +272,128 @@
 	}
 
 	.external-icon {
-		opacity: 0.7;
+		@apply opacity-70;
 	}
 
 	/* Description List */
 	.card-description-list {
-		list-style: none;
-		padding: 0;
-		margin: 0 0 1rem 0;
+		@apply m-0 mb-4 list-none p-0;
 	}
 
 	.card-description-item {
-		position: relative;
-		font-size: 0.8125rem;
-		line-height: 1.6;
-		color: rgb(var(--foreground-muted));
-		padding-left: 1rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.card-description-item:last-child {
-		margin-bottom: 0;
+		@apply relative mb-2 pl-4 text-[0.8125rem] leading-relaxed text-foreground-muted last:mb-0;
 	}
 
 	.card-description-item::before {
+		@apply absolute left-0 text-xs opacity-70;
 		content: '▸';
-		position: absolute;
-		left: 0;
 		color: var(--card-accent);
-		opacity: 0.7;
-		font-size: 0.75rem;
 	}
 
 	/* Tech Stack */
 	.card-tech-stack {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-bottom: 1.25rem;
+		@apply mb-5 flex flex-wrap gap-2;
 	}
 
 	.card-tech-pill {
-		font-size: 0.7rem;
-		font-weight: 500;
-		color: oklch(var(--accent-300));
-		background: oklch(var(--accent-900) / 0.2);
-		padding: 0.25rem 0.625rem;
-		border-radius: 9999px;
-		border: 1px solid oklch(var(--accent-500) / 0.3);
-		transition: all 0.2s ease;
+		@apply rounded-full border border-accent-500/30 bg-accent-900/20 px-2.5 py-1 text-[0.7rem] font-medium text-accent-300 transition-all duration-200;
 	}
 
 	.card-tech-pill:hover {
-		background: oklch(var(--accent-900) / 0.35);
-		border-color: oklch(var(--accent-500) / 0.5);
+		@apply border-accent-500/50 bg-accent-900/35;
 	}
 
 	/* Diff Section */
 	.card-diff {
+		@apply mb-4 overflow-hidden rounded-lg border border-[rgba(var(--foreground),0.1)];
 		background: color-mix(in oklch, rgb(var(--background)), black 50%);
-		border-radius: 8px;
-		overflow: hidden;
-		border: 1px solid rgba(var(--foreground), 0.1);
-		margin-bottom: 1rem;
 	}
 
 	.diff-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0.5rem 0.75rem;
-		background: rgba(var(--foreground), 0.05);
-		border-bottom: 1px solid rgba(var(--foreground), 0.1);
+		@apply flex items-center justify-between border-b border-[rgba(var(--foreground),0.1)] bg-[rgba(var(--foreground),0.05)] px-3 py-2;
 	}
 
 	.diff-title {
-		font-size: 0.75rem;
-		font-weight: 600;
-		color: rgb(var(--foreground));
+		@apply text-xs font-semibold text-foreground;
 	}
 
 	.diff-file {
-		font-size: 0.7rem;
-		font-family: monospace;
-		color: rgb(var(--foreground-muted));
+		@apply font-mono text-[0.7rem] text-foreground-muted;
 	}
 
 	.diff-content {
-		padding: 0.5rem 0;
+		@apply py-2;
 	}
 
 	.diff-line {
-		display: flex;
-		align-items: center;
-		padding: 0.25rem 0.75rem;
-		font-family: monospace;
-		font-size: 0.8rem;
-		transition: background 0.2s ease;
+		@apply flex items-center px-3 py-1 font-mono text-[0.8rem] transition-colors duration-200;
 	}
 
 	.diff-line:hover {
-		background: rgba(var(--foreground), 0.05);
+		@apply bg-[rgba(var(--foreground),0.05)];
 	}
 
 	.diff-line-number {
-		width: 20px;
-		color: rgb(var(--foreground-muted));
-		opacity: 0.5;
-		font-size: 0.7rem;
+		@apply w-5 text-[0.7rem] text-foreground-muted opacity-50;
 	}
 
 	.diff-symbol {
-		width: 20px;
-		font-weight: 700;
-		text-align: center;
+		@apply w-5 text-center font-bold;
 	}
 
 	.diff-line.addition .diff-symbol {
-		color: #4ade80;
+		@apply text-green-400;
 	}
 	.diff-line.deletion .diff-symbol {
-		color: #f87171;
+		@apply text-red-400;
 	}
 	.diff-line.modification .diff-symbol {
-		color: #fbbf24;
+		@apply text-amber-400;
 	}
 
 	.diff-line.addition {
-		background: rgba(74, 222, 128, 0.08);
+		@apply bg-green-400/8;
 	}
 	.diff-line.deletion {
-		background: rgba(248, 113, 113, 0.08);
+		@apply bg-red-400/8;
 	}
 	.diff-line.modification {
-		background: rgba(251, 191, 36, 0.08);
+		@apply bg-amber-400/8;
 	}
 
 	.diff-label {
-		color: rgb(var(--foreground-muted));
-		margin-right: 0.5rem;
+		@apply mr-2 text-foreground-muted;
 	}
 
 	.diff-value {
-		color: rgb(var(--foreground));
-		font-weight: 600;
-		margin-left: auto;
+		@apply ml-auto font-semibold text-foreground;
 	}
 
 	/* Lane Indicator */
 	.card-lane-indicator {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.75rem;
-		color: rgb(var(--foreground-muted));
-		text-transform: capitalize;
+		@apply flex items-center gap-2 text-xs text-foreground-muted capitalize;
 	}
 
 	.lane-dot {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
+		@apply size-2 rounded-full;
 	}
 
 	/* Responsive */
 	@media (min-width: 768px) and (max-width: 1023px) {
 		.experience-card {
-			width: 340px;
-			padding: 1.25rem;
+			@apply w-85 p-5;
 		}
 	}
 
 	@media (min-width: 1024px) {
 		.experience-card {
-			width: 400px;
+			@apply w-100;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.experience-card {
-			transition: none;
+			@apply transition-none;
 			animation: none;
 		}
 	}

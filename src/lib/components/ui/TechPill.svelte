@@ -151,10 +151,12 @@
 	</span>
 {/if}
 
-<style>
-	/* === Base (Refreshed Design) === */
+<style lang="postcss">
+	@reference "$routes/layout.css";
+
+	/* Base pill styling */
 	.tech-pill {
-		--pill-color: oklch(80% 0.1 200); /* Default color */
+		--pill-color: oklch(80% 0.1 200);
 		--pill-bg: color-mix(in oklch, var(--pill-color), transparent 88%);
 		--pill-bg-hover: color-mix(in oklch, var(--pill-color), transparent 82%);
 		--pill-border: color-mix(in oklch, var(--pill-color), transparent 80%);
@@ -163,10 +165,7 @@
 		--pill-shadow: 0 1px 2px color-mix(in oklch, black, transparent 92%);
 		--pill-shadow-hover: 0 4px 10px color-mix(in oklch, var(--pill-color), transparent 85%);
 
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		border-radius: 9999px;
+		@apply relative inline-flex cursor-pointer items-center gap-1.5 rounded-full whitespace-nowrap backdrop-blur-[10px] select-none;
 		border: 1px solid var(--pill-border);
 		background: var(--pill-bg);
 		color: var(--pill-text);
@@ -174,18 +173,11 @@
 		line-height: 1.15;
 		font-weight: 500;
 		text-decoration: none;
-		position: relative;
-		white-space: nowrap;
-		backdrop-filter: blur(10px);
 		transition:
 			background 0.25s ease,
 			border-color 0.25s ease,
 			box-shadow 0.25s ease,
 			transform 0.25s ease;
-		padding: 0.38rem 0.7rem;
-		font-size: 0.72rem;
-		user-select: none;
-		cursor: pointer;
 	}
 
 	.tech-pill:hover,
@@ -197,43 +189,36 @@
 	}
 
 	.tech-pill:active {
-		transform: translateY(0) scale(1);
+		@apply translate-y-0 scale-100;
 		transition-duration: 0.1s;
 	}
 
 	:global(.tech-icon) {
-		width: 0.95rem;
-		height: 0.95rem;
-		opacity: 0.85;
-		transition: opacity 0.3s ease;
-		flex: 0 0 auto;
+		@apply size-[0.95rem] shrink-0 opacity-85 transition-opacity duration-300;
 	}
+
 	.tech-pill:hover :global(.tech-icon) {
-		opacity: 1;
+		@apply opacity-100;
 	}
 
 	.tech-name {
-		display: inline-block;
+		@apply inline-block;
 	}
 
 	/* Size variants */
 	.size-xs {
-		padding: 0.28rem 0.55rem;
-		font-size: 0.625rem;
+		@apply px-2 py-1 text-[0.625rem];
 	}
 	.size-sm {
-		padding: 0.38rem 0.7rem;
-		font-size: 0.72rem;
+		@apply px-2.5 py-1.5 text-[0.72rem];
 	}
 	.size-md {
-		padding: 0.5rem 0.9rem;
-		font-size: 0.8rem;
+		@apply px-3.5 py-2 text-[0.8rem];
 	}
 
 	/* Variant support */
 	.variant-ghost {
-		background: transparent;
-		backdrop-filter: none;
+		@apply bg-transparent backdrop-blur-none;
 	}
 	.variant-solid {
 		--pill-bg: color-mix(in oklch, var(--pill-color), transparent 80%);
@@ -241,8 +226,7 @@
 		--pill-shadow-hover: 0 6px 12px color-mix(in oklch, var(--pill-color), transparent 80%);
 	}
 	.variant-outline {
-		background: transparent;
-		border-width: 1.5px;
+		@apply border-[1.5px] bg-transparent;
 	}
 
 	/* Focus accessibility */
@@ -255,10 +239,7 @@
 	@media (forced-colors: active) {
 		.tech-pill {
 			forced-color-adjust: auto;
-			background: Canvas;
-			color: ButtonText;
-			border-color: ButtonText;
-			border-radius: 4px;
+			@apply rounded border-[ButtonText] bg-[Canvas] text-[ButtonText];
 		}
 	}
 
@@ -272,7 +253,7 @@
 		}
 	}
 
-	/* === Per-tech theming === */
+	/* Per-tech theming */
 	.tech-pill[data-tech='html'] {
 		--pill-color: #e44d26;
 	}

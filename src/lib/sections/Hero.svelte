@@ -172,17 +172,25 @@
 	</div>
 
 	<!-- Content -->
-	<div class="hero-content">
+	<div
+		class="flex max-w-full animate-[fadeInUp_0.8s_ease-out] flex-col items-center gap-4 px-4 sm:gap-6 sm:px-6 md:flex-row md:gap-12 md:px-10 lg:max-w-275 lg:gap-16"
+	>
 		<!-- Profile Section -->
-		<div class="profile-section">
+		<div class="shrink-0 animate-[fadeInLeft_0.8s_ease-out_0.2s_both]">
 			<Profile />
 		</div>
 
 		<!-- Info Section -->
-		<div class="info-section">
+		<div
+			class="flex animate-[fadeInRight_0.8s_ease-out_0.3s_both] flex-col gap-2.5 text-center sm:gap-3.5 md:text-left"
+		>
 			<!-- Greeting badge -->
-			<div class="greeting-badge">
-				<span class="wave">👋</span>
+			<div
+				class="mx-auto inline-flex w-fit items-center gap-2 rounded-full border border-[oklch(var(--accent-500)/0.2)] bg-[oklch(var(--accent-500)/0.1)] px-4 py-1.5 text-sm text-[oklch(var(--accent-text))] md:mx-0"
+			>
+				<span class="inline-block origin-[70%_70%] animate-[wave_2.5s_ease-in-out_infinite]"
+					>👋</span
+				>
 				<span>Hello, I'm</span>
 			</div>
 
@@ -190,16 +198,24 @@
 			<GlitchText text={info.name} class="hero-name" />
 
 			<!-- Title with accent -->
-			<div class="title-wrapper">
-				<span class="title-accent"></span>
-				<h2 class="hero-title">{info.title}</h2>
+			<div class="flex items-center justify-center gap-3 md:justify-start">
+				<span
+					class="hidden h-6 w-0.75 rounded-sm bg-linear-to-b from-[oklch(var(--accent-300))] via-[oklch(var(--accent-500))] to-[oklch(var(--accent-900))] md:block"
+				></span>
+				<h2 class="text-xl font-medium text-[oklch(var(--secondary))] sm:text-2xl">{info.title}</h2>
 			</div>
 
 			<!-- Description -->
-			<p class="hero-description">{info.description}</p>
+			<p
+				class="mx-auto max-w-125 text-sm leading-relaxed text-[oklch(var(--foreground)/0.8)] sm:text-[0.95rem] sm:leading-relaxed md:mx-0 md:text-left md:text-base lg:text-lg"
+			>
+				{info.description}
+			</p>
 
 			<!-- CTA Buttons -->
-			<div class="cta-wrapper">
+			<div
+				class="mx-auto flex w-full max-w-65 flex-col gap-2 pt-1 sm:max-w-70 sm:gap-3 sm:pt-2 md:mx-0 md:w-auto md:max-w-none md:flex-row"
+			>
 				<PDFViewerModal cvPDF={info.resume} />
 				<button
 					type="button"
@@ -230,111 +246,23 @@
 	</div>
 </section>
 
-<style>
-	/* Custom CSS for better viewport handling */
+<style lang="postcss">
+	@reference "$routes/layout.css";
+
+	/* Custom CSS for viewport handling - can't be expressed in Tailwind */
 	#hero {
 		min-height: 100vh;
 		min-height: calc(var(--vh, 1vh) * 100);
 	}
 
-	/* Hero content layout */
-	.hero-content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1rem;
-		max-width: 100%;
-		padding: 0 1rem;
-		animation: fadeInUp 0.8s ease-out;
-	}
-
-	@media (min-width: 640px) {
-		.hero-content {
-			gap: 1.5rem;
-			padding: 0 1.5rem;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.hero-content {
-			flex-direction: row;
-			gap: 3rem;
-			padding: 0 2.5rem;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.hero-content {
-			gap: 4rem;
-			max-width: 1100px;
-		}
-	}
-
-	/* Profile section */
-	.profile-section {
-		flex-shrink: 0;
-		animation: fadeInLeft 0.8s ease-out 0.2s both;
-	}
-
-	/* Info section */
-	.info-section {
-		display: flex;
-		flex-direction: column;
-		gap: 0.625rem;
-		text-align: center;
-		animation: fadeInRight 0.8s ease-out 0.3s both;
-	}
-
-	@media (min-width: 640px) {
-		.info-section {
-			gap: 0.875rem;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.info-section {
-			text-align: left;
-		}
-	}
-
-	/* Greeting badge */
-	.greeting-badge {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.4rem 1rem;
-		background: oklch(var(--accent-500) / 0.1);
-		border: 1px solid oklch(var(--accent-500) / 0.2);
-		border-radius: 50px;
-		font-size: 0.875rem;
-		color: oklch(var(--accent-text));
-		width: fit-content;
-		margin: 0 auto;
-	}
-
-	@media (min-width: 768px) {
-		.greeting-badge {
-			margin: 0;
-		}
-	}
-
-	.wave {
-		display: inline-block;
-		animation: wave 2.5s ease-in-out infinite;
-		transform-origin: 70% 70%;
-	}
-
-	/* Name styling */
+	/* Name responsive sizing - using :global */
 	:global(.hero-name) {
-		font-size: 1.875rem;
-		font-weight: 700;
-		line-height: 1.1;
-		letter-spacing: -0.02em;
+		@apply text-3xl leading-[1.1] font-bold tracking-tight;
 	}
 
 	@media (min-width: 400px) {
 		:global(.hero-name) {
-			font-size: 2.25rem;
+			@apply text-4xl;
 		}
 	}
 
@@ -356,154 +284,35 @@
 		}
 	}
 
-	/* Title with accent bar */
-	.title-wrapper {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		justify-content: center;
-	}
-
-	@media (min-width: 768px) {
-		.title-wrapper {
-			justify-content: flex-start;
-		}
-	}
-
-	.title-accent {
-		width: 3px;
-		height: 1.5rem;
-		background: linear-gradient(
-			to bottom,
-			oklch(var(--accent-300)),
-			oklch(var(--accent-500)),
-			oklch(var(--accent-900))
-		);
-		border-radius: 2px;
-		display: none;
-	}
-
-	@media (min-width: 768px) {
-		.title-accent {
-			display: block;
-		}
-	}
-
-	.hero-title {
-		font-size: 1.25rem;
-		font-weight: 500;
-		color: oklch(var(--secondary));
-	}
-
-	@media (min-width: 640px) {
-		.hero-title {
-			font-size: 1.5rem;
-		}
-	}
-
-	/* Description */
-	.hero-description {
-		font-size: 0.875rem;
-		line-height: 1.6;
-		color: oklch(var(--foreground) / 0.8);
-		max-width: 500px;
-		margin: 0 auto;
-	}
-
-	@media (min-width: 640px) {
-		.hero-description {
-			font-size: 0.95rem;
-			line-height: 1.7;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.hero-description {
-			font-size: 1rem;
-			margin: 0;
-			text-align: left;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.hero-description {
-			font-size: 1.1rem;
-		}
-	}
-
-	/* CTA wrapper */
-	.cta-wrapper {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		padding-top: 0.25rem;
-		width: 100%;
-		max-width: 260px;
-		margin: 0 auto;
-	}
-
-	@media (min-width: 640px) {
-		.cta-wrapper {
-			gap: 0.75rem;
-			padding-top: 0.5rem;
-			max-width: 280px;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.cta-wrapper {
-			flex-direction: row;
-			max-width: none;
-			width: auto;
-			margin: 0;
-		}
-	}
-
 	/* Shared button styles via global for the View CV button */
 	:global(.cta-btn) {
-		min-width: 140px;
-		text-align: center;
+		@apply min-w-35 text-center;
 	}
 
 	/* Contact button */
 	.contact-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		min-width: 140px;
-		padding: 0.75rem 1.25rem;
-		background: transparent;
-		border: 2px solid oklch(var(--accent-500) / 0.5);
-		border-radius: 8px;
-		color: oklch(var(--accent-text));
-		font-size: 0.875rem;
-		font-weight: 700;
-		text-decoration: none;
-		transition: all 0.3s ease;
+		@apply inline-flex min-w-35 items-center justify-center gap-2 rounded-lg border-2 border-[oklch(var(--accent-500)/0.5)] bg-transparent px-5 py-3 text-sm font-bold text-[oklch(var(--accent-text))] no-underline transition-all duration-300;
 	}
 
 	@media (min-width: 640px) {
 		.contact-btn {
-			padding: 0.875rem 1.5rem;
-			font-size: 0.95rem;
+			@apply px-6 py-3.5 text-[0.95rem];
 		}
 	}
 
 	.contact-btn:hover {
-		background: oklch(var(--accent-500) / 0.15);
-		border-color: oklch(var(--accent-500));
+		@apply border-[oklch(var(--accent-500))] bg-[oklch(var(--accent-500)/0.15)];
 	}
 
 	.contact-btn svg {
-		transition: transform 0.3s ease;
+		@apply transition-transform duration-300;
 	}
 
 	.contact-btn:hover svg {
-		transform: translateX(4px);
+		@apply translate-x-1;
 	}
 
-	/* Keyframes */
+	/* Keyframes - must stay in CSS */
 	@keyframes fadeInUp {
 		from {
 			opacity: 0;
@@ -563,26 +372,23 @@
 		}
 	}
 
+	/* Short height handling */
 	@media (max-height: 600px) {
 		#hero {
-			padding-top: 2rem;
-			padding-bottom: 2rem;
+			@apply py-8;
 		}
 	}
 
 	@media (max-height: 500px) {
 		#hero {
-			padding-top: 1rem;
-			padding-bottom: 1rem;
+			@apply py-4;
 		}
 	}
 
 	/* Reduced motion */
 	@media (prefers-reduced-motion: reduce) {
-		.hero-content,
-		.profile-section,
-		.info-section,
-		.wave {
+		:global(.hero-name),
+		.contact-btn svg {
 			animation: none;
 		}
 	}

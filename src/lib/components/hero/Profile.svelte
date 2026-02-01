@@ -34,96 +34,28 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
+	@reference "$routes/layout.css";
+
 	.profile-wrapper {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 1rem;
-		user-select: none;
-	}
-
-	@media (min-width: 640px) {
-		.profile-wrapper {
-			padding: 1.5rem;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.profile-wrapper {
-			padding: 2rem;
-		}
+		@apply relative flex items-center justify-center p-4 select-none sm:p-6 md:p-8;
 	}
 
 	/* Outer glow effect */
 	.glow-ring {
-		position: absolute;
-		width: 200px;
-		height: 200px;
-		border-radius: 50%;
+		@apply absolute size-50 animate-[pulseGlow_4s_ease-in-out_infinite] rounded-full blur-[20px] sm:size-65 md:size-85 lg:size-100;
 		background: radial-gradient(circle, oklch(var(--accent-500) / 0.15) 0%, transparent 70%);
-		filter: blur(20px);
-		animation: pulseGlow 4s ease-in-out infinite;
-	}
-
-	@media (min-width: 640px) {
-		.glow-ring {
-			width: 260px;
-			height: 260px;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.glow-ring {
-			width: 340px;
-			height: 340px;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.glow-ring {
-			width: 400px;
-			height: 400px;
-		}
 	}
 
 	/* Main container */
 	.profile-container {
-		position: relative;
-		width: 160px;
-		height: 160px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	@media (min-width: 640px) {
-		.profile-container {
-			width: 190px;
-			height: 190px;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.profile-container {
-			width: 240px;
-			height: 240px;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.profile-container {
-			width: 280px;
-			height: 280px;
-		}
+		@apply relative flex size-40 items-center justify-center sm:size-47.5 md:size-60 lg:size-70;
 	}
 
 	/* Animated gradient border */
 	.gradient-border {
-		position: absolute;
+		@apply absolute animate-[rotateBorder_6s_linear_infinite] rounded-full will-change-transform;
 		inset: -3px;
-		border-radius: 50%;
 		background: conic-gradient(
 			from 0deg,
 			oklch(var(--accent-900)),
@@ -138,8 +70,6 @@
 			black calc(100% - 3px)
 		);
 		mask: radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
-		animation: rotateBorder 6s linear infinite;
-		will-change: transform;
 	}
 
 	@media (min-width: 640px) {
@@ -168,10 +98,8 @@
 
 	/* Inner ring accent */
 	.inner-ring {
-		position: absolute;
+		@apply absolute rounded-full border border-[oklch(var(--accent-500)/0.3)];
 		inset: 4px;
-		border-radius: 50%;
-		border: 1px solid oklch(var(--accent-500) / 0.3);
 	}
 
 	@media (min-width: 640px) {
@@ -188,12 +116,9 @@
 
 	/* Image wrapper */
 	.image-wrapper {
-		position: relative;
+		@apply relative z-10 overflow-hidden rounded-full;
 		width: calc(100% - 12px);
 		height: calc(100% - 12px);
-		border-radius: 50%;
-		overflow: hidden;
-		z-index: 10;
 	}
 
 	@media (min-width: 640px) {
@@ -211,26 +136,15 @@
 	}
 
 	.image-wrapper img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		background: transparent;
+		@apply size-full bg-transparent object-cover;
 	}
 
 	/* Status indicator */
 	.status-indicator {
-		position: absolute;
+		@apply absolute z-20 flex items-center gap-1 rounded-[20px] border border-[oklch(var(--accent-500)/0.5)] px-2 py-0.75 backdrop-blur-md sm:gap-1.5 sm:px-2.5 sm:py-1 md:gap-1.5 md:px-3.5 md:py-1.25;
 		bottom: 10px;
 		right: 0;
-		display: flex;
-		align-items: center;
-		gap: 4px;
-		padding: 3px 8px;
 		background: rgb(var(--background) / 0.85);
-		backdrop-filter: blur(12px);
-		border: 1px solid oklch(var(--accent-500) / 0.5);
-		border-radius: 20px;
-		z-index: 20;
 		box-shadow:
 			0 4px 16px rgb(0 0 0 / 0.25),
 			inset 0 1px 0 rgb(255 255 255 / 0.1);
@@ -240,8 +154,6 @@
 		.status-indicator {
 			bottom: 12px;
 			right: 5px;
-			gap: 5px;
-			padding: 4px 10px;
 		}
 	}
 
@@ -249,51 +161,15 @@
 		.status-indicator {
 			bottom: 15px;
 			right: 5px;
-			gap: 6px;
-			padding: 5px 14px;
 		}
 	}
 
 	.status-dot {
-		width: 6px;
-		height: 6px;
-		background: #22c55e;
-		border-radius: 50%;
-		animation: statusPulse 2s ease-in-out infinite;
-	}
-
-	@media (min-width: 640px) {
-		.status-dot {
-			width: 7px;
-			height: 7px;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.status-dot {
-			width: 8px;
-			height: 8px;
-		}
+		@apply size-1.5 animate-[statusPulse_2s_ease-in-out_infinite] rounded-full bg-green-500 sm:size-1.75 md:size-2;
 	}
 
 	.status-text {
-		font-size: 0.55rem;
-		font-weight: 500;
-		color: oklch(var(--accent-text));
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	@media (min-width: 640px) {
-		.status-text {
-			font-size: 0.6rem;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.status-text {
-			font-size: 0.7rem;
-		}
+		@apply text-[0.55rem] font-medium tracking-wide text-accent-text uppercase sm:text-[0.6rem] md:text-[0.7rem];
 	}
 
 	/* Keyframes */
@@ -327,29 +203,6 @@
 		50% {
 			opacity: 0.8;
 			box-shadow: 0 0 0 4px rgba(34, 197, 94, 0);
-		}
-	}
-
-	@keyframes orbitFloat {
-		0% {
-			transform: translateY(0) scale(1);
-			opacity: 0.6;
-		}
-		25% {
-			transform: translateY(-10px) scale(1.1);
-			opacity: 1;
-		}
-		50% {
-			transform: translateY(0) scale(1);
-			opacity: 0.6;
-		}
-		75% {
-			transform: translateY(10px) scale(0.9);
-			opacity: 0.4;
-		}
-		100% {
-			transform: translateY(0) scale(1);
-			opacity: 0.6;
 		}
 	}
 

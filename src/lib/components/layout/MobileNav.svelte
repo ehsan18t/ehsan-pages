@@ -254,43 +254,28 @@
 <style lang="postcss">
 	@reference '$routes/layout.css';
 
-	/* ─────────────────────────────────────────────────────────────
-	   Container Styles
-	   ───────────────────────────────────────────────────────────── */
-
+	/* Container Visibility States */
 	.mobile-nav-container {
-		opacity: 0;
-		pointer-events: none;
-		transform: translateY(100%);
-		transition:
-			opacity 0.4s ease,
-			transform 0.4s cubic-bezier(0.4, 0.8, 0.2, 1);
+		@apply pointer-events-none translate-y-full opacity-0 transition-all duration-400;
+		transition-timing-function: cubic-bezier(0.4, 0.8, 0.2, 1);
 		will-change: opacity, transform;
 	}
 
 	.mobile-nav-container.is-visible {
-		opacity: 1;
-		pointer-events: auto;
-		transform: translateY(0);
+		@apply pointer-events-auto translate-y-0 opacity-100;
 	}
 
 	.mobile-nav-container.is-hidden {
-		opacity: 0;
-		pointer-events: none;
-		transform: translateY(100%);
+		@apply pointer-events-none translate-y-full opacity-0;
 	}
 
-	/* ─────────────────────────────────────────────────────────────
-	   Arc Navigation
-	   ───────────────────────────────────────────────────────────── */
-
+	/* Arc Navigation */
 	.arc-container {
-		width: 0;
-		height: 0;
-		margin-bottom: 8px;
+		@apply mb-2 size-0;
 	}
 
 	.arc-item {
+		@apply backdrop-blur-md;
 		background:
 			linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%),
 			rgba(12, 22, 38, 0.9);
@@ -299,25 +284,18 @@
 		box-shadow:
 			0 4px 16px rgba(0, 0, 0, 0.3),
 			0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		transition:
-			background 0.2s ease,
-			border-color 0.2s ease,
-			color 0.2s ease,
-			box-shadow 0.2s ease;
-		will-change: transform, opacity;
 		-webkit-tap-highlight-color: transparent;
+		will-change: transform, opacity;
 	}
 
 	.arc-item:hover,
 	.arc-item:focus-visible {
+		@apply outline-none;
 		background:
 			linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%),
 			rgba(15, 28, 50, 0.95);
 		border-color: rgba(255, 255, 255, 0.18);
 		color: rgba(var(--foreground), 0.95);
-		outline: none;
 	}
 
 	.arc-item:focus-visible {
@@ -327,41 +305,29 @@
 	}
 
 	.arc-item.active {
+		@apply text-accent-text;
 		background: linear-gradient(
 			145deg,
 			oklch(var(--accent-bg) / 0.25) 0%,
 			oklch(var(--accent-bg) / 0.1) 100%
 		);
 		border-color: oklch(var(--accent-bg) / 0.4);
-		color: oklch(var(--accent-text));
 		box-shadow:
 			0 4px 20px oklch(var(--accent-bg) / 0.25),
 			0 0 0 1px oklch(var(--accent-bg) / 0.2) inset;
 	}
 
 	.arc-item-label {
-		position: absolute;
-		bottom: 100%;
-		left: 50%;
-		transform: translateX(-50%);
-		margin-bottom: 6px;
-		padding: 4px 10px;
-		font-size: 11px;
-		font-weight: 500;
-		white-space: nowrap;
+		@apply pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 rounded-md px-2.5 py-1 text-[11px] font-medium whitespace-nowrap;
 		background: rgba(12, 22, 38, 0.95);
 		color: oklch(var(--accent-text));
-		border-radius: 6px;
 		border: 1px solid oklch(var(--accent-bg) / 0.3);
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-		pointer-events: none;
 	}
 
-	/* ─────────────────────────────────────────────────────────────
-	   Main Trigger Button
-	   ───────────────────────────────────────────────────────────── */
-
+	/* Main Trigger Button */
 	.main-trigger {
+		@apply min-w-35 saturate-180 backdrop-blur-[20px];
 		background:
 			linear-gradient(
 				165deg,
@@ -371,14 +337,11 @@
 			),
 			rgba(12, 22, 38, 0.92);
 		border: 1px solid rgba(255, 255, 255, 0.12);
+		color: rgba(var(--foreground), 0.9);
 		box-shadow:
 			0 8px 32px -4px rgba(0, 0, 0, 0.5),
 			0 0 0 1px rgba(255, 255, 255, 0.06) inset,
 			0 4px 12px rgba(0, 0, 0, 0.25);
-		backdrop-filter: blur(20px) saturate(180%);
-		-webkit-backdrop-filter: blur(20px) saturate(180%);
-		min-width: 140px;
-		color: rgba(var(--foreground), 0.9);
 	}
 
 	.main-trigger:hover {
@@ -394,14 +357,14 @@
 	}
 
 	.main-trigger:focus-visible {
-		outline: none;
+		@apply outline-none;
 		box-shadow:
 			0 8px 32px -4px rgba(0, 0, 0, 0.5),
 			0 0 0 2px oklch(var(--accent-bg) / 0.5);
 	}
 
 	.main-trigger:active {
-		transform: scale(0.97);
+		@apply scale-[0.97];
 	}
 
 	.main-trigger.expanded {
@@ -420,66 +383,47 @@
 	}
 
 	.icon-wrapper {
+		@apply rounded-lg p-1 text-accent-text;
 		background: linear-gradient(
 			145deg,
 			oklch(var(--accent-bg) / 0.25),
 			oklch(var(--accent-bg) / 0.1)
 		);
-		border-radius: 8px;
-		padding: 4px;
-		color: oklch(var(--accent-text));
 	}
 
 	.trigger-label {
-		font-size: 14px;
-		font-weight: 500;
+		@apply text-sm font-medium;
 	}
 
-	/* ─────────────────────────────────────────────────────────────
-	   Progress Dots
-	   ───────────────────────────────────────────────────────────── */
-
+	/* Progress Dots */
 	.progress-dots {
-		padding: 6px 12px;
+		@apply rounded-[20px] px-3 py-1.5 backdrop-blur-sm;
 		background: rgba(0, 0, 0, 0.2);
-		border-radius: 20px;
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
 	}
 
 	.dot-item {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
+		@apply size-1.5 cursor-pointer rounded-full border-0 p-0 transition-all duration-300;
 		background: rgba(var(--foreground), 0.25);
-		border: none;
-		padding: 0;
-		cursor: pointer;
-		transition: all 0.3s ease;
 		-webkit-tap-highlight-color: transparent;
 	}
 
 	.dot-item:hover {
+		@apply scale-120;
 		background: rgba(var(--foreground), 0.4);
-		transform: scale(1.2);
 	}
 
 	.dot-item:focus-visible {
-		outline: none;
+		@apply outline-none;
 		box-shadow: 0 0 0 2px oklch(var(--accent-bg) / 0.5);
 	}
 
 	.dot-item.active {
-		width: 20px;
-		border-radius: 10px;
+		@apply w-5 rounded-[10px];
 		background: linear-gradient(90deg, oklch(var(--accent-bg) / 0.8), oklch(var(--accent-text)));
 		box-shadow: 0 0 8px oklch(var(--accent-bg) / 0.5);
 	}
 
-	/* ─────────────────────────────────────────────────────────────
-	   Accessibility & Reduced Motion
-	   ───────────────────────────────────────────────────────────── */
-
+	/* Accessibility & Reduced Motion */
 	@media (prefers-reduced-motion: reduce) {
 		.mobile-nav-container,
 		.main-trigger,

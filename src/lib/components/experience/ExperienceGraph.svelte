@@ -259,11 +259,19 @@
 
 <svelte:window onresize={handleResize} />
 
-<div bind:this={containerRef} class="experience-graph-container">
+<div
+	bind:this={containerRef}
+	class="relative w-full overflow-x-hidden py-8"
+	style="--path-color: oklch(var(--accent-500));"
+>
 	<!-- Desktop Timeline -->
-	<div bind:this={graphRef} class="experience-graph" style:height="{graphHeight}px">
+	<div
+		bind:this={graphRef}
+		class="experience-graph relative mx-auto hidden w-full max-w-175 md:block lg:max-w-200"
+		style:height="{graphHeight}px"
+	>
 		<svg
-			class="graph-svg"
+			class="pointer-events-none absolute inset-0 h-full w-full"
 			viewBox="0 0 {containerWidth} {graphHeight}"
 			preserveAspectRatio="xMidYMid meet"
 		>
@@ -327,31 +335,47 @@
 	</div>
 
 	<!-- Mobile List -->
-	<div class="mobile-experience-list">
+	<div class="mx-auto flex max-w-150 flex-col gap-0 p-4 md:hidden">
 		{#each experiences as exp, i (exp.id)}
 			<div
-				class="mobile-experience-item"
+				class="mobile-experience-item flex animate-[fadeInUp_0.5s_ease-out_backwards] gap-4"
 				style:--node-color={NODE_COLOR}
 				style:--delay="{i * 0.1}s"
+				style:animation-delay="var(--delay)"
 			>
-				<div class="mobile-node-line">
-					<div class="mobile-node"></div>
+				<div class="flex w-6 shrink-0 flex-col items-center">
+					<div
+						class="size-4 shrink-0 rounded-full border-[3px]"
+						style="background: var(--node-color); border-color: color-mix(in oklch, rgb(var(--background)), black 20%); box-shadow: 0 0 15px var(--node-color);"
+					></div>
 					{#if i < experiences.length - 1}
-						<div class="mobile-connector"></div>
+						<div
+							class="my-1 min-h-5 w-0.5 flex-1 bg-linear-to-b from-(--node-color) to-[oklch(var(--accent-500)/0.3)]"
+						></div>
 					{/if}
 				</div>
-				<div class="mobile-content">
-					<span class="mobile-date">{exp.startDate} — {exp.endDate}</span>
-					<h4 class="mobile-role">{exp.role}</h4>
-					<p class="mobile-company">{exp.company}</p>
-					<ul class="mobile-description-list">
+				<div class="flex-1 pb-8">
+					<span class="font-doto text-xs font-bold text-accent-500"
+						>{exp.startDate} — {exp.endDate}</span
+					>
+					<h4 class="m-0 mb-1 text-lg leading-tight font-bold text-foreground">{exp.role}</h4>
+					<p class="m-0 mb-3 text-sm text-foreground-muted">{exp.company}</p>
+					<ul class="m-0 mb-3 list-none p-0">
 						{#each exp.description as item, itemIndex (`${exp.id}-desc-${itemIndex}`)}
-							<li>{item}</li>
+							<li
+								class="relative mb-1.5 pl-3.5 text-[0.82rem] leading-[1.55] text-foreground-muted before:absolute before:left-0 before:text-[0.7rem] before:opacity-70 before:content-['▸'] last:mb-0"
+								style="--tw-before-color: var(--node-color);"
+							>
+								{item}
+							</li>
 						{/each}
 					</ul>
-					<div class="mobile-tech-stack">
+					<div class="mb-4 flex flex-wrap gap-1.5">
 						{#each exp.techStack as tech (`${exp.id}-tech-${tech}`)}
-							<span class="mobile-tech-pill">{tech}</span>
+							<span
+								class="rounded-full border border-accent-500/30 bg-accent-900/20 px-2 py-0.5 text-[0.65rem] font-medium text-accent-300"
+								>{tech}</span
+							>
 						{/each}
 					</div>
 				</div>
@@ -370,90 +394,36 @@
 	{/if}
 </div>
 
-<style>
-	/* CSS Custom Properties for theming */
-	.experience-graph-container {
-		position: relative;
-		width: 100%;
-		padding: 2rem 0;
-		overflow-x: hidden;
-		--path-color: oklch(var(--accent-500));
-	}
+<style lang="postcss">
+	@reference "$routes/layout.css";
 
-	/* Main Graph Container */
-	.experience-graph {
-		position: relative;
-		width: 100%;
-		max-width: 700px;
-		margin: 0 auto;
-		display: none;
-	}
-
-	@media (min-width: 768px) {
-		.experience-graph {
-			display: block;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.experience-graph {
-			max-width: 800px;
-		}
-	}
-
-	/* SVG Graph Lines */
-	.graph-svg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		pointer-events: none;
-	}
-
-	.graph-svg path {
-		stroke: oklch(var(--accent-500));
-	}
-
-	/* Hide graph paths before GSAP initializes */
+	/* SVG Graph Lines - Hide before GSAP initializes */
 	.graph-path {
-		opacity: 0;
+		@apply opacity-0;
 	}
 
 	/* Commit Nodes */
 	.commit-node {
-		position: absolute;
-		width: 24px;
-		height: 24px;
+		@apply absolute z-10 size-6 cursor-pointer outline-none;
 		transform: translate(-50%, -50%);
-		cursor: pointer;
-		z-index: 10;
-		outline: none;
 	}
 
 	.commit-node:focus-visible {
-		outline: 2px solid oklch(var(--accent-500));
-		outline-offset: 4px;
-		border-radius: 50%;
+		@apply rounded-full outline-2 outline-offset-1 outline-accent-500;
 	}
 
 	.node-inner {
-		width: 100%;
-		height: 100%;
-		border-radius: 50%;
-		background: rgb(var(--background));
+		@apply size-full rounded-full bg-background transition-all duration-300;
 		border: 3px solid var(--node-color);
 		box-shadow:
 			0 0 15px var(--node-color),
 			0 0 30px color-mix(in oklch, var(--node-color), transparent 60%),
 			inset 0 0 8px color-mix(in oklch, var(--node-color), transparent 70%);
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		position: relative;
 	}
 
 	.commit-node:hover .node-inner,
 	.commit-node.active .node-inner {
-		transform: scale(1.3);
+		@apply scale-130;
 		background: var(--node-color);
 		box-shadow:
 			0 0 25px var(--node-color),
@@ -462,81 +432,36 @@
 
 	/* Node Labels */
 	.node-label {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		white-space: nowrap;
-		pointer-events: none;
+		@apply pointer-events-none absolute top-1/2 flex -translate-y-1/2 flex-col gap-1 whitespace-nowrap;
 	}
 
-	/* Left nodes - label on left side */
 	.commit-node.node-left .node-label {
-		right: calc(100% + 16px);
-		text-align: right;
-		align-items: flex-end;
+		@apply right-[calc(100%+16px)] items-end text-right;
 	}
 
-	/* Right nodes - label on right side */
 	.commit-node.node-right .node-label {
-		left: calc(100% + 16px);
-		text-align: left;
-		align-items: flex-start;
+		@apply left-[calc(100%+16px)] items-start text-left;
 	}
 
 	.commit-node:hover .node-label {
-		opacity: 1;
+		@apply opacity-100;
 	}
 
 	.node-date {
-		font-size: 0.7rem;
-		font-weight: 600;
-		font-family: var(--font-doto), monospace;
-		color: oklch(var(--accent-500));
-		background: color-mix(in oklch, rgb(var(--background)), black 30%);
-		padding: 0.15rem 0.5rem;
-		border-radius: 4px;
-		border: 1px solid oklch(var(--accent-500) / 0.3);
+		@apply m-0 border-0 p-0 font-doto text-sm font-bold text-accent-500;
+		background: transparent;
+		border-color: oklch(var(--accent-500) / 0.3);
 	}
 
 	.node-role {
-		font-size: 1rem;
-		font-weight: 700;
-		color: rgb(var(--foreground));
-		line-height: 1.3;
+		@apply text-base leading-tight font-bold text-foreground;
 	}
 
 	.node-company {
-		font-size: 0.8rem;
-		color: rgb(var(--foreground-muted));
-		line-height: 1.2;
+		@apply text-[0.8rem] leading-tight text-foreground-muted;
 	}
 
-	/* Mobile Experience List */
-	.mobile-experience-list {
-		display: flex;
-		flex-direction: column;
-		gap: 0;
-		padding: 1rem;
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
-	@media (min-width: 768px) {
-		.mobile-experience-list {
-			display: none;
-		}
-	}
-
-	.mobile-experience-item {
-		display: flex;
-		gap: 1rem;
-		animation: fadeInUp 0.5s ease-out backwards;
-		animation-delay: var(--delay);
-	}
-
+	/* Mobile animation keyframe */
 	@keyframes fadeInUp {
 		from {
 			opacity: 0;
@@ -546,107 +471,6 @@
 			opacity: 1;
 			transform: translateY(0);
 		}
-	}
-
-	/* Mobile Node Line */
-	.mobile-node-line {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		flex-shrink: 0;
-		width: 24px;
-	}
-
-	.mobile-node {
-		width: 16px;
-		height: 16px;
-		border-radius: 50%;
-		background: var(--node-color);
-		border: 3px solid color-mix(in oklch, rgb(var(--background)), black 20%);
-		box-shadow: 0 0 15px var(--node-color);
-		flex-shrink: 0;
-	}
-
-	.mobile-connector {
-		width: 2px;
-		flex: 1;
-		min-height: 20px;
-		background: linear-gradient(to bottom, var(--node-color), oklch(var(--accent-500) / 0.3));
-		margin: 4px 0;
-	}
-
-	/* Mobile Content */
-	.mobile-content {
-		flex: 1;
-		padding-bottom: 2rem;
-	}
-
-	.mobile-date {
-		font-size: 0.75rem;
-		font-weight: 600;
-		color: oklch(var(--accent-500));
-		font-family: var(--font-doto), monospace;
-	}
-
-	.mobile-role {
-		font-size: 1.125rem;
-		font-weight: 700;
-		color: rgb(var(--foreground));
-		margin: 0 0 0.25rem 0;
-		line-height: 1.3;
-	}
-
-	.mobile-company {
-		font-size: 0.875rem;
-		color: rgb(var(--foreground-muted));
-		margin: 0 0 0.75rem 0;
-	}
-
-	/* Mobile Description List */
-	.mobile-description-list {
-		list-style: none;
-		padding: 0;
-		margin: 0 0 0.75rem 0;
-	}
-
-	.mobile-description-list li {
-		position: relative;
-		font-size: 0.82rem;
-		line-height: 1.55;
-		color: rgb(var(--foreground-muted));
-		padding-left: 0.9rem;
-		margin-bottom: 0.4rem;
-	}
-
-	.mobile-description-list li:last-child {
-		margin-bottom: 0;
-	}
-
-	.mobile-description-list li::before {
-		content: '▸';
-		position: absolute;
-		left: 0;
-		color: var(--node-color);
-		opacity: 0.7;
-		font-size: 0.7rem;
-	}
-
-	/* Mobile Tech Stack */
-	.mobile-tech-stack {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.375rem;
-		margin-bottom: 1rem;
-	}
-
-	.mobile-tech-pill {
-		font-size: 0.65rem;
-		font-weight: 500;
-		color: oklch(var(--accent-300));
-		background: oklch(var(--accent-900) / 0.2);
-		padding: 0.1rem 0.5rem;
-		border-radius: 9999px;
-		border: 1px solid oklch(var(--accent-500) / 0.3);
 	}
 
 	/* Reduced Motion */

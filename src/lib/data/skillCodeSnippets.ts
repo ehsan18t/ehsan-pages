@@ -17,56 +17,56 @@ import type { BundledLanguage } from 'shiki';
  * Interface for active skill state
  */
 export interface ActiveSkill {
-    name: string;
-    icon: string;
-    description: string;
-    extension?: string;
-    codeSnippet?: string;
-    categoryColor: string;
+	name: string;
+	icon: string;
+	description: string;
+	extension?: string;
+	codeSnippet?: string;
+	categoryColor: string;
 }
 
 /**
  * Map file extensions to Shiki language identifiers
  */
 export const EXT_TO_LANG: Record<string, BundledLanguage> = {
-    '.js': 'javascript',
-    '.ts': 'typescript',
-    '.jsx': 'jsx',
-    '.tsx': 'tsx',
-    '.py': 'python',
-    '.html': 'html',
-    '.svelte': 'svelte',
-    '.astro': 'astro',
-    '.css': 'css',
-    '.java': 'java',
-    '.sh': 'bash',
-    '.bat': 'batch',
-    '.yml': 'yaml',
-    '.yaml': 'yaml',
-    '.md': 'markdown',
-    '.json': 'json',
-    '.sql': 'sql',
-    '.go': 'go',
-    '.rs': 'rust',
-    '.c': 'c',
-    '.cpp': 'cpp',
-    '.cs': 'csharp',
-    '.rb': 'ruby',
-    '.php': 'php'
+	'.js': 'javascript',
+	'.ts': 'typescript',
+	'.jsx': 'jsx',
+	'.tsx': 'tsx',
+	'.py': 'python',
+	'.html': 'html',
+	'.svelte': 'svelte',
+	'.astro': 'astro',
+	'.css': 'css',
+	'.java': 'java',
+	'.sh': 'bash',
+	'.bat': 'batch',
+	'.yml': 'yaml',
+	'.yaml': 'yaml',
+	'.md': 'markdown',
+	'.json': 'json',
+	'.sql': 'sql',
+	'.go': 'go',
+	'.rs': 'rust',
+	'.c': 'c',
+	'.cpp': 'cpp',
+	'.cs': 'csharp',
+	'.rb': 'ruby',
+	'.php': 'php'
 };
 
 /**
  * Get the Shiki language identifier from a file extension
  */
 export function getLang(ext: string | undefined): BundledLanguage {
-    return EXT_TO_LANG[ext || ''] || 'plaintext';
+	return EXT_TO_LANG[ext || ''] || 'plaintext';
 }
 
 /**
  * Welcome code shown when no skill is selected
  */
 export function getWelcomeCode(): string {
-    return `/**
+	return `/**
  * Welcome to my Skills Explorer
  * ============================
  *
@@ -84,11 +84,11 @@ export function getWelcomeCode(): string {
  * Keys are normalized (lowercase, alphanumeric only) for matching
  */
 const CODE_SNIPPETS: Record<string, string> = {
-    // ════════════════════════════════════════════════════════════
-    // Web Frontend
-    // ════════════════════════════════════════════════════════════
+	// ════════════════════════════════════════════════════════════
+	// Web Frontend
+	// ════════════════════════════════════════════════════════════
 
-    html: `<!DOCTYPE html>
+	html: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <title>Why HTML is great</title>
@@ -107,7 +107,7 @@ const CODE_SNIPPETS: Record<string, string> = {
 </body>
 </html>`,
 
-    css: `/* CSS: Cascading Style Sheets */
+	css: `/* CSS: Cascading Style Sheets */
 /* Also known as: Constantly Struggling with Styles */
 
 .developer {
@@ -129,7 +129,7 @@ const CODE_SNIPPETS: Record<string, string> = {
 
 /* !important: because sometimes you just give up */`,
 
-    javascript: `// JavaScript: The language where
+	javascript: `// JavaScript: The language where
 // "0" == 0 is true, but "0" === 0 is false
 
 const developer = {
@@ -152,7 +152,7 @@ async function life() {
   return happiness; // undefined
 }`,
 
-    typescript: `// TypeScript: JavaScript that scales
+	typescript: `// TypeScript: JavaScript that scales
 // Also: "any" is not a type strategy
 
 interface Developer {
@@ -175,7 +175,7 @@ const celebration: Promise<never> = new Promise(() => {
 // TypeScript: Catching bugs at compile time
 // So they can surprise you at runtime instead`,
 
-    react: `import { useState, useEffect } from 'react';
+	react: `import { useState, useEffect } from 'react';
 
 // React: Because jQuery wasn't complex enough
 
@@ -204,7 +204,7 @@ function Developer() {
 
 // useEffect cleanup? Never heard of her`,
 
-    nextjs: `// Next.js: React but make it ✨enterprise✨
+	nextjs: `// Next.js: React but make it ✨enterprise✨
 // app/page.tsx
 
 import { headers } from 'next/headers';
@@ -229,9 +229,9 @@ export default async function Home() {
 // 13 ways to fetch data in Next.js 13+
 // And they're all "the right way"`,
 
-    svelte:
-        '<' +
-        `script>
+	svelte:
+		'<' +
+		`script>
   // Svelte: Write less, do more
   // No virtual DOM? No problem!
   
@@ -246,8 +246,8 @@ export default async function Home() {
     // React devs crying rn
   });
 <` +
-        '/' +
-        `script>
+		'/' +
+		`script>
 
 <!-- No className, just class -->
 <button onclick={() => count++}>
@@ -260,14 +260,14 @@ export default async function Home() {
 </div>
 
 <` +
-        `style>
+		`style>
   /* Scoped by default. Revolutionary! */
   button { color: orange; }
 <` +
-        '/' +
-        `style>`,
+		'/' +
+		`style>`,
 
-    redux: `// Redux: Predictable state container
+	redux: `// Redux: Predictable state container
 // Also predictably verbose
 
 import { createSlice } from '@reduxjs/toolkit';
@@ -299,7 +299,7 @@ const developerSlice = createSlice({
 // "Why didn't it update?"
 // - Every Redux developer ever`,
 
-    tailwindcss: `<!-- Tailwind CSS: Utility-first -->
+	tailwindcss: `<!-- Tailwind CSS: Utility-first -->
 <!-- Also: HTML that needs therapy -->
 
 <div class="flex items-center justify-center
@@ -326,7 +326,7 @@ const developerSlice = createSlice({
 <!-- "Why is your HTML 300 lines?"
      "It's just one button" -->`,
 
-    astro: `---
+	astro: `---
 // Astro: Ship less JavaScript
 // Finally, 0kb JS by default 🎉
 
@@ -353,11 +353,11 @@ const developer = await fetch('/api/me');
   </body>
 </html>`,
 
-    // ════════════════════════════════════════════════════════════
-    // Backend & Data
-    // ════════════════════════════════════════════════════════════
+	// ════════════════════════════════════════════════════════════
+	// Backend & Data
+	// ════════════════════════════════════════════════════════════
 
-    django: `# Django: The web framework for perfectionists
+	django: `# Django: The web framework for perfectionists
 # with deadlines (and a LOT of opinions)
 
 from django.db import models
@@ -384,7 +384,7 @@ class Developer(models.Model):
 # python manage.py migrate
 # python manage.py cry`,
 
-    sql: `-- SQL: Structured Query Language
+	sql: `-- SQL: Structured Query Language
 -- Also: "Why isn't this joining?"
 
 SELECT 
@@ -409,7 +409,7 @@ LIMIT 1;  -- There can only be one
 
 -- DROP TABLE production; -- "It was an accident"`,
 
-    firebase: `// Firebase: Google's "we handle the backend" service
+	firebase: `// Firebase: Google's "we handle the backend" service
 // Until the bill arrives 💸
 
 import { initializeApp } from 'firebase/app';
@@ -437,11 +437,11 @@ await setDoc(doc(db, "developers", "me"), {
 
 // "Your bill this month: $47,000"`,
 
-    // ════════════════════════════════════════════════════════════
-    // Core Languages
-    // ════════════════════════════════════════════════════════════
+	// ════════════════════════════════════════════════════════════
+	// Core Languages
+	// ════════════════════════════════════════════════════════════
 
-    'c/c++': `// C++: When you need speed
+	'c/c++': `// C++: When you need speed
 // Also: When you need segfaults
 
 #include <iostream>
@@ -472,7 +472,7 @@ int main() {
 // "expected ';' before '}' token"
 // Translation: Good luck finding it`,
 
-    java: `// Java: Write once, debug everywhere
+	java: `// Java: Write once, debug everywhere
 
 public class Developer {
     // Enterprise naming convention
@@ -499,7 +499,7 @@ public class Developer {
 
 // NullPointerException at line: yes`,
 
-    python: `# Python: Code that reads like English
+	python: `# Python: Code that reads like English
 # Also: IndentationError: unexpected indent
 
 def develop():
@@ -531,7 +531,7 @@ def develop():
 # Tabs vs spaces: Civil War
 # (spaces won, obviously)`,
 
-    php: `<?php
+	php: `<?php
 // PHP: Hypertext Preprocessor
 // Also: Pretty Horrible Programming (jk... maybe)
 
@@ -564,11 +564,11 @@ echo "Hello, " . $world . "!";
 // The debate that ended friendships
 ?>`,
 
-    // ════════════════════════════════════════════════════════════
-    // Tools & Systems
-    // ════════════════════════════════════════════════════════════
+	// ════════════════════════════════════════════════════════════
+	// Tools & Systems
+	// ════════════════════════════════════════════════════════════
 
-    git: `# Git: Distributed version control
+	git: `# Git: Distributed version control
 # Also: "How do I exit vim?"
 
 $ git init
@@ -595,7 +595,7 @@ $ git reflog  # Please save me
 
 # git blame: passive aggressive since 2005`,
 
-    github: `# GitHub: Where code goes to be judged
+	github: `# GitHub: Where code goes to be judged
 
 README.md:
 
@@ -628,7 +628,7 @@ npm install bug-fixes  # Doesn't exist
 
 Last updated: mass years ago`,
 
-    linux: `#!/bin/bash
+	linux: `#!/bin/bash
 # Linux: "I use Arch, btw"
 
 # The classic commands
@@ -661,7 +661,7 @@ $ uptime
 # "It works on my machine"
 # "Your machine is the problem"`,
 
-    bash: `#!/bin/bash
+	bash: `#!/bin/bash
 # Bash: Bourne Again Shell
 # Also: Barely Acceptable Shell Hacking
 
@@ -695,7 +695,7 @@ exit 1  # It failed, but why?
 exit 2  # User error (probably)
 exit 127  # Command not found (always)`,
 
-    batch: `@echo off
+	batch: `@echo off
 REM Batch: Windows scripting from 1995
 REM Still somehow relevant
 
@@ -732,11 +732,11 @@ REM Please don't actually do this
 
 EXIT /B 0`,
 
-    // ════════════════════════════════════════════════════════════
-    // Design & Documentation
-    // ════════════════════════════════════════════════════════════
+	// ════════════════════════════════════════════════════════════
+	// Design & Documentation
+	// ════════════════════════════════════════════════════════════
 
-    figma: `// Figma: Design tool of champions
+	figma: `// Figma: Design tool of champions
 // Also: "Can you make it pop more?"
 
 const design = {
@@ -769,7 +769,7 @@ const design = {
   devReaction: "Finally! ...wait, what's this CSS?"
 };`,
 
-    vim: `" Vim: The editor you can't quit
+	vim: `" Vim: The editor you can't quit
 " Literally. How do I exit?
 
 " Basic survival guide:
@@ -803,11 +803,11 @@ set mouse=a         " Cheating? Maybe.
 " : - command (do stuff)
 " <Esc> - normal (regret stuff)`,
 
-    // ════════════════════════════════════════════════════════════
-    // Workflow & Process
-    // ════════════════════════════════════════════════════════════
+	// ════════════════════════════════════════════════════════════
+	// Workflow & Process
+	// ════════════════════════════════════════════════════════════
 
-    'github actions': `# GitHub Actions: YAML engineering at its finest
+	'github actions': `# GitHub Actions: YAML engineering at its finest
 # .github/workflows/please-work.yml
 
 name: CI/CD Pipeline
@@ -849,7 +849,7 @@ jobs:
           echo "Deploying..."
           # Actual deployment? That's a future problem`,
 
-    jira: `// Jira: Where tickets go to die
+	jira: `// Jira: Where tickets go to die
 // Also: "I'll update the ticket later"
 
 const sprint = {
@@ -888,7 +888,7 @@ const ticket = {
   ]
 };`,
 
-    scrum: `# Scrum: Agile framework for the organized
+	scrum: `# Scrum: Agile framework for the organized
 # Also: Meetings disguised as productivity
 
 ## Daily Standup (15 min max... LOL)
@@ -918,7 +918,7 @@ fibonacci = [1, 2, 3, 5, 8, 13, 21, ?, ?, ?]
 ## Actual Agile: "Individuals over processes"
 ## Corporate Agile: "Did you update Jira?"`,
 
-    latex: `% LaTeX: When Word isn't painful enough
+	latex: `% LaTeX: When Word isn't painful enough
 % Also: Where kerning enthusiasts thrive
 
 \\documentclass[12pt]{article}
@@ -955,7 +955,7 @@ of debugging missing braces, it works.
 % \\end{document}  -- Missing this? Good luck.
 \\end{document}`,
 
-    markdown: `# Markdown: Writing docs made simple
+	markdown: `# Markdown: Writing docs made simple
 ## Also: README.md syndrome
 
 ### The Basics
@@ -991,7 +991,7 @@ console.log("Hello, README!");
 ---
 *Last updated: mass ago*`,
 
-    googling: `// Googling: The most important developer skill
+	googling: `// Googling: The most important developer skill
 // Senior devs just Google faster
 
 const searchHistory = [
@@ -1034,7 +1034,7 @@ while (true) {
  * Generate a JavaScript/TypeScript fallback snippet for a skill
  */
 function generateJSFallback(skill: ActiveSkill): string {
-    return `// ${skill.name}: A developer's best friend
+	return `// ${skill.name}: A developer's best friend
 // (or worst enemy, depends on the day)
 
 const skill = {
@@ -1062,8 +1062,8 @@ export default skill;
  * Generate a Python fallback snippet for a skill
  */
 function generatePythonFallback(skill: ActiveSkill): string {
-    const className = skill.name.replace(/[^a-zA-Z]/g, '');
-    return `# ${skill.name}: The Pythonic Way
+	const className = skill.name.replace(/[^a-zA-Z]/g, '');
+	return `# ${skill.name}: The Pythonic Way
 # import antigravity  # This is real, try it
 
 class ${className}:
@@ -1093,7 +1093,7 @@ class ${className}:
  * Generate a default fallback snippet for a skill
  */
 function generateDefaultFallback(skill: ActiveSkill): string {
-    return `// ${skill.name}
+	return `// ${skill.name}
 // ${'-'.repeat(skill.name.length)}
 //
 // ${skill.description}
@@ -1105,34 +1105,34 @@ function generateDefaultFallback(skill: ActiveSkill): string {
  * Format code for a skill - returns the appropriate code snippet
  */
 export function formatCode(skill: ActiveSkill): string {
-    // If the skill has a custom code snippet, use it
-    if (skill.codeSnippet) {
-        return skill.codeSnippet;
-    }
+	// If the skill has a custom code snippet, use it
+	if (skill.codeSnippet) {
+		return skill.codeSnippet;
+	}
 
-    const nameLower = skill.name.toLowerCase();
+	const nameLower = skill.name.toLowerCase();
 
-    // Look for matching snippet by normalized key
-    const key = nameLower.replace(/[^a-z0-9]/g, '');
-    const matchedKey = Object.keys(CODE_SNIPPETS).find(
-        (k) => k.replace(/[^a-z0-9]/g, '') === key || nameLower.includes(k) || k.includes(nameLower)
-    );
+	// Look for matching snippet by normalized key
+	const key = nameLower.replace(/[^a-z0-9]/g, '');
+	const matchedKey = Object.keys(CODE_SNIPPETS).find(
+		(k) => k.replace(/[^a-z0-9]/g, '') === key || nameLower.includes(k) || k.includes(nameLower)
+	);
 
-    if (matchedKey) {
-        return CODE_SNIPPETS[matchedKey];
-    }
+	if (matchedKey) {
+		return CODE_SNIPPETS[matchedKey];
+	}
 
-    // Fallback: Generate based on extension
-    const ext = skill.extension || '.txt';
+	// Fallback: Generate based on extension
+	const ext = skill.extension || '.txt';
 
-    if (['.js', '.ts', '.jsx', '.tsx'].includes(ext)) {
-        return generateJSFallback(skill);
-    }
+	if (['.js', '.ts', '.jsx', '.tsx'].includes(ext)) {
+		return generateJSFallback(skill);
+	}
 
-    if (ext === '.py') {
-        return generatePythonFallback(skill);
-    }
+	if (ext === '.py') {
+		return generatePythonFallback(skill);
+	}
 
-    // Default fallback
-    return generateDefaultFallback(skill);
+	// Default fallback
+	return generateDefaultFallback(skill);
 }

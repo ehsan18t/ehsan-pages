@@ -60,20 +60,34 @@ export const WELCOME_ASCII = `
  ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝   ╚═╝`;
 
 /**
- * Social links displayed in terminal
+ * Get social links for terminal display (lazy evaluation to avoid circular import)
  */
-export const TERMINAL_SOCIAL_LINKS: TerminalSocialLink[] = [
-	{ platform: 'GitHub', url: socials.github, icon: 'mdi:github' },
-	{ platform: 'LinkedIn', url: socials.linkedin, icon: 'mdi:linkedin' },
-	{ platform: 'Email', url: socials.gmail, icon: 'mdi:email' },
-	{ platform: 'Telegram', url: socials.telegram, icon: 'mdi:telegram' },
-	{ platform: 'Discord', url: socials.discord, icon: 'mdi:discord' }
-];
+export function getTerminalSocialLinks(): TerminalSocialLink[] {
+	return [
+		{ platform: 'GitHub', url: socials.github, icon: 'mdi:github' },
+		{ platform: 'LinkedIn', url: socials.linkedin, icon: 'mdi:linkedin' },
+		{ platform: 'Email', url: socials.gmail, icon: 'mdi:email' },
+		{ platform: 'Telegram', url: socials.telegram, icon: 'mdi:telegram' },
+		{ platform: 'Discord', url: socials.discord, icon: 'mdi:discord' }
+	];
+}
 
 /**
- * Email address extracted from mailto URL
+ * Backward-compatible constant (computed lazily)
  */
-export const EMAIL_ADDRESS = socials.gmail.replace('mailto:', '');
+export const TERMINAL_SOCIAL_LINKS: TerminalSocialLink[] = [];
+
+/**
+ * Get email address extracted from mailto URL (lazy evaluation)
+ */
+export function getEmailAddress(): string {
+	return socials.gmail.replace('mailto:', '');
+}
+
+/**
+ * Backward-compatible constant
+ */
+export const EMAIL_ADDRESS = '';
 
 // ═══════════════════════════════════════════════════════════════
 // Help Text

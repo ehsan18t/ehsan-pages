@@ -45,115 +45,45 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
+	@reference "$routes/layout.css";
+
 	.social-bar {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.75rem;
-		padding-top: 0.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.social-bar {
-			gap: 1rem;
-			padding-top: 0.5rem;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.social-bar {
-			justify-content: flex-start;
-		}
+		@apply flex items-center justify-center gap-3 pt-1 sm:gap-4 sm:pt-2 md:justify-start;
 	}
 
 	.divider {
-		display: none;
-		width: 2rem;
-		height: 1px;
+		@apply hidden h-px w-8 md:block;
 		background: linear-gradient(to right, transparent, oklch(var(--accent-500) / 0.5));
 	}
 
-	@media (min-width: 768px) {
-		.divider {
-			display: block;
-		}
-	}
-
 	.social-links {
-		display: flex;
-		gap: 0.375rem;
-	}
-
-	@media (min-width: 640px) {
-		.social-links {
-			gap: 0.5rem;
-		}
+		@apply flex gap-1.5 sm:gap-2;
 	}
 
 	.social-link {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 36px;
-		height: 36px;
-		border-radius: 8px;
-		background: oklch(var(--accent-500) / 0.05);
-		border: 1px solid oklch(var(--accent-500) / 0.1);
-		color: oklch(var(--foreground) / 0.7);
-		transition: all 0.3s ease;
-		animation: fadeInUp 0.5s ease-out both;
-	}
-
-	@media (min-width: 640px) {
-		.social-link {
-			width: 40px;
-			height: 40px;
-			border-radius: 10px;
-		}
+		@apply relative flex size-9 animate-[fadeInUp_0.5s_ease-out_both] items-center justify-center rounded-lg border border-[oklch(var(--accent-500)/0.1)] bg-[oklch(var(--accent-500)/0.05)] text-[oklch(var(--foreground)/0.7)] transition-all duration-300 sm:size-10 sm:rounded-[10px];
 	}
 
 	.social-link:hover {
-		background: oklch(var(--accent-500) / 0.15);
-		border-color: oklch(var(--accent-500) / 0.4);
-		color: oklch(var(--accent-text));
-		transform: translateY(-3px);
+		@apply -translate-y-0.75 border-[oklch(var(--accent-500)/0.4)] bg-[oklch(var(--accent-500)/0.15)] text-accent-text;
 	}
 
 	/* Tooltip */
 	.tooltip {
-		position: absolute;
+		@apply pointer-events-none invisible absolute left-1/2 -translate-x-1/2 scale-[0.8] rounded-md border border-[oklch(var(--accent-500)/0.3)] bg-accent-900 px-2.5 py-1.5 text-xs whitespace-nowrap text-accent-text opacity-0 transition-all duration-200;
 		bottom: calc(100% + 8px);
-		left: 50%;
-		transform: translateX(-50%) scale(0.8);
-		padding: 0.35rem 0.65rem;
-		background: oklch(var(--accent-900));
-		border: 1px solid oklch(var(--accent-500) / 0.3);
-		border-radius: 6px;
-		font-size: 0.75rem;
-		color: oklch(var(--accent-text));
-		white-space: nowrap;
-		opacity: 0;
-		visibility: hidden;
-		transition: all 0.2s ease;
-		pointer-events: none;
 	}
 
 	.tooltip::after {
+		@apply absolute top-full left-1/2 -translate-x-1/2;
 		content: '';
-		position: absolute;
-		top: 100%;
-		left: 50%;
-		transform: translateX(-50%);
 		border: 5px solid transparent;
 		border-top-color: oklch(var(--accent-900));
 	}
 
 	.social-link:hover .tooltip {
-		opacity: 1;
-		visibility: visible;
-		transform: translateX(-50%) scale(1);
+		@apply visible scale-100 opacity-100;
 	}
 
 	@keyframes fadeInUp {
@@ -172,9 +102,8 @@
 		.social-link {
 			animation: none;
 		}
-
 		.social-link:hover {
-			transform: none;
+			@apply translate-y-0;
 		}
 	}
 </style>

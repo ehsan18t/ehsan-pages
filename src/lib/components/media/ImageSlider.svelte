@@ -713,7 +713,7 @@
 	/* Lightbox nav buttons - responsive */
 	@media (max-width: 768px) {
 		:global(.slider-lightbox-nav) {
-			@apply h-11 w-11;
+			@apply size-11;
 		}
 		:global(.slider-lightbox-nav.left-8) {
 			left: 1rem !important;
