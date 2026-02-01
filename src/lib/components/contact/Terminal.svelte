@@ -449,7 +449,7 @@ New here? Use the quick action buttons below, or type commands:
 	<!-- Terminal Content -->
 	<div
 		bind:this={terminalRef}
-		class="terminal-content scrollbar-thin scrollbar-color-[var(--t-border)_transparent] h-112 overflow-y-auto px-4 py-4 text-sm leading-[1.7] text-(--t-text) sm:px-6 sm:py-5"
+		class="terminal-content scrollbar-thin scrollbar-color-[var(--t-border)_transparent] h-144 overflow-y-auto px-4 py-4 text-sm leading-[1.7] text-(--t-text) sm:px-6 sm:py-5"
 		role="log"
 		aria-live="polite"
 	>
@@ -625,19 +625,20 @@ New here? Use the quick action buttons below, or type commands:
 <style lang="postcss">
 	@reference '$routes/layout.css';
 
-	/* Terminal CSS custom properties */
+	/* Terminal CSS custom properties - using site theme */
 	.terminal {
-		--t-bg: #0d1117;
-		--t-bg-light: #161b22;
-		--t-border: #30363d;
-		--t-text: #e6edf3;
-		--t-muted: #8b949e;
-		--t-accent: #58a6ff;
-		--t-green: #3fb950;
-		--t-red: #f85149;
-		--t-yellow: #d29922;
-		--t-purple: #a371f7;
-		--t-cyan: #39c5cf;
+		--t-bg: rgb(var(--background));
+		--t-bg-light: var(--surface-1);
+		--t-border: var(--border-default);
+		--t-text: rgb(var(--foreground));
+		--t-muted: rgb(var(--foreground-muted));
+		--t-accent: oklch(var(--accent-500));
+		--t-accent-light: oklch(var(--accent-text));
+		--t-green: oklch(0.75 0.16 150);
+		--t-red: oklch(0.65 0.22 25);
+		--t-yellow: oklch(0.75 0.14 80);
+		--t-purple: oklch(0.72 0.18 300);
+		--t-cyan: oklch(var(--accent-500));
 		font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
 	}
 
@@ -691,7 +692,7 @@ New here? Use the quick action buttons below, or type commands:
 		}
 
 		.terminal-content {
-			@apply h-88 p-4 text-[0.8125rem];
+			@apply h-112 p-4 text-[0.8125rem];
 		}
 
 		.prompt-line {

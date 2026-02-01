@@ -72,14 +72,14 @@
 	<!-- Mode Toggle -->
 	<div class="mb-6 flex justify-center">
 		<div
-			class="inline-flex items-center gap-1 rounded-xl border border-gray-700/50 bg-gray-900/50 p-1 backdrop-blur-sm"
+			class="inline-flex items-center gap-1 rounded-xl border border-accent-500/20 bg-surface-1 p-1 backdrop-blur-sm"
 		>
 			<button
 				type="button"
 				class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all sm:px-4 {mode ===
 				'terminal'
-					? 'bg-blue-500/20 text-blue-400'
-					: 'text-gray-400 hover:text-gray-300'}"
+					? 'bg-accent-bg/30 text-accent-text'
+					: 'text-foreground-muted hover:text-foreground'}"
 				onclick={() => setMode('terminal')}
 				aria-pressed={mode === 'terminal'}
 			>
@@ -91,8 +91,8 @@
 				type="button"
 				class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all sm:px-4 {mode ===
 				'mailbox'
-					? 'bg-blue-500/20 text-blue-400'
-					: 'text-gray-400 hover:text-gray-300'}"
+					? 'bg-accent-bg/30 text-accent-text'
+					: 'text-foreground-muted hover:text-foreground'}"
 				onclick={() => setMode('mailbox')}
 				aria-pressed={mode === 'mailbox'}
 			>
@@ -103,14 +103,14 @@
 	</div>
 
 	<!-- Mode hint - simplified for mobile -->
-	<p class="mb-6 text-center text-sm text-gray-500">
+	<p class="mb-6 text-center text-sm text-foreground-muted">
 		{#if mode === 'terminal'}
 			<span class="flex flex-wrap items-center justify-center gap-1.5">
 				<span class="max-sm:hidden">Power user? Use terminal commands.</span>
 				<span class="sm:hidden">Prefer a simple form?</span>
 				<button
 					type="button"
-					class="text-blue-400 underline underline-offset-2 hover:text-blue-300"
+					class="text-accent-text underline underline-offset-2 hover:text-accent-500"
 					onclick={toggleMode}
 				>
 					Switch to form
@@ -122,7 +122,7 @@
 				<span class="sm:hidden">Like terminals?</span>
 				<button
 					type="button"
-					class="text-blue-400 underline underline-offset-2 hover:text-blue-300"
+					class="text-accent-text underline underline-offset-2 hover:text-accent-500"
 					onclick={toggleMode}
 				>
 					Try the terminal

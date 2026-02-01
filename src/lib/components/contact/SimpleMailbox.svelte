@@ -389,17 +389,18 @@
 <style lang="postcss">
 	@reference '$routes/layout.css';
 
-	/* Mailbox CSS custom properties - matches terminal theme */
+	/* Mailbox CSS custom properties - using site theme */
 	.mailbox {
-		--m-bg: #0d1117;
-		--m-bg-light: #161b22;
-		--m-border: #30363d;
-		--m-text: #e6edf3;
-		--m-muted: #8b949e;
-		--m-accent: #58a6ff;
-		--m-green: #3fb950;
-		--m-red: #f85149;
-		--m-yellow: #d29922;
+		--m-bg: rgb(var(--background));
+		--m-bg-light: var(--surface-1);
+		--m-border: var(--border-default);
+		--m-text: rgb(var(--foreground));
+		--m-muted: rgb(var(--foreground-muted));
+		--m-accent: oklch(var(--accent-500));
+		--m-accent-light: oklch(var(--accent-text));
+		--m-green: oklch(0.75 0.16 150);
+		--m-red: oklch(0.65 0.22 25);
+		--m-yellow: oklch(0.75 0.14 80);
 	}
 
 	/* Responsive */
