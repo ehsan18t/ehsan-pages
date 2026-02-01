@@ -54,7 +54,7 @@
 
 	/* Animated gradient border */
 	.gradient-border {
-		@apply absolute animate-[rotateBorder_6s_linear_infinite] rounded-full will-change-transform;
+		@apply absolute rounded-full will-change-transform;
 		inset: -3px;
 		background: conic-gradient(
 			from 0deg,
@@ -64,6 +64,7 @@
 			oklch(var(--accent-500)),
 			oklch(var(--accent-900))
 		);
+		animation: rotateBorder 6s linear infinite;
 		-webkit-mask: radial-gradient(
 			farthest-side,
 			transparent calc(100% - 3px),
