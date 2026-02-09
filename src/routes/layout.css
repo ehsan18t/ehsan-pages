@@ -1,5 +1,4 @@
-/* Fonts - with display swap for better performance */
-@import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+/* Fonts loaded via <link> tags in app.html — no CSS @import needed */
 
 /* Tailwind CSS */
 @import 'tailwindcss';
@@ -508,36 +507,40 @@ body.is-loading {
    CUSTOM SCROLLBAR
    ============================================================================= */
 
-* {
-	scrollbar-width: thin;
-	scrollbar-color: var(--scroll-main) var(--scroll-bg);
+html {
 	scroll-behavior: smooth;
 }
 
+html,
+body {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scroll-main) var(--scroll-bg);
+}
+
 /* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
+::-webkit-scrollbar {
 	width: 12px;
 	height: 12px;
 }
 
-*::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
 	background: var(--scroll-bg);
 	border-radius: 8px;
 	margin: 4px 0;
 }
 
-*::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
 	background-color: var(--scroll-main);
 	border-radius: 8px;
 	border: 3px solid var(--scroll-bg);
 	transition: background-color 0.2s ease;
 }
 
-*::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
 	@apply bg-accent-500;
 }
 
-*::-webkit-scrollbar-thumb:active {
+::-webkit-scrollbar-thumb:active {
 	@apply bg-accent-500;
 }
 
