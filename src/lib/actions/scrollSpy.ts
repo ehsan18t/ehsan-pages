@@ -51,7 +51,6 @@ export const scrollSpy: Action<HTMLElement, ScrollSpyOptions> = (_node, options)
 	if (!browser) return {};
 
 	let observer: IntersectionObserver | null = null;
-	let currentOptions = options;
 
 	/**
 	 * Create observer configuration from options
@@ -97,7 +96,6 @@ export const scrollSpy: Action<HTMLElement, ScrollSpyOptions> = (_node, options)
 		}, config);
 
 		// Observe all sections
-		// Observe all sections
 		sections.forEach((section) => observer!.observe(section));
 	}
 
@@ -116,8 +114,7 @@ export const scrollSpy: Action<HTMLElement, ScrollSpyOptions> = (_node, options)
 
 	return {
 		update(newOptions: ScrollSpyOptions) {
-			currentOptions = newOptions;
-			setup(currentOptions);
+			setup(newOptions);
 		},
 		destroy() {
 			cleanup();
