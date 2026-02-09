@@ -85,18 +85,17 @@
 	let isInView = $state(false);
 	let currentIndex = $state(0);
 	let showControls = $state(false);
+	let dragOffset = $state(0);
+	let isDragging = $state(false);
 
-	// Drag state — intentionally non-reactive for maximum perf
-	// These only matter during active drag and are read synchronously
-	let isDragging = false;
+	// Drag internals (non-reactive, only needed during active drag)
 	let startX = 0;
 	let startY = 0;
 	let dragStartTime = 0;
-	let isHorizontalDrag: boolean | null = null;
+	let directionLocked: 'horizontal' | 'vertical' | null = null;
 	let containerWidth = 0;
 
-	// Element refs
-	let trackRef = $state<HTMLDivElement | null>(null);
+	// Element ref
 	let containerRef = $state<HTMLDivElement | null>(null);
 
 	// ─────────────────────────────────────────────────────────────
@@ -122,6 +121,11 @@
 
 	let hasMultipleImages = $derived(images.length > 1);
 
+	/** Reactive transform — CSS transition handles animation automatically */
+	let trackTransform = $derived(
+		`translate3d(calc(${-currentIndex * 100}% + ${dragOffset}px), 0, 0)`
+	);
+
 	// ─────────────────────────────────────────────────────────────
 	// Carousel Navigation
 	// ─────────────────────────────────────────────────────────────
@@ -130,7 +134,6 @@
 	function goTo(index: number): void {
 		if (!hasMultipleImages) return;
 		currentIndex = ((index % images.length) + images.length) % images.length;
-		applySnapTransform();
 	}
 
 	function next(): void {
@@ -141,39 +144,22 @@
 		goTo(currentIndex - 1);
 	}
 
-	/** Apply snapped transform position (CSS transition is handled by stylesheet) */
-	function applySnapTransform(): void {
-		if (!trackRef) return;
-		trackRef.style.transform = `translate3d(${-currentIndex * 100}%, 0, 0)`;
-	}
-
-	/** Apply immediate transform during drag (.dragging class disables transition) */
-	function applyDragTransform(offsetPx: number): void {
-		if (!trackRef || !containerWidth) return;
-		const pct = -currentIndex * 100 + (offsetPx / containerWidth) * 100;
-		trackRef.style.transform = `translate3d(${pct}%, 0, 0)`;
-	}
-
 	// ─────────────────────────────────────────────────────────────
 	// Pointer Event Handlers (unified mouse + touch)
 	// ─────────────────────────────────────────────────────────────
 
 	function handlePointerDown(e: PointerEvent): void {
-		// Only handle primary button (mouse left / touch)
 		if (!hasMultipleImages || e.button !== 0) return;
 
 		isDragging = true;
-		isHorizontalDrag = null;
+		directionLocked = null;
 		startX = e.clientX;
 		startY = e.clientY;
 		dragStartTime = Date.now();
 		containerWidth = containerRef?.offsetWidth ?? 0;
+		dragOffset = 0;
 
-		// Capture pointer for reliable tracking outside element bounds
 		(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-
-		// Disable CSS transition during drag for instant feedback
-		trackRef?.classList.add('dragging');
 	}
 
 	function handlePointerMove(e: PointerEvent): void {
@@ -182,33 +168,26 @@
 		const deltaX = e.clientX - startX;
 		const deltaY = e.clientY - startY;
 
-		// Direction lock — decide horizontal vs vertical on first significant movement
-		if (isHorizontalDrag === null) {
+		// Direction lock on first significant movement
+		if (directionLocked === null) {
 			if (
 				Math.abs(deltaX) < DIRECTION_LOCK_THRESHOLD &&
 				Math.abs(deltaY) < DIRECTION_LOCK_THRESHOLD
 			)
 				return;
-			isHorizontalDrag = Math.abs(deltaX) > Math.abs(deltaY);
-			if (!isHorizontalDrag) {
-				// Vertical scroll intended — abort carousel drag & restore transition
+			directionLocked = Math.abs(deltaX) > Math.abs(deltaY) ? 'horizontal' : 'vertical';
+			if (directionLocked === 'vertical') {
 				isDragging = false;
-				trackRef?.classList.remove('dragging');
+				dragOffset = 0;
 				return;
 			}
 		}
 
-		// Block vertical scroll while dragging horizontally
 		e.preventDefault();
-
-		applyDragTransform(deltaX);
+		dragOffset = deltaX;
 	}
 
 	function handlePointerUp(e: PointerEvent): void {
-		// Always restore transition — prevents stale transition:'none' from
-		// pointerdown when the drag was aborted (e.g. vertical scroll)
-		trackRef?.classList.remove('dragging');
-
 		if (!isDragging) return;
 		isDragging = false;
 
@@ -216,32 +195,20 @@
 		const elapsed = Date.now() - dragStartTime;
 		const velocity = Math.abs(deltaX) / Math.max(elapsed, 1);
 
-		// Decide target slide based on velocity or drag distance (wraps around)
 		const shouldAdvance =
 			(velocity > VELOCITY_THRESHOLD && Math.abs(deltaX) > 10) ||
 			(containerWidth > 0 && Math.abs(deltaX) / containerWidth > DRAG_THRESHOLD);
 
-		// Force style recalc so CSS transition is active before transform changes
-		if (trackRef) void trackRef.offsetHeight;
+		dragOffset = 0;
 
 		if (shouldAdvance) {
 			goTo(deltaX < 0 ? currentIndex + 1 : currentIndex - 1);
-		} else {
-			applySnapTransform();
 		}
 	}
 
 	function handlePointerCancel(): void {
-		// Always restore transition
-		trackRef?.classList.remove('dragging');
-
-		if (!isDragging) return;
 		isDragging = false;
-
-		// Force style recalc so CSS transition is active before transform changes
-		if (trackRef) void trackRef.offsetHeight;
-
-		applySnapTransform();
+		dragOffset = 0;
 	}
 
 	// ─────────────────────────────────────────────────────────────
@@ -450,12 +417,7 @@
 	$effect(() => {
 		void images.length;
 		currentIndex = 0;
-		if (trackRef) {
-			// Suppress transition for instant reset, then restore via CSS
-			trackRef.classList.add('dragging');
-			trackRef.style.transform = 'translate3d(0%, 0, 0)';
-			requestAnimationFrame(() => trackRef?.classList.remove('dragging'));
-		}
+		dragOffset = 0;
 	});
 </script>
 
@@ -476,8 +438,9 @@
 		{#if isInView}
 			<!-- Carousel Track — GPU-accelerated via translate3d -->
 			<div
-				bind:this={trackRef}
 				class="slider-track flex h-full touch-pan-y"
+				class:dragging={isDragging}
+				style:transform={trackTransform}
 				onpointerdown={handlePointerDown}
 				onpointermove={handlePointerMove}
 				onpointerup={handlePointerUp}
