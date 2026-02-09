@@ -75,8 +75,6 @@
 	const DRAG_THRESHOLD = 0.2;
 	/** Minimum velocity (px/ms) for flick-to-snap */
 	const VELOCITY_THRESHOLD = 0.3;
-	/** CSS transition for snap animation */
-	const SNAP_TRANSITION = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
 	/** Minimum movement (px) before direction lock */
 	const DIRECTION_LOCK_THRESHOLD = 5;
 
@@ -143,18 +141,16 @@
 		goTo(currentIndex - 1);
 	}
 
-	/** Apply snapped transform position with smooth CSS transition */
+	/** Apply snapped transform position (CSS transition is handled by stylesheet) */
 	function applySnapTransform(): void {
 		if (!trackRef) return;
-		trackRef.style.transition = SNAP_TRANSITION;
 		trackRef.style.transform = `translate3d(${-currentIndex * 100}%, 0, 0)`;
 	}
 
-	/** Apply immediate transform during drag (no CSS transition) */
+	/** Apply immediate transform during drag (.dragging class disables transition) */
 	function applyDragTransform(offsetPx: number): void {
 		if (!trackRef || !containerWidth) return;
 		const pct = -currentIndex * 100 + (offsetPx / containerWidth) * 100;
-		trackRef.style.transition = 'none';
 		trackRef.style.transform = `translate3d(${pct}%, 0, 0)`;
 	}
 
@@ -176,7 +172,8 @@
 		// Capture pointer for reliable tracking outside element bounds
 		(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 
-		if (trackRef) trackRef.style.transition = 'none';
+		// Disable CSS transition during drag for instant feedback
+		trackRef?.classList.add('dragging');
 	}
 
 	function handlePointerMove(e: PointerEvent): void {
@@ -194,8 +191,9 @@
 				return;
 			isHorizontalDrag = Math.abs(deltaX) > Math.abs(deltaY);
 			if (!isHorizontalDrag) {
-				// Vertical scroll intended — abort carousel drag
+				// Vertical scroll intended — abort carousel drag & restore transition
 				isDragging = false;
+				trackRef?.classList.remove('dragging');
 				return;
 			}
 		}
@@ -207,6 +205,10 @@
 	}
 
 	function handlePointerUp(e: PointerEvent): void {
+		// Always restore transition — prevents stale transition:'none' from
+		// pointerdown when the drag was aborted (e.g. vertical scroll)
+		trackRef?.classList.remove('dragging');
+
 		if (!isDragging) return;
 		isDragging = false;
 
@@ -219,6 +221,9 @@
 			(velocity > VELOCITY_THRESHOLD && Math.abs(deltaX) > 10) ||
 			(containerWidth > 0 && Math.abs(deltaX) / containerWidth > DRAG_THRESHOLD);
 
+		// Force style recalc so CSS transition is active before transform changes
+		if (trackRef) void trackRef.offsetHeight;
+
 		if (shouldAdvance) {
 			goTo(deltaX < 0 ? currentIndex + 1 : currentIndex - 1);
 		} else {
@@ -227,8 +232,15 @@
 	}
 
 	function handlePointerCancel(): void {
+		// Always restore transition
+		trackRef?.classList.remove('dragging');
+
 		if (!isDragging) return;
 		isDragging = false;
+
+		// Force style recalc so CSS transition is active before transform changes
+		if (trackRef) void trackRef.offsetHeight;
+
 		applySnapTransform();
 	}
 
@@ -439,8 +451,10 @@
 		void images.length;
 		currentIndex = 0;
 		if (trackRef) {
-			trackRef.style.transition = 'none';
+			// Suppress transition for instant reset, then restore via CSS
+			trackRef.classList.add('dragging');
 			trackRef.style.transform = 'translate3d(0%, 0, 0)';
+			requestAnimationFrame(() => trackRef?.classList.remove('dragging'));
 		}
 	});
 </script>
@@ -464,7 +478,6 @@
 			<div
 				bind:this={trackRef}
 				class="slider-track flex h-full touch-pan-y"
-				style:transform="translate3d({-currentIndex * 100}%, 0, 0)"
 				onpointerdown={handlePointerDown}
 				onpointermove={handlePointerMove}
 				onpointerup={handlePointerUp}
@@ -663,9 +676,15 @@
 		contain: layout style paint;
 	}
 
-	/* Track: GPU-accelerated, no will-change when idle */
+	/* Track: GPU-accelerated with CSS-managed transition */
 	.slider-track {
 		backface-visibility: hidden;
+		transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+	}
+
+	/* Disable transition during active drag for instant feedback */
+	.slider-track:global(.dragging) {
+		transition: none;
 	}
 
 	/* Active dot indicator */
