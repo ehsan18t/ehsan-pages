@@ -203,12 +203,7 @@
 		// Block vertical scroll while dragging horizontally
 		e.preventDefault();
 
-		// Add rubber-band resistance at edges
-		const isAtStart = currentIndex === 0 && deltaX > 0;
-		const isAtEnd = currentIndex === images.length - 1 && deltaX < 0;
-		const dampedOffset = isAtStart || isAtEnd ? deltaX * 0.3 : deltaX;
-
-		applyDragTransform(dampedOffset);
+		applyDragTransform(deltaX);
 	}
 
 	function handlePointerUp(e: PointerEvent): void {
@@ -219,16 +214,16 @@
 		const elapsed = Date.now() - dragStartTime;
 		const velocity = Math.abs(deltaX) / Math.max(elapsed, 1);
 
-		// Decide target slide based on velocity or drag distance
-		if (velocity > VELOCITY_THRESHOLD && Math.abs(deltaX) > 10) {
-			if (deltaX < 0 && currentIndex < images.length - 1) currentIndex += 1;
-			else if (deltaX > 0 && currentIndex > 0) currentIndex -= 1;
-		} else if (containerWidth > 0 && Math.abs(deltaX) / containerWidth > DRAG_THRESHOLD) {
-			if (deltaX < 0 && currentIndex < images.length - 1) currentIndex += 1;
-			else if (deltaX > 0 && currentIndex > 0) currentIndex -= 1;
-		}
+		// Decide target slide based on velocity or drag distance (wraps around)
+		const shouldAdvance =
+			(velocity > VELOCITY_THRESHOLD && Math.abs(deltaX) > 10) ||
+			(containerWidth > 0 && Math.abs(deltaX) / containerWidth > DRAG_THRESHOLD);
 
-		applySnapTransform();
+		if (shouldAdvance) {
+			goTo(deltaX < 0 ? currentIndex + 1 : currentIndex - 1);
+		} else {
+			applySnapTransform();
+		}
 	}
 
 	function handlePointerCancel(): void {
@@ -510,7 +505,6 @@
 							e.stopPropagation();
 							prev();
 						}}
-						disabled={currentIndex === 0}
 						aria-label="Previous slide"
 					>
 						<Icon icon="mdi:chevron-left" class="h-6 w-6" />
@@ -522,7 +516,6 @@
 							e.stopPropagation();
 							next();
 						}}
-						disabled={currentIndex === images.length - 1}
 						aria-label="Next slide"
 					>
 						<Icon icon="mdi:chevron-right" class="h-6 w-6" />
@@ -686,13 +679,8 @@
 		@apply bg-black/5 opacity-100;
 	}
 
-	/* Disabled navigation button */
-	.slider-button:disabled {
-		@apply pointer-events-none cursor-not-allowed opacity-30;
-	}
-
 	/* Button press feedback */
-	.slider-button:active:not(:disabled) {
+	.slider-button:active {
 		transform: translateY(-50%) scale(0.92);
 	}
 
