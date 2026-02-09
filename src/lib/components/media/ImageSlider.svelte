@@ -109,6 +109,7 @@
 	// GSAP lightbox element refs
 	let lightboxRef = $state<HTMLDivElement | null>(null);
 	let lightboxImageRef = $state<HTMLImageElement | null>(null);
+	let lightboxImageOutRef = $state<HTMLImageElement | null>(null);
 	let lightboxCloseRef = $state<HTMLButtonElement | null>(null);
 	let lightboxNavPrevRef = $state<HTMLButtonElement | null>(null);
 	let lightboxNavNextRef = $state<HTMLButtonElement | null>(null);
@@ -228,6 +229,7 @@
 		gsap.set(lightboxCloseRef, { opacity: 0, scale: 0.5 });
 		gsap.set([lightboxNavPrevRef, lightboxNavNextRef], { opacity: 0, scale: 0.7 });
 		gsap.set(lightboxCounterRef, { opacity: 0, y: 15 });
+		if (lightboxImageOutRef) gsap.set(lightboxImageOutRef, { opacity: 0 });
 
 		// Parallel entry — overlapping start times for speed
 		tl.to(lightboxRef, { opacity: 1, duration: 0.2 })
@@ -251,12 +253,11 @@
 		}
 
 		lightboxTimeline?.kill();
+		if (lightboxImageOutRef) gsap.set(lightboxImageOutRef, { opacity: 0 });
 
 		const tl = gsap.timeline({
 			defaults: { ease: 'power2.in' },
-			onComplete: () => {
-				onComplete();
-			}
+			onComplete
 		});
 
 		// Simultaneous close — everything fades together
@@ -271,47 +272,37 @@
 		lightboxTimeline = tl;
 	}
 
-	/** Animate image transition — fast crossfade, total ~0.35s */
+	/** Animate image transition — dual-image crossfade, total ~0.35s */
 	function animateImageTransition(direction: 'next' | 'prev'): void {
-		if (!lightboxImageRef || !browser) return;
+		if (!lightboxImageRef || !lightboxImageOutRef || !browser) return;
 
 		// Kill any existing animations to allow for rapid, interruptible transitions
 		lightboxTimeline?.kill();
 
+		const nextIndex =
+			direction === 'next'
+				? (lightboxIndex + 1) % images.length
+				: (lightboxIndex - 1 + images.length) % images.length;
+
 		const xOut = direction === 'next' ? -60 : 60;
 		const xIn = direction === 'next' ? 60 : -60;
 
-		const tl = gsap.timeline({
-			defaults: { ease: 'power2.inOut' }
-		});
+		// Snapshot current image to outgoing layer (already loaded — no flash)
+		lightboxImageOutRef.src = images[lightboxIndex];
+		gsap.set(lightboxImageOutRef, { opacity: 1, x: 0, scale: 1 });
 
-		// Sequence: Slide out -> Update Index -> Slide in
-		tl.to(lightboxImageRef, {
-			opacity: 0,
-			x: xOut,
-			scale: 0.95,
-			duration: 0.15,
-			ease: 'power2.in'
-		})
-			.add(() => {
-				// Update index synchronously between animations
-				if (direction === 'next') {
-					lightboxIndex = (lightboxIndex + 1) % images.length;
-				} else {
-					lightboxIndex = (lightboxIndex - 1 + images.length) % images.length;
-				}
-			})
-			.fromTo(
-				lightboxImageRef,
-				{ opacity: 0, x: -xIn, scale: 0.95 },
-				{
-					opacity: 1,
-					x: 0,
-					scale: 1,
-					duration: 0.2,
-					ease: 'power2.out'
-				}
-			);
+		// Position incoming image off-screen, then update src reactively
+		gsap.set(lightboxImageRef, { opacity: 0, x: xIn, scale: 0.95 });
+		lightboxIndex = nextIndex;
+
+		const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
+
+		// Crossfade: both animate simultaneously — background never visible
+		tl.to(
+			lightboxImageOutRef,
+			{ opacity: 0, x: xOut, scale: 0.95, duration: 0.3, ease: 'power2.in' },
+			0
+		).to(lightboxImageRef, { opacity: 1, x: 0, scale: 1, duration: 0.3, ease: 'power2.out' }, 0.05);
 
 		lightboxTimeline = tl;
 	}
@@ -561,6 +552,17 @@
 				onkeydown={(e) => e.stopPropagation()}
 				role="presentation"
 			>
+				<!-- Outgoing Image (crossfade layer — behind main image during transitions) -->
+				<img
+					bind:this={lightboxImageOutRef}
+					class="slider-lightbox-image absolute max-h-[85vh] max-w-[90vw] rounded-lg object-contain"
+					style="box-shadow: 0 25px 80px -20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 255, 255, 0.05); opacity: 0; pointer-events: none;"
+					decoding="async"
+					draggable="false"
+					alt=""
+					aria-hidden="true"
+				/>
+
 				<!-- Main Image -->
 				<img
 					bind:this={lightboxImageRef}
