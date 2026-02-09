@@ -104,19 +104,13 @@
 	}
 
 	/**
-	 * Handle backdrop click
+	 * Handle backdrop click — only fires when clicking directly on the backdrop,
+	 * not when the event bubbles up from modal content.
 	 */
-	function handleBackdropClick(): void {
-		if (closeOnBackdrop) {
+	function handleBackdropPointerDown(event: PointerEvent): void {
+		if (closeOnBackdrop && event.target === event.currentTarget) {
 			closeModal();
 		}
-	}
-
-	/**
-	 * Prevent clicks on content from closing modal
-	 */
-	function handleContentClick(event: MouseEvent): void {
-		event.stopPropagation();
 	}
 
 	/**
@@ -227,24 +221,20 @@
 <svelte:window onkeydown={handleKeyDown} />
 
 {#if open}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="modal-backdrop"
-		onclick={handleBackdropClick}
+		onpointerdown={handleBackdropPointerDown}
+		onkeydown={handleKeyDown}
 		role="dialog"
 		aria-modal="true"
 		tabindex="-1"
 		transition:fade={{ duration: 200 }}
 		use:portal
 	>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			class="modal-content flex w-full flex-col overflow-hidden rounded-xl border border-white/20 bg-[rgb(var(--background))]/95 shadow-2xl {MAX_WIDTH_CLASSES[
 				maxWidth
 			]} {className}"
-			onclick={handleContentClick}
 			bind:this={modalContainerRef}
 			in:animateIn
 			out:animateOut

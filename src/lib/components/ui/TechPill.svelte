@@ -112,7 +112,7 @@
 		{/if}
 		<span class="tech-name">{name}</span>
 	</a>
-{:else if as === 'button'}
+{:else if as === 'button' || onclick}
 	<button
 		class="tech-pill size-{size} variant-{variant} {className}"
 		data-tech={techSlug}
@@ -127,22 +127,12 @@
 		<span class="tech-name">{name}</span>
 	</button>
 {:else}
-	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<span
 		class="tech-pill size-{size} variant-{variant} {className}"
 		data-tech={techSlug}
 		data-size={size}
 		aria-label={name}
 		title={computedTitle}
-		role={onclick ? 'button' : undefined}
-		tabindex={onclick ? 0 : undefined}
-		{onclick}
-		onkeydown={(e) => {
-			if (onclick && (e.key === 'Enter' || e.key === ' ')) {
-				e.preventDefault();
-				onclick();
-			}
-		}}
 	>
 		{#if showIcon}
 			<Icon icon={iconName} class="tech-icon" />
