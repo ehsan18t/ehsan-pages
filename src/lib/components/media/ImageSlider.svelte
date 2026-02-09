@@ -19,6 +19,7 @@
 	import { portal } from '$lib/actions';
 	import Icon from '@iconify/svelte';
 	import gsap from 'gsap';
+	import { tick } from 'svelte';
 	import type { Action } from 'svelte/action';
 
 	// ─────────────────────────────────────────────────────────────
@@ -158,8 +159,6 @@
 		dragStartTime = Date.now();
 		containerWidth = containerRef?.offsetWidth ?? 0;
 		dragOffset = 0;
-
-		(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 	}
 
 	function handlePointerMove(e: PointerEvent): void {
@@ -334,7 +333,6 @@
 		if (!isFullscreen) {
 			isFullscreen = true;
 			lightboxIndex = currentIndex;
-			document.body.classList.add('lightbox-open');
 		} else {
 			closeLightbox();
 		}
@@ -344,7 +342,6 @@
 		if (isAnimating) return;
 		animateLightboxClose(() => {
 			isFullscreen = false;
-			document.body.classList.remove('lightbox-open');
 		});
 	}
 
@@ -358,18 +355,18 @@
 		animateImageTransition('next');
 	}
 
-	// Lightbox touch/swipe support
-	let lbTouchStartX = 0;
-	let lbTouchStartY = 0;
+	// Lightbox swipe support (Pointer Events for unified mouse + touch)
+	let lbPointerStartX = 0;
+	let lbPointerStartY = 0;
 
-	function handleLightboxTouchStart(e: TouchEvent): void {
-		lbTouchStartX = e.touches[0].clientX;
-		lbTouchStartY = e.touches[0].clientY;
+	function handleLightboxPointerDown(e: PointerEvent): void {
+		lbPointerStartX = e.clientX;
+		lbPointerStartY = e.clientY;
 	}
 
-	function handleLightboxTouchEnd(e: TouchEvent): void {
-		const deltaX = e.changedTouches[0].clientX - lbTouchStartX;
-		const deltaY = e.changedTouches[0].clientY - lbTouchStartY;
+	function handleLightboxPointerUp(e: PointerEvent): void {
+		const deltaX = e.clientX - lbPointerStartX;
+		const deltaY = e.clientY - lbPointerStartY;
 		if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
 			if (deltaX < 0) lightboxNext();
 			else lightboxPrev();
@@ -402,15 +399,15 @@
 	// Trigger lightbox open animation when refs become available
 	$effect(() => {
 		if (isFullscreen && lightboxRef && lightboxImageRef) {
-			requestAnimationFrame(() => animateLightboxOpen());
+			tick().then(() => animateLightboxOpen());
 		}
 	});
 
-	// Cleanup lightbox body class on component unmount
+	// Sync body scroll lock with lightbox state
 	$effect(() => {
-		return () => {
-			if (browser) document.body.classList.remove('lightbox-open');
-		};
+		if (!browser) return;
+		document.body.classList.toggle('lightbox-open', isFullscreen);
+		return () => document.body.classList.remove('lightbox-open');
 	});
 
 	// Reset carousel when images prop changes
@@ -421,7 +418,12 @@
 	});
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window
+	onkeydown={handleKeydown}
+	onpointermove={handlePointerMove}
+	onpointerup={handlePointerUp}
+	onpointercancel={handlePointerCancel}
+/>
 
 {#if images && images.length > 0}
 	<div
@@ -439,12 +441,9 @@
 			<!-- Carousel Track — GPU-accelerated via translate3d -->
 			<div
 				class="slider-track flex h-full touch-pan-y"
-				class:dragging={isDragging}
 				style:transform={trackTransform}
+				style:transition={isDragging ? 'none' : undefined}
 				onpointerdown={handlePointerDown}
-				onpointermove={handlePointerMove}
-				onpointerup={handlePointerUp}
-				onpointercancel={handlePointerCancel}
 				role="listbox"
 				tabindex="0"
 				aria-label="Image slides"
@@ -555,8 +554,8 @@
 			use:portal
 			class="slider-lightbox fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center bg-black/95 select-none"
 			onclick={closeLightbox}
-			ontouchstart={handleLightboxTouchStart}
-			ontouchend={handleLightboxTouchEnd}
+			onpointerdown={handleLightboxPointerDown}
+			onpointerup={handleLightboxPointerUp}
 			onkeydown={handleKeydown}
 			role="dialog"
 			aria-modal="true"
@@ -643,11 +642,6 @@
 	.slider-track {
 		backface-visibility: hidden;
 		transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-	}
-
-	/* Disable transition during active drag for instant feedback */
-	.slider-track:global(.dragging) {
-		transition: none;
 	}
 
 	/* Active dot indicator */
