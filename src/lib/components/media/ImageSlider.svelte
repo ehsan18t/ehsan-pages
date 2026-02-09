@@ -19,8 +19,7 @@
 	import { portal } from '$lib/actions';
 	import Icon from '@iconify/svelte';
 	import gsap from 'gsap';
-	import { tick } from 'svelte';
-	import type { Action } from 'svelte/action';
+	import { tick, untrack } from 'svelte';
 
 	// ─────────────────────────────────────────────────────────────
 	// Props
@@ -50,8 +49,9 @@
 	 * Delays full carousel initialization until component enters viewport.
 	 * Uses a larger rootMargin (200px) so initialization happens before
 	 * the user actually sees the component — avoiding visible pop-in.
+	 * Implemented as a Svelte 5 attachment for cleaner lifecycle management.
 	 */
-	const lazyInit: Action<HTMLElement> = (node) => {
+	function lazyInit(node: HTMLElement) {
 		if (!browser) return;
 
 		const observer = new IntersectionObserver(
@@ -65,8 +65,8 @@
 		);
 
 		observer.observe(node);
-		return { destroy: () => observer.disconnect() };
-	};
+		return () => observer.disconnect();
+	}
 
 	// ─────────────────────────────────────────────────────────────
 	// Constants
@@ -105,7 +105,6 @@
 
 	let isFullscreen = $state(false);
 	let lightboxIndex = $state(0);
-	let isAnimating = $state(false);
 
 	// GSAP lightbox element refs
 	let lightboxRef = $state<HTMLDivElement | null>(null);
@@ -220,13 +219,7 @@
 		lightboxTimeline?.kill();
 
 		const tl = gsap.timeline({
-			defaults: { ease: 'power3.out' },
-			onStart: () => {
-				isAnimating = true;
-			},
-			onComplete: () => {
-				isAnimating = false;
-			}
+			defaults: { ease: 'power3.out' }
 		});
 
 		// Initial states
@@ -261,11 +254,7 @@
 
 		const tl = gsap.timeline({
 			defaults: { ease: 'power2.in' },
-			onStart: () => {
-				isAnimating = true;
-			},
 			onComplete: () => {
-				isAnimating = false;
 				onComplete();
 			}
 		});
@@ -284,44 +273,47 @@
 
 	/** Animate image transition — fast crossfade, total ~0.35s */
 	function animateImageTransition(direction: 'next' | 'prev'): void {
-		if (!lightboxImageRef || !browser || isAnimating) return;
-		isAnimating = true;
+		if (!lightboxImageRef || !browser) return;
+
+		// Kill any existing animations to allow for rapid, interruptible transitions
+		lightboxTimeline?.kill();
 
 		const xOut = direction === 'next' ? -60 : 60;
 		const xIn = direction === 'next' ? 60 : -60;
 
-		// Exit current image
-		gsap.to(lightboxImageRef, {
+		const tl = gsap.timeline({
+			defaults: { ease: 'power2.inOut' }
+		});
+
+		// Sequence: Slide out -> Update Index -> Slide in
+		tl.to(lightboxImageRef, {
 			opacity: 0,
 			x: xOut,
 			scale: 0.95,
 			duration: 0.15,
-			ease: 'power2.in',
-			onComplete: () => {
-				// Update index
+			ease: 'power2.in'
+		})
+			.add(() => {
+				// Update index synchronously between animations
 				if (direction === 'next') {
-					lightboxIndex = lightboxIndex < images.length - 1 ? lightboxIndex + 1 : 0;
+					lightboxIndex = (lightboxIndex + 1) % images.length;
 				} else {
-					lightboxIndex = lightboxIndex > 0 ? lightboxIndex - 1 : images.length - 1;
+					lightboxIndex = (lightboxIndex - 1 + images.length) % images.length;
 				}
+			})
+			.fromTo(
+				lightboxImageRef,
+				{ opacity: 0, x: -xIn, scale: 0.95 },
+				{
+					opacity: 1,
+					x: 0,
+					scale: 1,
+					duration: 0.2,
+					ease: 'power2.out'
+				}
+			);
 
-				// Enter new image from opposite side
-				gsap.fromTo(
-					lightboxImageRef,
-					{ opacity: 0, x: -xIn, scale: 0.95 },
-					{
-						opacity: 1,
-						x: 0,
-						scale: 1,
-						duration: 0.2,
-						ease: 'power2.out',
-						onComplete: () => {
-							isAnimating = false;
-						}
-					}
-				);
-			}
-		});
+		lightboxTimeline = tl;
 	}
 
 	// ─────────────────────────────────────────────────────────────
@@ -329,7 +321,6 @@
 	// ─────────────────────────────────────────────────────────────
 
 	function toggleFullscreen(): void {
-		if (isAnimating) return;
 		if (!isFullscreen) {
 			isFullscreen = true;
 			lightboxIndex = currentIndex;
@@ -339,19 +330,16 @@
 	}
 
 	function closeLightbox(): void {
-		if (isAnimating) return;
 		animateLightboxClose(() => {
 			isFullscreen = false;
 		});
 	}
 
 	function lightboxPrev(): void {
-		if (isAnimating) return;
 		animateImageTransition('prev');
 	}
 
 	function lightboxNext(): void {
-		if (isAnimating) return;
 		animateImageTransition('next');
 	}
 
@@ -411,10 +399,16 @@
 	});
 
 	// Reset carousel when images prop changes
-	$effect(() => {
-		void images.length;
-		currentIndex = 0;
-		dragOffset = 0;
+	let prevImagesLength: number | undefined;
+	$effect.pre(() => {
+		const len = images.length;
+		if (prevImagesLength !== undefined && len !== prevImagesLength) {
+			untrack(() => {
+				currentIndex = 0;
+				dragOffset = 0;
+			});
+		}
+		prevImagesLength = len;
 	});
 </script>
 
@@ -435,7 +429,7 @@
 		style:--current-index={currentIndex}
 		aria-label="{title} image gallery"
 		role="region"
-		use:lazyInit
+		{@attach lazyInit}
 	>
 		{#if isInView}
 			<!-- Carousel Track — GPU-accelerated via translate3d -->
