@@ -13,7 +13,6 @@ const config = {
 			$utils: 'src/lib/utils',
 			$icons: 'src/lib/icons',
 			$routes: 'src/routes',
-			$hooks: 'src/lib/hooks',
 			$stores: 'src/lib/stores'
 		}
 	}

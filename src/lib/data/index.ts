@@ -1,46 +1,6 @@
-export interface Experience {
-	id: string;
-	role: string;
-	company: string;
-	companyUrl?: string;
-	startDate: string;
-	endDate: string;
-	description: string[];
-	techStack: string[];
-	lane: 'frontend' | 'backend' | 'fullstack';
-	impact: {
-		label: string;
-		value: string;
-		type: 'addition' | 'deletion' | 'modification';
-	}[];
-	isMergeCommit?: boolean;
-}
+import type { Experience, NavItem, Project, Testimonial } from './types';
 
-export interface Testimonial {
-	id: number;
-	content: string;
-	name: string;
-	role: string;
-	image?: string;
-}
-
-export interface Project {
-	title: string;
-	shortDescription: string;
-	imageUrls: string[];
-	techStack: string[];
-	repoUrl?: string;
-	liveUrl?: string;
-	imageLayout: 'cover' | 'contain';
-}
-
-export interface NavItem {
-	href: string;
-	icon: string;
-	label: string;
-	section: string;
-	offset: number;
-}
+export type { Experience, NavItem, Project, Testimonial };
 
 const info = {
 	name: 'Ehsan Khan',
