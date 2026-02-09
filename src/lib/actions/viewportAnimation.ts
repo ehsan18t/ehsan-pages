@@ -65,6 +65,7 @@ export const viewportAnimation: Action<HTMLElement, ViewportAnimationOptions | u
 	let observer: IntersectionObserver | null = null;
 	let isVisible = !startPaused;
 	let prefersReducedMotion = false;
+	let handleMotionChange: ((e: MediaQueryListEvent) => void) | null = null;
 
 	// Check reduced motion preference (if supported)
 	const motionQuery = window.matchMedia
@@ -74,7 +75,7 @@ export const viewportAnimation: Action<HTMLElement, ViewportAnimationOptions | u
 		prefersReducedMotion = motionQuery.matches;
 
 		// Listen for reduced motion changes
-		const handleMotionChange = (e: MediaQueryListEvent) => {
+		handleMotionChange = (e: MediaQueryListEvent) => {
 			prefersReducedMotion = e.matches;
 			if (prefersReducedMotion) {
 				pauseAnimation();
@@ -83,26 +84,19 @@ export const viewportAnimation: Action<HTMLElement, ViewportAnimationOptions | u
 			}
 		};
 		motionQuery.addEventListener('change', handleMotionChange);
-
-		// Store for cleanup
-		(node as HTMLElement & { __motionHandler?: (e: MediaQueryListEvent) => void }).__motionHandler =
-			handleMotionChange;
 	}
 
 	/**
 	 * Pause the animation (CSS or GSAP)
 	 */
 	function pauseAnimation(): void {
-		// Pause CSS animations
+		// Pause CSS animations on node itself
 		node.style.animationPlayState = 'paused';
 
-		// Also pause any children with animations
-		const animatedChildren = node.querySelectorAll<HTMLElement>('*');
+		// Only query children that actually have CSS animations
+		const animatedChildren = node.querySelectorAll<HTMLElement>('[style*="animation"], .animate, [class*="animate-"]');
 		animatedChildren.forEach((child) => {
-			const computedStyle = window.getComputedStyle(child);
-			if (computedStyle.animationName !== 'none') {
-				child.style.animationPlayState = 'paused';
-			}
+			child.style.animationPlayState = 'paused';
 		});
 
 		// Pause GSAP tween if provided
@@ -120,11 +114,11 @@ export const viewportAnimation: Action<HTMLElement, ViewportAnimationOptions | u
 		// Don't resume if user prefers reduced motion
 		if (prefersReducedMotion) return;
 
-		// Resume CSS animations
+		// Resume CSS animations on node itself
 		node.style.animationPlayState = 'running';
 
-		// Also resume any children with animations
-		const animatedChildren = node.querySelectorAll<HTMLElement>('*');
+		// Only query children that actually have CSS animations
+		const animatedChildren = node.querySelectorAll<HTMLElement>('[style*="animation"], .animate, [class*="animate-"]');
 		animatedChildren.forEach((child) => {
 			child.style.animationPlayState = 'running';
 		});
@@ -200,13 +194,8 @@ export const viewportAnimation: Action<HTMLElement, ViewportAnimationOptions | u
 		destroy() {
 			observer?.disconnect();
 			observer = null;
-			const stored = (
-				node as HTMLElement & {
-					__motionHandler?: (e: MediaQueryListEvent) => void;
-				}
-			).__motionHandler;
-			if (motionQuery && stored) {
-				motionQuery.removeEventListener('change', stored);
+			if (motionQuery && handleMotionChange) {
+				motionQuery.removeEventListener('change', handleMotionChange);
 			}
 		}
 	};
