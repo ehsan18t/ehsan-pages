@@ -110,7 +110,7 @@
 >
 	<!-- Fade out bottom -->
 	<div
-		class="absolute inset-0 mask-[linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]"
+		class="pointer-events-none absolute inset-0 mask-[linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]"
 	>
 		<!-- Grain Effect -->
 		<div class="absolute inset-0 -z-30 opacity-5" style="background-image: url({grain});"></div>
@@ -173,7 +173,7 @@
 
 	<!-- Content -->
 	<div
-		class="flex max-w-full animate-[fadeInUp_0.8s_ease-out] flex-col items-center gap-4 px-4 sm:gap-6 sm:px-6 md:flex-row md:gap-12 md:px-10 lg:max-w-275 lg:gap-16"
+		class="relative z-10 flex max-w-full animate-[fadeInUp_0.8s_ease-out] flex-col items-center gap-4 px-4 sm:gap-6 sm:px-6 md:flex-row md:gap-12 md:px-10 lg:max-w-275 lg:gap-16"
 	>
 		<!-- Profile Section -->
 		<div class="shrink-0 animate-[fadeInLeft_0.8s_ease-out_0.2s_both]">
